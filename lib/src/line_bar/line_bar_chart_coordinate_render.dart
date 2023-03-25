@@ -8,6 +8,7 @@ import '../widget/dash_painter.dart';
 typedef AxisFormatter = String? Function(int);
 
 class XAxis {
+  //方便计算，count代表一屏显示的value，也是格子数
   final int count;
   final num interval;
   final num max;
@@ -79,8 +80,8 @@ class LineBarChartCoordinateRender<T> extends ChartCoordinateRender<T> {
 
     double width = size.width;
     double height = size.height;
-    //每格的宽度，用于控制一屏最多显示个数
     int count = xAxis.count;
+    //每格的宽度，用于控制一屏最多显示个数
     double density = (width - contentMargin.horizontal) / count;
     //x轴密度 即1 value 等于多少尺寸
     xAxis.density = density * controller.zoom;
@@ -133,7 +134,8 @@ class LineBarChartCoordinateRender<T> extends ChartCoordinateRender<T> {
       }
       //绘制格子线
       if (yAxis.drawGrid) {
-        _drawGridLine(canvas, Offset(margin.left, margin.top + itemHeight * i), Offset(size.width - margin.right, margin.top + itemHeight * i), yAxis.dashPainter);
+        _drawGridLine(canvas, Offset(margin.left, margin.top + itemHeight * i), Offset(size.width - margin.right, margin.top + itemHeight * i),
+            yAxis.dashPainter);
       }
     }
   }
@@ -333,8 +335,10 @@ class LineBarChartCoordinateRender<T> extends ChartCoordinateRender<T> {
     const bool constrained = true;
     Size contentSize = Size(size.width - padding.horizontal, size.height - padding.vertical);
     if (constrained) {
-      final horizontalAdjust = windowRect.left < 0 ? -windowRect.left : (windowRect.right > contentSize.width ? contentSize.width - windowRect.right : 0.0);
-      final verticalAdjust = windowRect.top < 0 ? -windowRect.top : (windowRect.bottom > contentSize.height ? contentSize.height - windowRect.bottom : 0.0);
+      final horizontalAdjust =
+          windowRect.left < 0 ? -windowRect.left : (windowRect.right > contentSize.width ? contentSize.width - windowRect.right : 0.0);
+      final verticalAdjust =
+          windowRect.top < 0 ? -windowRect.top : (windowRect.bottom > contentSize.height ? contentSize.height - windowRect.bottom : 0.0);
       if (horizontalAdjust != 0 || verticalAdjust != 0) {
         windowRect = windowRect.translate(horizontalAdjust, verticalAdjust);
         textPaintPoint = textPaintPoint.translate(horizontalAdjust, verticalAdjust);

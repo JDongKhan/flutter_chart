@@ -1,12 +1,30 @@
+import 'dart:ui' as ui;
+
 import 'package:example/page/extension_datetime.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chart/flutter_chart.dart';
 
 /// @author JD
-class LineChartDemoPage extends StatelessWidget {
+class LineChartDemoPage extends StatefulWidget {
   LineChartDemoPage({Key? key}) : super(key: key);
 
+  @override
+  State<LineChartDemoPage> createState() => _LineChartDemoPageState();
+}
+
+class _LineChartDemoPageState extends State<LineChartDemoPage> {
   final DateTime startTime = DateTime(2023, 1, 1);
+  ui.Image? logoImage;
+
+  @override
+  void initState() {
+    ImageAnnotation.getAssetImage('images/location.png', width: 10, height: 10).then((value) {
+      setState(() {
+        logoImage = value;
+      });
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,6 +103,7 @@ class LineChartDemoPage extends StatelessWidget {
                 foregroundAnnotations: [
                   LimitAnnotation(limit: 380),
                   LimitAnnotation(limit: 210),
+                  if (logoImage != null) ImageAnnotation(image: logoImage!, positions: [1, 200], offset: Offset(-10, -10)),
                   LabelAnnotation(positions: [6, 380], text: '380'),
                 ],
                 backgroundAnnotations: [

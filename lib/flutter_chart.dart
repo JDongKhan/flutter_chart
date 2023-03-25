@@ -1,6 +1,7 @@
 library flutter_chart;
 
 export 'src/annotation/annotation.dart';
+export 'src/annotation/image_annotation.dart';
 export 'src/annotation/label_annotation.dart';
 export 'src/annotation/limit_annotation.dart';
 export 'src/annotation/region_annotation.dart';
