@@ -35,6 +35,7 @@ class CrossHairStyle {
 
 typedef ChartPosition<T> = num Function(T);
 typedef ChartTooltipFormatter<T> = InlineSpan Function(T);
+typedef AnnotationsCreater = void Function(ChartCoordinateRender render);
 
 //渲染器， 每次刷新会重新构造，切忌不要存放状态数据，数据都在controller里面
 abstract class ChartCoordinateRender<T> {
@@ -58,6 +59,10 @@ abstract class ChartCoordinateRender<T> {
   final ChartTooltipFormatter<T>? tooltipFormatter;
   //十字准星样式
   final CrossHairStyle crossHair;
+
+  final List<AnnotationsCreater>? backgroundAnnotations;
+  final List<AnnotationsCreater>? foregroundAnnotations;
+
   ChartCoordinateRender({
     required this.margin,
     required this.padding,
@@ -68,6 +73,8 @@ abstract class ChartCoordinateRender<T> {
     this.tooltipFormatter,
     this.controller,
     this.zoom = false,
+    this.backgroundAnnotations,
+    this.foregroundAnnotations,
     this.crossHair = const CrossHairStyle(),
   }) : content = EdgeInsets.fromLTRB(margin.left + padding.left, margin.top + padding.top, margin.right + padding.right, margin.bottom + padding.bottom);
 

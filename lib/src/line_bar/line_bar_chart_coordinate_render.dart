@@ -55,12 +55,15 @@ class LineBarChartCoordinateRender<T> extends ChartCoordinateRender<T> {
   final Color lineColor;
   final YAxis yAxis;
   final XAxis xAxis;
+
   LineBarChartCoordinateRender({
     required super.data,
     super.margin = const EdgeInsets.only(left: 30, top: 0, right: 0, bottom: 30),
     super.padding = const EdgeInsets.only(left: 30, top: 0, right: 0, bottom: 0),
     required super.position,
     required super.chartRender,
+    super.backgroundAnnotations,
+    super.foregroundAnnotations,
     super.tooltipRenderer,
     super.tooltipFormatter,
     super.controller,
@@ -102,9 +105,11 @@ class LineBarChartCoordinateRender<T> extends ChartCoordinateRender<T> {
     //防止超过y轴
     canvas.clipRect(Rect.fromLTWH(margin.left, margin.top, size.width - margin.left - margin.right, size.height));
     _drawXAxis(canvas, size);
+    _drawBackgroundAnnotations(canvas, size);
     chartRender.draw(data);
     _drawTooltip(canvas, size);
     _drawCrosshair(canvas, size);
+    _drawForegroundAnnotations(canvas, size);
   }
 
   void _drawYAxis(Canvas canvas, Size size) {
@@ -384,5 +389,19 @@ class LineBarChartCoordinateRender<T> extends ChartCoordinateRender<T> {
       x = minValue;
     }
     controller!.offset = Offset(x, y);
+  }
+
+  //背景
+  void _drawBackgroundAnnotations(Canvas canvas, Size size) {
+    backgroundAnnotations?.forEach((element) {
+      element.call(this);
+    });
+  }
+
+  //前景
+  void _drawForegroundAnnotations(Canvas canvas, Size size) {
+    foregroundAnnotations?.forEach((element) {
+      element.call(this);
+    });
   }
 }

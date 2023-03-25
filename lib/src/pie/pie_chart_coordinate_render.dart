@@ -27,7 +27,9 @@ class PieChartCoordinateRender<T> extends ChartCoordinateRender<T> {
     Rect rect = Rect.fromLTWH(0, 0, size.width, size.height);
     canvas.clipRect(rect);
     _drawCircle(canvas, size);
+    _drawBackgroundAnnotations(canvas, size);
     chartRender.draw(data);
+    _drawForegroundAnnotations(canvas, size);
   }
 
   //画背景圆
@@ -46,6 +48,20 @@ class PieChartCoordinateRender<T> extends ChartCoordinateRender<T> {
 
     // 使用 Canvas 的 drawCircle 绘制
     canvas.drawCircle(center, radius, paint);
+  }
+
+  //背景
+  void _drawBackgroundAnnotations(Canvas canvas, Size size) {
+    backgroundAnnotations?.forEach((element) {
+      element.call(this);
+    });
+  }
+
+  //前景
+  void _drawForegroundAnnotations(Canvas canvas, Size size) {
+    foregroundAnnotations?.forEach((element) {
+      element.call(this);
+    });
   }
 
   @override
