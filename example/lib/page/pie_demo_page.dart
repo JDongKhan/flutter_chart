@@ -42,54 +42,49 @@ class PieChartDemoPage extends StatelessWidget {
         title: const Text('ChartDemo'),
       ),
       body: SingleChildScrollView(
-        child: SizedBox(
-          width: 250,
-          child: Column(
-            children: [
-              const Text('Pie'),
-              SizedBox(
-                height: 200,
-                child: ChartWidget(
-                  builder: (controller) => PieChartCoordinateRender(
-                    data: dataList,
-                    margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
-                    position: (item) => (double.parse(item['value1'].toString())) / 700.0,
-                    chartRender: Pie(
-                      textStyle: const TextStyle(
-                        fontSize: 12,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      legendFormatter: (item) {
-                        return (item['time'] as DateTime).toStringWithFormat(format: 'MM-dd');
-                      },
-                      valueFormatter: (item) => item['value1'].toString(),
+        child: Column(
+          children: [
+            const Text('Pie'),
+            SizedBox(
+              height: 200,
+              child: ChartWidget(
+                builder: (controller) => PieChartCoordinateRender(
+                  data: dataList,
+                  margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 10),
+                  position: (item) => (double.parse(item['value1'].toString())),
+                  legendWidth: 20,
+                  chartRender: Pie(
+                    textStyle: const TextStyle(
+                      fontSize: 12,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
                     ),
+                    legendFormatter: (item) {
+                      return (item['time'] as DateTime).toStringWithFormat(format: 'MM-dd');
+                    },
+                    valueFormatter: (item) => item['value1'].toString(),
                   ),
                 ),
               ),
-              const Text('Hole Pie'),
-              SizedBox(
-                height: 200,
-                child: ChartWidget(
-                  builder: (controller) => PieChartCoordinateRender(
-                    data: dataList,
-                    margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
-                    position: (item) => (double.parse(item['value1'].toString())) / 700.0,
-                    chartRender: Pie(
-                      holeRadius: 40,
-                      valueTextOffset: 20,
-                      centerTextStyle: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
-                      legendFormatter: (item) {
-                        return (item['time'] as DateTime).toStringWithFormat(format: 'MM-dd');
-                      },
-                      valueFormatter: (item) => item['value1'].toString(),
-                    ),
+            ),
+            const Text('Hole Pie'),
+            SizedBox(
+              height: 200,
+              child: ChartWidget(
+                builder: (controller) => PieChartCoordinateRender(
+                  data: dataList,
+                  margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 10),
+                  position: (item) => (double.parse(item['value1'].toString())),
+                  chartRender: Pie(
+                    holeRadius: 40,
+                    valueTextOffset: 20,
+                    centerTextStyle: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
+                    valueFormatter: (item) => item['value1'].toString(),
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

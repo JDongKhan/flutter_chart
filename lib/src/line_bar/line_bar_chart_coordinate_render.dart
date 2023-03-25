@@ -1,9 +1,8 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 
 import '../base/chart_controller.dart';
 import '../base/chart_coordinate_render.dart';
+import '../widget/dash_painter.dart';
 
 /// @author JD
 typedef AxisFormatter = String? Function(int);
@@ -14,10 +13,17 @@ class XAxis {
   final num max;
   final AxisFormatter? formatter;
   double? density;
+  final bool drawGrid;
+  //是否绘制最下面一行的线
+  bool drawLine;
+  final DashPainter? dashPainter;
   XAxis({
     this.formatter,
     this.interval = 1,
     this.count = 7,
+    this.drawLine = true,
+    this.drawGrid = true,
+    this.dashPainter,
     required this.max,
   });
 }
@@ -25,14 +31,22 @@ class XAxis {
 class YAxis {
   final num min;
   final num max;
+  //一屏显示的数量
   final int count;
   final AxisFormatter? formatter;
+  final bool drawLine;
+  final bool drawGrid;
+  //密度
   double? density;
+  final DashPainter? dashPainter;
   YAxis({
     required this.min,
     required this.max,
     this.formatter,
     this.count = 5,
+    this.drawLine = true,
+    this.drawGrid = true,
+    this.dashPainter,
   });
 }
 
@@ -103,7 +117,9 @@ class LineBarChartCoordinateRender<T> extends ChartCoordinateRender<T> {
       ..color = lineColor
       ..strokeWidth = 0.2;
     //划线
-    canvas.drawLine(Offset(margin.left, margin.top), Offset(margin.left, size.height - margin.bottom), paint);
+    if (yAxis.drawLine) {
+      canvas.drawLine(Offset(margin.left, margin.top), Offset(margin.left, size.height - margin.bottom), paint);
+    }
     for (int i = 0; i <= count; i++) {
       String text = yAxis.formatter?.call(i) ?? '${min + itemValue * i}';
 
@@ -112,11 +128,14 @@ class LineBarChartCoordinateRender<T> extends ChartCoordinateRender<T> {
       } else {
         _drawYTextPaint(canvas, text, size.height - margin.bottom - itemHeight * i, true);
       }
-      _drawYLine(canvas, Offset(margin.left, itemHeight * i), Offset(size.width - margin.right, itemHeight * i));
+      //绘制格子线
+      if (yAxis.drawGrid) {
+        _drawGridLine(canvas, Offset(margin.left, margin.top + itemHeight * i), Offset(size.width - margin.right, margin.top + itemHeight * i), yAxis.dashPainter);
+      }
     }
   }
 
-  void _drawYLine(Canvas canvas, Offset p1, Offset p2) {
+  void _drawGridLine(Canvas canvas, Offset p1, Offset p2, DashPainter? dashPainter) {
     Paint paint = Paint()
       ..color = lineColor
       ..style = PaintingStyle.stroke
@@ -124,7 +143,8 @@ class LineBarChartCoordinateRender<T> extends ChartCoordinateRender<T> {
     Path path = Path()
       ..moveTo(p1.dx, p1.dy)
       ..lineTo(p2.dx, p2.dy);
-    const _DashPainter(span: 5, step: 5).paint(canvas, path, paint);
+    DashPainter painter = dashPainter ?? const DashPainter(span: 5, step: 5);
+    painter.paint(canvas, path, paint);
   }
 
   void _drawYTextPaint(Canvas canvas, String text, double top, bool middle) {
@@ -155,7 +175,9 @@ class LineBarChartCoordinateRender<T> extends ChartCoordinateRender<T> {
       ..color = lineColor
       ..strokeWidth = 0.2;
     //划线
-    canvas.drawLine(Offset(margin.left, size.height - margin.bottom), Offset(size.width - margin.right, size.height - margin.bottom), paint);
+    if (xAxis.drawLine) {
+      canvas.drawLine(Offset(margin.left, size.height - margin.bottom), Offset(size.width - margin.right, size.height - margin.bottom), paint);
+    }
 
     int count = xAxis.max ~/ xAxis.interval;
     for (int i = 0; i < count; i++) {
@@ -167,6 +189,9 @@ class LineBarChartCoordinateRender<T> extends ChartCoordinateRender<T> {
       //   _drawXTextPaint(canvas, '${i + 1}', size,
       //       size.width - padding.right - contentPadding.right - 5);
       // }
+      if (xAxis.drawGrid) {
+        _drawGridLine(canvas, Offset(left, margin.top), Offset(left, size.height - margin.bottom), xAxis.dashPainter);
+      }
     }
   }
 
@@ -248,7 +273,7 @@ class LineBarChartCoordinateRender<T> extends ChartCoordinateRender<T> {
       Path path = Path()
         ..moveTo(p1.dx, p1.dy)
         ..lineTo(p2.dx, p2.dy);
-      const _DashPainter(span: 5, step: 5).paint(canvas, path, paint);
+      const DashPainter(span: 5, step: 5).paint(canvas, path, paint);
     }
     //水平
     if (crossHair.horizontalShow) {
@@ -257,7 +282,7 @@ class LineBarChartCoordinateRender<T> extends ChartCoordinateRender<T> {
       Path path1 = Path()
         ..moveTo(p11.dx, p11.dy)
         ..lineTo(p21.dx, p21.dy);
-      const _DashPainter(span: 5, step: 5).paint(canvas, path1, paint);
+      const DashPainter(span: 5, step: 5).paint(canvas, path1, paint);
     }
   }
 
@@ -359,44 +384,5 @@ class LineBarChartCoordinateRender<T> extends ChartCoordinateRender<T> {
       x = minValue;
     }
     controller!.offset = Offset(x, y);
-  }
-}
-
-class _DashPainter {
-  const _DashPainter({
-    this.step = 2,
-    this.span = 2,
-    this.pointCount = 0,
-    this.pointWidth,
-  });
-
-  final double step;
-  final double span;
-  final int pointCount;
-  final double? pointWidth;
-
-  void paint(Canvas canvas, Path path, Paint paint) {
-    final PathMetrics pms = path.computeMetrics();
-    final double pointLineLength = pointWidth ?? paint.strokeWidth;
-    final double partLength = step + span * (pointCount + 1) + pointCount * pointLineLength;
-
-    pms.forEach((PathMetric pm) {
-      final int count = pm.length ~/ partLength;
-      for (int i = 0; i < count; i++) {
-        canvas.drawPath(
-          pm.extractPath(partLength * i, partLength * i + step),
-          paint,
-        );
-        for (int j = 1; j <= pointCount; j++) {
-          final start = partLength * i + step + span * j + pointLineLength * (j - 1);
-          canvas.drawPath(
-            pm.extractPath(start, start + pointLineLength),
-            paint,
-          );
-        }
-      }
-      final double tail = pm.length % partLength;
-      canvas.drawPath(pm.extractPath(pm.length - tail, pm.length), paint);
-    });
   }
 }

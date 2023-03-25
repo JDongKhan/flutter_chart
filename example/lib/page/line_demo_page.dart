@@ -47,38 +47,38 @@ class LineChartDemoPage extends StatelessWidget {
           child: Column(
             children: [
               const Text('Single Line'),
-              // SizedBox(
-              //   height: 200,
-              //   child: ChartWidget(
-              //     builder: (controller) => LineBarChartCoordinateRender(
-              //       zoom: true,
-              //       margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
-              //       //提示的文案信息
-              //       tooltipFormatter: (item) => TextSpan(
-              //         text: '${item['value1']}',
-              //         style: const TextStyle(
-              //           color: Colors.black,
-              //         ),
-              //       ),
-              //       position: (item) => (item['time'] as DateTime).difference(startTime).inMilliseconds / (24 * 60 * 60 * 1000),
-              //       yAxis: YAxis(min: 0, max: 500),
-              //       xAxis: XAxis(
-              //         count: 7,
-              //         max: 7,
-              //         formatter: (index) => startTime.add(Duration(days: index)).toStringWithFormat(format: 'dd'),
-              //       ),
-              //       chartRender: Line(
-              //         position: (item) => [
-              //           item['value1'] as num,
-              //         ],
-              //       ),
-              //       data: dataList,
-              //     ),
-              //   ),
-              // ),
+              SizedBox(
+                height: 200,
+                child: ChartWidget(
+                  builder: (controller) => LineBarChartCoordinateRender(
+                    zoom: true,
+                    margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
+                    //提示的文案信息
+                    tooltipFormatter: (item) => TextSpan(
+                      text: '${item['value1']}',
+                      style: const TextStyle(
+                        color: Colors.black,
+                      ),
+                    ),
+                    position: (item) => (item['time'] as DateTime).difference(startTime).inMilliseconds / (24 * 60 * 60 * 1000),
+                    yAxis: YAxis(min: 0, max: 500),
+                    xAxis: XAxis(
+                      count: 7,
+                      max: 7,
+                      formatter: (index) => startTime.add(Duration(days: index)).toStringWithFormat(format: 'dd'),
+                    ),
+                    chartRender: Line(
+                      position: (item) => [
+                        item['value1'] as num,
+                      ],
+                    ),
+                    data: dataList,
+                  ),
+                ),
+              ),
               const Text('Multiple Line'),
               Container(
-                color: Colors.yellow,
+                // color: Colors.yellow,
                 height: 200,
                 child: ChartWidget(
                   builder: (controller) => LineBarChartCoordinateRender(
@@ -95,6 +95,7 @@ class LineChartDemoPage extends StatelessWidget {
                     xAxis: XAxis(
                       count: 7,
                       max: 20,
+                      drawLine: false,
                       formatter: (index) => startTime.add(Duration(days: index)).toStringWithFormat(format: 'dd'),
                     ),
                     chartRender: Line(

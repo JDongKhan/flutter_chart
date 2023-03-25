@@ -46,7 +46,7 @@ class BarChartDemoPage extends StatelessWidget {
           width: 250,
           child: Column(
             children: [
-              const Text('StackBar'),
+              const Text('垂直StackBar'),
               SizedBox(
                 height: 200,
                 child: ChartWidget(
@@ -77,7 +77,7 @@ class BarChartDemoPage extends StatelessWidget {
                   ),
                 ),
               ),
-              const Text('StackBar'),
+              const Text('水平StackBar'),
               SizedBox(
                 height: 200,
                 child: ChartWidget(
@@ -108,7 +108,7 @@ class BarChartDemoPage extends StatelessWidget {
                   ),
                 ),
               ),
-              const Text('Bar'),
+              const Text('普通Bar'),
               SizedBox(
                 height: 200,
                 child: ChartWidget(

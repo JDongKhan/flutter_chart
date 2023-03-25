@@ -44,11 +44,23 @@ class Pie<T> extends ChartRender<T> {
   void draw(List<T> data) {
     PieChartCoordinateRender<T> chart = coordinateChart as PieChartCoordinateRender<T>;
     Canvas canvas = chart.canvas;
-    double width = chart.size.width;
-    double height = chart.size.height;
+    double width = chart.size.width - chart.margin.horizontal;
+    double height = chart.size.height - chart.margin.vertical;
     double legendWidth = chart.legendWidth;
     Offset center = chart.center;
     double radius = chart.radius;
+
+    //先计算比例
+    List<num> values = [];
+    num total = 0;
+    for (int i = 0; i < data.length; i++) {
+      T item = data[i];
+      //计算值
+      num po = chart.position.call(item);
+      total += po;
+      values.add(po);
+    }
+
     // 设置绘制属性
     final paint = Paint()
       ..strokeWidth = 0.0
@@ -61,10 +73,10 @@ class Pie<T> extends ChartRender<T> {
     assert(colors.length >= data.length);
     for (int i = 0; i < data.length; i++) {
       T item = data[i];
-      //计算值
-      num po = chart.position.call(item);
+      //直接读取
+      num percent = values[i] / total;
       // 计算出每个数据所占的弧度值
-      final sweepAngle = po * -pi * 2;
+      final sweepAngle = percent * -pi * 2;
 
       ChartShape shape = ChartShape.arc(
         center: center,
@@ -139,7 +151,7 @@ class Pie<T> extends ChartRender<T> {
         valueTextPainter.paint(chart.canvas, Offset(x, y));
       }
 
-      //中心点
+      //中心点文案
       if (centerTextStyle != null && selected && valueText != null) {
         TextPainter valueTextPainter = TextPainter(
           textAlign: TextAlign.start,
