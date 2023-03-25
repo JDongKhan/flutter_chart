@@ -19,7 +19,7 @@ class LabelAnnotation<T> extends Annotation<T> {
       num yPo = positions[1];
       double itemWidth = xPo * chart.xAxis.density!;
       double itemHeight = yPo * chart.yAxis.density!;
-      Offset offset = Offset(chart.padding.left + itemWidth, chart.contentRect.bottom - itemHeight);
+      Offset offset = Offset(chart.contentRect.left + itemWidth, chart.contentRect.bottom - itemHeight);
 
       TextPainter textPainter = TextPainter(
         textAlign: TextAlign.center,
