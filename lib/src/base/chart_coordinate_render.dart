@@ -82,16 +82,16 @@ abstract class ChartCoordinateRender<T> {
     this.backgroundAnnotations,
     this.foregroundAnnotations,
     this.crossHair = const CrossHairStyle(),
-  }) : contentPadding = EdgeInsets.fromLTRB(margin.left + padding.left, margin.top + padding.top, margin.right + padding.right, margin.bottom + padding.bottom);
+  }) : contentMargin = EdgeInsets.fromLTRB(margin.left + padding.left, margin.top + padding.top, margin.right + padding.right, margin.bottom + padding.bottom);
 
   //画布
   late Canvas canvas;
   //画布尺寸
   late Size size;
 
-  //图形内容的边距信息
-  EdgeInsets contentPadding;
-  Rect get contentRect => Rect.fromLTRB(contentPadding.left, contentPadding.top, size.width - contentPadding.left, size.height - contentPadding.bottom);
+  //图形内容的外边距信息
+  EdgeInsets contentMargin;
+  Rect get contentRect => Rect.fromLTRB(contentMargin.left, contentMargin.top, size.width - contentMargin.left, size.height - contentMargin.bottom);
 
   void init(Canvas canvas, Size size) {
     this.canvas = canvas;

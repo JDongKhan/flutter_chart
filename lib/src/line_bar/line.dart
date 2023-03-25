@@ -37,10 +37,10 @@ class Line<T> extends ChartRender<T> {
 
     int index = 0;
     //offset.dx 滚动偏移  (src.zoom - 1) * (src.size.width / 2) 缩放
-    double left = chart.contentPadding.left - offset.dx - (chart.controller!.zoom - 1) * (chart.size.width / 2);
-    double right = chart.size.width - chart.contentPadding.right;
-    double top = chart.contentPadding.top;
-    double bottom = chart.size.height - chart.contentPadding.bottom;
+    double left = chart.contentMargin.left - offset.dx - (chart.controller!.zoom - 1) * (chart.size.width / 2);
+    double right = chart.size.width - chart.contentMargin.right;
+    double top = chart.contentMargin.top;
+    double bottom = chart.size.height - chart.contentMargin.bottom;
     Map<int, Path> pathMap = {};
     ChartShape? lastShape;
     //遍历数据

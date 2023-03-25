@@ -82,7 +82,7 @@ class LineBarChartCoordinateRender<T> extends ChartCoordinateRender<T> {
     double height = size.height;
     //每格的宽度，用于控制一屏最多显示个数
     int count = xAxis.count;
-    double density = (width - contentPadding.horizontal) / count;
+    double density = (width - contentMargin.horizontal) / count;
     //x轴密度 即1 value 等于多少尺寸
     xAxis.density = density * controller!.zoom;
 
@@ -187,7 +187,7 @@ class LineBarChartCoordinateRender<T> extends ChartCoordinateRender<T> {
     for (int i = 0; i < count; i++) {
       String text = xAxis.formatter?.call(i) ?? '$i';
 
-      double left = contentPadding.left + density * i - controller!.offset.dx - (controller!.zoom - 1) * (size.width / 2);
+      double left = contentMargin.left + density * i - controller!.offset.dx - (controller!.zoom - 1) * (size.width / 2);
       _drawXTextPaint(canvas, text, size, left);
       // if (i == dreamXAxisCount - 1) {
       //   _drawXTextPaint(canvas, '${i + 1}', size,

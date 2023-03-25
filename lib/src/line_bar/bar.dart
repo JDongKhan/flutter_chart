@@ -42,10 +42,10 @@ class Bar<T> extends ChartRender<T> {
     if (value == 0) {
       return ChartShape();
     }
-    double bottom = chart.contentPadding.bottom;
-    double contentHeight = chart.size.height - chart.contentPadding.vertical;
+    double bottom = chart.contentMargin.bottom;
+    double contentHeight = chart.size.height - chart.contentMargin.vertical;
 
-    double left = chart.contentPadding.left + chart.xAxis.density! * po - offset.dx - itemWidth / 2 - (chart.controller!.zoom - 1) * (chart.size.width / 2);
+    double left = chart.contentMargin.left + chart.xAxis.density! * po - offset.dx - itemWidth / 2 - (chart.controller!.zoom - 1) * (chart.size.width / 2);
 
     double present = value / chart.yAxis.max;
     double itemHeight = contentHeight * present;
@@ -118,21 +118,21 @@ class StackBar<T> extends ChartRender<T> {
     if (total == 0) {
       return ChartShape();
     }
-    double bottom = chart.contentPadding.bottom;
-    double contentHeight = chart.size.height - chart.contentPadding.vertical;
+    double bottom = chart.contentMargin.bottom;
+    double contentHeight = chart.size.height - chart.contentMargin.vertical;
     int stackIndex = 0;
 
     double center = values.length * itemWidth / 2;
 
-    double left = chart.contentPadding.left + chart.xAxis.density! * po - offset.dx - itemWidth / 2 - (chart.controller!.zoom - 1) * (chart.size.width / 2) - center;
+    double left = chart.contentMargin.left + chart.xAxis.density! * po - offset.dx - itemWidth / 2 - (chart.controller!.zoom - 1) * (chart.size.width / 2) - center;
     double padding = 10;
 
     ChartShape shape = ChartShape.rect(
       rect: Rect.fromLTWH(
         left,
-        chart.contentPadding.top,
+        chart.contentMargin.top,
         itemWidth * values.length + padding * (values.length - 1),
-        chart.size.height - chart.contentPadding.vertical,
+        chart.size.height - chart.contentMargin.vertical,
       ),
     );
 
@@ -169,17 +169,17 @@ class StackBar<T> extends ChartRender<T> {
     if (total == 0) {
       return ChartShape();
     }
-    double bottom = chart.contentPadding.bottom;
-    double contentHeight = chart.size.height - chart.contentPadding.vertical;
+    double bottom = chart.contentMargin.bottom;
+    double contentHeight = chart.size.height - chart.contentMargin.vertical;
     int stackIndex = 0;
-    double left = chart.contentPadding.left + chart.xAxis.density! * po - offset.dx - itemWidth / 2 - (chart.controller!.zoom - 1) * (chart.size.width / 2);
+    double left = chart.contentMargin.left + chart.xAxis.density! * po - offset.dx - itemWidth / 2 - (chart.controller!.zoom - 1) * (chart.size.width / 2);
 
     ChartShape shape = ChartShape.rect(
       rect: Rect.fromLTWH(
         left,
-        chart.contentPadding.top,
+        chart.contentMargin.top,
         itemWidth,
-        chart.size.height - chart.contentPadding.vertical,
+        chart.size.height - chart.contentMargin.vertical,
       ),
     );
 

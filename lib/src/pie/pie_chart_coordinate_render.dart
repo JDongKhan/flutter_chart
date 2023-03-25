@@ -34,8 +34,8 @@ class PieChartCoordinateRender<T> extends ChartCoordinateRender<T> {
 
   //画背景圆
   void _drawCircle(Canvas canvas, Size size) {
-    final sw = size.width - contentPadding.horizontal;
-    final sh = size.height - contentPadding.vertical;
+    final sw = size.width - contentMargin.horizontal;
+    final sh = size.height - contentMargin.vertical;
     // 确定圆的半径
     radius = min(sw, sh) / 2 - borderWidth * 2;
     // 定义中心点

@@ -85,7 +85,7 @@ class LineChartDemoPage extends StatelessWidget {
                 foregroundAnnotations: [
                   LimitAnnotation(limit: 380),
                   LimitAnnotation(limit: 210),
-                  LabelAnnotation(positions: [7, 380], text: '380'),
+                  LabelAnnotation(positions: [6, 380], text: '380'),
                 ],
                 margin: const EdgeInsets.only(left: 40, top: 5, right: 0, bottom: 30),
                 //提示的文案信息
