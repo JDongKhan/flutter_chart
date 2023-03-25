@@ -1,39 +1,50 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages).
+## Flutter_chart
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages).
--->
+这是一款轻量的flutter版本chart组件，目前已支持LineChart、BarChart、PieChart。
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+该组件支持缩放、水平滚动、选中变色等基础功能，并且使用很简单，代码量极少，可扩展性极强。
 
-## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
 
-## Getting started
+![demo png](1.gif "demo")
+![demo png](2.gif "demo")
+![demo png](3.gif "demo")
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
-
-## Usage
-
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
-
+BarChart:
 ```dart
-const like = 'sample';
+
+      SizedBox(
+            width: 250,
+            height: 200,
+            child: ChartWidget(
+              builder: (controller) => LineBarChartCoordinateRender(
+                position: (item) {
+                  return (item['time'] as DateTime).difference(startTime).inMilliseconds / (24 * 60 * 60 * 1000);
+                },
+                margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
+                yAxis: YAxis(min: 0, max: 1000),
+                xAxis: XAxis(
+                  count: 7,
+                  max: 30,
+                  formatter: (index) {
+                    return startTime.add(Duration(days: index)).toStringWithFormat(format: 'dd');
+                  },
+                ),
+                data: dataList,
+                chartRender: StackBar(
+                  direction: Axis.vertical,
+                  itemWidth: 10,
+                  highlightColor: Colors.yellow,
+                  position: (item) => [
+                    double.parse(item['value1'].toString()),
+                    double.parse(item['value2'].toString()),
+                    double.parse(item['value3'].toString()),
+                  ],
+                ),
+              ),
+            ),
+          ),
+      
+
 ```
-
-## Additional information
-
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
