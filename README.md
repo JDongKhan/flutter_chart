@@ -21,6 +21,8 @@
 ![demo png](2.gif "demo")
 ![demo png](3.gif "demo")
 
+![demo png](1.png "demo")
+
 BarChart:
 ```dart
 

@@ -87,6 +87,10 @@ class LineChartDemoPage extends StatelessWidget {
                   LimitAnnotation(limit: 210),
                   LabelAnnotation(positions: [6, 380], text: '380'),
                 ],
+                backgroundAnnotations: [
+                  RegionAnnotation(positions: [2.4, 3.3]),
+                  RegionAnnotation(positions: [4.4, 5.3]),
+                ],
                 margin: const EdgeInsets.only(left: 40, top: 5, right: 0, bottom: 30),
                 //提示的文案信息
                 crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),

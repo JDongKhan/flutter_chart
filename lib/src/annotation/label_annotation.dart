@@ -7,11 +7,11 @@ class LabelAnnotation<T> extends Annotation<T> {
   final TextStyle textStyle;
   final String text;
   //是否跟随滚动
-  final bool scroll;
+
   LabelAnnotation({
     required this.positions,
     required this.text,
-    this.scroll = false,
+    super.scroll = false,
     this.textStyle = const TextStyle(color: Colors.red),
   });
   @override
@@ -20,8 +20,8 @@ class LabelAnnotation<T> extends Annotation<T> {
       LineBarChartCoordinateRender chart = coordinateChart as LineBarChartCoordinateRender;
       num xPo = positions[0];
       num yPo = positions[1];
-      double itemWidth = xPo * chart.xAxis.density!;
-      double itemHeight = yPo * chart.yAxis.density!;
+      double itemWidth = xPo * chart.xAxis.density;
+      double itemHeight = yPo * chart.yAxis.density;
       double scrollOffset = scroll ? chart.controller!.offset.dx : 0;
       Offset offset = Offset(chart.contentMargin.left + itemWidth - scrollOffset, chart.contentRect.bottom - itemHeight);
       TextPainter(

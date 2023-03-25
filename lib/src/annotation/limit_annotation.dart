@@ -11,6 +11,7 @@ class LimitAnnotation<T> extends Annotation<T> {
   final Color color;
   final double strokeWidth;
   LimitAnnotation({
+    super.scroll = false,
     required this.limit,
     this.dashPainter,
     this.color = Colors.red,
@@ -21,7 +22,7 @@ class LimitAnnotation<T> extends Annotation<T> {
     if (coordinateChart is LineBarChartCoordinateRender) {
       LineBarChartCoordinateRender chart = coordinateChart as LineBarChartCoordinateRender;
       num po = limit;
-      double itemHeight = po * chart.yAxis.density!;
+      double itemHeight = po * chart.yAxis.density;
       Offset start = Offset(chart.padding.left, chart.contentRect.bottom - itemHeight);
       Offset end = Offset(chart.size.width - chart.padding.right, chart.contentRect.bottom - itemHeight);
 

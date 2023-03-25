@@ -12,7 +12,7 @@ class XAxis {
   final num interval;
   final num max;
   final AxisFormatter? formatter;
-  double? density;
+  late double density;
   final bool drawGrid;
   //是否绘制最下面一行的线
   bool drawLine;
@@ -37,7 +37,7 @@ class YAxis {
   final bool drawLine;
   final bool drawGrid;
   //密度
-  double? density;
+  late double density;
   final DashPainter? dashPainter;
   YAxis({
     required this.min,
