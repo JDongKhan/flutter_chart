@@ -9,6 +9,11 @@ import 'pie_chart_coordinate_render.dart';
 /// @author JD
 typedef ValueFormatter<T> = String Function(T);
 
+enum RotateDirection {
+  forward,
+  reverse,
+}
+
 class Pie<T> extends ChartRender<T> {
   final List<Color> colors;
   //内圆半径
@@ -25,7 +30,8 @@ class Pie<T> extends ChartRender<T> {
   final TextStyle legendTextStyle;
   //中间文案样式
   final TextStyle? centerTextStyle;
-
+  //扇形的方向
+  final RotateDirection direction;
   Pie({
     this.colors = colors10,
     this.holeRadius = 0,
@@ -39,14 +45,12 @@ class Pie<T> extends ChartRender<T> {
     this.valueFormatter,
     this.legendFormatter,
     this.centerTextStyle,
+    this.direction = RotateDirection.forward,
   });
   @override
   void draw(List<T> data) {
     PieChartCoordinateRender<T> chart = coordinateChart as PieChartCoordinateRender<T>;
     Canvas canvas = chart.canvas;
-    double width = chart.size.width - chart.margin.horizontal;
-    double height = chart.size.height - chart.margin.vertical;
-    double legendWidth = chart.legendWidth;
     Offset center = chart.center;
     double radius = chart.radius;
 
@@ -76,7 +80,7 @@ class Pie<T> extends ChartRender<T> {
       //直接读取
       num percent = values[i] / total;
       // 计算出每个数据所占的弧度值
-      final sweepAngle = percent * -pi * 2;
+      final sweepAngle = percent * pi * 2 * (direction == RotateDirection.forward ? 1 : -1);
 
       ChartShape shape = ChartShape.arc(
         center: center,
@@ -121,11 +125,11 @@ class Pie<T> extends ChartRender<T> {
           textDirection: TextDirection.ltr,
         )..layout(
             minWidth: 0,
-            maxWidth: width,
+            maxWidth: chart.size.width,
           );
         // 根据三角函数计算中出标识文字的 x 和 y 位置，需要加上宽和高的一半适配 Canvas 的坐标
-        double legendX = cos(radians) * (radius + legendWidth) + width / 2;
-        double legendY = sin(radians) * (radius + legendWidth) + height / 2;
+        double legendX = cos(radians) * (radius + chart.padding.horizontal) + chart.size.width / 2;
+        double legendY = sin(radians) * (radius + chart.padding.vertical) + chart.size.height / 2;
         // 使用 TextPainter 绘制文字标识
         legendTextPainter.paint(canvas, Offset(legendX, legendY));
       }
@@ -143,11 +147,11 @@ class Pie<T> extends ChartRender<T> {
           textDirection: TextDirection.ltr,
         )..layout(
             minWidth: 0,
-            maxWidth: width,
+            maxWidth: chart.size.width,
           );
         // 使用三角函数计算文字位置 并根据文字大小适配
-        double x = cos(radians) * (radius / 2 + valueTextOffset) + width / 2 - valueTextPainter.width / 2;
-        double y = sin(radians) * (radius / 2 + valueTextOffset) + height / 2 - valueTextPainter.height / 2;
+        double x = cos(radians) * (radius / 2 + valueTextOffset) + chart.size.width / 2 - valueTextPainter.width / 2;
+        double y = sin(radians) * (radius / 2 + valueTextOffset) + chart.size.height / 2 - valueTextPainter.height / 2;
         valueTextPainter.paint(chart.canvas, Offset(x, y));
       }
 
@@ -162,7 +166,7 @@ class Pie<T> extends ChartRender<T> {
           textDirection: TextDirection.ltr,
         )..layout(
             minWidth: 0,
-            maxWidth: width,
+            maxWidth: chart.size.width,
           );
         valueTextPainter.paint(canvas, center.translate(-valueTextPainter.width / 2, -valueTextPainter.height / 2));
       }

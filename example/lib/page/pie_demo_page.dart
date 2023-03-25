@@ -45,15 +45,17 @@ class PieChartDemoPage extends StatelessWidget {
         child: Column(
           children: [
             const Text('Pie'),
-            SizedBox(
+            Container(
+              // color: Colors.red,
               height: 200,
               child: ChartWidget(
                 builder: (controller) => PieChartCoordinateRender(
                   data: dataList,
-                  margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 10),
+                  margin: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(5),
                   position: (item) => (double.parse(item['value1'].toString())),
-                  legendWidth: 20,
                   chartRender: Pie(
+                    direction: RotateDirection.reverse,
                     textStyle: const TextStyle(
                       fontSize: 12,
                       color: Colors.white,

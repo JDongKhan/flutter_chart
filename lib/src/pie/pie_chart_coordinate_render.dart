@@ -7,7 +7,6 @@ import '../base/chart_coordinate_render.dart';
 /// @author JD
 class PieChartCoordinateRender<T> extends ChartCoordinateRender<T> {
   final double borderWidth;
-  final double legendWidth;
   final Color borderColor;
   PieChartCoordinateRender({
     super.margin = EdgeInsets.zero,
@@ -17,7 +16,6 @@ class PieChartCoordinateRender<T> extends ChartCoordinateRender<T> {
     required super.data,
     super.zoom,
     this.borderWidth = 1,
-    this.legendWidth = 0,
     this.borderColor = Colors.white,
   });
 
@@ -34,12 +32,12 @@ class PieChartCoordinateRender<T> extends ChartCoordinateRender<T> {
 
   //画背景圆
   void _drawCircle(Canvas canvas, Size size) {
-    final sw = size.width - margin.horizontal;
-    final sh = size.height - margin.vertical;
+    final sw = size.width - content.horizontal;
+    final sh = size.height - content.vertical;
     // 确定圆的半径
-    radius = min(sw, sh) / 2 - borderWidth * 2 - legendWidth;
+    radius = min(sw, sh) / 2 - borderWidth * 2;
     // 定义中心点
-    center = Offset(sw / 2, sh / 2);
+    center = size.center(Offset.zero);
     // 定义圆形的绘制属性
     final paint = Paint()
       ..style = PaintingStyle.stroke
