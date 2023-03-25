@@ -48,3 +48,63 @@ BarChart:
       
 
 ```
+
+LineChart
+
+```dart
+       SizedBox(
+            width: 250,
+            height: 200,
+            child: ChartWidget(
+              builder: (controller) => LineBarChartCoordinateRender(
+                zoom: true,
+                margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
+                //提示的文案信息
+                tooltipFormatter: (item) => TextSpan(
+                  text: '${item['value1']}',
+                  style: const TextStyle(
+                    color: Colors.black,
+                  ),
+                ),
+                position: (item) => (item['time'] as DateTime).difference(startTime).inMilliseconds / (24 * 60 * 60 * 1000),
+                yAxis: YAxis(min: 0, max: 500),
+                xAxis: XAxis(
+                  count: 7,
+                  max: 7,
+                  formatter: (index) => startTime.add(Duration(days: index)).toStringWithFormat(format: 'dd'),
+                ),
+                chartRender: Line(
+                  position: (item) => [
+                    item['value1'] as num,
+                  ],
+                ),
+                data: dataList,
+              ),
+            ),
+          ),
+
+```
+
+BarChart
+
+```dart
+
+       SizedBox(
+            height: 200,
+            width: 250,
+            child: ChartWidget(
+              builder: (controller) => PieChartCoordinateRender(
+                data: dataList,
+                margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 10),
+                position: (item) => (double.parse(item['value1'].toString())),
+                chartRender: Pie(
+                  holeRadius: 40,
+                  valueTextOffset: 20,
+                  centerTextStyle: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
+                  valueFormatter: (item) => item['value1'].toString(),
+                ),
+              ),
+            ),
+          ),
+
+```
