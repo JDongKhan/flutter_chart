@@ -65,7 +65,6 @@ class LineBarChartCoordinateRender<T> extends ChartCoordinateRender<T> {
     super.foregroundAnnotations,
     super.tooltipRenderer,
     super.tooltipFormatter,
-    super.controller,
     super.zoom,
     super.crossHair = const CrossHairStyle(),
     YAxis? yAxis,
@@ -84,7 +83,7 @@ class LineBarChartCoordinateRender<T> extends ChartCoordinateRender<T> {
     int count = xAxis.count;
     double density = (width - contentMargin.horizontal) / count;
     //x轴密度 即1 value 等于多少尺寸
-    xAxis.density = density * controller!.zoom;
+    xAxis.density = density * controller.zoom;
 
     num max = yAxis.max;
     num min = yAxis.min;
@@ -116,7 +115,7 @@ class LineBarChartCoordinateRender<T> extends ChartCoordinateRender<T> {
     num min = yAxis.min;
     int count = yAxis.count;
     double itemValue = (max - min) / count;
-    double itemHeight = itemValue * yAxis.density!;
+    double itemHeight = itemValue * yAxis.density;
     Paint paint = Paint()
       ..color = lineColor
       ..strokeWidth = 0.2;
@@ -174,7 +173,7 @@ class LineBarChartCoordinateRender<T> extends ChartCoordinateRender<T> {
   }
 
   void _drawXAxis(Canvas canvas, Size size) {
-    double density = xAxis.density!;
+    double density = xAxis.density;
     Paint paint = Paint()
       ..color = lineColor
       ..strokeWidth = 0.2;
@@ -187,7 +186,9 @@ class LineBarChartCoordinateRender<T> extends ChartCoordinateRender<T> {
     for (int i = 0; i < count; i++) {
       String text = xAxis.formatter?.call(i) ?? '$i';
 
-      double left = contentMargin.left + density * i - controller!.offset.dx - (controller!.zoom - 1) * (size.width / 2);
+      double left = contentMargin.left + density * i;
+      left = withXOffset(left);
+      left = withXZoom(left);
       _drawXTextPaint(canvas, text, size, left);
       // if (i == dreamXAxisCount - 1) {
       //   _drawXTextPaint(canvas, '${i + 1}', size,
@@ -223,13 +224,13 @@ class LineBarChartCoordinateRender<T> extends ChartCoordinateRender<T> {
 
   void _drawCrosshair(Canvas canvas, Size size) {
     //十字准星
-    Offset? anchor = controller?.gesturePoint;
-    int? index = controller?.selectedIndex;
+    Offset? anchor = controller.gesturePoint;
+    int? index = controller.selectedIndex;
     if (anchor == null || index == null) {
       return;
     }
 
-    ChartShape? shape = controller?.shapeList?[index];
+    ChartShape? shape = controller.shapeList?[index];
     if (shape == null) {
       return;
     }
@@ -295,8 +296,8 @@ class LineBarChartCoordinateRender<T> extends ChartCoordinateRender<T> {
     Canvas canvas,
     Size size,
   ) {
-    Offset? anchor = controller?.gesturePoint;
-    int? index = controller?.selectedIndex;
+    Offset? anchor = controller.gesturePoint;
+    int? index = controller.selectedIndex;
     if (anchor == null || index == null) {
       return;
     }
@@ -361,20 +362,20 @@ class LineBarChartCoordinateRender<T> extends ChartCoordinateRender<T> {
 
   @override
   void scroll(Offset delta) {
-    Offset newOffset = controller!.offset.translate(-delta.dx, -delta.dy);
+    Offset newOffset = controller.offset.translate(-delta.dx, -delta.dy);
 
     //校准偏移，不然缩小后可能起点都在中间了，或者无限滚动
     double x = newOffset.dx;
     double y = newOffset.dy;
     //因为缩放最小值可能为负的了
-    double minValue = (1 - controller!.zoom) * size.width / 2;
+    double minValue = (1 - controller.zoom) * size.width / 2;
     if (x < minValue) {
       x = minValue;
     }
     if (y < 0) {
       y = 0;
     }
-    double chartContentWidth = padding.horizontal + xAxis.density! * xAxis.max;
+    double chartContentWidth = padding.horizontal + xAxis.density * xAxis.max;
     double chartViewPortWidth = size.width - margin.horizontal;
     //因为offset可能为负的，换算成正值便于后面计算
     double realOffset = x - minValue;
@@ -387,7 +388,7 @@ class LineBarChartCoordinateRender<T> extends ChartCoordinateRender<T> {
     } else {
       x = minValue;
     }
-    controller!.offset = Offset(x, y);
+    controller.offset = Offset(x, y);
   }
 
   //背景

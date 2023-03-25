@@ -27,16 +27,15 @@ class Bar<T> extends ChartRender<T> {
   void draw() {
     LineBarChartCoordinateRender<T> chart = coordinateChart as LineBarChartCoordinateRender<T>;
     List<T> data = chart.data;
-    Offset offset = chart.controller!.offset;
     List<ChartShape> shapeList = [];
     for (int index = 0; index < data.length; index++) {
       T value = data[index];
-      shapeList.add(_draw(chart, offset, index, value));
+      shapeList.add(_draw(chart, index, value));
     }
-    chart.controller?.shapeList = shapeList;
+    chart.controller.shapeList = shapeList;
   }
 
-  ChartShape _draw(LineBarChartCoordinateRender<T> chart, Offset offset, int index, T data) {
+  ChartShape _draw(LineBarChartCoordinateRender<T> chart, int index, T data) {
     num po = chart.position.call(data);
     num value = position.call(data);
     if (value == 0) {
@@ -45,7 +44,9 @@ class Bar<T> extends ChartRender<T> {
     double bottom = chart.contentMargin.bottom;
     double contentHeight = chart.size.height - chart.contentMargin.vertical;
 
-    double left = chart.contentMargin.left + chart.xAxis.density! * po - offset.dx - itemWidth / 2 - (chart.controller!.zoom - 1) * (chart.size.width / 2);
+    double left = chart.contentMargin.left + chart.xAxis.density * po - itemWidth / 2;
+    left = withXOffset(left);
+    left = withXZoom(left);
 
     double present = value / chart.yAxis.max;
     double itemHeight = contentHeight * present;
@@ -58,8 +59,8 @@ class Bar<T> extends ChartRender<T> {
     ChartShape shape = ChartShape.rect(
       rect: rect,
     );
-    if (shape.hitTest(chart.controller?.gesturePoint)) {
-      chart.controller?.selectedIndex = index;
+    if (shape.hitTest(chart.controller.gesturePoint)) {
+      chart.controller.selectedIndex = index;
       paint.color = highlightColor;
     }
     chart.canvas.drawRect(rect, paint);
@@ -96,21 +97,20 @@ class StackBar<T> extends ChartRender<T> {
   void draw() {
     LineBarChartCoordinateRender<T> chart = coordinateChart as LineBarChartCoordinateRender<T>;
     List<T> data = chart.data;
-    Offset offset = chart.controller!.offset;
     List<ChartShape> shapeList = [];
     for (int index = 0; index < data.length; index++) {
       T value = data[index];
       if (direction == Axis.horizontal) {
-        shapeList.add(_drawHorizontal(chart, offset, index, value));
+        shapeList.add(_drawHorizontal(chart, index, value));
       } else {
-        shapeList.add(_drawVertical(chart, offset, index, value));
+        shapeList.add(_drawVertical(chart, index, value));
       }
     }
-    chart.controller?.shapeList = shapeList;
+    chart.controller.shapeList = shapeList;
   }
 
   //水平排列图形
-  ChartShape _drawHorizontal(LineBarChartCoordinateRender<T> chart, Offset offset, int index, T data) {
+  ChartShape _drawHorizontal(LineBarChartCoordinateRender<T> chart, int index, T data) {
     num po = chart.position.call(data);
     List<num> values = position.call(data);
     assert(colors.length >= values.length);
@@ -124,7 +124,10 @@ class StackBar<T> extends ChartRender<T> {
 
     double center = values.length * itemWidth / 2;
 
-    double left = chart.contentMargin.left + chart.xAxis.density! * po - offset.dx - itemWidth / 2 - (chart.controller!.zoom - 1) * (chart.size.width / 2) - center;
+    double left = chart.contentMargin.left + chart.xAxis.density * po - itemWidth / 2 - center;
+    left = withXOffset(left);
+    left = withXZoom(left);
+
     double padding = 10;
 
     ChartShape shape = ChartShape.rect(
@@ -146,8 +149,8 @@ class StackBar<T> extends ChartRender<T> {
         ..color = colors[stackIndex]
         ..strokeWidth = 1
         ..style = PaintingStyle.fill;
-      if (stackShape.hitTest(chart.controller?.gesturePoint)) {
-        chart.controller?.selectedIndex = index;
+      if (stackShape.hitTest(chart.controller.gesturePoint)) {
+        chart.controller.selectedIndex = index;
         paint.color = highlightColor;
       }
       chart.canvas.drawRect(rect, paint);
@@ -158,7 +161,7 @@ class StackBar<T> extends ChartRender<T> {
     return shape;
   }
 
-  ChartShape _drawVertical(LineBarChartCoordinateRender<T> chart, Offset offset, int index, T data) {
+  ChartShape _drawVertical(LineBarChartCoordinateRender<T> chart, int index, T data) {
     num po = chart.position.call(data);
     List<num> values = position.call(data);
     assert(colors.length >= values.length);
@@ -172,8 +175,9 @@ class StackBar<T> extends ChartRender<T> {
     double bottom = chart.contentMargin.bottom;
     double contentHeight = chart.size.height - chart.contentMargin.vertical;
     int stackIndex = 0;
-    double left = chart.contentMargin.left + chart.xAxis.density! * po - offset.dx - itemWidth / 2 - (chart.controller!.zoom - 1) * (chart.size.width / 2);
-
+    double left = chart.contentMargin.left + chart.xAxis.density * po - itemWidth / 2;
+    left = withXOffset(left);
+    left = withXZoom(left);
     ChartShape shape = ChartShape.rect(
       rect: Rect.fromLTWH(
         left,
@@ -193,8 +197,8 @@ class StackBar<T> extends ChartRender<T> {
         ..style = PaintingStyle.fill;
       Rect rect = Rect.fromLTWH(left, top, itemWidth, itemHeight);
       ChartShape stackShape = ChartShape.rect(rect: rect);
-      if (stackShape.hitTest(chart.controller?.gesturePoint)) {
-        chart.controller?.selectedIndex = index;
+      if (stackShape.hitTest(chart.controller.gesturePoint)) {
+        chart.controller.selectedIndex = index;
         paint.color = highlightColor;
         shape.children.add(stackShape);
       }

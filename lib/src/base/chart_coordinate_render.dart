@@ -49,8 +49,6 @@ abstract class ChartCoordinateRender<T> {
   final EdgeInsets margin;
   //图形内边距，用于控制图形内容距两周的距离
   final EdgeInsets padding;
-  //共享数据
-  ChartController? controller;
   //数据在坐标系的位置，每个坐标系下取值逻辑不一样，在line和bar下是相对于每格的值，比如xAxis的interval为1，你的数据放在1列和2列中间，那么position就是0.5，在pie下是比例
   final ChartPosition<T> position;
   //缩放比例
@@ -77,13 +75,14 @@ abstract class ChartCoordinateRender<T> {
     required this.data,
     this.tooltipRenderer,
     this.tooltipFormatter,
-    this.controller,
     this.zoom = false,
     this.backgroundAnnotations,
     this.foregroundAnnotations,
     this.crossHair = const CrossHairStyle(),
   }) : contentMargin = EdgeInsets.fromLTRB(margin.left + padding.left, margin.top + padding.top, margin.right + padding.right, margin.bottom + padding.bottom);
 
+  //共享数据
+  late ChartController controller;
   //画布
   late Canvas canvas;
   //画布尺寸
@@ -99,6 +98,24 @@ abstract class ChartCoordinateRender<T> {
     chartRender.init(this);
   }
 
+  double withXOffset(double offset, [bool scrollable = true]) {
+    if (scrollable) {
+      return offset - controller.offset.dx;
+    }
+    return offset;
+  }
+
+  double withXZoom(double offset) {
+    return offset - (controller.zoom - 1) * (size.width / 2);
+  }
+
+  double withYOffset(double offset, [bool scrollable = true]) {
+    if (scrollable) {
+      return offset - controller.offset.dy;
+    }
+    return offset;
+  }
+
   void scroll(Offset offset);
 
   void paint(Canvas canvas, Size size);
@@ -112,6 +129,18 @@ abstract class ChartRender<T> {
   //初始化
   void init(ChartCoordinateRender<T> coordinateChart) {
     this.coordinateChart = coordinateChart;
+  }
+
+  double withXOffset(double offset, [bool scrollable = true]) {
+    return coordinateChart.withXOffset(offset, scrollable);
+  }
+
+  double withXZoom(double offset) {
+    return coordinateChart.withXZoom(offset);
+  }
+
+  double withYOffset(double offset, [bool scrollable = true]) {
+    return coordinateChart.withYOffset(offset, scrollable);
   }
 
   void draw();

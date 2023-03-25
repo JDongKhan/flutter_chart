@@ -22,8 +22,7 @@ class LabelAnnotation<T> extends Annotation<T> {
       num yPo = positions[1];
       double itemWidth = xPo * chart.xAxis.density;
       double itemHeight = yPo * chart.yAxis.density;
-      double scrollOffset = scroll ? chart.controller!.offset.dx : 0;
-      Offset offset = Offset(chart.contentMargin.left + itemWidth - scrollOffset, chart.contentRect.bottom - itemHeight);
+      Offset offset = Offset(withXOffset(chart.contentMargin.left + itemWidth, scroll), withYOffset(chart.contentRect.bottom - itemHeight, scroll));
       TextPainter(
         textAlign: TextAlign.center,
         text: TextSpan(

@@ -23,7 +23,6 @@ class Line<T> extends ChartRender<T> {
   void draw() {
     LineBarChartCoordinateRender<T> chart = coordinateChart as LineBarChartCoordinateRender<T>;
     List<T> data = chart.data;
-    Offset offset = chart.controller!.offset;
     List<ChartShape> shapeList = [];
     //线
     Paint paint = Paint()
@@ -37,7 +36,10 @@ class Line<T> extends ChartRender<T> {
 
     int index = 0;
     //offset.dx 滚动偏移  (src.zoom - 1) * (src.size.width / 2) 缩放
-    double left = chart.contentMargin.left - offset.dx - (chart.controller!.zoom - 1) * (chart.size.width / 2);
+    double left = chart.contentMargin.left;
+    left = withXOffset(left);
+    left = withXZoom(left);
+
     double right = chart.size.width - chart.contentMargin.right;
     double top = chart.contentMargin.top;
     double bottom = chart.size.height - chart.contentMargin.bottom;
@@ -49,11 +51,11 @@ class Line<T> extends ChartRender<T> {
       List<num> yValues = position.call(value);
       List<ChartShape> shapes = [];
       assert(colors.length >= yValues.length);
-      double xPo = xValue * chart.xAxis.density! + left;
+      double xPo = xValue * chart.xAxis.density + left;
 
       //先判断是否选中，此场景是第一次渲染之后点击才有，所以用老数据即可
-      if (chart.controller?.gesturePoint != null && (chart.controller?.shapeList?[index].hitTest(chart.controller!.gesturePoint!) == true)) {
-        chart.controller?.selectedIndex = index;
+      if (chart.controller.gesturePoint != null && (chart.controller.shapeList?[index].hitTest(chart.controller.gesturePoint!) == true)) {
+        chart.controller.selectedIndex = index;
       }
 
       //一条数据下可能多条线
@@ -66,7 +68,7 @@ class Line<T> extends ChartRender<T> {
         }
         //计算点的位置
         num value = yValues[valueIndex];
-        double yPo = bottom - (value * chart.yAxis.density!);
+        double yPo = bottom - (value * chart.yAxis.density);
         if (index == 0) {
           path.moveTo(xPo, yPo);
         } else {
@@ -107,6 +109,6 @@ class Line<T> extends ChartRender<T> {
       chart.canvas.drawPath(path, paint..color = colors[index]);
     });
 
-    chart.controller?.shapeList = shapeList;
+    chart.controller.shapeList = shapeList;
   }
 }

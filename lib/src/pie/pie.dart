@@ -94,9 +94,9 @@ class Pie<T> extends ChartRender<T> {
 
       ChartShape tapShape = shape;
       //判断是否选中
-      bool selected = shape.hitTest(chart.controller?.gesturePoint);
+      bool selected = shape.hitTest(chart.controller.gesturePoint);
       if (selected) {
-        chart.controller?.selectedIndex = i;
+        chart.controller.selectedIndex = i;
         tapShape = ChartShape.arc(
           center: center,
           startAngle: startAngle,
@@ -175,6 +175,6 @@ class Pie<T> extends ChartRender<T> {
       //继续下一个
       startAngle = startAngle + sweepAngle;
     }
-    chart.controller?.shapeList = shapeList;
+    chart.controller.shapeList = shapeList;
   }
 }
