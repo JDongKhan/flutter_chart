@@ -15,6 +15,8 @@
 
 本项目是基于坐标系+图形两种概念实现，提供了两个坐标系：LineBarChartCoordinateRender和PieChartCoordinateRender圆形 + 各种对应的图形render。
 
+当然了，如果满足不了你的需求，你可以重写ChartRender自己绘制，如果是需要增强能力则可以通过增加Annotation（在example中有使用，可以查看如何使用），甚至可以自定义Annotation。
+
 ![demo png](1.gif "demo")
 ![demo png](2.gif "demo")
 ![demo png](3.gif "demo")

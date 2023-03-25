@@ -17,13 +17,12 @@ class Line<T> extends ChartRender<T> {
     this.colors = colors10,
     this.dotRadius = 2,
     this.strokeWidth = 1,
-    super.adjustVertical = true,
-    super.adjustHorizontal = true,
   });
 
   @override
-  void draw(List<T> data) {
+  void draw() {
     LineBarChartCoordinateRender<T> chart = coordinateChart as LineBarChartCoordinateRender<T>;
+    List<T> data = chart.data;
     Offset offset = chart.controller!.offset;
     List<ChartShape> shapeList = [];
     //线
@@ -38,10 +37,10 @@ class Line<T> extends ChartRender<T> {
 
     int index = 0;
     //offset.dx 滚动偏移  (src.zoom - 1) * (src.size.width / 2) 缩放
-    double left = chart.content.left - offset.dx - (chart.controller!.zoom - 1) * (chart.size.width / 2);
-    double right = chart.size.width - chart.content.right;
-    double top = chart.content.top;
-    double bottom = chart.size.height - chart.content.bottom;
+    double left = chart.contentPadding.left - offset.dx - (chart.controller!.zoom - 1) * (chart.size.width / 2);
+    double right = chart.size.width - chart.contentPadding.right;
+    double top = chart.contentPadding.top;
+    double bottom = chart.size.height - chart.contentPadding.bottom;
     Map<int, Path> pathMap = {};
     ChartShape? lastShape;
     //遍历数据

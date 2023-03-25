@@ -48,8 +48,9 @@ class Pie<T> extends ChartRender<T> {
     this.direction = RotateDirection.forward,
   });
   @override
-  void draw(List<T> data) {
+  void draw() {
     PieChartCoordinateRender<T> chart = coordinateChart as PieChartCoordinateRender<T>;
+    List<T> data = chart.data;
     Canvas canvas = chart.canvas;
     Offset center = chart.center;
     double radius = chart.radius;

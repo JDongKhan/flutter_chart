@@ -50,6 +50,7 @@ class LineChartDemoPage extends StatelessWidget {
             child: ChartWidget(
               builder: (controller) => LineBarChartCoordinateRender(
                 zoom: true,
+                crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
                 margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
                 //提示的文案信息
                 tooltipFormatter: (item) => TextSpan(
@@ -75,14 +76,20 @@ class LineChartDemoPage extends StatelessWidget {
             ),
           ),
           const Text('Multiple Line'),
-          Container(
+          SizedBox(
             // color: Colors.yellow,
             height: 200,
             width: 250,
             child: ChartWidget(
               builder: (controller) => LineBarChartCoordinateRender(
+                foregroundAnnotations: [
+                  LimitAnnotation(limit: 380),
+                  LimitAnnotation(limit: 210),
+                  LabelAnnotation(positions: [7, 380], text: '380'),
+                ],
                 margin: const EdgeInsets.only(left: 40, top: 5, right: 0, bottom: 30),
                 //提示的文案信息
+                crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
                 tooltipFormatter: (item) => TextSpan(
                   text: '${item['value1']}',
                   style: const TextStyle(

@@ -28,14 +28,14 @@ class PieChartCoordinateRender<T> extends ChartCoordinateRender<T> {
     canvas.clipRect(rect);
     _drawCircle(canvas, size);
     _drawBackgroundAnnotations(canvas, size);
-    chartRender.draw(data);
+    chartRender.draw();
     _drawForegroundAnnotations(canvas, size);
   }
 
   //画背景圆
   void _drawCircle(Canvas canvas, Size size) {
-    final sw = size.width - content.horizontal;
-    final sh = size.height - content.vertical;
+    final sw = size.width - contentPadding.horizontal;
+    final sh = size.height - contentPadding.vertical;
     // 确定圆的半径
     radius = min(sw, sh) / 2 - borderWidth * 2;
     // 定义中心点
@@ -53,14 +53,16 @@ class PieChartCoordinateRender<T> extends ChartCoordinateRender<T> {
   //背景
   void _drawBackgroundAnnotations(Canvas canvas, Size size) {
     backgroundAnnotations?.forEach((element) {
-      element.call(this);
+      element.init(this);
+      element.draw();
     });
   }
 
   //前景
   void _drawForegroundAnnotations(Canvas canvas, Size size) {
     foregroundAnnotations?.forEach((element) {
-      element.call(this);
+      element.init(this);
+      element.draw();
     });
   }
 

@@ -55,7 +55,6 @@ class LineBarChartCoordinateRender<T> extends ChartCoordinateRender<T> {
   final Color lineColor;
   final YAxis yAxis;
   final XAxis xAxis;
-
   LineBarChartCoordinateRender({
     required super.data,
     super.margin = const EdgeInsets.only(left: 30, top: 0, right: 0, bottom: 30),
@@ -83,7 +82,7 @@ class LineBarChartCoordinateRender<T> extends ChartCoordinateRender<T> {
     double height = size.height;
     //每格的宽度，用于控制一屏最多显示个数
     int count = xAxis.count;
-    double density = (width - content.horizontal) / count;
+    double density = (width - contentPadding.horizontal) / count;
     //x轴密度 即1 value 等于多少尺寸
     xAxis.density = density * controller!.zoom;
 
@@ -106,7 +105,7 @@ class LineBarChartCoordinateRender<T> extends ChartCoordinateRender<T> {
     canvas.clipRect(Rect.fromLTWH(margin.left, margin.top, size.width - margin.left - margin.right, size.height));
     _drawXAxis(canvas, size);
     _drawBackgroundAnnotations(canvas, size);
-    chartRender.draw(data);
+    chartRender.draw();
     _drawTooltip(canvas, size);
     _drawCrosshair(canvas, size);
     _drawForegroundAnnotations(canvas, size);
@@ -188,7 +187,7 @@ class LineBarChartCoordinateRender<T> extends ChartCoordinateRender<T> {
     for (int i = 0; i < count; i++) {
       String text = xAxis.formatter?.call(i) ?? '$i';
 
-      double left = content.left + density * i - controller!.offset.dx - (controller!.zoom - 1) * (size.width / 2);
+      double left = contentPadding.left + density * i - controller!.offset.dx - (controller!.zoom - 1) * (size.width / 2);
       _drawXTextPaint(canvas, text, size, left);
       // if (i == dreamXAxisCount - 1) {
       //   _drawXTextPaint(canvas, '${i + 1}', size,
@@ -260,10 +259,10 @@ class LineBarChartCoordinateRender<T> extends ChartCoordinateRender<T> {
         }
       }
     }
-    if (chartRender.adjustVertical) {
+    if (crossHair.adjustVertical) {
       anchor = Offset(anchor.dx, top ?? anchor.dy);
     }
-    if (chartRender.adjustHorizontal) {
+    if (crossHair.adjustHorizontal) {
       anchor = Offset(left ?? anchor.dx, anchor.dy);
     }
 
@@ -394,14 +393,16 @@ class LineBarChartCoordinateRender<T> extends ChartCoordinateRender<T> {
   //背景
   void _drawBackgroundAnnotations(Canvas canvas, Size size) {
     backgroundAnnotations?.forEach((element) {
-      element.call(this);
+      element.init(this);
+      element.draw();
     });
   }
 
   //前景
   void _drawForegroundAnnotations(Canvas canvas, Size size) {
     foregroundAnnotations?.forEach((element) {
-      element.call(this);
+      element.init(this);
+      element.draw();
     });
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../annotation/annotation.dart';
 import '../widget/chart_widget.dart';
 import 'chart_controller.dart';
 
@@ -25,17 +26,22 @@ class CrossHairStyle {
   final bool horizontalShow;
   final bool verticalShow;
   final double strokeWidth;
+  //自动调整水平方向位置
+  final bool adjustHorizontal;
+  //自动调整垂直方向位置
+  final bool adjustVertical;
   const CrossHairStyle({
     this.color = Colors.blue,
     this.horizontalShow = true,
     this.verticalShow = true,
     this.strokeWidth = 0.5,
+    this.adjustHorizontal = false,
+    this.adjustVertical = false,
   });
 }
 
 typedef ChartPosition<T> = num Function(T);
 typedef ChartTooltipFormatter<T> = InlineSpan Function(T);
-typedef AnnotationsCreater = void Function(ChartCoordinateRender render);
 
 //渲染器， 每次刷新会重新构造，切忌不要存放状态数据，数据都在controller里面
 abstract class ChartCoordinateRender<T> {
@@ -60,8 +66,8 @@ abstract class ChartCoordinateRender<T> {
   //十字准星样式
   final CrossHairStyle crossHair;
 
-  final List<AnnotationsCreater>? backgroundAnnotations;
-  final List<AnnotationsCreater>? foregroundAnnotations;
+  final List<Annotation>? backgroundAnnotations;
+  final List<Annotation>? foregroundAnnotations;
 
   ChartCoordinateRender({
     required this.margin,
@@ -76,7 +82,7 @@ abstract class ChartCoordinateRender<T> {
     this.backgroundAnnotations,
     this.foregroundAnnotations,
     this.crossHair = const CrossHairStyle(),
-  }) : content = EdgeInsets.fromLTRB(margin.left + padding.left, margin.top + padding.top, margin.right + padding.right, margin.bottom + padding.bottom);
+  }) : contentPadding = EdgeInsets.fromLTRB(margin.left + padding.left, margin.top + padding.top, margin.right + padding.right, margin.bottom + padding.bottom);
 
   //画布
   late Canvas canvas;
@@ -84,12 +90,13 @@ abstract class ChartCoordinateRender<T> {
   late Size size;
 
   //图形内容的边距信息
-  EdgeInsets content;
+  EdgeInsets contentPadding;
+  Rect get contentRect => Rect.fromLTRB(contentPadding.left, contentPadding.top, size.width - contentPadding.left, size.height - contentPadding.bottom);
 
   void init(Canvas canvas, Size size) {
     this.canvas = canvas;
     this.size = size;
-    chartRender.coordinateChart = this;
+    chartRender.init(this);
   }
 
   void scroll(Offset offset);
@@ -98,15 +105,14 @@ abstract class ChartCoordinateRender<T> {
 }
 
 abstract class ChartRender<T> {
-  final bool adjustHorizontal;
-  final bool adjustVertical;
-  ChartRender({
-    this.adjustHorizontal = false,
-    this.adjustVertical = false,
-  });
-
+  ChartRender();
   //坐标系
   late ChartCoordinateRender<T> coordinateChart;
 
-  void draw(List<T> data);
+  //初始化
+  void init(ChartCoordinateRender<T> coordinateChart) {
+    this.coordinateChart = coordinateChart;
+  }
+
+  void draw();
 }

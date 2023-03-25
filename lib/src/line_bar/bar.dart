@@ -24,8 +24,9 @@ class Bar<T> extends ChartRender<T> {
     this.highlightColor = Colors.yellow,
   });
   @override
-  void draw(List<T> data) {
+  void draw() {
     LineBarChartCoordinateRender<T> chart = coordinateChart as LineBarChartCoordinateRender<T>;
+    List<T> data = chart.data;
     Offset offset = chart.controller!.offset;
     List<ChartShape> shapeList = [];
     for (int index = 0; index < data.length; index++) {
@@ -41,10 +42,10 @@ class Bar<T> extends ChartRender<T> {
     if (value == 0) {
       return ChartShape();
     }
-    double bottom = chart.content.bottom;
-    double contentHeight = chart.size.height - chart.content.vertical;
+    double bottom = chart.contentPadding.bottom;
+    double contentHeight = chart.size.height - chart.contentPadding.vertical;
 
-    double left = chart.content.left + chart.xAxis.density! * po - offset.dx - itemWidth / 2 - (chart.controller!.zoom - 1) * (chart.size.width / 2);
+    double left = chart.contentPadding.left + chart.xAxis.density! * po - offset.dx - itemWidth / 2 - (chart.controller!.zoom - 1) * (chart.size.width / 2);
 
     double present = value / chart.yAxis.max;
     double itemHeight = contentHeight * present;
@@ -92,8 +93,9 @@ class StackBar<T> extends ChartRender<T> {
     this.full = false,
   });
   @override
-  void draw(List<T> data) {
+  void draw() {
     LineBarChartCoordinateRender<T> chart = coordinateChart as LineBarChartCoordinateRender<T>;
+    List<T> data = chart.data;
     Offset offset = chart.controller!.offset;
     List<ChartShape> shapeList = [];
     for (int index = 0; index < data.length; index++) {
@@ -116,21 +118,21 @@ class StackBar<T> extends ChartRender<T> {
     if (total == 0) {
       return ChartShape();
     }
-    double bottom = chart.content.bottom;
-    double contentHeight = chart.size.height - chart.content.vertical;
+    double bottom = chart.contentPadding.bottom;
+    double contentHeight = chart.size.height - chart.contentPadding.vertical;
     int stackIndex = 0;
 
     double center = values.length * itemWidth / 2;
 
-    double left = chart.content.left + chart.xAxis.density! * po - offset.dx - itemWidth / 2 - (chart.controller!.zoom - 1) * (chart.size.width / 2) - center;
+    double left = chart.contentPadding.left + chart.xAxis.density! * po - offset.dx - itemWidth / 2 - (chart.controller!.zoom - 1) * (chart.size.width / 2) - center;
     double padding = 10;
 
     ChartShape shape = ChartShape.rect(
       rect: Rect.fromLTWH(
         left,
-        chart.content.top,
+        chart.contentPadding.top,
         itemWidth * values.length + padding * (values.length - 1),
-        chart.size.height - chart.content.vertical,
+        chart.size.height - chart.contentPadding.vertical,
       ),
     );
 
@@ -167,17 +169,17 @@ class StackBar<T> extends ChartRender<T> {
     if (total == 0) {
       return ChartShape();
     }
-    double bottom = chart.content.bottom;
-    double contentHeight = chart.size.height - chart.content.vertical;
+    double bottom = chart.contentPadding.bottom;
+    double contentHeight = chart.size.height - chart.contentPadding.vertical;
     int stackIndex = 0;
-    double left = chart.content.left + chart.xAxis.density! * po - offset.dx - itemWidth / 2 - (chart.controller!.zoom - 1) * (chart.size.width / 2);
+    double left = chart.contentPadding.left + chart.xAxis.density! * po - offset.dx - itemWidth / 2 - (chart.controller!.zoom - 1) * (chart.size.width / 2);
 
     ChartShape shape = ChartShape.rect(
       rect: Rect.fromLTWH(
         left,
-        chart.content.top,
+        chart.contentPadding.top,
         itemWidth,
-        chart.size.height - chart.content.vertical,
+        chart.size.height - chart.contentPadding.vertical,
       ),
     );
 
