@@ -246,11 +246,11 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
       CharBodyController value = entry.value;
       int? index = value.selectedIndex;
       if (index == null) {
-        break;
+        continue;
       }
       ChartShape? shape = value.shapeList?[index];
       if (shape == null) {
-        return;
+        continue;
       }
       //用于找哪个子图更适合
       for (ChartShape childShape in shape.children) {
