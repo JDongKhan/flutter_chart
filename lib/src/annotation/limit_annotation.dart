@@ -5,7 +5,7 @@ import '../widget/dash_painter.dart';
 
 typedef AnnotationPosition<T> = num Function(T);
 
-class LimitAnnotation<T> extends Annotation<T> {
+class LimitAnnotation extends Annotation {
   final num limit;
   final DashPainter? dashPainter;
   final Color color;

@@ -54,7 +54,7 @@ class Pie<T> extends ChartBodyRender<T> {
   });
   @override
   void draw() {
-    PieChartCoordinateRender<T> chart = coordinateChart as PieChartCoordinateRender<T>;
+    PieChartCoordinateRender chart = coordinateChart as PieChartCoordinateRender;
     Canvas canvas = chart.canvas;
     Offset center = chart.center;
     double radius = chart.radius;
@@ -100,7 +100,7 @@ class Pie<T> extends ChartBodyRender<T> {
       //判断是否选中
       bool selected = shape.hitTest(chart.controller.gesturePoint);
       if (selected) {
-        chart.controller.selectedIndex = i;
+        chart.controller.bodyControllerList[positionIndex]?.selectedIndex = i;
         tapShape = ChartShape.arc(
           center: center,
           startAngle: startAngle,
@@ -179,6 +179,6 @@ class Pie<T> extends ChartBodyRender<T> {
       //继续下一个
       startAngle = startAngle + sweepAngle;
     }
-    chart.controller.shapeList = shapeList;
+    chart.controller.bodyControllerList[positionIndex]?.shapeList = shapeList;
   }
 }

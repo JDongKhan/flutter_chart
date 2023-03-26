@@ -5,8 +5,6 @@ import 'package:flutter/foundation.dart';
 
 //数据共享，便于各个节点使用
 class ChartController extends ChangeNotifier {
-  List<ChartShape>? shapeList;
-
   Offset? _gesturePoint;
   set gesturePoint(value) {
     if (value != _gesturePoint) {
@@ -33,7 +31,13 @@ class ChartController extends ChangeNotifier {
     _offset = v;
   }
 
+  //根据位置缓存配置信息
+  Map<int, CharBodyController> bodyControllerList = {};
+}
+
+class CharBodyController {
   int? selectedIndex;
+  List<ChartShape>? shapeList;
 }
 
 //存放每条数据对应的绘图信息

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../base/chart_body_render.dart';
 import '../base/chart_controller.dart';
 import '../base/chart_coordinate_render.dart';
 
 /// @author JD
 ///
-typedef TooltipRenderer = void Function(Canvas, Size size, Offset anchor, int index);
+typedef TooltipRenderer = void Function(Canvas, Size size, Offset anchor, List<int?> indexs);
 typedef ChartCoordinateRenderBuilder = ChartCoordinateRender Function(BuildContext context);
 
 //本widget只是起到提供Canvas的功能，不支持任何传参，避免参数来回传递导致难以维护以及混乱，需要自定义可自行去对应渲染器
@@ -39,6 +40,17 @@ class _ChartWidgetState extends State<ChartWidget> {
     return LayoutBuilder(builder: (context, cs) {
       ChartCoordinateRender baseChart = widget.builder.call(context);
       baseChart.controller = _controller;
+      for (int i = 0; i < baseChart.charts.length; i++) {
+        ChartBodyRender body = baseChart.charts[i];
+        body.positionIndex = i;
+        CharBodyController? c = _controller.bodyControllerList[i];
+        if (c == null) {
+          c = CharBodyController();
+          _controller.bodyControllerList[i] = c;
+        }
+        body.bodyController = c;
+      }
+
       return _buildWidget(baseChart, cs.maxWidth, cs.maxHeight);
     });
   }
@@ -96,7 +108,9 @@ class _ChartPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    chart.controller?.selectedIndex = null;
+    chart.controller.bodyControllerList.forEach((key, value) {
+      value.selectedIndex = null;
+    });
     //初始化
     chart.init(canvas, size);
     chart.paint(canvas, size);

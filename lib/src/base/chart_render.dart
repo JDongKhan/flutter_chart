@@ -2,13 +2,13 @@ import 'chart_coordinate_render.dart';
 
 /// @author jd
 
-abstract class ChartRender<T> {
+abstract class ChartRender {
   ChartRender();
   //坐标系
-  late ChartCoordinateRender<T> coordinateChart;
+  late ChartCoordinateRender coordinateChart;
 
   //初始化
-  void init(ChartCoordinateRender<T> coordinateChart) {
+  void init(ChartCoordinateRender coordinateChart) {
     this.coordinateChart = coordinateChart;
   }
 

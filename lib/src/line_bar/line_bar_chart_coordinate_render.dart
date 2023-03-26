@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../base/chart_body_render.dart';
 import '../base/chart_controller.dart';
 import '../base/chart_coordinate_render.dart';
 import '../widget/dash_painter.dart';
@@ -52,7 +53,7 @@ class YAxis {
   });
 }
 
-class LineBarChartCoordinateRender<T> extends ChartCoordinateRender<T> {
+class LineBarChartCoordinateRender extends ChartCoordinateRender {
   //坐标系颜色
   final Color lineColor;
   final YAxis yAxis;
@@ -60,7 +61,7 @@ class LineBarChartCoordinateRender<T> extends ChartCoordinateRender<T> {
   LineBarChartCoordinateRender({
     super.margin = const EdgeInsets.only(left: 30, top: 0, right: 0, bottom: 30),
     super.padding = const EdgeInsets.only(left: 30, top: 0, right: 0, bottom: 0),
-    required super.chartRender,
+    required super.charts,
     super.backgroundAnnotations,
     super.foregroundAnnotations,
     super.tooltipRenderer,
@@ -104,7 +105,10 @@ class LineBarChartCoordinateRender<T> extends ChartCoordinateRender<T> {
     canvas.clipRect(Rect.fromLTWH(margin.left, margin.top, size.width - margin.left - margin.right, size.height));
     _drawXAxis(canvas, size);
     _drawBackgroundAnnotations(canvas, size);
-    chartRender.draw();
+    //绘图
+    for (var element in charts) {
+      element.draw();
+    }
     _drawTooltip(canvas, size);
     _drawCrosshair(canvas, size);
     _drawForegroundAnnotations(canvas, size);
@@ -227,41 +231,52 @@ class LineBarChartCoordinateRender<T> extends ChartCoordinateRender<T> {
   void _drawCrosshair(Canvas canvas, Size size) {
     //十字准星
     Offset? anchor = controller.gesturePoint;
-    int? index = controller.selectedIndex;
-    if (anchor == null || index == null) {
+    if (anchor == null) {
       return;
     }
+    double? top;
+    double? left;
 
-    ChartShape? shape = controller.shapeList?[index];
-    if (shape == null) {
-      return;
-    }
-    double? top = shape.rect?.top;
-    double? left = shape.rect?.left;
     double diffTop = 0;
     double diffLeft = 0;
-    //用于找哪个子图更适合
-    for (ChartShape childShape in shape.children) {
-      if (childShape.rect != null) {
-        double cTop = childShape.rect!.top;
-        double topDiffAbs = (cTop - anchor.dy).abs();
-        if (topDiffAbs < diffTop) {
-          top = childShape.rect!.top;
-        } else if (diffTop == 0) {
-          diffTop = topDiffAbs;
-          top = childShape.rect!.top;
-        }
 
-        double cLeft = childShape.rect!.left;
-        double leftDiffAbs = (cLeft - anchor.dx).abs();
-        if (leftDiffAbs < diffLeft) {
-          left = childShape.rect!.left;
-        } else if (diffLeft == 0) {
-          diffLeft = leftDiffAbs;
-          left = childShape.rect!.left;
+    //查找更贴近点击的那条数据
+    for (MapEntry<int, CharBodyController> entry in controller.bodyControllerList.entries) {
+      int key = entry.key;
+      CharBodyController value = entry.value;
+      int? index = value.selectedIndex;
+      if (index == null) {
+        break;
+      }
+      ChartShape? shape = value.shapeList?[index];
+      if (shape == null) {
+        return;
+      }
+      //用于找哪个子图更适合
+      for (ChartShape childShape in shape.children) {
+        if (childShape.rect != null) {
+          double cTop = childShape.rect!.top;
+          double topDiffAbs = (cTop - anchor.dy).abs();
+          if (diffTop == 0) {
+            //第一次
+            diffTop = topDiffAbs;
+            top = childShape.rect!.top;
+          } else if (topDiffAbs < diffTop) {
+            top = childShape.rect!.top;
+          }
+
+          double cLeft = childShape.rect!.left;
+          double leftDiffAbs = (cLeft - anchor.dx).abs();
+          if (leftDiffAbs < diffLeft) {
+            left = childShape.rect!.left;
+          } else if (diffLeft == 0) {
+            diffLeft = leftDiffAbs;
+            left = childShape.rect!.left;
+          }
         }
       }
     }
+
     if (crossHair.adjustVertical) {
       anchor = Offset(anchor.dx, top ?? anchor.dy);
     }
@@ -299,16 +314,28 @@ class LineBarChartCoordinateRender<T> extends ChartCoordinateRender<T> {
     Size size,
   ) {
     Offset? anchor = controller.gesturePoint;
-    int? index = controller.selectedIndex;
-    if (anchor == null || index == null) {
+    if (anchor == null) {
       return;
     }
     if (tooltipRenderer != null) {
+      List<int?> index = [];
+      for (MapEntry<int, CharBodyController> entry in controller.bodyControllerList.entries) {
+        index.add(entry.value.selectedIndex);
+      }
       tooltipRenderer?.call(canvas, size, anchor, index);
       return;
     }
-    T item = chartRender.data[index];
-    InlineSpan? textSpan = tooltipFormatter?.call(item);
+
+    List items = [];
+    for (int i = 0; i < charts.length; i++) {
+      ChartBodyRender element = charts[i];
+      int? selectIndex = element.bodyController.selectedIndex;
+      if (selectIndex != null) {
+        dynamic item = element.data[i];
+        items.add(item);
+      }
+    }
+    InlineSpan? textSpan = tooltipFormatter?.call(items);
     if (textSpan == null) {
       return;
     }

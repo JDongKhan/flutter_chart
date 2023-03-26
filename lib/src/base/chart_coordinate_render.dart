@@ -41,10 +41,10 @@ class CrossHairStyle {
   });
 }
 
-typedef ChartTooltipFormatter<T> = InlineSpan Function(T);
+typedef ChartTooltipFormatter<T> = InlineSpan Function(List<T?>);
 
 //渲染器， 每次刷新会重新构造，切忌不要存放状态数据，数据都在controller里面
-abstract class ChartCoordinateRender<T> {
+abstract class ChartCoordinateRender {
   //图形外边距，用于控制两轴边距
   final EdgeInsets margin;
   //图形内边距，用于控制图形内容距两周的距离
@@ -52,11 +52,11 @@ abstract class ChartCoordinateRender<T> {
   //缩放比例
   final bool zoom;
   //坐标系中间的绘图
-  final ChartBodyRender<T> chartRender;
+  final List<ChartBodyRender> charts;
   //自定义提示框的样式
   final TooltipRenderer? tooltipRenderer;
   //自定义提示文案
-  final ChartTooltipFormatter<T>? tooltipFormatter;
+  final ChartTooltipFormatter? tooltipFormatter;
   //十字准星样式
   final CrossHairStyle crossHair;
 
@@ -66,7 +66,7 @@ abstract class ChartCoordinateRender<T> {
   ChartCoordinateRender({
     required this.margin,
     required this.padding,
-    required this.chartRender,
+    required this.charts,
     this.tooltipRenderer,
     this.tooltipFormatter,
     this.zoom = false,
@@ -103,7 +103,9 @@ abstract class ChartCoordinateRender<T> {
   void init(Canvas canvas, Size size) {
     this.canvas = canvas;
     this.size = size;
-    chartRender.init(this);
+    for (var element in charts) {
+      element.init(this);
+    }
   }
 
   double withXOffset(double offset, [bool scrollable = true]) {

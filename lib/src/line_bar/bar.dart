@@ -28,16 +28,16 @@ class Bar<T> extends ChartBodyRender<T> {
   });
   @override
   void draw() {
-    LineBarChartCoordinateRender<T> chart = coordinateChart as LineBarChartCoordinateRender<T>;
+    LineBarChartCoordinateRender chart = coordinateChart as LineBarChartCoordinateRender;
     List<ChartShape> shapeList = [];
     for (int index = 0; index < data.length; index++) {
       T value = data[index];
       shapeList.add(_draw(chart, index, value));
     }
-    chart.controller.shapeList = shapeList;
+    chart.controller.bodyControllerList[positionIndex]?.shapeList = shapeList;
   }
 
-  ChartShape _draw(LineBarChartCoordinateRender<T> chart, int index, T data) {
+  ChartShape _draw(LineBarChartCoordinateRender chart, int index, T data) {
     num po = position.call(data);
     num v = value.call(data);
     if (v == 0) {
@@ -62,7 +62,7 @@ class Bar<T> extends ChartBodyRender<T> {
       rect: rect,
     );
     if (shape.hitTest(chart.controller.gesturePoint)) {
-      chart.controller.selectedIndex = index;
+      chart.controller.bodyControllerList[positionIndex]?.selectedIndex = index;
       paint.color = highlightColor;
     }
     chart.canvas.drawRect(rect, paint);
@@ -102,7 +102,7 @@ class StackBar<T> extends ChartBodyRender<T> {
   });
   @override
   void draw() {
-    LineBarChartCoordinateRender<T> chart = coordinateChart as LineBarChartCoordinateRender<T>;
+    LineBarChartCoordinateRender chart = coordinateChart as LineBarChartCoordinateRender;
     List<ChartShape> shapeList = [];
     for (int index = 0; index < data.length; index++) {
       T value = data[index];
@@ -112,11 +112,11 @@ class StackBar<T> extends ChartBodyRender<T> {
         shapeList.add(_drawVertical(chart, index, value));
       }
     }
-    chart.controller.shapeList = shapeList;
+    chart.controller.bodyControllerList[positionIndex]?.shapeList = shapeList;
   }
 
   //水平排列图形
-  ChartShape _drawHorizontal(LineBarChartCoordinateRender<T> chart, int index, T data) {
+  ChartShape _drawHorizontal(LineBarChartCoordinateRender chart, int index, T data) {
     num po = position.call(data);
     List<num> vas = values.call(data);
     assert(colors.length >= vas.length);
@@ -154,7 +154,7 @@ class StackBar<T> extends ChartBodyRender<T> {
         ..strokeWidth = 1
         ..style = PaintingStyle.fill;
       if (stackShape.hitTest(chart.controller.gesturePoint)) {
-        chart.controller.selectedIndex = index;
+        chart.controller.bodyControllerList[positionIndex]?.selectedIndex = index;
         paint.color = highlightColor;
       }
       chart.canvas.drawRect(rect, paint);
@@ -165,7 +165,7 @@ class StackBar<T> extends ChartBodyRender<T> {
     return shape;
   }
 
-  ChartShape _drawVertical(LineBarChartCoordinateRender<T> chart, int index, T data) {
+  ChartShape _drawVertical(LineBarChartCoordinateRender chart, int index, T data) {
     num po = position.call(data);
     List<num> vas = values.call(data);
     assert(colors.length >= vas.length);
@@ -202,7 +202,7 @@ class StackBar<T> extends ChartBodyRender<T> {
       Rect rect = Rect.fromLTWH(left, top, itemWidth, itemHeight);
       ChartShape stackShape = ChartShape.rect(rect: rect);
       if (stackShape.hitTest(chart.controller.gesturePoint)) {
-        chart.controller.selectedIndex = index;
+        chart.controller.bodyControllerList[positionIndex]?.selectedIndex = index;
         paint.color = highlightColor;
         shape.children.add(stackShape);
       }

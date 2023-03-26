@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 import '../base/chart_coordinate_render.dart';
 
 /// @author JD
-class PieChartCoordinateRender<T> extends ChartCoordinateRender<T> {
+class PieChartCoordinateRender extends ChartCoordinateRender {
   final double borderWidth;
   final Color borderColor;
   PieChartCoordinateRender({
     super.margin = EdgeInsets.zero,
     super.padding = EdgeInsets.zero,
-    required super.chartRender,
+    required super.charts,
     super.zoom,
     this.borderWidth = 1,
     this.borderColor = Colors.white,
@@ -26,7 +26,9 @@ class PieChartCoordinateRender<T> extends ChartCoordinateRender<T> {
     canvas.clipRect(rect);
     _drawCircle(canvas, size);
     _drawBackgroundAnnotations(canvas, size);
-    chartRender.draw();
+    for (var element in charts) {
+      element.draw();
+    }
     _drawForegroundAnnotations(canvas, size);
   }
 

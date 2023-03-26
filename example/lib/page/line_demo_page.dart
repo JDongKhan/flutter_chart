@@ -74,29 +74,33 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                       crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
                       margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
                       //提示的文案信息
-                      tooltipFormatter: (item) => TextSpan(
-                        text: '${item['value1']}',
-                        style: const TextStyle(
-                          color: Colors.black,
-                        ),
-                      ),
+                      tooltipFormatter: (list) {
+                        return TextSpan(
+                          text: list.map((e) => e['value1']).toString(),
+                          style: const TextStyle(
+                            color: Colors.black,
+                          ),
+                        );
+                      },
                       yAxis: YAxis(min: 0, max: 500),
                       xAxis: XAxis(
                         count: 7,
                         max: 7,
                         formatter: (index) => startTime.add(Duration(days: index)).toStringWithFormat(format: 'dd'),
                       ),
-                      chartRender: Line(
-                        data: dataList,
-                        position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
-                        values: (item) => [
-                          item['value1'] as num,
-                        ],
-                      ),
+                      charts: [
+                        Line(
+                          data: dataList,
+                          position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
+                          values: (item) => [
+                            item['value1'] as num,
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                 ),
-                const Text('Multiple Line'),
+                const Text('Single data,Multiple Line'),
                 SizedBox(
                   // color: Colors.yellow,
                   height: 200,
@@ -115,8 +119,8 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                       margin: const EdgeInsets.only(left: 40, top: 5, right: 0, bottom: 30),
                       //提示的文案信息
                       crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
-                      tooltipFormatter: (item) => TextSpan(
-                        text: '${item['value1']}',
+                      tooltipFormatter: (list) => TextSpan(
+                        text: list.map((e) => e['value1']).toString(),
                         style: const TextStyle(
                           color: Colors.black,
                         ),
@@ -128,14 +132,57 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                         drawLine: false,
                         formatter: (index) => startTime.add(Duration(days: index)).toStringWithFormat(format: 'dd'),
                       ),
-                      chartRender: Line(
-                        data: dataList,
-                        position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
-                        values: (item) => [
-                          item['value1'] as num,
-                          item['value2'] as num,
-                        ],
+                      charts: [
+                        Line(
+                          data: dataList,
+                          position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
+                          values: (item) => [
+                            item['value1'] as num,
+                            item['value2'] as num,
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const Text('Multiple data,Multiple Line'),
+                SizedBox(
+                  // color: Colors.yellow,
+                  height: 200,
+                  child: ChartWidget(
+                    builder: (controller) => LineBarChartCoordinateRender(
+                      margin: const EdgeInsets.only(left: 40, top: 5, right: 0, bottom: 30),
+                      //提示的文案信息
+                      crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
+                      tooltipFormatter: (list) => TextSpan(
+                        text: list.map((e) => e['value1']).toString(),
+                        style: const TextStyle(
+                          color: Colors.black,
+                        ),
                       ),
+                      yAxis: YAxis(min: 0, max: 500),
+                      xAxis: XAxis(
+                        count: 7,
+                        max: 20,
+                        drawLine: false,
+                        formatter: (index) => startTime.add(Duration(days: index)).toStringWithFormat(format: 'dd'),
+                      ),
+                      charts: [
+                        Line(
+                          data: dataList,
+                          position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
+                          values: (item) => [
+                            item['value1'] as num,
+                          ],
+                        ),
+                        Line(
+                          data: dataList,
+                          position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
+                          values: (item) => [
+                            item['value2'] as num,
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                 ),

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chart/flutter_chart.dart';
 
 //区间标注
-class RegionAnnotation<T> extends Annotation<T> {
+class RegionAnnotation extends Annotation {
   final List<num> positions;
   final Color color;
   RegionAnnotation({

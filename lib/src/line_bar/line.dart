@@ -24,7 +24,7 @@ class Line<T> extends ChartBodyRender<T> {
 
   @override
   void draw() {
-    LineBarChartCoordinateRender<T> chart = coordinateChart as LineBarChartCoordinateRender<T>;
+    LineBarChartCoordinateRender chart = coordinateChart as LineBarChartCoordinateRender;
     List<ChartShape> shapeList = [];
     //线
     Paint paint = Paint()
@@ -56,8 +56,9 @@ class Line<T> extends ChartBodyRender<T> {
       double xPo = xvs * chart.xAxis.density + left;
 
       //先判断是否选中，此场景是第一次渲染之后点击才有，所以用老数据即可
-      if (chart.controller.gesturePoint != null && (chart.controller.shapeList?[index].hitTest(chart.controller.gesturePoint!) == true)) {
-        chart.controller.selectedIndex = index;
+      List<ChartShape>? currentShapeList = chart.controller.bodyControllerList[positionIndex]?.shapeList;
+      if (chart.controller.gesturePoint != null && (currentShapeList?[index].hitTest(chart.controller.gesturePoint!) == true)) {
+        chart.controller.bodyControllerList[positionIndex]?.selectedIndex = index;
       }
 
       //一条数据下可能多条线
@@ -111,6 +112,6 @@ class Line<T> extends ChartBodyRender<T> {
       chart.canvas.drawPath(path, paint..color = colors[index]);
     });
 
-    chart.controller.shapeList = shapeList;
+    chart.controller.bodyControllerList[positionIndex]?.shapeList = shapeList;
   }
 }
