@@ -82,7 +82,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                           ),
                         );
                       },
-                      yAxis: YAxis(min: 0, max: 500),
+                      yAxis: YAxis(left: LeftYAxis(min: 0, max: 500)),
                       xAxis: XAxis(
                         count: 7,
                         max: 7,
@@ -125,7 +125,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                           color: Colors.black,
                         ),
                       ),
-                      yAxis: YAxis(min: 0, max: 500),
+                      yAxis: YAxis(left: LeftYAxis(min: 0, max: 500)),
                       xAxis: XAxis(
                         count: 7,
                         max: 20,
@@ -160,7 +160,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                           color: Colors.black,
                         ),
                       ),
-                      yAxis: YAxis(min: 0, max: 500),
+                      yAxis: YAxis(left: LeftYAxis(min: 0, max: 500)),
                       xAxis: XAxis(
                         count: 7,
                         max: 20,

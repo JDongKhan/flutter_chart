@@ -71,7 +71,7 @@ class Line<T> extends ChartBodyRender<T> {
         }
         //计算点的位置
         num value = yvs[valueIndex];
-        double yPo = bottom - (value * chart.yAxis.density);
+        double yPo = bottom - (value * chart.yAxis.left.density);
         if (index == 0) {
           path.moveTo(xPo, yPo);
         } else {

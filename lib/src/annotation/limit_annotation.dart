@@ -22,7 +22,7 @@ class LimitAnnotation extends Annotation {
     if (coordinateChart is LineBarChartCoordinateRender) {
       LineBarChartCoordinateRender chart = coordinateChart as LineBarChartCoordinateRender;
       num po = limit;
-      double itemHeight = po * chart.yAxis.density;
+      double itemHeight = po * chart.yAxis.left.density;
       Offset start = Offset(chart.padding.left, chart.contentRect.bottom - itemHeight);
       Offset end = Offset(chart.size.width - chart.padding.right, chart.contentRect.bottom - itemHeight);
 

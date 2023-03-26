@@ -50,7 +50,7 @@ class Bar<T> extends ChartBodyRender<T> {
     left = withXOffset(left);
     left = withXZoom(left);
 
-    double present = v / chart.yAxis.max;
+    double present = v / chart.yAxis.left.max;
     double itemHeight = contentHeight * present;
     double top = bottom - itemHeight;
     Paint paint = Paint()
@@ -120,7 +120,7 @@ class StackBar<T> extends ChartBodyRender<T> {
     num po = position.call(data);
     List<num> vas = values.call(data);
     assert(colors.length >= vas.length);
-    num total = chart.yAxis.max;
+    num total = chart.yAxis.left.max;
     if (total == 0) {
       return ChartShape();
     }
@@ -169,7 +169,7 @@ class StackBar<T> extends ChartBodyRender<T> {
     num po = position.call(data);
     List<num> vas = values.call(data);
     assert(colors.length >= vas.length);
-    num total = chart.yAxis.max;
+    num total = chart.yAxis.left.max;
     if (full) {
       total = vas.fold(0, (previousValue, element) => previousValue + element);
     }
