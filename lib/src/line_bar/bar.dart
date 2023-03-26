@@ -85,6 +85,8 @@ class StackBar<T> extends ChartRender<T> {
   //撑满 如果为true则会根据实际数值的总和求比例，如果为false则会根据Y轴最大值求比例
   final bool full;
 
+  final double padding;
+
   StackBar({
     required this.position,
     this.highlightColor = Colors.yellow,
@@ -92,6 +94,7 @@ class StackBar<T> extends ChartRender<T> {
     this.itemWidth = 20,
     this.direction = Axis.horizontal,
     this.full = false,
+    this.padding = 5,
   });
   @override
   void draw() {
@@ -127,8 +130,6 @@ class StackBar<T> extends ChartRender<T> {
     double left = chart.contentMargin.left + chart.xAxis.density * po - itemWidth / 2 - center;
     left = withXOffset(left);
     left = withXZoom(left);
-
-    double padding = 10;
 
     ChartShape shape = ChartShape.rect(
       rect: Rect.fromLTWH(

@@ -8,11 +8,12 @@ import '../widget/dash_painter.dart';
 typedef AxisFormatter = String? Function(int);
 
 class XAxis {
-  //方便计算，count代表一屏显示的value，也是格子数
+  //方便计算，count代表一屏显示的格子数
   final int count;
   final num interval;
   final num max;
   final AxisFormatter? formatter;
+  //每1个逻辑value代表多宽
   late double density;
   final bool drawGrid;
   //是否绘制最下面一行的线
@@ -82,7 +83,7 @@ class LineBarChartCoordinateRender<T> extends ChartCoordinateRender<T> {
     double height = size.height;
     int count = xAxis.count;
     //每格的宽度，用于控制一屏最多显示个数
-    double density = (width - contentMargin.horizontal) / count;
+    double density = (width - contentMargin.horizontal) / count / xAxis.interval;
     //x轴密度 即1 value 等于多少尺寸
     xAxis.density = density * controller.zoom;
 
@@ -184,6 +185,7 @@ class LineBarChartCoordinateRender<T> extends ChartCoordinateRender<T> {
       canvas.drawLine(Offset(margin.left, size.height - margin.bottom), Offset(size.width - margin.right, size.height - margin.bottom), paint);
     }
 
+    //实际要显示的数量
     int count = xAxis.max ~/ xAxis.interval;
     for (int i = 0; i < count; i++) {
       String text = xAxis.formatter?.call(i) ?? '$i';
@@ -372,26 +374,43 @@ class LineBarChartCoordinateRender<T> extends ChartCoordinateRender<T> {
     double x = newOffset.dx;
     double y = newOffset.dy;
     //因为缩放最小值可能为负的了
-    double minValue = (1 - controller.zoom) * size.width / 2;
-    if (x < minValue) {
-      x = minValue;
-    }
-    if (y < 0) {
-      y = 0;
+    double minXOffsetValue = (1 - controller.zoom) * size.width / 2;
+    if (x < minXOffsetValue) {
+      x = minXOffsetValue;
     }
     double chartContentWidth = padding.horizontal + xAxis.density * xAxis.max;
     double chartViewPortWidth = size.width - margin.horizontal;
     //因为offset可能为负的，换算成正值便于后面计算
-    double realOffset = x - minValue;
+    double realXOffset = x - minXOffsetValue;
     //说明内容超出了组件
     if (chartContentWidth > chartViewPortWidth) {
       //偏移+
-      if ((realOffset + chartViewPortWidth) >= chartContentWidth) {
-        x = chartContentWidth - chartViewPortWidth + minValue;
+      if ((realXOffset + chartViewPortWidth) >= chartContentWidth) {
+        x = chartContentWidth - chartViewPortWidth + minXOffsetValue;
       }
     } else {
-      x = minValue;
+      x = minXOffsetValue;
     }
+
+    //y轴
+    double minYOffsetValue = (1 - controller.zoom) * size.height / 2;
+    if (y < minYOffsetValue) {
+      y = minYOffsetValue;
+    }
+    double chartContentHeight = padding.vertical + yAxis.density * yAxis.max;
+    double chartViewPortHeight = size.height - margin.vertical;
+    //因为offset可能为负的，换算成正值便于后面计算
+    double realYOffset = y - minYOffsetValue;
+    //说明内容超出了组件
+    if (chartContentHeight > chartViewPortHeight) {
+      //偏移+
+      if ((realYOffset + chartViewPortHeight) >= chartContentHeight) {
+        y = chartContentHeight - chartViewPortHeight + minYOffsetValue;
+      }
+    } else {
+      y = minYOffsetValue;
+    }
+
     controller.offset = Offset(x, y);
   }
 

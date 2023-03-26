@@ -12,4 +12,5 @@ export 'src/line_bar/line.dart';
 export 'src/line_bar/line_bar_chart_coordinate_render.dart';
 export 'src/pie/pie.dart';
 export 'src/pie/pie_chart_coordinate_render.dart';
+export 'src/utils/chart_utils.dart';
 export 'src/widget/chart_widget.dart';

@@ -41,93 +41,128 @@ class BarChartDemoPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('ChartDemo'),
       ),
-      body: Column(
-        children: [
-          const Text('垂直StackBar'),
-          SizedBox(
-            width: 250,
-            height: 200,
-            child: ChartWidget(
-              builder: (controller) => LineBarChartCoordinateRender(
-                position: (item) {
-                  return (item['time'] as DateTime).difference(startTime).inMilliseconds / (24 * 60 * 60 * 1000);
-                },
-                margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
-                yAxis: YAxis(min: 0, max: 1000),
-                xAxis: XAxis(
-                  count: 7,
-                  max: 30,
-                  formatter: (index) {
-                    return startTime.add(Duration(days: index)).toStringWithFormat(format: 'dd');
-                  },
+      body: SingleChildScrollView(
+        child: Center(
+          child: SizedBox(
+            width: 300,
+            child: Column(
+              children: [
+                const Text('垂直StackBar'),
+                SizedBox(
+                  height: 200,
+                  child: ChartWidget(
+                    builder: (controller) => LineBarChartCoordinateRender(
+                      position: (item) {
+                        return parserDateTimeToDayValue(item['time'] as DateTime, startTime);
+                      },
+                      margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
+                      yAxis: YAxis(min: 0, max: 1000),
+                      xAxis: XAxis(
+                        count: 7,
+                        max: 30,
+                        formatter: (index) {
+                          return startTime.add(Duration(days: index)).toStringWithFormat(format: 'dd');
+                        },
+                      ),
+                      data: dataList,
+                      chartRender: StackBar(
+                        direction: Axis.vertical,
+                        itemWidth: 10,
+                        highlightColor: Colors.yellow,
+                        position: (item) => [
+                          double.parse(item['value1'].toString()),
+                          double.parse(item['value2'].toString()),
+                          double.parse(item['value3'].toString()),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
-                data: dataList,
-                chartRender: StackBar(
-                  direction: Axis.vertical,
-                  itemWidth: 10,
-                  highlightColor: Colors.yellow,
-                  position: (item) => [
-                    double.parse(item['value1'].toString()),
-                    double.parse(item['value2'].toString()),
-                    double.parse(item['value3'].toString()),
-                  ],
+                SizedBox(
+                  height: 200,
+                  child: ChartWidget(
+                    builder: (controller) => LineBarChartCoordinateRender(
+                      position: (item) {
+                        return parserDateTimeToDayValue(item['time'] as DateTime, startTime);
+                      },
+                      margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
+                      yAxis: YAxis(min: 0, max: 100),
+                      xAxis: XAxis(
+                        count: 7,
+                        max: 30,
+                        formatter: (index) {
+                          return startTime.add(Duration(days: index)).toStringWithFormat(format: 'dd');
+                        },
+                      ),
+                      data: dataList,
+                      chartRender: StackBar(
+                        direction: Axis.vertical,
+                        itemWidth: 10,
+                        full: true,
+                        highlightColor: Colors.yellow,
+                        position: (item) => [
+                          double.parse(item['value1'].toString()),
+                          double.parse(item['value2'].toString()),
+                          double.parse(item['value3'].toString()),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
-              ),
+                const Text('水平StackBar'),
+                SizedBox(
+                  height: 200,
+                  child: ChartWidget(
+                    builder: (controller) => LineBarChartCoordinateRender(
+                      position: (item) {
+                        return parserDateTimeToDayValue(item['time'] as DateTime, startTime);
+                      },
+                      yAxis: YAxis(min: 0, max: 500),
+                      margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
+                      xAxis: XAxis(
+                        count: 7,
+                        max: 30,
+                        formatter: (index) {
+                          return startTime.add(Duration(days: index)).toStringWithFormat(format: 'dd');
+                        },
+                      ),
+                      data: dataList,
+                      chartRender: StackBar(
+                        direction: Axis.horizontal,
+                        itemWidth: 10,
+                        highlightColor: Colors.yellow,
+                        position: (item) => [
+                          double.parse(item['value1'].toString()),
+                          double.parse(item['value2'].toString()),
+                          double.parse(item['value3'].toString()),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                const Text('普通Bar'),
+                SizedBox(
+                  height: 200,
+                  child: ChartWidget(
+                    builder: (controller) => LineBarChartCoordinateRender(
+                      lineColor: Colors.grey,
+                      margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
+                      position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
+                      yAxis: YAxis(min: 0, max: 300),
+                      xAxis: XAxis(
+                        count: 7,
+                        max: 10,
+                        formatter: (index) => startTime.add(Duration(days: index)).toStringWithFormat(format: 'dd'),
+                      ),
+                      data: dataList,
+                      chartRender: Bar(position: (item) => item['value1']),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-          const Text('水平StackBar'),
-          SizedBox(
-            width: 250,
-            height: 200,
-            child: ChartWidget(
-              builder: (controller) => LineBarChartCoordinateRender(
-                position: (item) {
-                  return (item['time'] as DateTime).difference(startTime).inMilliseconds / (24 * 60 * 60 * 1000);
-                },
-                yAxis: YAxis(min: 0, max: 500),
-                margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
-                xAxis: XAxis(
-                  count: 7,
-                  max: 30,
-                  formatter: (index) {
-                    return startTime.add(Duration(days: index)).toStringWithFormat(format: 'dd');
-                  },
-                ),
-                data: dataList,
-                chartRender: StackBar(
-                  direction: Axis.horizontal,
-                  itemWidth: 10,
-                  highlightColor: Colors.yellow,
-                  position: (item) => [
-                    double.parse(item['value1'].toString()),
-                    double.parse(item['value2'].toString()),
-                    double.parse(item['value3'].toString()),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          const Text('普通Bar'),
-          SizedBox(
-            height: 200,
-            width: 250,
-            child: ChartWidget(
-              builder: (controller) => LineBarChartCoordinateRender(
-                lineColor: Colors.grey,
-                margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
-                position: (item) => (item['time'] as DateTime).difference(startTime).inMilliseconds / (24 * 60 * 60 * 1000),
-                yAxis: YAxis(min: 0, max: 300),
-                xAxis: XAxis(
-                  count: 7,
-                  max: 10,
-                  formatter: (index) => startTime.add(Duration(days: index)).toStringWithFormat(format: 'dd'),
-                ),
-                data: dataList,
-                chartRender: Bar(position: (item) => item['value1']),
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

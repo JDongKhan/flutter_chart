@@ -12,6 +12,7 @@ class ImageAnnotation extends Annotation {
   ImageAnnotation({
     required this.image,
     required this.positions,
+    super.scroll = true,
     this.offset = Offset.zero,
   });
 
