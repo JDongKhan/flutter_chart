@@ -168,6 +168,11 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                         formatter: (index) => startTime.add(Duration(days: index)).toStringWithFormat(format: 'dd'),
                       ),
                       charts: [
+                        Bar(
+                          data: dataList,
+                          position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
+                          value: (item) => item['value1'],
+                        ),
                         Line(
                           data: dataList,
                           position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
