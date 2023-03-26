@@ -61,7 +61,6 @@ class LineBarChartCoordinateRender<T> extends ChartCoordinateRender<T> {
     required super.data,
     super.margin = const EdgeInsets.only(left: 30, top: 0, right: 0, bottom: 30),
     super.padding = const EdgeInsets.only(left: 30, top: 0, right: 0, bottom: 0),
-    required super.position,
     required super.chartRender,
     super.backgroundAnnotations,
     super.foregroundAnnotations,

@@ -52,9 +52,6 @@ class BarChartDemoPage extends StatelessWidget {
                   height: 200,
                   child: ChartWidget(
                     builder: (controller) => LineBarChartCoordinateRender(
-                      position: (item) {
-                        return parserDateTimeToDayValue(item['time'] as DateTime, startTime);
-                      },
                       margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
                       yAxis: YAxis(min: 0, max: 1000),
                       xAxis: XAxis(
@@ -69,7 +66,10 @@ class BarChartDemoPage extends StatelessWidget {
                         direction: Axis.vertical,
                         itemWidth: 10,
                         highlightColor: Colors.yellow,
-                        position: (item) => [
+                        xValue: (item) {
+                          return parserDateTimeToDayValue(item['time'] as DateTime, startTime);
+                        },
+                        yValues: (item) => [
                           double.parse(item['value1'].toString()),
                           double.parse(item['value2'].toString()),
                           double.parse(item['value3'].toString()),
@@ -82,9 +82,6 @@ class BarChartDemoPage extends StatelessWidget {
                   height: 200,
                   child: ChartWidget(
                     builder: (controller) => LineBarChartCoordinateRender(
-                      position: (item) {
-                        return parserDateTimeToDayValue(item['time'] as DateTime, startTime);
-                      },
                       margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
                       yAxis: YAxis(min: 0, max: 100),
                       xAxis: XAxis(
@@ -100,7 +97,10 @@ class BarChartDemoPage extends StatelessWidget {
                         itemWidth: 10,
                         full: true,
                         highlightColor: Colors.yellow,
-                        position: (item) => [
+                        xValue: (item) {
+                          return parserDateTimeToDayValue(item['time'] as DateTime, startTime);
+                        },
+                        yValues: (item) => [
                           double.parse(item['value1'].toString()),
                           double.parse(item['value2'].toString()),
                           double.parse(item['value3'].toString()),
@@ -114,9 +114,6 @@ class BarChartDemoPage extends StatelessWidget {
                   height: 200,
                   child: ChartWidget(
                     builder: (controller) => LineBarChartCoordinateRender(
-                      position: (item) {
-                        return parserDateTimeToDayValue(item['time'] as DateTime, startTime);
-                      },
                       yAxis: YAxis(min: 0, max: 500),
                       margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
                       xAxis: XAxis(
@@ -128,10 +125,13 @@ class BarChartDemoPage extends StatelessWidget {
                       ),
                       data: dataList,
                       chartRender: StackBar(
+                        xValue: (item) {
+                          return parserDateTimeToDayValue(item['time'] as DateTime, startTime);
+                        },
                         direction: Axis.horizontal,
                         itemWidth: 10,
                         highlightColor: Colors.yellow,
-                        position: (item) => [
+                        yValues: (item) => [
                           double.parse(item['value1'].toString()),
                           double.parse(item['value2'].toString()),
                           double.parse(item['value3'].toString()),
@@ -147,7 +147,6 @@ class BarChartDemoPage extends StatelessWidget {
                     builder: (controller) => LineBarChartCoordinateRender(
                       lineColor: Colors.grey,
                       margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
-                      position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
                       yAxis: YAxis(min: 0, max: 300),
                       xAxis: XAxis(
                         count: 7,
@@ -155,7 +154,10 @@ class BarChartDemoPage extends StatelessWidget {
                         formatter: (index) => startTime.add(Duration(days: index)).toStringWithFormat(format: 'dd'),
                       ),
                       data: dataList,
-                      chartRender: Bar(position: (item) => item['value1']),
+                      chartRender: Bar(
+                        xValue: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
+                        yValue: (item) => item['value1'],
+                      ),
                     ),
                   ),
                 ),

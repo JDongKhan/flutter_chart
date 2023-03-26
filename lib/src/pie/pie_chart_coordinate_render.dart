@@ -11,7 +11,6 @@ class PieChartCoordinateRender<T> extends ChartCoordinateRender<T> {
   PieChartCoordinateRender({
     super.margin = EdgeInsets.zero,
     super.padding = EdgeInsets.zero,
-    required super.position,
     required super.chartRender,
     required super.data,
     super.zoom,

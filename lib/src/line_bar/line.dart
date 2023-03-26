@@ -8,12 +8,15 @@ typedef LinePosition<T> = List<num> Function(T);
 
 /// @author JD
 class Line<T> extends ChartRender<T> {
-  final LinePosition position;
+  //数据在坐标系的位置，每个坐标系下取值逻辑不一样，在line和bar下是相对于每格的值，比如xAxis的interval为1，你的数据放在1列和2列中间，那么position就是0.5，在pie下是比例
+  final ChartPosition<T> xValue;
+  final LinePosition yValues;
   final List<Color> colors;
   final double dotRadius;
   final double strokeWidth;
   Line({
-    required this.position,
+    required this.xValue,
+    required this.yValues,
     this.colors = colors10,
     this.dotRadius = 2,
     this.strokeWidth = 1,
@@ -47,11 +50,11 @@ class Line<T> extends ChartRender<T> {
     ChartShape? lastShape;
     //遍历数据
     for (T value in data) {
-      num xValue = chart.position.call(value);
-      List<num> yValues = position.call(value);
+      num xvs = xValue.call(value);
+      List<num> yvs = yValues.call(value);
       List<ChartShape> shapes = [];
-      assert(colors.length >= yValues.length);
-      double xPo = xValue * chart.xAxis.density + left;
+      assert(colors.length >= yvs.length);
+      double xPo = xvs * chart.xAxis.density + left;
 
       //先判断是否选中，此场景是第一次渲染之后点击才有，所以用老数据即可
       if (chart.controller.gesturePoint != null && (chart.controller.shapeList?[index].hitTest(chart.controller.gesturePoint!) == true)) {
@@ -59,7 +62,7 @@ class Line<T> extends ChartRender<T> {
       }
 
       //一条数据下可能多条线
-      for (int valueIndex = 0; valueIndex < yValues.length; valueIndex++) {
+      for (int valueIndex = 0; valueIndex < yvs.length; valueIndex++) {
         //每条线用map存放下，以便后面统一绘制
         Path? path = pathMap[valueIndex];
         if (path == null) {
@@ -67,7 +70,7 @@ class Line<T> extends ChartRender<T> {
           pathMap[valueIndex] = path;
         }
         //计算点的位置
-        num value = yValues[valueIndex];
+        num value = yvs[valueIndex];
         double yPo = bottom - (value * chart.yAxis.density);
         if (index == 0) {
           path.moveTo(xPo, yPo);

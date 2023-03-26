@@ -12,13 +12,16 @@ class Bar<T> extends ChartRender<T> {
   //bar的宽度
   final double itemWidth;
   //值格式化
-  final BarPosition position;
+  final BarPosition yValue;
   //颜色
   final Color color;
   //高亮颜色
   final Color highlightColor;
+  //数据在坐标系的位置，每个坐标系下取值逻辑不一样，在line和bar下是相对于每格的值，比如xAxis的interval为1，你的数据放在1列和2列中间，那么position就是0.5，在pie下是比例
+  final ChartPosition<T> xValue;
   Bar({
-    required this.position,
+    required this.yValue,
+    required this.xValue,
     this.itemWidth = 20,
     this.color = Colors.blue,
     this.highlightColor = Colors.yellow,
@@ -36,8 +39,8 @@ class Bar<T> extends ChartRender<T> {
   }
 
   ChartShape _draw(LineBarChartCoordinateRender<T> chart, int index, T data) {
-    num po = chart.position.call(data);
-    num value = position.call(data);
+    num po = xValue.call(data);
+    num value = yValue.call(data);
     if (value == 0) {
       return ChartShape();
     }
@@ -72,8 +75,10 @@ typedef StackBarPosition<T> = List<num> Function(T);
 
 //stackBar  支持水平/垂直排列
 class StackBar<T> extends ChartRender<T> {
+  //数据在坐标系的位置，每个坐标系下取值逻辑不一样，在line和bar下是相对于每格的值，比如xAxis的interval为1，你的数据放在1列和2列中间，那么position就是0.5，在pie下是比例
+  final ChartPosition<T> xValue;
   //值格式化
-  final StackBarPosition<T> position;
+  final StackBarPosition<T> yValues;
   //bar的宽度
   final double itemWidth;
   //多个颜色
@@ -88,7 +93,8 @@ class StackBar<T> extends ChartRender<T> {
   final double padding;
 
   StackBar({
-    required this.position,
+    required this.xValue,
+    required this.yValues,
     this.highlightColor = Colors.yellow,
     this.colors = colors10,
     this.itemWidth = 20,
@@ -114,8 +120,8 @@ class StackBar<T> extends ChartRender<T> {
 
   //水平排列图形
   ChartShape _drawHorizontal(LineBarChartCoordinateRender<T> chart, int index, T data) {
-    num po = chart.position.call(data);
-    List<num> values = position.call(data);
+    num po = xValue.call(data);
+    List<num> values = yValues.call(data);
     assert(colors.length >= values.length);
     num total = chart.yAxis.max;
     if (total == 0) {
@@ -163,8 +169,8 @@ class StackBar<T> extends ChartRender<T> {
   }
 
   ChartShape _drawVertical(LineBarChartCoordinateRender<T> chart, int index, T data) {
-    num po = chart.position.call(data);
-    List<num> values = position.call(data);
+    num po = xValue.call(data);
+    List<num> values = yValues.call(data);
     assert(colors.length >= values.length);
     num total = chart.yAxis.max;
     if (full) {

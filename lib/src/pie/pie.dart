@@ -32,6 +32,9 @@ class Pie<T> extends ChartRender<T> {
   final TextStyle? centerTextStyle;
   //扇形的方向
   final RotateDirection direction;
+  //数据在坐标系的位置，每个坐标系下取值逻辑不一样，在line和bar下是相对于每格的值，比如xAxis的interval为1，你的数据放在1列和2列中间，那么position就是0.5，在pie下是比例
+  final ChartPosition<T> value;
+
   Pie({
     this.colors = colors10,
     this.holeRadius = 0,
@@ -46,6 +49,7 @@ class Pie<T> extends ChartRender<T> {
     this.legendFormatter,
     this.centerTextStyle,
     this.direction = RotateDirection.forward,
+    required this.value,
   });
   @override
   void draw() {
@@ -61,7 +65,7 @@ class Pie<T> extends ChartRender<T> {
     for (int i = 0; i < data.length; i++) {
       T item = data[i];
       //计算值
-      num po = chart.position.call(item);
+      num po = value.call(item);
       total += po;
       values.add(po);
     }

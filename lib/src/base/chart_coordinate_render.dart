@@ -49,8 +49,6 @@ abstract class ChartCoordinateRender<T> {
   final EdgeInsets margin;
   //图形内边距，用于控制图形内容距两周的距离
   final EdgeInsets padding;
-  //数据在坐标系的位置，每个坐标系下取值逻辑不一样，在line和bar下是相对于每格的值，比如xAxis的interval为1，你的数据放在1列和2列中间，那么position就是0.5，在pie下是比例
-  final ChartPosition<T> position;
   //缩放比例
   final bool zoom;
   //数据源 目前只支持x坐标相同的多条数据
@@ -70,7 +68,6 @@ abstract class ChartCoordinateRender<T> {
   ChartCoordinateRender({
     required this.margin,
     required this.padding,
-    required this.position,
     required this.chartRender,
     required this.data,
     this.tooltipRenderer,

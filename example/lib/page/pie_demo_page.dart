@@ -53,8 +53,8 @@ class PieChartDemoPage extends StatelessWidget {
                   data: dataList,
                   margin: const EdgeInsets.all(10),
                   padding: const EdgeInsets.all(5),
-                  position: (item) => (double.parse(item['value1'].toString())),
                   chartRender: Pie(
+                    value: (item) => (double.parse(item['value1'].toString())),
                     direction: RotateDirection.reverse,
                     textStyle: const TextStyle(
                       fontSize: 12,
@@ -76,8 +76,8 @@ class PieChartDemoPage extends StatelessWidget {
                 builder: (controller) => PieChartCoordinateRender(
                   data: dataList,
                   margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 10),
-                  position: (item) => (double.parse(item['value1'].toString())),
                   chartRender: Pie(
+                    value: (item) => (double.parse(item['value1'].toString())),
                     holeRadius: 40,
                     valueTextOffset: 20,
                     centerTextStyle: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
