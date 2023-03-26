@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../annotation/annotation.dart';
 import '../widget/chart_widget.dart';
+import 'chart_body_render.dart';
 import 'chart_controller.dart';
 
 ///
@@ -40,7 +41,6 @@ class CrossHairStyle {
   });
 }
 
-typedef ChartPosition<T> = num Function(T);
 typedef ChartTooltipFormatter<T> = InlineSpan Function(T);
 
 //渲染器， 每次刷新会重新构造，切忌不要存放状态数据，数据都在controller里面
@@ -51,10 +51,8 @@ abstract class ChartCoordinateRender<T> {
   final EdgeInsets padding;
   //缩放比例
   final bool zoom;
-  //数据源 目前只支持x坐标相同的多条数据
-  final List<T> data;
   //坐标系中间的绘图
-  final ChartRender<T> chartRender;
+  final ChartBodyRender<T> chartRender;
   //自定义提示框的样式
   final TooltipRenderer? tooltipRenderer;
   //自定义提示文案
@@ -69,7 +67,6 @@ abstract class ChartCoordinateRender<T> {
     required this.margin,
     required this.padding,
     required this.chartRender,
-    required this.data,
     this.tooltipRenderer,
     this.tooltipFormatter,
     this.zoom = false,
@@ -130,29 +127,4 @@ abstract class ChartCoordinateRender<T> {
   void scroll(Offset offset);
 
   void paint(Canvas canvas, Size size);
-}
-
-abstract class ChartRender<T> {
-  ChartRender();
-  //坐标系
-  late ChartCoordinateRender<T> coordinateChart;
-
-  //初始化
-  void init(ChartCoordinateRender<T> coordinateChart) {
-    this.coordinateChart = coordinateChart;
-  }
-
-  double withXOffset(double offset, [bool scrollable = true]) {
-    return coordinateChart.withXOffset(offset, scrollable);
-  }
-
-  double withXZoom(double offset) {
-    return coordinateChart.withXZoom(offset);
-  }
-
-  double withYOffset(double offset, [bool scrollable = true]) {
-    return coordinateChart.withYOffset(offset, scrollable);
-  }
-
-  void draw();
 }

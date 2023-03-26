@@ -58,7 +58,6 @@ class LineBarChartCoordinateRender<T> extends ChartCoordinateRender<T> {
   final YAxis yAxis;
   final XAxis xAxis;
   LineBarChartCoordinateRender({
-    required super.data,
     super.margin = const EdgeInsets.only(left: 30, top: 0, right: 0, bottom: 30),
     super.padding = const EdgeInsets.only(left: 30, top: 0, right: 0, bottom: 0),
     required super.chartRender,
@@ -308,7 +307,7 @@ class LineBarChartCoordinateRender<T> extends ChartCoordinateRender<T> {
       tooltipRenderer?.call(canvas, size, anchor, index);
       return;
     }
-    T item = data[index];
+    T item = chartRender.data[index];
     InlineSpan? textSpan = tooltipFormatter?.call(item);
     if (textSpan == null) {
       return;

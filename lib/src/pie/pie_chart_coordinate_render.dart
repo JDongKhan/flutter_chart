@@ -12,7 +12,6 @@ class PieChartCoordinateRender<T> extends ChartCoordinateRender<T> {
     super.margin = EdgeInsets.zero,
     super.padding = EdgeInsets.zero,
     required super.chartRender,
-    required super.data,
     super.zoom,
     this.borderWidth = 1,
     this.borderColor = Colors.white,

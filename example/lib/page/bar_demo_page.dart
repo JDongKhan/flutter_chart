@@ -61,15 +61,15 @@ class BarChartDemoPage extends StatelessWidget {
                           return startTime.add(Duration(days: index)).toStringWithFormat(format: 'dd');
                         },
                       ),
-                      data: dataList,
                       chartRender: StackBar(
+                        data: dataList,
                         direction: Axis.vertical,
                         itemWidth: 10,
                         highlightColor: Colors.yellow,
-                        xValue: (item) {
+                        position: (item) {
                           return parserDateTimeToDayValue(item['time'] as DateTime, startTime);
                         },
-                        yValues: (item) => [
+                        values: (item) => [
                           double.parse(item['value1'].toString()),
                           double.parse(item['value2'].toString()),
                           double.parse(item['value3'].toString()),
@@ -91,16 +91,16 @@ class BarChartDemoPage extends StatelessWidget {
                           return startTime.add(Duration(days: index)).toStringWithFormat(format: 'dd');
                         },
                       ),
-                      data: dataList,
                       chartRender: StackBar(
+                        data: dataList,
                         direction: Axis.vertical,
                         itemWidth: 10,
                         full: true,
                         highlightColor: Colors.yellow,
-                        xValue: (item) {
+                        position: (item) {
                           return parserDateTimeToDayValue(item['time'] as DateTime, startTime);
                         },
-                        yValues: (item) => [
+                        values: (item) => [
                           double.parse(item['value1'].toString()),
                           double.parse(item['value2'].toString()),
                           double.parse(item['value3'].toString()),
@@ -123,15 +123,15 @@ class BarChartDemoPage extends StatelessWidget {
                           return startTime.add(Duration(days: index)).toStringWithFormat(format: 'dd');
                         },
                       ),
-                      data: dataList,
                       chartRender: StackBar(
-                        xValue: (item) {
+                        data: dataList,
+                        position: (item) {
                           return parserDateTimeToDayValue(item['time'] as DateTime, startTime);
                         },
                         direction: Axis.horizontal,
                         itemWidth: 10,
                         highlightColor: Colors.yellow,
-                        yValues: (item) => [
+                        values: (item) => [
                           double.parse(item['value1'].toString()),
                           double.parse(item['value2'].toString()),
                           double.parse(item['value3'].toString()),
@@ -153,10 +153,10 @@ class BarChartDemoPage extends StatelessWidget {
                         max: 10,
                         formatter: (index) => startTime.add(Duration(days: index)).toStringWithFormat(format: 'dd'),
                       ),
-                      data: dataList,
                       chartRender: Bar(
-                        xValue: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
-                        yValue: (item) => item['value1'],
+                        data: dataList,
+                        position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
+                        value: (item) => item['value1'],
                       ),
                     ),
                   ),

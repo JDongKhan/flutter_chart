@@ -1,4 +1,4 @@
-import '../../flutter_chart.dart';
+import '../base/chart_render.dart';
 
 abstract class Annotation<T> extends ChartRender<T> {
   final bool scroll;

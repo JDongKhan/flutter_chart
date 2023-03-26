@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../base/chart_body_render.dart';
 import '../base/chart_controller.dart';
 import '../base/chart_coordinate_render.dart';
 import 'line_bar_chart_coordinate_render.dart';
@@ -8,20 +9,19 @@ typedef BarPosition<T> = num Function(T);
 
 /// @author JD
 ///普通bar
-class Bar<T> extends ChartRender<T> {
+class Bar<T> extends ChartBodyRender<T> {
   //bar的宽度
   final double itemWidth;
   //值格式化
-  final BarPosition yValue;
+  final BarPosition value;
   //颜色
   final Color color;
   //高亮颜色
   final Color highlightColor;
-  //数据在坐标系的位置，每个坐标系下取值逻辑不一样，在line和bar下是相对于每格的值，比如xAxis的interval为1，你的数据放在1列和2列中间，那么position就是0.5，在pie下是比例
-  final ChartPosition<T> xValue;
   Bar({
-    required this.yValue,
-    required this.xValue,
+    required super.data,
+    required this.value,
+    required super.position,
     this.itemWidth = 20,
     this.color = Colors.blue,
     this.highlightColor = Colors.yellow,
@@ -29,7 +29,6 @@ class Bar<T> extends ChartRender<T> {
   @override
   void draw() {
     LineBarChartCoordinateRender<T> chart = coordinateChart as LineBarChartCoordinateRender<T>;
-    List<T> data = chart.data;
     List<ChartShape> shapeList = [];
     for (int index = 0; index < data.length; index++) {
       T value = data[index];
@@ -39,9 +38,9 @@ class Bar<T> extends ChartRender<T> {
   }
 
   ChartShape _draw(LineBarChartCoordinateRender<T> chart, int index, T data) {
-    num po = xValue.call(data);
-    num value = yValue.call(data);
-    if (value == 0) {
+    num po = position.call(data);
+    num v = value.call(data);
+    if (v == 0) {
       return ChartShape();
     }
     double bottom = chart.size.height - chart.contentMargin.bottom;
@@ -51,7 +50,7 @@ class Bar<T> extends ChartRender<T> {
     left = withXOffset(left);
     left = withXZoom(left);
 
-    double present = value / chart.yAxis.max;
+    double present = v / chart.yAxis.max;
     double itemHeight = contentHeight * present;
     double top = bottom - itemHeight;
     Paint paint = Paint()
@@ -74,11 +73,9 @@ class Bar<T> extends ChartRender<T> {
 typedef StackBarPosition<T> = List<num> Function(T);
 
 //stackBar  支持水平/垂直排列
-class StackBar<T> extends ChartRender<T> {
-  //数据在坐标系的位置，每个坐标系下取值逻辑不一样，在line和bar下是相对于每格的值，比如xAxis的interval为1，你的数据放在1列和2列中间，那么position就是0.5，在pie下是比例
-  final ChartPosition<T> xValue;
+class StackBar<T> extends ChartBodyRender<T> {
   //值格式化
-  final StackBarPosition<T> yValues;
+  final StackBarPosition<T> values;
   //bar的宽度
   final double itemWidth;
   //多个颜色
@@ -93,8 +90,9 @@ class StackBar<T> extends ChartRender<T> {
   final double padding;
 
   StackBar({
-    required this.xValue,
-    required this.yValues,
+    required super.data,
+    required super.position,
+    required this.values,
     this.highlightColor = Colors.yellow,
     this.colors = colors10,
     this.itemWidth = 20,
@@ -105,7 +103,6 @@ class StackBar<T> extends ChartRender<T> {
   @override
   void draw() {
     LineBarChartCoordinateRender<T> chart = coordinateChart as LineBarChartCoordinateRender<T>;
-    List<T> data = chart.data;
     List<ChartShape> shapeList = [];
     for (int index = 0; index < data.length; index++) {
       T value = data[index];
@@ -120,9 +117,9 @@ class StackBar<T> extends ChartRender<T> {
 
   //水平排列图形
   ChartShape _drawHorizontal(LineBarChartCoordinateRender<T> chart, int index, T data) {
-    num po = xValue.call(data);
-    List<num> values = yValues.call(data);
-    assert(colors.length >= values.length);
+    num po = position.call(data);
+    List<num> vas = values.call(data);
+    assert(colors.length >= vas.length);
     num total = chart.yAxis.max;
     if (total == 0) {
       return ChartShape();
@@ -131,7 +128,7 @@ class StackBar<T> extends ChartRender<T> {
     double contentHeight = chart.size.height - chart.contentMargin.vertical;
     int stackIndex = 0;
 
-    double center = values.length * itemWidth / 2;
+    double center = vas.length * itemWidth / 2;
 
     double left = chart.contentMargin.left + chart.xAxis.density * po - itemWidth / 2 - center;
     left = withXOffset(left);
@@ -141,12 +138,12 @@ class StackBar<T> extends ChartRender<T> {
       rect: Rect.fromLTWH(
         left,
         chart.contentMargin.top,
-        itemWidth * values.length + padding * (values.length - 1),
+        itemWidth * vas.length + padding * (vas.length - 1),
         chart.size.height - chart.contentMargin.vertical,
       ),
     );
 
-    for (num v in values) {
+    for (num v in vas) {
       double present = v / total;
       double itemHeight = contentHeight * present;
       double top = bottom - itemHeight;
@@ -169,12 +166,12 @@ class StackBar<T> extends ChartRender<T> {
   }
 
   ChartShape _drawVertical(LineBarChartCoordinateRender<T> chart, int index, T data) {
-    num po = xValue.call(data);
-    List<num> values = yValues.call(data);
-    assert(colors.length >= values.length);
+    num po = position.call(data);
+    List<num> vas = values.call(data);
+    assert(colors.length >= vas.length);
     num total = chart.yAxis.max;
     if (full) {
-      total = values.fold(0, (previousValue, element) => previousValue + element);
+      total = vas.fold(0, (previousValue, element) => previousValue + element);
     }
     if (total == 0) {
       return ChartShape();
@@ -194,7 +191,7 @@ class StackBar<T> extends ChartRender<T> {
       ),
     );
 
-    for (num v in values) {
+    for (num v in vas) {
       double present = v / total;
       double itemHeight = contentHeight * present;
       double top = bottom - itemHeight;

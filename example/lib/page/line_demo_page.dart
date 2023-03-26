@@ -87,12 +87,12 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                         formatter: (index) => startTime.add(Duration(days: index)).toStringWithFormat(format: 'dd'),
                       ),
                       chartRender: Line(
-                        xValue: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
-                        yValues: (item) => [
+                        data: dataList,
+                        position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
+                        values: (item) => [
                           item['value1'] as num,
                         ],
                       ),
-                      data: dataList,
                     ),
                   ),
                 ),
@@ -129,13 +129,13 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                         formatter: (index) => startTime.add(Duration(days: index)).toStringWithFormat(format: 'dd'),
                       ),
                       chartRender: Line(
-                        xValue: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
-                        yValues: (item) => [
+                        data: dataList,
+                        position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
+                        values: (item) => [
                           item['value1'] as num,
                           item['value2'] as num,
                         ],
                       ),
-                      data: dataList,
                     ),
                   ),
                 ),
