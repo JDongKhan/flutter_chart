@@ -79,7 +79,8 @@ abstract class ChartCoordinateRender<T> {
     this.backgroundAnnotations,
     this.foregroundAnnotations,
     this.crossHair = const CrossHairStyle(),
-  }) : contentMargin = EdgeInsets.fromLTRB(margin.left + padding.left, margin.top + padding.top, margin.right + padding.right, margin.bottom + padding.bottom);
+  }) : contentMargin =
+            EdgeInsets.fromLTRB(margin.left + padding.left, margin.top + padding.top, margin.right + padding.right, margin.bottom + padding.bottom);
 
   //共享数据
   late ChartController controller;
@@ -91,6 +92,19 @@ abstract class ChartCoordinateRender<T> {
   //图形内容的外边距信息
   EdgeInsets contentMargin;
   Rect get contentRect => Rect.fromLTRB(contentMargin.left, contentMargin.top, size.width - contentMargin.left, size.height - contentMargin.bottom);
+
+  double transformBottomCoordinate(double bottom) {
+    return size.height - bottom;
+  }
+
+  double transformRightCoordinate(double right) {
+    return right;
+  }
+
+  //逻辑坐标系在左下角,而物理坐标系在左上角
+  Rect transformRectCoordinate(Rect rect) {
+    return Rect.fromLTWH(rect.left, size.height - rect.top, rect.width, rect.height);
+  }
 
   void init(Canvas canvas, Size size) {
     this.canvas = canvas;

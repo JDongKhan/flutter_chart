@@ -41,7 +41,7 @@ class Bar<T> extends ChartRender<T> {
     if (value == 0) {
       return ChartShape();
     }
-    double bottom = chart.contentMargin.bottom;
+    double bottom = chart.size.height - chart.contentMargin.bottom;
     double contentHeight = chart.size.height - chart.contentMargin.vertical;
 
     double left = chart.contentMargin.left + chart.xAxis.density * po - itemWidth / 2;
@@ -50,7 +50,7 @@ class Bar<T> extends ChartRender<T> {
 
     double present = value / chart.yAxis.max;
     double itemHeight = contentHeight * present;
-    double top = chart.size.height - bottom - itemHeight;
+    double top = bottom - itemHeight;
     Paint paint = Paint()
       ..color = color
       ..strokeWidth = 1
@@ -118,7 +118,7 @@ class StackBar<T> extends ChartRender<T> {
     if (total == 0) {
       return ChartShape();
     }
-    double bottom = chart.contentMargin.bottom;
+    double bottom = chart.size.height - chart.contentMargin.bottom;
     double contentHeight = chart.size.height - chart.contentMargin.vertical;
     int stackIndex = 0;
 
@@ -142,7 +142,7 @@ class StackBar<T> extends ChartRender<T> {
     for (num v in values) {
       double present = v / total;
       double itemHeight = contentHeight * present;
-      double top = chart.size.height - bottom - itemHeight;
+      double top = bottom - itemHeight;
       Rect rect = Rect.fromLTWH(left, top, itemWidth, itemHeight);
       ChartShape stackShape = ChartShape.rect(rect: rect);
       Paint paint = Paint()
@@ -172,7 +172,7 @@ class StackBar<T> extends ChartRender<T> {
     if (total == 0) {
       return ChartShape();
     }
-    double bottom = chart.contentMargin.bottom;
+    double bottom = chart.size.height - chart.contentMargin.bottom;
     double contentHeight = chart.size.height - chart.contentMargin.vertical;
     int stackIndex = 0;
     double left = chart.contentMargin.left + chart.xAxis.density * po - itemWidth / 2;
@@ -190,7 +190,7 @@ class StackBar<T> extends ChartRender<T> {
     for (num v in values) {
       double present = v / total;
       double itemHeight = contentHeight * present;
-      double top = chart.size.height - bottom - itemHeight;
+      double top = bottom - itemHeight;
       Paint paint = Paint()
         ..color = colors[stackIndex]
         ..strokeWidth = 1
@@ -204,7 +204,7 @@ class StackBar<T> extends ChartRender<T> {
       }
       chart.canvas.drawRect(rect, paint);
       stackIndex++;
-      bottom += itemHeight;
+      bottom = top;
     }
     return shape;
   }
