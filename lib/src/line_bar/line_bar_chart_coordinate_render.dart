@@ -280,23 +280,18 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
       //用于找哪个子图更适合
       for (ChartShapeState childShape in shape.children) {
         if (childShape.rect != null) {
-          double cTop = childShape.rect!.top;
+          double cTop = childShape.rect!.center.dy;
           double topDiffAbs = (cTop - anchor.dy).abs();
-          if (diffTop == 0) {
-            //第一次
+          if (diffTop == 0 || topDiffAbs < diffTop) {
+            top = cTop;
             diffTop = topDiffAbs;
-            top = childShape.rect!.top;
-          } else if (topDiffAbs < diffTop) {
-            top = childShape.rect!.top;
           }
 
-          double cLeft = childShape.rect!.left;
+          double cLeft = childShape.rect!.center.dx;
           double leftDiffAbs = (cLeft - anchor.dx).abs();
-          if (leftDiffAbs < diffLeft) {
-            left = childShape.rect!.left;
-          } else if (diffLeft == 0) {
+          if (diffLeft == 0 || leftDiffAbs < diffLeft) {
+            left = cLeft;
             diffLeft = leftDiffAbs;
-            left = childShape.rect!.left;
           }
         }
       }
@@ -316,7 +311,7 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
     //垂直
     if (crossHair.verticalShow) {
       Offset p1 = Offset(anchor.dx, margin.top);
-      Offset p2 = Offset(anchor.dx, size.height - margin.vertical);
+      Offset p2 = Offset(anchor.dx, size.height - margin.bottom);
       Path path = Path()
         ..moveTo(p1.dx, p1.dy)
         ..lineTo(p2.dx, p2.dy);
@@ -325,7 +320,7 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
     //水平
     if (crossHair.horizontalShow) {
       Offset p11 = Offset(margin.left, anchor.dy);
-      Offset p21 = Offset(size.width - margin.horizontal, anchor.dy);
+      Offset p21 = Offset(size.width - margin.right, anchor.dy);
       Path path1 = Path()
         ..moveTo(p11.dx, p11.dy)
         ..lineTo(p21.dx, p21.dy);

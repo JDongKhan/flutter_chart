@@ -24,15 +24,39 @@ class _ChartWidgetState extends State<ChartWidget> {
   Offset offset = Offset.zero;
   double zoom = 1.0;
   double _beforeZoom = 1.0;
-  final ChartState _state = ChartState();
+  late ChartState _state;
+
   @override
   void initState() {
-    _state.addListener(() {
-      if (mounted) {
-        setState(() {});
-      }
-    });
+    _state = ChartState();
+    _registerChanged();
     super.initState();
+  }
+
+  void _registerChanged() {
+    _state.addListener(_update);
+  }
+
+  void _update() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant ChartWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _state.removeListener(_update);
+    _state.dispose();
+    _state = ChartState();
+    _update();
+  }
+
+  @override
+  void dispose() {
+    _state.removeListener(_update);
+    _state.dispose();
+    super.dispose();
   }
 
   @override

@@ -48,9 +48,14 @@ class Line<T> extends ChartBodyRender<T> {
     double bottom = chart.size.height - chart.contentMargin.bottom;
     Map<int, Path> pathMap = {};
     ChartShapeState? lastShape;
+    num? lastXvs;
     //遍历数据
     for (T value in data) {
       num xvs = position.call(value);
+      if (lastXvs != null) {
+        assert(lastXvs < xvs, '必须要正序数据');
+      }
+      lastXvs = xvs;
       List<num> yvs = values.call(value);
       List<ChartShapeState> shapes = [];
       assert(colors.length >= yvs.length);
