@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../base/chart_body_render.dart';
-import '../base/chart_controller.dart';
 import '../base/chart_coordinate_render.dart';
+import '../base/chart_state.dart';
 import '../widget/dash_painter.dart';
 
 /// @author JD
@@ -104,7 +104,7 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
     double density = (width - contentMargin.horizontal) / count / xAxis.interval;
     //x轴密度 即1 value 等于多少尺寸
     if (zoomHorizontal) {
-      xAxis.density = density * controller.zoom;
+      xAxis.density = density * state.zoom;
     } else {
       xAxis.density = density;
     }
@@ -115,7 +115,7 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
     double itemHeight = (height - margin.vertical) / yCount;
     double itemValue = (max - min) / yCount;
     if (zoomVertical) {
-      yAxis.left.density = itemHeight / itemValue * controller.zoom;
+      yAxis.left.density = itemHeight / itemValue * state.zoom;
     } else {
       yAxis.left.density = itemHeight / itemValue;
     }
@@ -255,7 +255,7 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
 
   void _drawCrosshair(Canvas canvas, Size size) {
     //十字准星
-    Offset? anchor = controller.gesturePoint;
+    Offset? anchor = state.gesturePoint;
     if (anchor == null) {
       return;
     }
@@ -266,19 +266,19 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
     double diffLeft = 0;
 
     //查找更贴近点击的那条数据
-    for (MapEntry<int, CharBodyController> entry in controller.bodyControllerList.entries) {
+    for (MapEntry<int, CharBodyState> entry in state.bodyStateList.entries) {
       int key = entry.key;
-      CharBodyController value = entry.value;
+      CharBodyState value = entry.value;
       int? index = value.selectedIndex;
       if (index == null) {
         continue;
       }
-      ChartShape? shape = value.shapeList?[index];
+      ChartShapeState? shape = value.shapeList?[index];
       if (shape == null) {
         continue;
       }
       //用于找哪个子图更适合
-      for (ChartShape childShape in shape.children) {
+      for (ChartShapeState childShape in shape.children) {
         if (childShape.rect != null) {
           double cTop = childShape.rect!.top;
           double topDiffAbs = (cTop - anchor.dy).abs();
@@ -338,13 +338,13 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
     Canvas canvas,
     Size size,
   ) {
-    Offset? anchor = controller.gesturePoint;
+    Offset? anchor = state.gesturePoint;
     if (anchor == null) {
       return;
     }
     if (tooltipRenderer != null) {
       List<int?> index = [];
-      for (MapEntry<int, CharBodyController> entry in controller.bodyControllerList.entries) {
+      for (MapEntry<int, CharBodyState> entry in state.bodyStateList.entries) {
         index.add(entry.value.selectedIndex);
       }
       tooltipRenderer?.call(canvas, size, anchor, index);
@@ -354,7 +354,7 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
     List items = [];
     for (int i = 0; i < charts.length; i++) {
       ChartBodyRender element = charts[i];
-      int? selectIndex = element.bodyController.selectedIndex;
+      int? selectIndex = element.bodyState.selectedIndex;
       if (selectIndex != null) {
         dynamic item = element.data[i];
         items.add(item);
@@ -416,13 +416,13 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
 
   @override
   void scroll(Offset delta) {
-    Offset newOffset = controller.offset.translate(-delta.dx, delta.dy);
+    Offset newOffset = state.offset.translate(-delta.dx, delta.dy);
 
     //校准偏移，不然缩小后可能起点都在中间了，或者无限滚动
     double x = newOffset.dx;
     double y = newOffset.dy;
     //因为缩放最小值可能为负的了
-    double minXOffsetValue = (1 - controller.zoom) * size.width / 2;
+    double minXOffsetValue = (1 - state.zoom) * size.width / 2;
     if (x < minXOffsetValue) {
       x = minXOffsetValue;
     }
@@ -441,7 +441,7 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
     }
 
     //y轴
-    double minYOffsetValue = (1 - controller.zoom) * size.height / 2;
+    double minYOffsetValue = (1 - state.zoom) * size.height / 2;
 
     double chartContentHeight = padding.vertical + yAxis.left.density * yAxis.left.max;
     double chartViewPortHeight = size.height - margin.vertical;
@@ -458,8 +458,8 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
       y = minYOffsetValue;
     }
 
-    controller.offset = Offset(x, y);
-    // print(controller.offset);
+    state.offset = Offset(x, y);
+    // print(state.offset);
   }
 
   //背景

@@ -4,7 +4,7 @@ import 'dart:ui';
 import 'package:flutter/foundation.dart';
 
 //数据共享，便于各个节点使用
-class ChartController extends ChangeNotifier {
+class ChartState extends ChangeNotifier {
   Offset? _gesturePoint;
   set gesturePoint(value) {
     if (value != _gesturePoint) {
@@ -32,44 +32,44 @@ class ChartController extends ChangeNotifier {
   }
 
   //根据位置缓存配置信息
-  Map<int, CharBodyController> bodyControllerList = {};
+  Map<int, CharBodyState> bodyStateList = {};
 }
 
-class CharBodyController {
+class CharBodyState {
   int? selectedIndex;
-  List<ChartShape>? shapeList;
+  List<ChartShapeState>? shapeList;
 }
 
 //存放每条数据对应的绘图信息
-class ChartShape {
+class ChartShapeState {
   Rect? rect;
   //热区 用于逻辑处理 比如line下，要计算前面和后面的位置信息才能决定自己的热区
   Rect? hotRect;
   //用于判断是否命中
   Path? hotPath;
   Path? path;
-  ChartShape({
+  ChartShapeState({
     this.rect,
     this.path,
   });
   //某条数据下 可能会有多条数据
-  List<ChartShape> children = [];
+  List<ChartShapeState> children = [];
 
-  ChartShape.rect({
+  ChartShapeState.rect({
     required this.rect,
     Rect? hotRect,
   })  : hotRect = hotRect ?? Rect.fromLTRB(rect!.left, rect.top, rect.right, rect.bottom),
         path = Path()..addRect(rect!),
         hotPath = Path()..addRect(hotRect ?? Rect.fromLTRB(rect.left, rect.top, rect.right, rect.bottom));
 
-  ChartShape.oval({
+  ChartShapeState.oval({
     required this.rect,
     Rect? hotRect,
   })  : hotRect = hotRect ?? Rect.fromLTRB(rect!.left, rect.top, rect.right, rect.bottom),
         path = Path()..addOval(rect!),
         hotPath = Path()..addOval(hotRect ?? Rect.fromLTRB(rect.left, rect.top, rect.right, rect.bottom));
 
-  ChartShape.arc({
+  ChartShapeState.arc({
     required Offset center, // 中心点
     required double innerRadius, // 小圆半径
     required double outRadius, // 大圆半径

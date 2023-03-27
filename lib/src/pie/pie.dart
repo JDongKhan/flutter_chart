@@ -3,8 +3,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import '../base/chart_body_render.dart';
-import '../base/chart_controller.dart';
 import '../base/chart_coordinate_render.dart';
+import '../base/chart_state.dart';
 import 'pie_chart_coordinate_render.dart';
 
 /// @author JD
@@ -78,7 +78,7 @@ class Pie<T> extends ChartBodyRender<T> {
 
     //开始画扇形
     double startAngle = 0;
-    List<ChartShape> shapeList = [];
+    List<ChartShapeState> shapeList = [];
     assert(colors.length >= data.length);
     for (int i = 0; i < data.length; i++) {
       T item = data[i];
@@ -87,7 +87,7 @@ class Pie<T> extends ChartBodyRender<T> {
       // 计算出每个数据所占的弧度值
       final sweepAngle = percent * pi * 2 * (direction == RotateDirection.forward ? 1 : -1);
 
-      ChartShape shape = ChartShape.arc(
+      ChartShapeState shape = ChartShapeState.arc(
         center: center,
         startAngle: startAngle,
         sweepAngle: sweepAngle,
@@ -96,12 +96,12 @@ class Pie<T> extends ChartBodyRender<T> {
       );
       shapeList.add(shape);
 
-      ChartShape tapShape = shape;
+      ChartShapeState tapShape = shape;
       //判断是否选中
-      bool selected = shape.hitTest(chart.controller.gesturePoint);
+      bool selected = shape.hitTest(chart.state.gesturePoint);
       if (selected) {
-        chart.controller.bodyControllerList[positionIndex]?.selectedIndex = i;
-        tapShape = ChartShape.arc(
+        chart.state.bodyStateList[positionIndex]?.selectedIndex = i;
+        tapShape = ChartShapeState.arc(
           center: center,
           startAngle: startAngle,
           sweepAngle: sweepAngle,
@@ -179,6 +179,6 @@ class Pie<T> extends ChartBodyRender<T> {
       //继续下一个
       startAngle = startAngle + sweepAngle;
     }
-    chart.controller.bodyControllerList[positionIndex]?.shapeList = shapeList;
+    chart.state.bodyStateList[positionIndex]?.shapeList = shapeList;
   }
 }

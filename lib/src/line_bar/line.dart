@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../base/chart_body_render.dart';
-import '../base/chart_controller.dart';
 import '../base/chart_coordinate_render.dart';
+import '../base/chart_state.dart';
 import 'line_bar_chart_coordinate_render.dart';
 
 typedef LinePosition<T> = List<num> Function(T);
@@ -25,7 +25,7 @@ class Line<T> extends ChartBodyRender<T> {
   @override
   void draw() {
     LineBarChartCoordinateRender chart = coordinateChart as LineBarChartCoordinateRender;
-    List<ChartShape> shapeList = [];
+    List<ChartShapeState> shapeList = [];
     //线
     Paint paint = Paint()
       ..strokeWidth = strokeWidth
@@ -46,19 +46,19 @@ class Line<T> extends ChartBodyRender<T> {
     double top = chart.contentMargin.top;
     double bottom = chart.size.height - chart.contentMargin.bottom;
     Map<int, Path> pathMap = {};
-    ChartShape? lastShape;
+    ChartShapeState? lastShape;
     //遍历数据
     for (T value in data) {
       num xvs = position.call(value);
       List<num> yvs = values.call(value);
-      List<ChartShape> shapes = [];
+      List<ChartShapeState> shapes = [];
       assert(colors.length >= yvs.length);
       double xPo = xvs * chart.xAxis.density + left;
 
       //先判断是否选中，此场景是第一次渲染之后点击才有，所以用老数据即可
-      List<ChartShape>? currentShapeList = chart.controller.bodyControllerList[positionIndex]?.shapeList;
-      if (chart.controller.gesturePoint != null && (currentShapeList?[index].hitTest(chart.controller.gesturePoint!) == true)) {
-        chart.controller.bodyControllerList[positionIndex]?.selectedIndex = index;
+      List<ChartShapeState>? currentShapeList = chart.state.bodyStateList[positionIndex]?.shapeList;
+      if (chart.state.gesturePoint != null && (currentShapeList?[index].hitTest(chart.state.gesturePoint!) == true)) {
+        chart.state.bodyStateList[positionIndex]?.selectedIndex = index;
       }
 
       //一条数据下可能多条线
@@ -80,7 +80,7 @@ class Line<T> extends ChartBodyRender<T> {
         //先画点
         chart.canvas.drawCircle(Offset(xPo, yPo), dotRadius, dotPaint..color = colors[valueIndex]);
         //存放点的位置
-        ChartShape shape = ChartShape.rect(rect: Rect.fromLTWH(xPo, yPo, dotRadius, dotRadius));
+        ChartShapeState shape = ChartShapeState.rect(rect: Rect.fromLTWH(xPo, yPo, dotRadius, dotRadius));
         shapes.add(shape);
       }
       //调整热区
@@ -100,7 +100,7 @@ class Line<T> extends ChartBodyRender<T> {
         lastShape.translateHotRect(right: leftDiff / 2);
       }
 
-      ChartShape shape = ChartShape.rect(rect: Rect.fromLTRB(xPo, top, xPo + dotRadius * 2, bottom), hotRect: currentTapRect);
+      ChartShapeState shape = ChartShapeState.rect(rect: Rect.fromLTRB(xPo, top, xPo + dotRadius * 2, bottom), hotRect: currentTapRect);
       shape.children.addAll(shapes);
       shapeList.add(shape);
 
@@ -112,6 +112,6 @@ class Line<T> extends ChartBodyRender<T> {
       chart.canvas.drawPath(path, paint..color = colors[index]);
     });
 
-    chart.controller.bodyControllerList[positionIndex]?.shapeList = shapeList;
+    chart.state.bodyStateList[positionIndex]?.shapeList = shapeList;
   }
 }

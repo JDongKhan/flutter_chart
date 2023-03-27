@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../annotation/annotation.dart';
 import '../widget/chart_widget.dart';
 import 'chart_body_render.dart';
-import 'chart_controller.dart';
+import 'chart_state.dart';
 
 ///
 /// @author JD
@@ -43,7 +43,7 @@ class CrossHairStyle {
 
 typedef ChartTooltipFormatter<T> = InlineSpan Function(List<T?>);
 
-//渲染器， 每次刷新会重新构造，切忌不要存放状态数据，数据都在controller里面
+//渲染器， 每次刷新会重新构造，切忌不要存放状态数据，数据都在state里面
 abstract class ChartCoordinateRender {
   //图形外边距，用于控制两轴边距
   final EdgeInsets margin;
@@ -78,7 +78,7 @@ abstract class ChartCoordinateRender {
   }) : contentMargin = EdgeInsets.fromLTRB(margin.left + padding.left, margin.top + padding.top, margin.right + padding.right, margin.bottom + padding.bottom);
 
   //共享数据
-  late ChartController controller;
+  late ChartState state;
   //画布
   late Canvas canvas;
   //画布尺寸
@@ -111,21 +111,21 @@ abstract class ChartCoordinateRender {
 
   double withXOffset(double offset, [bool scrollable = true]) {
     if (scrollable) {
-      return offset - controller.offset.dx;
+      return offset - state.offset.dx;
     }
     return offset;
   }
 
   double withXZoom(double offset) {
     if (zoomHorizontal) {
-      return offset - (controller.zoom - 1) * (size.width / 2);
+      return offset - (state.zoom - 1) * (size.width / 2);
     }
     return offset;
   }
 
   double withYOffset(double offset, [bool scrollable = true]) {
     if (scrollable) {
-      return offset - controller.offset.dy;
+      return offset - state.offset.dy;
     }
     return offset;
   }

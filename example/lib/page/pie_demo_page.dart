@@ -49,7 +49,7 @@ class PieChartDemoPage extends StatelessWidget {
               // color: Colors.red,
               height: 200,
               child: ChartWidget(
-                builder: (controller) => PieChartCoordinateRender(
+                builder: () => PieChartCoordinateRender(
                   margin: const EdgeInsets.all(10),
                   padding: const EdgeInsets.all(5),
                   charts: [
@@ -75,7 +75,7 @@ class PieChartDemoPage extends StatelessWidget {
             SizedBox(
               height: 200,
               child: ChartWidget(
-                builder: (controller) => PieChartCoordinateRender(
+                builder: () => PieChartCoordinateRender(
                   margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 10),
                   charts: [
                     Pie(

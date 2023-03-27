@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
 import '../base/chart_body_render.dart';
-import '../base/chart_controller.dart';
 import '../base/chart_coordinate_render.dart';
+import '../base/chart_state.dart';
 
 /// @author JD
 ///
 typedef TooltipRenderer = void Function(Canvas, Size size, Offset anchor, List<int?> indexs);
-typedef ChartCoordinateRenderBuilder = ChartCoordinateRender Function(BuildContext context);
+typedef ChartCoordinateRenderBuilder = ChartCoordinateRender Function();
 
 //本widget只是起到提供Canvas的功能，不支持任何传参，避免参数来回传递导致难以维护以及混乱，需要自定义可自行去对应渲染器
 class ChartWidget extends StatefulWidget {
@@ -24,10 +24,10 @@ class _ChartWidgetState extends State<ChartWidget> {
   Offset offset = Offset.zero;
   double zoom = 1.0;
   double _beforeZoom = 1.0;
-  final ChartController _controller = ChartController();
+  final ChartState _state = ChartState();
   @override
   void initState() {
-    _controller.addListener(() {
+    _state.addListener(() {
       if (mounted) {
         setState(() {});
       }
@@ -38,17 +38,17 @@ class _ChartWidgetState extends State<ChartWidget> {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, cs) {
-      ChartCoordinateRender baseChart = widget.builder.call(context);
-      baseChart.controller = _controller;
+      ChartCoordinateRender baseChart = widget.builder.call();
+      baseChart.state = _state;
       for (int i = 0; i < baseChart.charts.length; i++) {
         ChartBodyRender body = baseChart.charts[i];
         body.positionIndex = i;
-        CharBodyController? c = _controller.bodyControllerList[i];
+        CharBodyState? c = _state.bodyStateList[i];
         if (c == null) {
-          c = CharBodyController();
-          _controller.bodyControllerList[i] = c;
+          c = CharBodyState();
+          _state.bodyStateList[i] = c;
         }
-        body.bodyController = c;
+        body.bodyState = c;
       }
 
       return _buildWidget(baseChart, cs.maxWidth, cs.maxHeight);
@@ -59,7 +59,7 @@ class _ChartWidgetState extends State<ChartWidget> {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTapUp: (TapUpDetails details) {
-        _controller.gesturePoint = details.localPosition;
+        _state.gesturePoint = details.localPosition;
         setState(() {});
       },
       onScaleStart: (ScaleStartDetails details) {
@@ -71,7 +71,7 @@ class _ChartWidgetState extends State<ChartWidget> {
           if (chart.zoomHorizontal || chart.zoomVertical) {
             setState(() {
               zoom = _beforeZoom * details.scale;
-              _controller.zoom = zoom;
+              _state.zoom = zoom;
             });
           }
         } else if (details.pointerCount == 1 && details.scale == 1) {
@@ -106,7 +106,7 @@ class _ChartPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    chart.controller.bodyControllerList.forEach((key, value) {
+    chart.state.bodyStateList.forEach((key, value) {
       value.selectedIndex = null;
     });
     //初始化

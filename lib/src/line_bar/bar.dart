@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../base/chart_body_render.dart';
-import '../base/chart_controller.dart';
 import '../base/chart_coordinate_render.dart';
+import '../base/chart_state.dart';
 import 'line_bar_chart_coordinate_render.dart';
 
 typedef BarPosition<T> = num Function(T);
@@ -29,19 +29,19 @@ class Bar<T> extends ChartBodyRender<T> {
   @override
   void draw() {
     LineBarChartCoordinateRender chart = coordinateChart as LineBarChartCoordinateRender;
-    List<ChartShape> shapeList = [];
+    List<ChartShapeState> shapeList = [];
     for (int index = 0; index < data.length; index++) {
       T value = data[index];
       shapeList.add(_draw(chart, index, value));
     }
-    chart.controller.bodyControllerList[positionIndex]?.shapeList = shapeList;
+    chart.state.bodyStateList[positionIndex]?.shapeList = shapeList;
   }
 
-  ChartShape _draw(LineBarChartCoordinateRender chart, int index, T data) {
+  ChartShapeState _draw(LineBarChartCoordinateRender chart, int index, T data) {
     num po = position.call(data);
     num v = value.call(data);
     if (v == 0) {
-      return ChartShape();
+      return ChartShapeState();
     }
     double bottom = chart.size.height - chart.contentMargin.bottom;
     double contentHeight = chart.size.height - chart.contentMargin.vertical;
@@ -58,11 +58,11 @@ class Bar<T> extends ChartBodyRender<T> {
       ..strokeWidth = 1
       ..style = PaintingStyle.fill;
     Rect rect = Rect.fromLTWH(left, top, itemWidth, itemHeight);
-    ChartShape shape = ChartShape.rect(
+    ChartShapeState shape = ChartShapeState.rect(
       rect: rect,
     );
-    if (shape.hitTest(chart.controller.gesturePoint)) {
-      chart.controller.bodyControllerList[positionIndex]?.selectedIndex = index;
+    if (shape.hitTest(chart.state.gesturePoint)) {
+      chart.state.bodyStateList[positionIndex]?.selectedIndex = index;
       paint.color = highlightColor;
     }
     chart.canvas.drawRect(rect, paint);
@@ -103,7 +103,7 @@ class StackBar<T> extends ChartBodyRender<T> {
   @override
   void draw() {
     LineBarChartCoordinateRender chart = coordinateChart as LineBarChartCoordinateRender;
-    List<ChartShape> shapeList = [];
+    List<ChartShapeState> shapeList = [];
     for (int index = 0; index < data.length; index++) {
       T value = data[index];
       if (direction == Axis.horizontal) {
@@ -112,17 +112,17 @@ class StackBar<T> extends ChartBodyRender<T> {
         shapeList.add(_drawVertical(chart, index, value));
       }
     }
-    chart.controller.bodyControllerList[positionIndex]?.shapeList = shapeList;
+    chart.state.bodyStateList[positionIndex]?.shapeList = shapeList;
   }
 
   //水平排列图形
-  ChartShape _drawHorizontal(LineBarChartCoordinateRender chart, int index, T data) {
+  ChartShapeState _drawHorizontal(LineBarChartCoordinateRender chart, int index, T data) {
     num po = position.call(data);
     List<num> vas = values.call(data);
     assert(colors.length >= vas.length);
     num total = chart.yAxis.left.max;
     if (total == 0) {
-      return ChartShape();
+      return ChartShapeState();
     }
     double bottom = chart.size.height - chart.contentMargin.bottom;
     double contentHeight = chart.size.height - chart.contentMargin.vertical;
@@ -134,7 +134,7 @@ class StackBar<T> extends ChartBodyRender<T> {
     left = withXOffset(left);
     left = withXZoom(left);
 
-    ChartShape shape = ChartShape.rect(
+    ChartShapeState shape = ChartShapeState.rect(
       rect: Rect.fromLTWH(
         left,
         chart.contentMargin.top,
@@ -148,13 +148,13 @@ class StackBar<T> extends ChartBodyRender<T> {
       double itemHeight = contentHeight * present;
       double top = bottom - itemHeight;
       Rect rect = Rect.fromLTWH(left, top, itemWidth, itemHeight);
-      ChartShape stackShape = ChartShape.rect(rect: rect);
+      ChartShapeState stackShape = ChartShapeState.rect(rect: rect);
       Paint paint = Paint()
         ..color = colors[stackIndex]
         ..strokeWidth = 1
         ..style = PaintingStyle.fill;
-      if (stackShape.hitTest(chart.controller.gesturePoint)) {
-        chart.controller.bodyControllerList[positionIndex]?.selectedIndex = index;
+      if (stackShape.hitTest(chart.state.gesturePoint)) {
+        chart.state.bodyStateList[positionIndex]?.selectedIndex = index;
         paint.color = highlightColor;
       }
       chart.canvas.drawRect(rect, paint);
@@ -165,7 +165,7 @@ class StackBar<T> extends ChartBodyRender<T> {
     return shape;
   }
 
-  ChartShape _drawVertical(LineBarChartCoordinateRender chart, int index, T data) {
+  ChartShapeState _drawVertical(LineBarChartCoordinateRender chart, int index, T data) {
     num po = position.call(data);
     List<num> vas = values.call(data);
     assert(colors.length >= vas.length);
@@ -174,7 +174,7 @@ class StackBar<T> extends ChartBodyRender<T> {
       total = vas.fold(0, (previousValue, element) => previousValue + element);
     }
     if (total == 0) {
-      return ChartShape();
+      return ChartShapeState();
     }
     double bottom = chart.size.height - chart.contentMargin.bottom;
     double contentHeight = chart.size.height - chart.contentMargin.vertical;
@@ -182,7 +182,7 @@ class StackBar<T> extends ChartBodyRender<T> {
     double left = chart.contentMargin.left + chart.xAxis.density * po - itemWidth / 2;
     left = withXOffset(left);
     left = withXZoom(left);
-    ChartShape shape = ChartShape.rect(
+    ChartShapeState shape = ChartShapeState.rect(
       rect: Rect.fromLTWH(
         left,
         chart.contentMargin.top,
@@ -200,9 +200,9 @@ class StackBar<T> extends ChartBodyRender<T> {
         ..strokeWidth = 1
         ..style = PaintingStyle.fill;
       Rect rect = Rect.fromLTWH(left, top, itemWidth, itemHeight);
-      ChartShape stackShape = ChartShape.rect(rect: rect);
-      if (stackShape.hitTest(chart.controller.gesturePoint)) {
-        chart.controller.bodyControllerList[positionIndex]?.selectedIndex = index;
+      ChartShapeState stackShape = ChartShapeState.rect(rect: rect);
+      if (stackShape.hitTest(chart.state.gesturePoint)) {
+        chart.state.bodyStateList[positionIndex]?.selectedIndex = index;
         paint.color = highlightColor;
         shape.children.add(stackShape);
       }

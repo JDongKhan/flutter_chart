@@ -51,7 +51,7 @@ class BarChartDemoPage extends StatelessWidget {
                 SizedBox(
                   height: 200,
                   child: ChartWidget(
-                    builder: (controller) => LineBarChartCoordinateRender(
+                    builder: () => LineBarChartCoordinateRender(
                       margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
                       yAxis: YAxis(
                         left: LeftYAxis(
@@ -88,7 +88,7 @@ class BarChartDemoPage extends StatelessWidget {
                 SizedBox(
                   height: 200,
                   child: ChartWidget(
-                    builder: (controller) => LineBarChartCoordinateRender(
+                    builder: () => LineBarChartCoordinateRender(
                       margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
                       yAxis: YAxis(
                         left: LeftYAxis(
@@ -127,7 +127,7 @@ class BarChartDemoPage extends StatelessWidget {
                 SizedBox(
                   height: 200,
                   child: ChartWidget(
-                    builder: (controller) => LineBarChartCoordinateRender(
+                    builder: () => LineBarChartCoordinateRender(
                       yAxis: YAxis(
                         left: LeftYAxis(min: 0, max: 500),
                       ),
@@ -162,7 +162,7 @@ class BarChartDemoPage extends StatelessWidget {
                 SizedBox(
                   height: 200,
                   child: ChartWidget(
-                    builder: (controller) => LineBarChartCoordinateRender(
+                    builder: () => LineBarChartCoordinateRender(
                       lineColor: Colors.grey,
                       margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
                       yAxis: YAxis(left: LeftYAxis(min: 0, max: 300)),
