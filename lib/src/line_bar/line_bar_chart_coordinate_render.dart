@@ -7,6 +7,7 @@ import '../widget/dash_painter.dart';
 
 /// @author JD
 typedef AxisFormatter = String? Function(int);
+typedef AxisOffset = Offset? Function(Size size);
 
 class XAxis {
   //方便计算，count代表一屏显示的格子数
@@ -43,6 +44,7 @@ class YAxis {
   //密度
   late double density;
   final DashPainter? dashPainter;
+  final AxisOffset? offset;
   YAxis({
     this.enable = true,
     required this.min,
@@ -50,8 +52,9 @@ class YAxis {
     this.formatter,
     this.count = 5,
     this.drawLine = true,
-    this.drawGrid = true,
+    this.drawGrid = false,
     this.dashPainter,
+    this.offset,
   });
 }
 
@@ -127,7 +130,9 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
   }
 
   void _drawYAxis(Canvas canvas, Size size) {
+    int yAxisIndex = 0;
     for (YAxis yA in yAxis) {
+      Offset offset = yA.offset?.call(size) ?? Offset.zero;
       num max = yA.max;
       num min = yA.min;
       int count = yA.count;
@@ -136,23 +141,27 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
       Paint paint = Paint()
         ..color = lineColor
         ..strokeWidth = 0.2;
+
+      double left = margin.left + offset.dx;
+
       //划线
       if (yA.drawLine) {
-        canvas.drawLine(Offset(margin.left, margin.top), Offset(margin.left, size.height - margin.bottom), paint);
+        canvas.drawLine(Offset(left, margin.top), Offset(left, size.height - margin.bottom), paint);
       }
       for (int i = 0; i <= count; i++) {
         String text = yA.formatter?.call(i) ?? '${min + itemValue * i}';
         double top = size.height - margin.bottom - itemHeight * i;
         if (i == count) {
-          _drawYTextPaint(canvas, text, top, false);
+          _drawYTextPaint(canvas, text, yAxisIndex > 0, left, top, false);
         } else {
-          _drawYTextPaint(canvas, text, top, true);
+          _drawYTextPaint(canvas, text, yAxisIndex > 0, left, top, true);
         }
         //绘制格子线
         if (yA.drawGrid) {
-          _drawGridLine(canvas, Offset(margin.left, top), Offset(size.width - margin.right, top), yA.dashPainter);
+          _drawGridLine(canvas, Offset(left, top), Offset(size.width - margin.right, top), yA.dashPainter);
         }
       }
+      yAxisIndex++;
     }
   }
 
@@ -168,7 +177,7 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
     painter.paint(canvas, path, paint);
   }
 
-  void _drawYTextPaint(Canvas canvas, String text, double top, bool middle) {
+  void _drawYTextPaint(Canvas canvas, String text, bool right, double left, double top, bool middle) {
     var textPainter = TextPainter(
       text: TextSpan(
         text: text,
@@ -184,7 +193,7 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
     textPainter.paint(
       canvas,
       Offset(
-        margin.left - textPainter.width - 5,
+        right ? left : left - textPainter.width - 5,
         middle ? top - textPainter.height / 2 : top,
       ),
     ); // 进行绘制

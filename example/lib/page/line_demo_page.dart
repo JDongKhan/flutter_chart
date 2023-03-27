@@ -197,7 +197,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                         height: 200,
                         child: ChartWidget(
                           builder: () => LineBarChartCoordinateRender(
-                            margin: const EdgeInsets.only(left: 40, top: 5, right: 0, bottom: 30),
+                            margin: const EdgeInsets.only(left: 40, top: 5, right: 30, bottom: 30),
                             //提示的文案信息
                             crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
                             tooltipFormatter: (list) => TextSpan(
@@ -207,7 +207,8 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                               ),
                             ),
                             yAxis: [
-                              YAxis(min: 0, max: 500),
+                              YAxis(min: 0, max: 500, drawGrid: true),
+                              YAxis(min: 0, max: 400, offset: (size) => Offset(size.width - 70, 0)),
                             ],
                             xAxis: XAxis(
                               count: 7,
@@ -218,6 +219,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                             charts: [
                               Bar(
                                 data: dataList,
+                                yAxisPosition: 1,
                                 position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
                                 value: (item) => item['value1'],
                               ),
