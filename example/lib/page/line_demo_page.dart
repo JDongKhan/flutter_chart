@@ -150,11 +150,12 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                         height: 200,
                         child: ChartWidget(
                           builder: () => LineBarChartCoordinateRender(
+                            zoomHorizontal: true,
                             foregroundAnnotations: [
                               LimitAnnotation(limit: 380),
                               LimitAnnotation(limit: 210),
                               if (logoImage != null) ImageAnnotation(image: logoImage!, positions: [1, 200], offset: Offset(-10, -10)),
-                              LabelAnnotation(positions: [6, 380], text: '380'),
+                              LabelAnnotation(positions: [6, 380], text: '380', scroll: false),
                             ],
                             backgroundAnnotations: [
                               RegionAnnotation(positions: [2.4, 3.3]),
