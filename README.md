@@ -26,97 +26,126 @@
 BarChart:
 ```dart
 
-      SizedBox(
-            width: 250,
-            height: 200,
-            child: ChartWidget(
-              builder: (controller) => LineBarChartCoordinateRender(
-                position: (item) {
-                  return (item['time'] as DateTime).difference(startTime).inMilliseconds / (24 * 60 * 60 * 1000);
-                },
-                margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
-                yAxis: YAxis(min: 0, max: 1000),
-                xAxis: XAxis(
-                  count: 7,
-                  max: 30,
-                  formatter: (index) {
-                    return startTime.add(Duration(days: index)).toStringWithFormat(format: 'dd');
-                  },
-                ),
-                data: dataList,
-                chartRender: StackBar(
-                  direction: Axis.vertical,
-                  itemWidth: 10,
-                  highlightColor: Colors.yellow,
-                  position: (item) => [
-                    double.parse(item['value1'].toString()),
-                    double.parse(item['value2'].toString()),
-                    double.parse(item['value3'].toString()),
-                  ],
-                ),
-              ),
-            ),
-          ),
-      
+SizedBox(
+height: 200,
+child: ChartWidget(
+  builder: () => LineBarChartCoordinateRender(
+    yAxis: [
+      YAxis(
+        min: 0,
+        max: 500,
+      )
+    ],
+    margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
+    xAxis: XAxis(
+      count: 7,
+      max: 30,
+      formatter: (index) {
+        return startTime.add(Duration(days: index)).toStringWithFormat(format: 'dd');
+      },
+    ),
+    charts: [
+      StackBar(
+        data: dataList,
+        position: (item) {
+          return parserDateTimeToDayValue(item['time'] as DateTime, startTime);
+        },
+        direction: Axis.horizontal,
+        itemWidth: 10,
+        highlightColor: Colors.yellow,
+        values: (item) => [
+          double.parse(item['value1'].toString()),
+          double.parse(item['value2'].toString()),
+          double.parse(item['value3'].toString()),
+        ],
+      ),
+    ],
+  ),
+),
+)  
 
 ```
 
 LineChart
 
 ```dart
-       SizedBox(
-            width: 250,
-            height: 200,
-            child: ChartWidget(
-              builder: (controller) => LineBarChartCoordinateRender(
-                zoom: true,
-                margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
-                //提示的文案信息
-                tooltipFormatter: (item) => TextSpan(
-                  text: '${item['value1']}',
-                  style: const TextStyle(
-                    color: Colors.black,
-                  ),
-                ),
-                position: (item) => (item['time'] as DateTime).difference(startTime).inMilliseconds / (24 * 60 * 60 * 1000),
-                yAxis: YAxis(min: 0, max: 500),
-                xAxis: XAxis(
-                  count: 7,
-                  max: 7,
-                  formatter: (index) => startTime.add(Duration(days: index)).toStringWithFormat(format: 'dd'),
-                ),
-                chartRender: Line(
-                  position: (item) => [
-                    item['value1'] as num,
-                  ],
-                ),
-                data: dataList,
-              ),
-            ),
-          ),
+       
+ SizedBox(
+// color: Colors.yellow,
+height: 200,
+child: ChartWidget(
+  builder: () => LineBarChartCoordinateRender(
+    margin: const EdgeInsets.only(left: 40, top: 5, right: 30, bottom: 30),
+    //提示的文案信息
+    crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
+    tooltipFormatter: (list) => TextSpan(
+      text: list.map((e) => e['value1']).toString(),
+      style: const TextStyle(
+        color: Colors.black,
+      ),
+    ),
+    yAxis: [
+      YAxis(min: 0, max: 500, drawGrid: true),
+      YAxis(min: 0, max: 400, offset: (size) => Offset(size.width - 70, 0)),
+    ],
+    xAxis: XAxis(
+      count: 7,
+      max: 20,
+      drawLine: false,
+      formatter: (index) => startTime.add(Duration(days: index)).toStringWithFormat(format: 'dd'),
+    ),
+    charts: [
+      Bar(
+        color: Colors.yellow,
+        data: dataList,
+        yAxisPosition: 1,
+        position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
+        value: (item) => item['value1'],
+      ),
+      Line(
+        data: dataList,
+        position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
+        values: (item) => [
+          item['value1'] as num,
+        ],
+      ),
+      Line(
+        colors: [Colors.green],
+        data: dataList,
+        position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
+        values: (item) => [
+          item['value2'] as num,
+        ],
+      ),
+    ],
+  ),
+),
+)
+
 
 ```
 
-BarChart
+PieChart
 
 ```dart
 
-       SizedBox(
-            height: 200,
-            width: 250,
-            child: ChartWidget(
-              builder: (controller) => PieChartCoordinateRender(
-                data: dataList,
-                margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 10),
-                position: (item) => (double.parse(item['value1'].toString())),
-                chartRender: Pie(
-                  holeRadius: 40,
-                  valueTextOffset: 20,
-                  centerTextStyle: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
-                  valueFormatter: (item) => item['value1'].toString(),
-                ),
-              ),
-            ),
-          ),
+SizedBox(
+  height: 200,
+  child: ChartWidget(
+    builder: () => PieChartCoordinateRender(
+      margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 10),
+      charts: [
+        Pie(
+          data: dataList,
+          position: (item) => (double.parse(item['value1'].toString())),
+          holeRadius: 40,
+          valueTextOffset: 20,
+          centerTextStyle: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
+          valueFormatter: (item) => item['value1'].toString(),
+        ),
+      ],
+    ),
+  ),
+),
 
 ```
