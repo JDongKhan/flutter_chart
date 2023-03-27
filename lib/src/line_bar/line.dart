@@ -53,9 +53,8 @@ class Line<T> extends ChartBodyRender<T> {
     for (T value in data) {
       num xvs = position.call(value);
       if (lastXvs != null) {
-        assert(lastXvs < xvs, '必须要正序数据');
+        assert(lastXvs < xvs, '虽然支持逆序，但是为了防止数据顺序混乱，还是强制要求必须是正序的数组');
       }
-      lastXvs = xvs;
       List<num> yvs = values.call(value);
       List<ChartShapeState> shapes = [];
       assert(colors.length >= yvs.length);
@@ -90,29 +89,45 @@ class Line<T> extends ChartBodyRender<T> {
         shapes.add(shape);
       }
       //调整热区
+      Rect currentRect = Rect.fromLTRB(xPo, top, xPo + dotRadius * 2, bottom);
       Rect currentTapRect;
       if (lastShape == null) {
         //说明当前是第一个
         currentTapRect = Rect.fromLTRB(left, top, right, bottom);
       } else {
-        double leftDiff = xPo - lastShape.rect!.right;
-        //最后一个
-        if (index == data.length - 1) {
-          currentTapRect = Rect.fromLTRB(xPo - leftDiff / 2, top, right, bottom);
+        //正序
+        if (lastXvs! < xvs) {
+          double leftDiff = currentRect.left - lastShape.rect!.right;
+          //最后一个
+          if (index == data.length - 1) {
+            currentTapRect = Rect.fromLTRB(currentRect.left - leftDiff / 2, top, right, bottom);
+          } else {
+            currentTapRect = Rect.fromLTRB(currentRect.left - leftDiff / 2, top, xPo + dotRadius * 2, bottom);
+          }
+          //调整前面一个
+          lastShape.adjustHotRect(right: leftDiff / 2);
         } else {
-          currentTapRect = Rect.fromLTRB(xPo - leftDiff / 2, top, xPo + dotRadius * 2, bottom);
+          //逆序
+          double rightDiff = currentRect.right - lastShape.rect!.left;
+          //因为是逆序，这是就是最左边的那个
+          if (index == data.length - 1) {
+            currentTapRect = Rect.fromLTRB(left, top, currentRect.right - rightDiff / 2, bottom);
+          } else {
+            currentTapRect = Rect.fromLTRB(xPo, top, currentRect.right - rightDiff / 2, bottom);
+          }
+          //调整前面一个
+          lastShape.adjustHotRect(left: rightDiff / 2);
         }
-        //调整前面一个
-        lastShape.adjustHotRect(right: leftDiff / 2);
       }
 
-      ChartShapeState shape = ChartShapeState.rect(rect: Rect.fromLTRB(xPo, top, xPo + dotRadius * 2, bottom), hotRect: currentTapRect);
+      ChartShapeState shape = ChartShapeState.rect(rect: currentRect, hotRect: currentTapRect);
       shape.children.addAll(shapes);
       shapeList.add(shape);
 
       lastShape = shape;
       //放到最后
       index++;
+      lastXvs = xvs;
     }
 
     //开启后可查看热区是否正确

@@ -105,7 +105,21 @@ class ChartShapeState {
     if (hotRect == null) {
       return;
     }
-    hotRect = Rect.fromLTRB(hotRect!.left + left, hotRect!.top + top, rect!.right + right, hotRect!.bottom + bottom);
+    if (right != 0) {
+      hotRect = Rect.fromLTRB(hotRect!.left, hotRect!.top, rect!.right + right, hotRect!.bottom);
+    }
+    if (left != 0) {
+      hotRect = Rect.fromLTRB(rect!.left + left, hotRect!.top, hotRect!.right, hotRect!.bottom);
+    }
+
+    if (top != 0) {
+      hotRect = Rect.fromLTRB(hotRect!.left + left, rect!.top + top, hotRect!.right, hotRect!.bottom);
+    }
+
+    if (bottom != 0) {
+      hotRect = Rect.fromLTRB(hotRect!.left + left, hotRect!.top, hotRect!.right, rect!.bottom + bottom);
+    }
+
     hotPath = Path()..addRect(hotRect!);
   }
 
