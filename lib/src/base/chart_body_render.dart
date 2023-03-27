@@ -1,6 +1,5 @@
-import 'package:flutter_chart/src/base/chart_render.dart';
-
 import '../../flutter_chart.dart';
+import 'chart_render.dart';
 
 /// @author jd
 

@@ -218,6 +218,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                             ),
                             charts: [
                               Bar(
+                                color: Colors.yellow,
                                 data: dataList,
                                 yAxisPosition: 1,
                                 position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
@@ -231,6 +232,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                                 ],
                               ),
                               Line(
+                                colors: [Colors.green],
                                 data: dataList,
                                 position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
                                 values: (item) => [

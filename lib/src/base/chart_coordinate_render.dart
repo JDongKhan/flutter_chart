@@ -41,7 +41,7 @@ class CrossHairStyle {
   });
 }
 
-typedef ChartTooltipFormatter<T> = InlineSpan Function(List<T?>);
+typedef ChartTooltipFormatter<T> = InlineSpan? Function(List<T?>);
 
 //渲染器， 每次刷新会重新构造，切忌不要存放状态数据，数据都在state里面
 abstract class ChartCoordinateRender {

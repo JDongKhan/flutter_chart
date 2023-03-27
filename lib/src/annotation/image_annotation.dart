@@ -2,7 +2,9 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_chart/flutter_chart.dart';
+
+import '../line_bar/line_bar_chart_coordinate_render.dart';
+import 'annotation.dart';
 
 /// @author jd
 class ImageAnnotation extends Annotation {

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_chart/flutter_chart.dart';
+
+import '../line_bar/line_bar_chart_coordinate_render.dart';
+import 'annotation.dart';
 
 //区间标注
 class RegionAnnotation extends Annotation {
