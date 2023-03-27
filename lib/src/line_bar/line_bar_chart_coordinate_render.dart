@@ -422,7 +422,7 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
     double y = newOffset.dy;
     //因为缩放最小值可能为负的了
     double minXOffsetValue = (1 - state.zoom) * size.width / 2;
-    print('$x -- $minXOffsetValue');
+    // print('$x -- $minXOffsetValue');
     if (x < minXOffsetValue) {
       x = minXOffsetValue;
     }
