@@ -117,16 +117,16 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
     canvas.clipRect(rect);
     _drawYAxis(canvas, size);
     //防止超过y轴
-    canvas.clipRect(Rect.fromLTWH(margin.left, margin.top, size.width - margin.left - margin.right, size.height));
+    canvas.clipRect(Rect.fromLTWH(margin.left, 0, size.width - margin.horizontal, size.height));
     _drawXAxis(canvas, size);
     _drawBackgroundAnnotations(canvas, size);
     //绘图
     for (var element in charts) {
       element.draw();
     }
-    _drawTooltip(canvas, size);
-    _drawCrosshair(canvas, size);
     _drawForegroundAnnotations(canvas, size);
+    _drawCrosshair(canvas, size);
+    _drawTooltip(canvas, size);
   }
 
   void _drawYAxis(Canvas canvas, Size size) {
@@ -457,7 +457,7 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
     } else {
       y = minYOffsetValue;
     }
-    //暂时不支持y轴滚动，因为场景太少，且考虑的太多
+
     state.offset = Offset(x, 0);
     // print(state.offset);
   }
