@@ -50,7 +50,8 @@ abstract class ChartCoordinateRender {
   //图形内边距，用于控制图形内容距两周的距离
   final EdgeInsets padding;
   //缩放比例
-  final bool zoom;
+  final bool zoomHorizontal;
+  final bool zoomVertical;
   //坐标系中间的绘图
   final List<ChartBodyRender> charts;
   //自定义提示框的样式
@@ -69,12 +70,12 @@ abstract class ChartCoordinateRender {
     required this.charts,
     this.tooltipRenderer,
     this.tooltipFormatter,
-    this.zoom = false,
+    this.zoomHorizontal = false,
+    this.zoomVertical = false,
     this.backgroundAnnotations,
     this.foregroundAnnotations,
     this.crossHair = const CrossHairStyle(),
-  }) : contentMargin =
-            EdgeInsets.fromLTRB(margin.left + padding.left, margin.top + padding.top, margin.right + padding.right, margin.bottom + padding.bottom);
+  }) : contentMargin = EdgeInsets.fromLTRB(margin.left + padding.left, margin.top + padding.top, margin.right + padding.right, margin.bottom + padding.bottom);
 
   //共享数据
   late ChartController controller;
@@ -116,7 +117,10 @@ abstract class ChartCoordinateRender {
   }
 
   double withXZoom(double offset) {
-    return offset - (controller.zoom - 1) * (size.width / 2);
+    if (zoomHorizontal) {
+      return offset - (controller.zoom - 1) * (size.width / 2);
+    }
+    return offset;
   }
 
   double withYOffset(double offset, [bool scrollable = true]) {

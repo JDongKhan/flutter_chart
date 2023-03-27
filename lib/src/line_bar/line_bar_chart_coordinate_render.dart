@@ -84,12 +84,13 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
     super.foregroundAnnotations,
     super.tooltipRenderer,
     super.tooltipFormatter,
-    super.zoom,
+    super.zoomHorizontal,
+    super.zoomVertical = false,
     super.crossHair = const CrossHairStyle(),
-    required YAxis yAxis,
+    required this.yAxis,
     XAxis? xAxis,
     this.lineColor = Colors.grey,
-  })  : yAxis = yAxis,
+  })  : assert(zoomVertical == false, '暂时不支持zoomVertical'),
         xAxis = xAxis ?? XAxis(max: 7);
 
   @override
@@ -102,15 +103,22 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
     //每格的宽度，用于控制一屏最多显示个数
     double density = (width - contentMargin.horizontal) / count / xAxis.interval;
     //x轴密度 即1 value 等于多少尺寸
-    xAxis.density = density * controller.zoom;
-
+    if (zoomHorizontal) {
+      xAxis.density = density * controller.zoom;
+    } else {
+      xAxis.density = density;
+    }
     num max = yAxis.left.max;
     num min = yAxis.left.min;
     int yCount = yAxis.left.count;
     //y轴密度  即1 value 等于多少尺寸
     double itemHeight = (height - margin.vertical) / yCount;
     double itemValue = (max - min) / yCount;
-    yAxis.left.density = itemHeight / itemValue;
+    if (zoomVertical) {
+      yAxis.left.density = itemHeight / itemValue * controller.zoom;
+    } else {
+      yAxis.left.density = itemHeight / itemValue;
+    }
     //缩放比例
   }
 
@@ -147,16 +155,15 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
     }
     for (int i = 0; i <= count; i++) {
       String text = yAxis.left.formatter?.call(i) ?? '${min + itemValue * i}';
-
+      double top = size.height - margin.bottom - itemHeight * i;
       if (i == count) {
-        _drawYTextPaint(canvas, text, margin.top, false);
+        _drawYTextPaint(canvas, text, top, false);
       } else {
-        _drawYTextPaint(canvas, text, size.height - margin.bottom - itemHeight * i, true);
+        _drawYTextPaint(canvas, text, top, true);
       }
       //绘制格子线
       if (yAxis.left.drawGrid) {
-        _drawGridLine(canvas, Offset(margin.left, margin.top + itemHeight * i), Offset(size.width - margin.right, margin.top + itemHeight * i),
-            yAxis.left.dashPainter);
+        _drawGridLine(canvas, Offset(margin.left, top), Offset(size.width - margin.right, top), yAxis.left.dashPainter);
       }
     }
   }
@@ -380,10 +387,8 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
     const bool constrained = true;
     Size contentSize = Size(size.width - padding.horizontal, size.height - padding.vertical);
     if (constrained) {
-      final horizontalAdjust =
-          windowRect.left < 0 ? -windowRect.left : (windowRect.right > contentSize.width ? contentSize.width - windowRect.right : 0.0);
-      final verticalAdjust =
-          windowRect.top < 0 ? -windowRect.top : (windowRect.bottom > contentSize.height ? contentSize.height - windowRect.bottom : 0.0);
+      final horizontalAdjust = windowRect.left < 0 ? -windowRect.left : (windowRect.right > contentSize.width ? contentSize.width - windowRect.right : 0.0);
+      final verticalAdjust = windowRect.top < 0 ? -windowRect.top : (windowRect.bottom > contentSize.height ? contentSize.height - windowRect.bottom : 0.0);
       if (horizontalAdjust != 0 || verticalAdjust != 0) {
         windowRect = windowRect.translate(horizontalAdjust, verticalAdjust);
         textPaintPoint = textPaintPoint.translate(horizontalAdjust, verticalAdjust);
@@ -411,7 +416,7 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
 
   @override
   void scroll(Offset delta) {
-    Offset newOffset = controller.offset.translate(-delta.dx, -delta.dy);
+    Offset newOffset = controller.offset.translate(-delta.dx, delta.dy);
 
     //校准偏移，不然缩小后可能起点都在中间了，或者无限滚动
     double x = newOffset.dx;
@@ -437,24 +442,24 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
 
     //y轴
     double minYOffsetValue = (1 - controller.zoom) * size.height / 2;
-    if (y < minYOffsetValue) {
-      y = minYOffsetValue;
-    }
+
     double chartContentHeight = padding.vertical + yAxis.left.density * yAxis.left.max;
     double chartViewPortHeight = size.height - margin.vertical;
     //因为offset可能为负的，换算成正值便于后面计算
-    double realYOffset = y - minYOffsetValue;
+    // double realYOffset = y - minYOffsetValue;
     //说明内容超出了组件
     if (chartContentHeight > chartViewPortHeight) {
-      //偏移+
-      if ((realYOffset + chartViewPortHeight) >= chartContentHeight) {
-        y = chartContentHeight - chartViewPortHeight + minYOffsetValue;
+      if (y < minYOffsetValue) {
+        y = minYOffsetValue;
+      } else if (y > (chartContentHeight - chartViewPortHeight)) {
+        y = (chartContentHeight - chartViewPortHeight);
       }
     } else {
       y = minYOffsetValue;
     }
 
     controller.offset = Offset(x, y);
+    // print(controller.offset);
   }
 
   //背景

@@ -68,7 +68,7 @@ class _ChartWidgetState extends State<ChartWidget> {
       onScaleUpdate: (ScaleUpdateDetails details) {
         //缩放
         if (details.scale != 1) {
-          if (chart.zoom) {
+          if (chart.zoomHorizontal || chart.zoomVertical) {
             setState(() {
               zoom = _beforeZoom * details.scale;
               _controller.zoom = zoom;
@@ -82,9 +82,7 @@ class _ChartWidgetState extends State<ChartWidget> {
       },
       onScaleEnd: (ScaleEndDetails details) {
         //这里可以处理减速的操作
-        // if (details.pointerCount == 1) {
-        // print(details);
-        // }
+        // print(details.velocity);
       },
       child: SizedBox(
         width: width,

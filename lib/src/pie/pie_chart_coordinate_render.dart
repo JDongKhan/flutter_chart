@@ -12,7 +12,8 @@ class PieChartCoordinateRender extends ChartCoordinateRender {
     super.margin = EdgeInsets.zero,
     super.padding = EdgeInsets.zero,
     required super.charts,
-    super.zoom,
+    super.zoomHorizontal,
+    super.zoomVertical,
     this.borderWidth = 1,
     this.borderColor = Colors.white,
   });
