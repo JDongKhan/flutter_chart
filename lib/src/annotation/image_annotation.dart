@@ -13,6 +13,7 @@ class ImageAnnotation extends Annotation {
     required this.image,
     required this.positions,
     super.scroll = true,
+    super.yAxisPosition = 0,
     this.offset = Offset.zero,
   });
 
@@ -39,7 +40,7 @@ class ImageAnnotation extends Annotation {
       num xPo = positions[0];
       num yPo = positions[1];
       double itemWidth = xPo * chart.xAxis.density;
-      double itemHeight = yPo * chart.yAxis.left.density;
+      double itemHeight = yPo * chart.yAxis[yAxisPosition].density;
       Offset offset = Offset(withXOffset(chart.contentMargin.left + itemWidth, scroll), withYOffset(chart.contentRect.bottom - itemHeight, scroll));
       Paint paint = Paint()
         ..color = Colors.blue

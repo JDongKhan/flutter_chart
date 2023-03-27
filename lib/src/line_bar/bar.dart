@@ -22,6 +22,7 @@ class Bar<T> extends ChartBodyRender<T> {
     required super.data,
     required this.value,
     required super.position,
+    super.yAxisPosition,
     this.itemWidth = 20,
     this.color = Colors.blue,
     this.highlightColor = Colors.yellow,
@@ -50,7 +51,7 @@ class Bar<T> extends ChartBodyRender<T> {
     left = withXOffset(left);
     left = withXZoom(left);
 
-    double present = v / chart.yAxis.left.max;
+    double present = v / chart.yAxis[yAxisPosition].max;
     double itemHeight = contentHeight * present;
     double top = bottom - itemHeight;
     Paint paint = Paint()
@@ -93,6 +94,7 @@ class StackBar<T> extends ChartBodyRender<T> {
     required super.data,
     required super.position,
     required this.values,
+    super.yAxisPosition = 0,
     this.highlightColor = Colors.yellow,
     this.colors = colors10,
     this.itemWidth = 20,
@@ -120,7 +122,7 @@ class StackBar<T> extends ChartBodyRender<T> {
     num po = position.call(data);
     List<num> vas = values.call(data);
     assert(colors.length >= vas.length);
-    num total = chart.yAxis.left.max;
+    num total = chart.yAxis[yAxisPosition].max;
     if (total == 0) {
       return ChartShapeState();
     }
@@ -169,7 +171,7 @@ class StackBar<T> extends ChartBodyRender<T> {
     num po = position.call(data);
     List<num> vas = values.call(data);
     assert(colors.length >= vas.length);
-    num total = chart.yAxis.left.max;
+    num total = chart.yAxis[yAxisPosition].max;
     if (full) {
       total = vas.fold(0, (previousValue, element) => previousValue + element);
     }

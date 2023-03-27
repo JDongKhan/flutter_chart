@@ -17,6 +17,7 @@ class Line<T> extends ChartBodyRender<T> {
     required super.data,
     required super.position,
     required this.values,
+    super.yAxisPosition = 0,
     this.colors = colors10,
     this.dotRadius = 2,
     this.strokeWidth = 1,
@@ -71,7 +72,7 @@ class Line<T> extends ChartBodyRender<T> {
         }
         //计算点的位置
         num value = yvs[valueIndex];
-        double yPo = bottom - (value * chart.yAxis.left.density);
+        double yPo = bottom - (value * chart.yAxis[yAxisPosition].density);
         if (index == 0) {
           path.moveTo(xPo, yPo);
         } else {

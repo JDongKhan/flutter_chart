@@ -32,15 +32,6 @@ class XAxis {
 }
 
 class YAxis {
-  final LeftYAxis left;
-  final RightYAxis? right;
-  YAxis({
-    required this.left,
-    this.right,
-  });
-}
-
-class LeftYAxis {
   final bool enable;
   final num min;
   final num max;
@@ -52,7 +43,7 @@ class LeftYAxis {
   //密度
   late double density;
   final DashPainter? dashPainter;
-  LeftYAxis({
+  YAxis({
     this.enable = true,
     required this.min,
     required this.max,
@@ -64,17 +55,10 @@ class LeftYAxis {
   });
 }
 
-class RightYAxis {
-  final bool enable;
-  RightYAxis({
-    this.enable = false,
-  });
-}
-
 class LineBarChartCoordinateRender extends ChartCoordinateRender {
   //坐标系颜色
   final Color lineColor;
-  final YAxis yAxis;
+  final List<YAxis> yAxis;
   final XAxis xAxis;
   LineBarChartCoordinateRender({
     super.margin = const EdgeInsets.only(left: 30, top: 0, right: 0, bottom: 30),
@@ -91,6 +75,7 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
     XAxis? xAxis,
     this.lineColor = Colors.grey,
   })  : assert(zoomVertical == false, '暂时不支持zoomVertical'),
+        assert(yAxis.isNotEmpty),
         xAxis = xAxis ?? XAxis(max: 7);
 
   @override
@@ -108,18 +93,19 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
     } else {
       xAxis.density = density;
     }
-    num max = yAxis.left.max;
-    num min = yAxis.left.min;
-    int yCount = yAxis.left.count;
-    //y轴密度  即1 value 等于多少尺寸
-    double itemHeight = (height - margin.vertical) / yCount;
-    double itemValue = (max - min) / yCount;
-    if (zoomVertical) {
-      yAxis.left.density = itemHeight / itemValue * state.zoom;
-    } else {
-      yAxis.left.density = itemHeight / itemValue;
+    for (YAxis yA in yAxis) {
+      num max = yA.max;
+      num min = yA.min;
+      int yCount = yA.count;
+      //y轴密度  即1 value 等于多少尺寸
+      double itemHeight = (height - margin.vertical) / yCount;
+      double itemValue = (max - min) / yCount;
+      if (zoomVertical) {
+        yA.density = itemHeight / itemValue * state.zoom;
+      } else {
+        yA.density = itemHeight / itemValue;
+      }
     }
-    //缩放比例
   }
 
   @override
@@ -141,29 +127,31 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
   }
 
   void _drawYAxis(Canvas canvas, Size size) {
-    num max = yAxis.left.max;
-    num min = yAxis.left.min;
-    int count = yAxis.left.count;
-    double itemValue = (max - min) / count;
-    double itemHeight = itemValue * yAxis.left.density;
-    Paint paint = Paint()
-      ..color = lineColor
-      ..strokeWidth = 0.2;
-    //划线
-    if (yAxis.left.drawLine) {
-      canvas.drawLine(Offset(margin.left, margin.top), Offset(margin.left, size.height - margin.bottom), paint);
-    }
-    for (int i = 0; i <= count; i++) {
-      String text = yAxis.left.formatter?.call(i) ?? '${min + itemValue * i}';
-      double top = size.height - margin.bottom - itemHeight * i;
-      if (i == count) {
-        _drawYTextPaint(canvas, text, top, false);
-      } else {
-        _drawYTextPaint(canvas, text, top, true);
+    for (YAxis yA in yAxis) {
+      num max = yA.max;
+      num min = yA.min;
+      int count = yA.count;
+      double itemValue = (max - min) / count;
+      double itemHeight = itemValue * yA.density;
+      Paint paint = Paint()
+        ..color = lineColor
+        ..strokeWidth = 0.2;
+      //划线
+      if (yA.drawLine) {
+        canvas.drawLine(Offset(margin.left, margin.top), Offset(margin.left, size.height - margin.bottom), paint);
       }
-      //绘制格子线
-      if (yAxis.left.drawGrid) {
-        _drawGridLine(canvas, Offset(margin.left, top), Offset(size.width - margin.right, top), yAxis.left.dashPainter);
+      for (int i = 0; i <= count; i++) {
+        String text = yA.formatter?.call(i) ?? '${min + itemValue * i}';
+        double top = size.height - margin.bottom - itemHeight * i;
+        if (i == count) {
+          _drawYTextPaint(canvas, text, top, false);
+        } else {
+          _drawYTextPaint(canvas, text, top, true);
+        }
+        //绘制格子线
+        if (yA.drawGrid) {
+          _drawGridLine(canvas, Offset(margin.left, top), Offset(size.width - margin.right, top), yA.dashPainter);
+        }
       }
     }
   }
@@ -443,7 +431,7 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
     //y轴
     double minYOffsetValue = (1 - state.zoom) * size.height / 2;
 
-    double chartContentHeight = padding.vertical + yAxis.left.density * yAxis.left.max;
+    double chartContentHeight = padding.vertical + yAxis[0].density * yAxis[0].max;
     double chartViewPortHeight = size.height - margin.vertical;
     //因为offset可能为负的，换算成正值便于后面计算
     // double realYOffset = y - minYOffsetValue;
