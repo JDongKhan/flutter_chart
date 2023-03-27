@@ -101,11 +101,11 @@ class ChartShapeState {
     hotPath = path;
   }
 
-  void translateHotRect({double left = 0, double top = 0, double right = 0, double bottom = 0}) {
+  void adjustHotRect({double left = 0, double top = 0, double right = 0, double bottom = 0}) {
     if (hotRect == null) {
       return;
     }
-    hotRect = Rect.fromLTRB(hotRect!.left + left, hotRect!.top + top, hotRect!.right + right, hotRect!.bottom + bottom);
+    hotRect = Rect.fromLTRB(hotRect!.left + left, hotRect!.top + top, rect!.right + right, hotRect!.bottom + bottom);
     hotPath = Path()..addRect(hotRect!);
   }
 

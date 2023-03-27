@@ -81,7 +81,7 @@ class Line<T> extends ChartBodyRender<T> {
         //先画点
         chart.canvas.drawCircle(Offset(xPo, yPo), dotRadius, dotPaint..color = colors[valueIndex]);
         //存放点的位置
-        ChartShapeState shape = ChartShapeState.rect(rect: Rect.fromLTWH(xPo, yPo, dotRadius, dotRadius));
+        ChartShapeState shape = ChartShapeState.rect(rect: Rect.fromCenter(center: Offset(xPo, yPo), width: dotRadius, height: dotRadius));
         shapes.add(shape);
       }
       //调整热区
@@ -98,7 +98,7 @@ class Line<T> extends ChartBodyRender<T> {
           currentTapRect = Rect.fromLTRB(xPo - leftDiff / 2, top, xPo + dotRadius * 2, bottom);
         }
         //调整前面一个
-        lastShape.translateHotRect(right: leftDiff / 2);
+        lastShape.adjustHotRect(right: leftDiff / 2);
       }
 
       ChartShapeState shape = ChartShapeState.rect(rect: Rect.fromLTRB(xPo, top, xPo + dotRadius * 2, bottom), hotRect: currentTapRect);
@@ -109,6 +109,19 @@ class Line<T> extends ChartBodyRender<T> {
       //放到最后
       index++;
     }
+
+    //开启后可查看热区是否正确
+    // int i = 0;
+    // for (var element in shapeList) {
+    //   Rect newRect = Rect.fromLTRB(element.hotRect!.left + 1, element.hotRect!.top + 1, element.hotRect!.right - 1, element.hotRect!.bottom);
+    //   Paint newPaint = Paint()
+    //     ..color = colors10[i]
+    //     ..strokeWidth = strokeWidth
+    //     ..style = PaintingStyle.stroke;
+    //   chart.canvas.drawRect(newRect, newPaint);
+    //   i++;
+    // }
+
     pathMap.forEach((index, path) {
       chart.canvas.drawPath(path, paint..color = colors[index]);
     });
