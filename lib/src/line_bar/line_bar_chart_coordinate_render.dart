@@ -26,7 +26,7 @@ class XAxis {
     this.interval = 1,
     this.count = 7,
     this.drawLine = true,
-    this.drawGrid = true,
+    this.drawGrid = false,
     this.dashPainter,
     required this.max,
   });
@@ -64,7 +64,7 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
   final List<YAxis> yAxis;
   final XAxis xAxis;
   LineBarChartCoordinateRender({
-    super.margin = const EdgeInsets.only(left: 30, top: 0, right: 0, bottom: 30),
+    super.margin = const EdgeInsets.only(left: 30, top: 0, right: 0, bottom: 25),
     super.padding = const EdgeInsets.only(left: 30, top: 0, right: 0, bottom: 0),
     required super.charts,
     super.backgroundAnnotations,
@@ -143,11 +143,7 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
         ..strokeWidth = 0.2;
 
       double left = margin.left + offset.dx;
-
-      //划线
-      if (yA.drawLine) {
-        canvas.drawLine(Offset(left, margin.top), Offset(left, size.height - margin.bottom), paint);
-      }
+      //先画文字和虚线
       for (int i = 0; i <= count; i++) {
         String text = yA.formatter?.call(i) ?? '${min + itemValue * i}';
         double top = size.height - margin.bottom - itemHeight * i;
@@ -161,6 +157,11 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
           _drawGridLine(canvas, Offset(left, top), Offset(size.width - margin.right, top), yA.dashPainter);
         }
       }
+      //再画实线
+      if (yA.drawLine) {
+        canvas.drawLine(Offset(left, margin.top), Offset(left, size.height - margin.bottom), paint);
+      }
+
       yAxisIndex++;
     }
   }
@@ -201,20 +202,17 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
 
   void _drawXAxis(Canvas canvas, Size size) {
     double density = xAxis.density;
+    num interval = xAxis.interval;
     Paint paint = Paint()
       ..color = lineColor
       ..strokeWidth = 0.2;
-    //划线
-    if (xAxis.drawLine) {
-      canvas.drawLine(Offset(margin.left, size.height - margin.bottom), Offset(size.width - margin.right, size.height - margin.bottom), paint);
-    }
 
     //实际要显示的数量
     int count = xAxis.max ~/ xAxis.interval;
     for (int i = 0; i < count; i++) {
       String text = xAxis.formatter?.call(i) ?? '$i';
 
-      double left = contentMargin.left + density * i;
+      double left = contentMargin.left + density * interval * i;
       left = withXOffset(left);
       left = withXZoom(left);
       _drawXTextPaint(canvas, text, size, left);
@@ -225,6 +223,11 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
       if (xAxis.drawGrid) {
         _drawGridLine(canvas, Offset(left, margin.top), Offset(left, size.height - margin.bottom), xAxis.dashPainter);
       }
+    }
+
+    //划线
+    if (xAxis.drawLine) {
+      canvas.drawLine(Offset(margin.left, size.height - margin.bottom), Offset(size.width - margin.right, size.height - margin.bottom), paint);
     }
   }
 
@@ -414,12 +417,12 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
   @override
   void scroll(Offset delta) {
     Offset newOffset = state.offset.translate(-delta.dx, delta.dy);
-
     //校准偏移，不然缩小后可能起点都在中间了，或者无限滚动
     double x = newOffset.dx;
     double y = newOffset.dy;
     //因为缩放最小值可能为负的了
     double minXOffsetValue = (1 - state.zoom) * size.width / 2;
+    print('$x -- $minXOffsetValue');
     if (x < minXOffsetValue) {
       x = minXOffsetValue;
     }
@@ -454,8 +457,8 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
     } else {
       y = minYOffsetValue;
     }
-
-    state.offset = Offset(x, y);
+    //暂时不支持y轴滚动，因为场景太少，且考虑的太多
+    state.offset = Offset(x, 0);
     // print(state.offset);
   }
 

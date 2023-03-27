@@ -18,8 +18,13 @@ class RegionAnnotation extends Annotation {
       LineBarChartCoordinateRender chart = coordinateChart as LineBarChartCoordinateRender;
       num po1 = positions[0];
       num po2 = positions[1];
-      double start = withXOffset(chart.contentMargin.left + po1 * chart.xAxis.density);
-      double end = withXOffset(chart.contentMargin.left + po2 * chart.xAxis.density);
+      double start = chart.contentMargin.left + po1 * chart.xAxis.density;
+      start = withXOffset(start);
+      start = withXZoom(start);
+      double end = chart.contentMargin.left + po2 * chart.xAxis.density;
+      end = withXOffset(end);
+      end = withXZoom(end);
+
       double top = chart.contentMargin.top;
       double bottom = chart.size.height - chart.contentMargin.bottom;
 

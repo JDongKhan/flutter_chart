@@ -12,16 +12,16 @@ abstract class ChartRender {
     this.coordinateChart = coordinateChart;
   }
 
-  double withXOffset(double offset, [bool scrollable = true]) {
-    return coordinateChart.withXOffset(offset, scrollable);
+  double withXOffset(double offset) {
+    return coordinateChart.withXOffset(offset);
   }
 
   double withXZoom(double offset) {
     return coordinateChart.withXZoom(offset);
   }
 
-  double withYOffset(double offset, [bool scrollable = true]) {
-    return coordinateChart.withYOffset(offset, scrollable);
+  double withYOffset(double offset) {
+    return coordinateChart.withYOffset(offset);
   }
 
   void draw();

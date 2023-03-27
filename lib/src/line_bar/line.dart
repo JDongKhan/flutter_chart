@@ -88,9 +88,9 @@ class Line<T> extends ChartBodyRender<T> {
       Rect currentTapRect;
       if (lastShape == null) {
         //说明当前是第一个
-        currentTapRect = Rect.fromLTRB(left, top, left + dotRadius * 2, bottom);
+        currentTapRect = Rect.fromLTRB(left, top, right, bottom);
       } else {
-        double leftDiff = xPo - lastShape.hotRect!.right;
+        double leftDiff = xPo - lastShape.rect!.right;
         //最后一个
         if (index == data.length - 1) {
           currentTapRect = Rect.fromLTRB(xPo - leftDiff / 2, top, right, bottom);

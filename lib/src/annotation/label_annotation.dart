@@ -7,11 +7,12 @@ class LabelAnnotation extends Annotation {
   final TextStyle textStyle;
   final String text;
   //是否跟随滚动
-
+  final Offset offset;
   LabelAnnotation({
     required this.positions,
     required this.text,
-    super.scroll = false,
+    this.offset = Offset.zero,
+    super.scroll = true,
     super.yAxisPosition = 0,
     this.textStyle = const TextStyle(color: Colors.red),
   });
@@ -23,7 +24,22 @@ class LabelAnnotation extends Annotation {
       num yPo = positions[1];
       double itemWidth = xPo * chart.xAxis.density;
       double itemHeight = yPo * chart.yAxis[yAxisPosition].density;
-      Offset offset = Offset(withXOffset(chart.contentMargin.left + itemWidth, scroll), withYOffset(chart.contentRect.bottom - itemHeight, scroll));
+      double left = chart.contentMargin.left + itemWidth;
+      double top = chart.contentRect.bottom - itemHeight;
+      if (scroll) {
+        left = withXOffset(left);
+        left = withXZoom(left);
+        top = withYOffset(top);
+      } else {
+        //不跟随缩放
+        if (chart.zoomHorizontal) {
+          left = chart.contentMargin.left + itemWidth / chart.state.zoom;
+        }
+        if (chart.zoomVertical) {
+          top = chart.contentRect.bottom - itemHeight / chart.state.zoom;
+        }
+      }
+      Offset offset = Offset(left, top);
       TextPainter(
         textAlign: TextAlign.center,
         text: TextSpan(
@@ -36,7 +52,7 @@ class LabelAnnotation extends Annotation {
           minWidth: 0,
           maxWidth: chart.size.width,
         )
-        ..paint(chart.canvas, offset);
+        ..paint(chart.canvas, offset.translate(this.offset.dx, this.offset.dy));
     }
   }
 }

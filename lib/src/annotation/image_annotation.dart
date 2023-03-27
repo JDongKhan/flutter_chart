@@ -3,8 +3,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../line_bar/line_bar_chart_coordinate_render.dart';
-import 'annotation.dart';
+import '../../flutter_chart.dart';
 
 /// @author jd
 class ImageAnnotation extends Annotation {
@@ -43,7 +42,22 @@ class ImageAnnotation extends Annotation {
       num yPo = positions[1];
       double itemWidth = xPo * chart.xAxis.density;
       double itemHeight = yPo * chart.yAxis[yAxisPosition].density;
-      Offset offset = Offset(withXOffset(chart.contentMargin.left + itemWidth, scroll), withYOffset(chart.contentRect.bottom - itemHeight, scroll));
+      double left = chart.contentMargin.left + itemWidth;
+      double top = chart.contentRect.bottom - itemHeight;
+      if (scroll) {
+        left = withXOffset(left);
+        left = withXZoom(left);
+        top = withYOffset(top);
+      } else {
+        //不跟随缩放
+        if (chart.zoomHorizontal) {
+          left = chart.contentMargin.left + itemWidth / chart.state.zoom;
+        }
+        if (chart.zoomVertical) {
+          top = chart.contentRect.bottom - itemHeight / chart.state.zoom;
+        }
+      }
+      Offset offset = Offset(left, top);
       Paint paint = Paint()
         ..color = Colors.blue
         ..isAntiAlias = true

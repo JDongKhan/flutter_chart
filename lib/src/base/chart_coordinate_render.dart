@@ -109,11 +109,8 @@ abstract class ChartCoordinateRender {
     }
   }
 
-  double withXOffset(double offset, [bool scrollable = true]) {
-    if (scrollable) {
-      return offset - state.offset.dx;
-    }
-    return offset;
+  double withXOffset(double offset) {
+    return offset - state.offset.dx;
   }
 
   double withXZoom(double offset) {
@@ -123,11 +120,8 @@ abstract class ChartCoordinateRender {
     return offset;
   }
 
-  double withYOffset(double offset, [bool scrollable = true]) {
-    if (scrollable) {
-      return offset - state.offset.dy;
-    }
-    return offset;
+  double withYOffset(double offset) {
+    return offset - state.offset.dy;
   }
 
   void scroll(Offset offset);
