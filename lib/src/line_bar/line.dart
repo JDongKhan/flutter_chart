@@ -57,7 +57,7 @@ class Line<T> extends ChartBodyRender<T> {
       }
       List<num> yvs = values.call(value);
       List<ChartShapeState> shapes = [];
-      assert(colors.length >= yvs.length);
+      assert(colors.length >= yvs.length, '颜色配置跟数据源不匹配');
       double xPo = xvs * chart.xAxis.density + left;
 
       //先判断是否选中，此场景是第一次渲染之后点击才有，所以用老数据即可

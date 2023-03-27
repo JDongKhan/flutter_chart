@@ -12,8 +12,8 @@ class LimitAnnotation extends Annotation {
   final double strokeWidth;
   LimitAnnotation({
     super.scroll = false,
-    required this.limit,
     super.yAxisPosition = 0,
+    required this.limit,
     this.dashPainter,
     this.color = Colors.red,
     this.strokeWidth = 1,

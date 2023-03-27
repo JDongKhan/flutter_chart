@@ -10,12 +10,14 @@ class LabelAnnotation extends Annotation {
   final Offset offset;
   final Offset Function(Size)? anchor;
   LabelAnnotation({
+    super.userInfo,
+    super.onTap,
+    super.scroll = true,
+    super.yAxisPosition = 0,
     required this.text,
     this.positions,
     this.anchor,
     this.offset = Offset.zero,
-    super.scroll = true,
-    super.yAxisPosition = 0,
     this.textStyle = const TextStyle(color: Colors.red),
   }) : assert(positions != null || anchor != null);
   @override

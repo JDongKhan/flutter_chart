@@ -11,10 +11,12 @@ class ImageAnnotation extends Annotation {
   final List<num> positions;
   final Offset offset;
   ImageAnnotation({
-    required this.image,
-    required this.positions,
+    super.userInfo,
+    super.onTap,
     super.scroll = true,
     super.yAxisPosition = 0,
+    required this.image,
+    required this.positions,
     this.offset = Offset.zero,
   });
 
@@ -50,6 +52,10 @@ class ImageAnnotation extends Annotation {
         ..strokeCap = StrokeCap.butt
         ..strokeWidth = 30;
       coordinateChart.canvas.drawImage(image, offset.translate(this.offset.dx, this.offset.dy), paint);
+      Rect rect = Rect.fromLTWH(offset.dx, offset.dy, image.width.toDouble(), image.height.toDouble());
+      if (chart.state.gesturePoint != null && rect.contains(chart.state.gesturePoint!)) {
+        Future.microtask(() => onTap?.call(this));
+      }
     }
   }
 }
