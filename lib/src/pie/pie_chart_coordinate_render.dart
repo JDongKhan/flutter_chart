@@ -68,5 +68,5 @@ class PieChartCoordinateRender extends ChartCoordinateRender {
   }
 
   @override
-  void scroll(Offset offset) {}
+  void scroll(Offset delta) {}
 }

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../flutter_chart.dart';
 import '../base/chart_body_render.dart';
-import '../base/chart_coordinate_render.dart';
-import '../base/chart_state.dart';
 import '../widget/dash_painter.dart';
 
 /// @author JD
@@ -457,17 +456,21 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
 
   //背景
   void _drawBackgroundAnnotations(Canvas canvas, Size size) {
-    backgroundAnnotations?.forEach((element) {
-      element.init(this);
-      element.draw();
-    });
+    if (backgroundAnnotations != null) {
+      for (Annotation annotation in backgroundAnnotations!) {
+        annotation.init(this);
+        annotation.draw();
+      }
+    }
   }
 
   //前景
   void _drawForegroundAnnotations(Canvas canvas, Size size) {
-    foregroundAnnotations?.forEach((element) {
-      element.init(this);
-      element.draw();
-    });
+    if (foregroundAnnotations != null) {
+      for (Annotation annotation in foregroundAnnotations!) {
+        annotation.init(this);
+        annotation.draw();
+      }
+    }
   }
 }

@@ -35,7 +35,7 @@ class LimitAnnotation extends Annotation {
       Path path = Path()
         ..moveTo(start.dx, start.dy)
         ..lineTo(end.dx, end.dy);
-      DashPainter painter = dashPainter ?? const DashPainter(span: 5, step: 5);
+      DashPainter painter = dashPainter ?? const DashPainter(span: 5, step: 5, pointCount: 0);
       painter.paint(chart.canvas, path, paint);
     }
   }

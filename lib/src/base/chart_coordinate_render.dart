@@ -130,7 +130,7 @@ abstract class ChartCoordinateRender {
     return offset;
   }
 
-  void scroll(Offset offset);
+  void scroll(Offset delta);
 
   void paint(Canvas canvas, Size size);
 }
