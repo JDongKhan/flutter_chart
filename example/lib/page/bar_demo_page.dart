@@ -166,7 +166,6 @@ class BarChartDemoPage extends StatelessWidget {
                   height: 200,
                   child: ChartWidget(
                     builder: () => LineBarChartCoordinateRender(
-                      lineColor: Colors.grey,
                       margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
                       yAxis: [
                         YAxis(

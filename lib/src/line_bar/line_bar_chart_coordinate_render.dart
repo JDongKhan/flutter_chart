@@ -20,13 +20,18 @@ class XAxis {
   final bool drawGrid;
   //是否绘制最下面一行的线
   bool drawLine;
+  //虚线
   final DashPainter? dashPainter;
+  final TextStyle textStyle;
+  final Color lineColor;
   XAxis({
     this.formatter,
     this.interval = 1,
     this.count = 7,
     this.drawLine = true,
     this.drawGrid = false,
+    this.lineColor = Colors.grey,
+    this.textStyle = const TextStyle(fontSize: 12, color: Colors.grey),
     this.dashPainter,
     required this.max,
   });
@@ -45,6 +50,8 @@ class YAxis {
   late double density;
   final DashPainter? dashPainter;
   final AxisOffset? offset;
+  final TextStyle textStyle;
+  final Color lineColor;
   YAxis({
     this.enable = true,
     required this.min,
@@ -53,6 +60,8 @@ class YAxis {
     this.count = 5,
     this.drawLine = true,
     this.drawGrid = false,
+    this.lineColor = Colors.grey,
+    this.textStyle = const TextStyle(fontSize: 12, color: Colors.grey),
     this.dashPainter,
     this.offset,
   });
@@ -60,7 +69,6 @@ class YAxis {
 
 class LineBarChartCoordinateRender extends ChartCoordinateRender {
   //坐标系颜色
-  final Color lineColor;
   final List<YAxis> yAxis;
   final XAxis xAxis;
   LineBarChartCoordinateRender({
@@ -76,7 +84,6 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
     super.crossHair = const CrossHairStyle(),
     required this.yAxis,
     XAxis? xAxis,
-    this.lineColor = Colors.grey,
   })  : assert(zoomVertical == false, '暂时不支持zoomVertical'),
         assert(yAxis.isNotEmpty),
         xAxis = xAxis ?? XAxis(max: 7);
@@ -139,7 +146,8 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
       double itemValue = (max - min) / count;
       double itemHeight = itemValue * yA.density;
       Paint paint = Paint()
-        ..color = lineColor
+        ..color = yA.lineColor
+        ..style = PaintingStyle.stroke
         ..strokeWidth = 0.2;
 
       double left = margin.left + offset.dx;
@@ -148,13 +156,13 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
         String text = yA.formatter?.call(i) ?? '${min + itemValue * i}';
         double top = size.height - margin.bottom - itemHeight * i;
         if (i == count) {
-          _drawYTextPaint(canvas, text, yAxisIndex > 0, left, top, false);
+          _drawYTextPaint(canvas, text, yA.textStyle, yAxisIndex > 0, left, top, false);
         } else {
-          _drawYTextPaint(canvas, text, yAxisIndex > 0, left, top, true);
+          _drawYTextPaint(canvas, text, yA.textStyle, yAxisIndex > 0, left, top, true);
         }
         //绘制格子线
         if (yA.drawGrid) {
-          _drawGridLine(canvas, Offset(left, top), Offset(size.width - margin.right, top), yA.dashPainter);
+          _drawGridLine(canvas, Offset(left, top), Offset(size.width - margin.right, top), paint, yA.dashPainter);
         }
       }
       //再画实线
@@ -166,11 +174,7 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
     }
   }
 
-  void _drawGridLine(Canvas canvas, Offset p1, Offset p2, DashPainter? dashPainter) {
-    Paint paint = Paint()
-      ..color = lineColor
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 0.2;
+  void _drawGridLine(Canvas canvas, Offset p1, Offset p2, Paint paint, DashPainter? dashPainter) {
     Path path = Path()
       ..moveTo(p1.dx, p1.dy)
       ..lineTo(p2.dx, p2.dy);
@@ -178,14 +182,11 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
     painter.paint(canvas, path, paint);
   }
 
-  void _drawYTextPaint(Canvas canvas, String text, bool right, double left, double top, bool middle) {
+  void _drawYTextPaint(Canvas canvas, String text, TextStyle textStyle, bool right, double left, double top, bool middle) {
     var textPainter = TextPainter(
       text: TextSpan(
         text: text,
-        style: TextStyle(
-          fontSize: 12,
-          color: lineColor,
-        ),
+        style: textStyle,
       ),
       textAlign: TextAlign.center,
       textDirection: TextDirection.ltr,
@@ -204,7 +205,7 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
     double density = xAxis.density;
     num interval = xAxis.interval;
     Paint paint = Paint()
-      ..color = lineColor
+      ..color = xAxis.lineColor
       ..strokeWidth = 0.2;
 
     //实际要显示的数量
@@ -215,13 +216,13 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
       double left = contentMargin.left + density * interval * i;
       left = withXOffset(left);
       left = withXZoom(left);
-      _drawXTextPaint(canvas, text, size, left);
+      _drawXTextPaint(canvas, text, xAxis.textStyle, size, left);
       // if (i == dreamXAxisCount - 1) {
       //   _drawXTextPaint(canvas, '${i + 1}', size,
       //       size.width - padding.right - contentPadding.right - 5);
       // }
       if (xAxis.drawGrid) {
-        _drawGridLine(canvas, Offset(left, margin.top), Offset(left, size.height - margin.bottom), xAxis.dashPainter);
+        _drawGridLine(canvas, Offset(left, margin.top), Offset(left, size.height - margin.bottom), paint, xAxis.dashPainter);
       }
     }
 
@@ -231,14 +232,11 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
     }
   }
 
-  void _drawXTextPaint(Canvas canvas, String text, Size size, double left) {
+  void _drawXTextPaint(Canvas canvas, String text, TextStyle textStyle, Size size, double left) {
     var textPainter = TextPainter(
       text: TextSpan(
         text: text,
-        style: TextStyle(
-          fontSize: 12,
-          color: lineColor,
-        ),
+        style: textStyle,
       ),
       textAlign: TextAlign.center,
       textDirection: TextDirection.ltr,

@@ -31,14 +31,18 @@ class Bar<T> extends ChartBodyRender<T> {
   void draw() {
     LineBarChartCoordinateRender chart = coordinateChart as LineBarChartCoordinateRender;
     List<ChartShapeState> shapeList = [];
+    Paint paint = Paint()
+      ..strokeWidth = 1
+      ..color = color
+      ..style = PaintingStyle.fill;
     for (int index = 0; index < data.length; index++) {
       T value = data[index];
-      shapeList.add(_draw(chart, index, value));
+      shapeList.add(_draw(chart, paint, index, value));
     }
     chart.state.bodyStateList[positionIndex]?.shapeList = shapeList;
   }
 
-  ChartShapeState _draw(LineBarChartCoordinateRender chart, int index, T data) {
+  ChartShapeState _draw(LineBarChartCoordinateRender chart, Paint paint, int index, T data) {
     num po = position.call(data);
     num v = value.call(data);
     if (v == 0) {
@@ -54,10 +58,7 @@ class Bar<T> extends ChartBodyRender<T> {
     double present = v / chart.yAxis[yAxisPosition].max;
     double itemHeight = contentHeight * present;
     double top = bottom - itemHeight;
-    Paint paint = Paint()
-      ..color = color
-      ..strokeWidth = 1
-      ..style = PaintingStyle.fill;
+
     Rect rect = Rect.fromLTWH(left, top, itemWidth, itemHeight);
     ChartShapeState shape = ChartShapeState.rect(
       rect: rect,
@@ -65,9 +66,16 @@ class Bar<T> extends ChartBodyRender<T> {
     if (shape.hitTest(chart.state.gesturePoint)) {
       chart.state.bodyStateList[positionIndex]?.selectedIndex = index;
       paint.color = highlightColor;
+    } else {
+      paint.color = color;
     }
-    chart.canvas.drawRect(rect, paint);
+    drawItem(chart.canvas, rect, paint);
     return shape;
+  }
+
+  //可以重写 自定义特殊的图形
+  void drawItem(Canvas canvas, Rect rect, Paint paint) {
+    canvas.drawRect(rect, paint);
   }
 }
 
@@ -159,13 +167,15 @@ class StackBar<T> extends ChartBodyRender<T> {
         chart.state.bodyStateList[positionIndex]?.selectedIndex = index;
         paint.color = highlightColor;
       }
-      chart.canvas.drawRect(rect, paint);
+      //画图
+      drawItem(chart.canvas,rect,paint);
       left = left + itemWidth + padding;
       shape.children.add(stackShape);
       stackIndex++;
     }
     return shape;
   }
+
 
   ChartShapeState _drawVertical(LineBarChartCoordinateRender chart, int index, T data) {
     num po = position.call(data);
@@ -208,10 +218,17 @@ class StackBar<T> extends ChartBodyRender<T> {
         paint.color = highlightColor;
         shape.children.add(stackShape);
       }
-      chart.canvas.drawRect(rect, paint);
+      drawItem(chart.canvas,rect,paint);
       stackIndex++;
       bottom = top;
     }
     return shape;
   }
+
+
+  //可以重写，依靠rect和paint修改成特殊的样式
+  void drawItem(Canvas canvas, Rect rect, Paint paint){
+    canvas.drawRect(rect, paint);
+  }
+
 }
