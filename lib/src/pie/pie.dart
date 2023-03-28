@@ -245,73 +245,73 @@ class Pie<T> extends ChartBodyRender<T> {
   }
 
   //画图例
-  void _drawLegend(T item, double radius, double startAngle, double sweepAngle) {
-    PieChartCoordinateRender chart = coordinateChart as PieChartCoordinateRender;
-    //中心弧度
-    final double radians = startAngle + sweepAngle;
-    //画图例
-    if (legendFormatter != null) {
-      String legend = legendFormatter!.call(item);
-      TextPainter legendTextPainter = TextPainter(
-        textAlign: TextAlign.center,
-        text: TextSpan(
-          text: legend,
-          style: legendTextStyle,
-        ),
-        textDirection: TextDirection.ltr,
-      )..layout(
-          minWidth: 0,
-          maxWidth: chart.size.width,
-        );
-      // 根据三角函数计算中出标识文字的 x 和 y 位置，需要加上宽和高的一半适配 Canvas 的坐标
-      double legendX = cos(radians) * (radius + chart.padding.horizontal) + chart.size.width / 2;
-      double legendY = sin(radians) * (radius + chart.padding.vertical) + chart.size.height / 2;
-      // 使用 TextPainter 绘制文字标识
-      legendTextPainter.paint(chart.canvas, Offset(legendX, legendY));
-    }
-  }
-
-  void _drawValue(T item, double radius, double startAngle, double sweepAngle, bool selected) {
-    PieChartCoordinateRender chart = coordinateChart as PieChartCoordinateRender;
-    //中心弧度
-    final double radians = startAngle + sweepAngle / 2;
-    //画value
-    String? valueText = valueFormatter?.call(item);
-    if (textStyle != null && valueText != null) {
-      // 使用 TextPainter 绘制文字标识
-      TextPainter valueTextPainter = TextPainter(
-        textAlign: TextAlign.start,
-        text: TextSpan(
-          text: valueText,
-          style: textStyle,
-        ),
-        textDirection: TextDirection.ltr,
-      )..layout(
-          minWidth: 0,
-          maxWidth: chart.size.width,
-        );
-      // 使用三角函数计算文字位置 并根据文字大小适配
-      double x = cos(radians) * (radius / 2 + valueTextOffset) + chart.size.width / 2 - valueTextPainter.width / 2;
-      double y = sin(radians) * (radius / 2 + valueTextOffset) + chart.size.height / 2 - valueTextPainter.height / 2;
-      valueTextPainter.paint(chart.canvas, Offset(x, y));
-    }
-
-    //中心点文案
-    if (centerTextStyle != null && selected && valueText != null) {
-      TextPainter valueTextPainter = TextPainter(
-        textAlign: TextAlign.start,
-        text: TextSpan(
-          text: valueText,
-          style: centerTextStyle,
-        ),
-        textDirection: TextDirection.ltr,
-      )..layout(
-          minWidth: 0,
-          maxWidth: chart.size.width,
-        );
-      valueTextPainter.paint(chart.canvas, chart.center.translate(-valueTextPainter.width / 2, -valueTextPainter.height / 2));
-    }
-  }
+  // void _drawLegend(T item, double radius, double startAngle, double sweepAngle) {
+  //   PieChartCoordinateRender chart = coordinateChart as PieChartCoordinateRender;
+  //   //中心弧度
+  //   final double radians = startAngle + sweepAngle;
+  //   //画图例
+  //   if (legendFormatter != null) {
+  //     String legend = legendFormatter!.call(item);
+  //     TextPainter legendTextPainter = TextPainter(
+  //       textAlign: TextAlign.center,
+  //       text: TextSpan(
+  //         text: legend,
+  //         style: legendTextStyle,
+  //       ),
+  //       textDirection: TextDirection.ltr,
+  //     )..layout(
+  //         minWidth: 0,
+  //         maxWidth: chart.size.width,
+  //       );
+  //     // 根据三角函数计算中出标识文字的 x 和 y 位置，需要加上宽和高的一半适配 Canvas 的坐标
+  //     double legendX = cos(radians) * (radius + chart.padding.horizontal) + chart.size.width / 2;
+  //     double legendY = sin(radians) * (radius + chart.padding.vertical) + chart.size.height / 2;
+  //     // 使用 TextPainter 绘制文字标识
+  //     legendTextPainter.paint(chart.canvas, Offset(legendX, legendY));
+  //   }
+  // }
+  //
+  // void _drawValue(T item, double radius, double startAngle, double sweepAngle, bool selected) {
+  //   PieChartCoordinateRender chart = coordinateChart as PieChartCoordinateRender;
+  //   //中心弧度
+  //   final double radians = startAngle + sweepAngle / 2;
+  //   //画value
+  //   String? valueText = valueFormatter?.call(item);
+  //   if (textStyle != null && valueText != null) {
+  //     // 使用 TextPainter 绘制文字标识
+  //     TextPainter valueTextPainter = TextPainter(
+  //       textAlign: TextAlign.start,
+  //       text: TextSpan(
+  //         text: valueText,
+  //         style: textStyle,
+  //       ),
+  //       textDirection: TextDirection.ltr,
+  //     )..layout(
+  //         minWidth: 0,
+  //         maxWidth: chart.size.width,
+  //       );
+  //     // 使用三角函数计算文字位置 并根据文字大小适配
+  //     double x = cos(radians) * (radius / 2 + valueTextOffset) + chart.size.width / 2 - valueTextPainter.width / 2;
+  //     double y = sin(radians) * (radius / 2 + valueTextOffset) + chart.size.height / 2 - valueTextPainter.height / 2;
+  //     valueTextPainter.paint(chart.canvas, Offset(x, y));
+  //   }
+  //
+  //   //中心点文案
+  //   if (centerTextStyle != null && selected && valueText != null) {
+  //     TextPainter valueTextPainter = TextPainter(
+  //       textAlign: TextAlign.start,
+  //       text: TextSpan(
+  //         text: valueText,
+  //         style: centerTextStyle,
+  //       ),
+  //       textDirection: TextDirection.ltr,
+  //     )..layout(
+  //         minWidth: 0,
+  //         maxWidth: chart.size.width,
+  //       );
+  //     valueTextPainter.paint(chart.canvas, chart.center.translate(-valueTextPainter.width / 2, -valueTextPainter.height / 2));
+  //   }
+  // }
 
   //可以重写，依靠path和paint修改成特殊的样式
   void drawItem(Canvas canvas, Path path, Paint paint) {

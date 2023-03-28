@@ -1,7 +1,7 @@
 name: flutter_chart
 description: A new Flutter package project.
 version: 0.0.1
-homepage:
+homepage: https://github.com/JDongKhan/flutter_chart.git
 
 environment:
   sdk: '>=2.19.3 <3.0.0'

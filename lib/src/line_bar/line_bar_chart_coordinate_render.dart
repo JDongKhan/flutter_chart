@@ -264,7 +264,6 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
 
     //查找更贴近点击的那条数据
     for (MapEntry<int, CharBodyState> entry in state.bodyStateList.entries) {
-      int key = entry.key;
       CharBodyState value = entry.value;
       int? index = value.selectedIndex;
       if (index == null) {
