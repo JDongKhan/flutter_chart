@@ -22,8 +22,9 @@ class LabelAnnotation extends Annotation {
   }) : assert(positions != null || anchor != null);
   @override
   void draw(final Offset offset) {
-    if (coordinateChart is LineBarChartCoordinateRender) {
-      LineBarChartCoordinateRender chart = coordinateChart as LineBarChartCoordinateRender;
+    if (coordinateChart is TwoDimensionsChartCoordinateRender) {
+      TwoDimensionsChartCoordinateRender chart =
+          coordinateChart as TwoDimensionsChartCoordinateRender;
       Offset ost;
       if (positions != null) {
         num xPo = positions![0];

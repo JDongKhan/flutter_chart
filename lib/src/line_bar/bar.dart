@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../base/chart_body_render.dart';
 import '../base/chart_coordinate_render.dart';
 import '../base/chart_state.dart';
-import 'line_bar_chart_coordinate_render.dart';
+import 'two_dimensions_chart_coordinate_render.dart';
 
 typedef BarPosition<T> = num Function(T);
 
@@ -29,8 +29,8 @@ class Bar<T> extends ChartBodyRender<T> {
   });
   @override
   void draw(final Offset offset) {
-    LineBarChartCoordinateRender chart =
-        coordinateChart as LineBarChartCoordinateRender;
+    TwoDimensionsChartCoordinateRender chart =
+        coordinateChart as TwoDimensionsChartCoordinateRender;
     List<ChartShapeState> shapeList = [];
     Paint paint = Paint()
       ..strokeWidth = 1
@@ -44,8 +44,8 @@ class Bar<T> extends ChartBodyRender<T> {
   }
 
   //可以重写 自定义特殊的图形
-  ChartShapeState drawBar(
-      LineBarChartCoordinateRender chart, Paint paint, int index, T data) {
+  ChartShapeState drawBar(TwoDimensionsChartCoordinateRender chart, Paint paint,
+      int index, T data) {
     num po = position.call(data);
     num v = value.call(data);
     if (v == 0) {
@@ -112,8 +112,8 @@ class StackBar<T> extends ChartBodyRender<T> {
   });
   @override
   void draw(final Offset offset) {
-    LineBarChartCoordinateRender chart =
-        coordinateChart as LineBarChartCoordinateRender;
+    TwoDimensionsChartCoordinateRender chart =
+        coordinateChart as TwoDimensionsChartCoordinateRender;
     List<ChartShapeState> shapeList = [];
     for (int index = 0; index < data.length; index++) {
       T value = data[index];
@@ -128,7 +128,7 @@ class StackBar<T> extends ChartBodyRender<T> {
 
   //水平排列图形
   ChartShapeState drawHorizontalBar(
-      LineBarChartCoordinateRender chart, int index, T data) {
+      TwoDimensionsChartCoordinateRender chart, int index, T data) {
     num po = position.call(data);
     List<num> vas = values.call(data);
     assert(colors.length >= vas.length);
@@ -182,7 +182,7 @@ class StackBar<T> extends ChartBodyRender<T> {
   }
 
   ChartShapeState drawVerticalBar(
-      LineBarChartCoordinateRender chart, int index, T data) {
+      TwoDimensionsChartCoordinateRender chart, int index, T data) {
     num po = position.call(data);
     List<num> vas = values.call(data);
     assert(colors.length >= vas.length);

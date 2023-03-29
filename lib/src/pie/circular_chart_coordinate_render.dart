@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import '../base/chart_coordinate_render.dart';
 
 /// @author JD
-class PieChartCoordinateRender extends ChartCoordinateRender {
+class CircularChartCoordinateRender extends ChartCoordinateRender {
   final double borderWidth;
   final Color borderColor;
-  PieChartCoordinateRender({
+  CircularChartCoordinateRender({
     super.margin = EdgeInsets.zero,
     super.padding = EdgeInsets.zero,
     required super.charts,

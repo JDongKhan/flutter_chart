@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import '../base/chart_body_render.dart';
 import '../base/chart_coordinate_render.dart';
 import '../base/chart_state.dart';
-import 'pie_chart_coordinate_render.dart';
+import 'circular_chart_coordinate_render.dart';
 
 /// @author JD
 typedef ValueFormatter<T> = String Function(T);
@@ -63,8 +63,8 @@ class Pie<T> extends ChartBodyRender<T> {
   });
   @override
   void draw(final Offset offset) {
-    PieChartCoordinateRender chart =
-        coordinateChart as PieChartCoordinateRender;
+    CircularChartCoordinateRender chart =
+        coordinateChart as CircularChartCoordinateRender;
     Canvas canvas = chart.canvas;
     Offset center = chart.center;
     double radius = chart.radius;
@@ -158,8 +158,8 @@ class Pie<T> extends ChartBodyRender<T> {
     if (spaceWidth == null) {
       return;
     }
-    PieChartCoordinateRender chart =
-        coordinateChart as PieChartCoordinateRender;
+    CircularChartCoordinateRender chart =
+        coordinateChart as CircularChartCoordinateRender;
     Offset center = chart.center;
     Canvas canvas = chart.canvas;
     //开始线
@@ -189,8 +189,8 @@ class Pie<T> extends ChartBodyRender<T> {
     if (valueText == null && legend == null) {
       return;
     }
-    PieChartCoordinateRender chart =
-        coordinateChart as PieChartCoordinateRender;
+    CircularChartCoordinateRender chart =
+        coordinateChart as CircularChartCoordinateRender;
     Offset center = chart.center;
     Canvas canvas = chart.canvas;
     //中心弧度
@@ -340,8 +340,8 @@ class Pie<T> extends ChartBodyRender<T> {
 
   //绘制中间文案
   void _drawCenterValue(String? valueText) {
-    PieChartCoordinateRender chart =
-        coordinateChart as PieChartCoordinateRender;
+    CircularChartCoordinateRender chart =
+        coordinateChart as CircularChartCoordinateRender;
     //中心点文案
     if (centerTextStyle != null && valueText != null) {
       TextPainter valueTextPainter = TextPainter(

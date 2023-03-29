@@ -49,13 +49,14 @@ class PieChartDemoPage extends StatelessWidget {
               // color: Colors.red,
               height: 200,
               child: ChartWidget(
-                builder: () => PieChartCoordinateRender(
+                builder: () => CircularChartCoordinateRender(
                   margin: const EdgeInsets.all(10),
                   padding: const EdgeInsets.all(5),
                   charts: [
                     Pie(
                       data: dataList,
-                      position: (item) => (double.parse(item['value1'].toString())),
+                      position: (item) =>
+                          (double.parse(item['value1'].toString())),
                       direction: RotateDirection.reverse,
                       textStyle: const TextStyle(
                         fontSize: 12,
@@ -63,7 +64,8 @@ class PieChartDemoPage extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                       legendFormatter: (item) {
-                        return (item['time'] as DateTime).toStringWithFormat(format: 'MM-dd');
+                        return (item['time'] as DateTime)
+                            .toStringWithFormat(format: 'MM-dd');
                       },
                       valueFormatter: (item) => item['value1'].toString(),
                     ),
@@ -75,15 +77,20 @@ class PieChartDemoPage extends StatelessWidget {
             SizedBox(
               height: 200,
               child: ChartWidget(
-                builder: () => PieChartCoordinateRender(
-                  margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 10),
+                builder: () => CircularChartCoordinateRender(
+                  margin: const EdgeInsets.only(
+                      left: 40, top: 0, right: 0, bottom: 10),
                   charts: [
                     Pie(
                       data: dataList,
-                      position: (item) => (double.parse(item['value1'].toString())),
+                      position: (item) =>
+                          (double.parse(item['value1'].toString())),
                       holeRadius: 40,
                       valueTextOffset: 20,
-                      centerTextStyle: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
+                      centerTextStyle: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold),
                       valueFormatter: (item) => item['value1'].toString(),
                     ),
                   ],

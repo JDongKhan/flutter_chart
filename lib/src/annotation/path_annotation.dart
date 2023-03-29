@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../line_bar/line_bar_chart_coordinate_render.dart';
+import '../line_bar/two_dimensions_chart_coordinate_render.dart';
 import 'annotation.dart';
 
 //路径
@@ -17,8 +17,9 @@ class PathAnnotation extends Annotation {
   });
   @override
   void draw(final Offset offset) {
-    if (coordinateChart is LineBarChartCoordinateRender) {
-      LineBarChartCoordinateRender chart = coordinateChart as LineBarChartCoordinateRender;
+    if (coordinateChart is TwoDimensionsChartCoordinateRender) {
+      TwoDimensionsChartCoordinateRender chart =
+          coordinateChart as TwoDimensionsChartCoordinateRender;
       Paint paint = Paint()
         ..color = color
         ..style = PaintingStyle.fill
