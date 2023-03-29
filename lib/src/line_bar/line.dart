@@ -24,12 +24,13 @@ class Line<T> extends ChartBodyRender<T> {
     this.dotColors,
     this.dotRadius = 2,
     this.strokeWidth = 1,
-    this.isHollow = true,
+    this.isHollow = false,
   });
 
   @override
-  void draw() {
-    LineBarChartCoordinateRender chart = coordinateChart as LineBarChartCoordinateRender;
+  void draw(final Offset offset) {
+    LineBarChartCoordinateRender chart =
+        coordinateChart as LineBarChartCoordinateRender;
     List<ChartShapeState> shapeList = [];
 
     int index = 0;
@@ -56,8 +57,11 @@ class Line<T> extends ChartBodyRender<T> {
       double xPo = xvs * chart.xAxis.density + left;
 
       //先判断是否选中，此场景是第一次渲染之后点击才有，所以用老数据即可
-      List<ChartShapeState>? currentShapeList = chart.state.bodyStateList[positionIndex]?.shapeList;
-      if (chart.state.gesturePoint != null && (currentShapeList?[index].hitTest(chart.state.gesturePoint!) == true)) {
+      List<ChartShapeState>? currentShapeList =
+          chart.state.bodyStateList[positionIndex]?.shapeList;
+      if (chart.state.gesturePoint != null &&
+          (currentShapeList?[index].hitTest(chart.state.gesturePoint!) ==
+              true)) {
         chart.state.bodyStateList[positionIndex]?.selectedIndex = index;
       }
       //一条数据下可能多条线
@@ -71,6 +75,7 @@ class Line<T> extends ChartBodyRender<T> {
         //计算点的位置
         num value = yvs[valueIndex];
         double yPo = bottom - (value * chart.yAxis[yAxisPosition].density);
+        yPo = withYOffset(yPo);
         if (index == 0) {
           lineInfo.path.moveTo(xPo, yPo);
         } else {
@@ -78,7 +83,9 @@ class Line<T> extends ChartBodyRender<T> {
         }
         lineInfo.pointList.add(Offset(xPo, yPo));
         //存放点的位置
-        ChartShapeState shape = ChartShapeState.rect(rect: Rect.fromCenter(center: Offset(xPo, yPo), width: dotRadius, height: dotRadius));
+        ChartShapeState shape = ChartShapeState.rect(
+            rect: Rect.fromCenter(
+                center: Offset(xPo, yPo), width: dotRadius, height: dotRadius));
         shapes.add(shape);
       }
       //调整热区
@@ -93,9 +100,11 @@ class Line<T> extends ChartBodyRender<T> {
           double leftDiff = currentRect.left - lastShape.rect!.right;
           //最后一个
           if (index == data.length - 1) {
-            currentTapRect = Rect.fromLTRB(currentRect.left - leftDiff / 2, top, right, bottom);
+            currentTapRect = Rect.fromLTRB(
+                currentRect.left - leftDiff / 2, top, right, bottom);
           } else {
-            currentTapRect = Rect.fromLTRB(currentRect.left - leftDiff / 2, top, xPo + dotRadius * 2, bottom);
+            currentTapRect = Rect.fromLTRB(currentRect.left - leftDiff / 2, top,
+                xPo + dotRadius * 2, bottom);
           }
           //调整前面一个
           lastShape.adjustHotRect(right: leftDiff / 2);
@@ -104,16 +113,19 @@ class Line<T> extends ChartBodyRender<T> {
           double rightDiff = currentRect.right - lastShape.rect!.left;
           //因为是逆序，这是就是最左边的那个
           if (index == data.length - 1) {
-            currentTapRect = Rect.fromLTRB(left, top, currentRect.right - rightDiff / 2, bottom);
+            currentTapRect = Rect.fromLTRB(
+                left, top, currentRect.right - rightDiff / 2, bottom);
           } else {
-            currentTapRect = Rect.fromLTRB(xPo, top, currentRect.right - rightDiff / 2, bottom);
+            currentTapRect = Rect.fromLTRB(
+                xPo, top, currentRect.right - rightDiff / 2, bottom);
           }
           //调整前面一个
           lastShape.adjustHotRect(left: rightDiff / 2);
         }
       }
 
-      ChartShapeState shape = ChartShapeState.rect(rect: currentRect, hotRect: currentTapRect);
+      ChartShapeState shape =
+          ChartShapeState.rect(rect: currentRect, hotRect: currentTapRect);
       shape.children.addAll(shapes);
       shapeList.add(shape);
 
@@ -140,7 +152,8 @@ class Line<T> extends ChartBodyRender<T> {
   }
 
   void drawLine(Map<int, LineInfo> pathMap) {
-    LineBarChartCoordinateRender chart = coordinateChart as LineBarChartCoordinateRender;
+    LineBarChartCoordinateRender chart =
+        coordinateChart as LineBarChartCoordinateRender;
     //线
     Paint paint = Paint()
       ..strokeWidth = strokeWidth
@@ -157,14 +170,16 @@ class Line<T> extends ChartBodyRender<T> {
         for (Offset point in lineInfo.pointList) {
           //先用白色覆盖
           dotPaint.style = PaintingStyle.fill;
-          chart.canvas.drawCircle(Offset(point.dx, point.dy), dotRadius, dotPaint..color = Colors.white);
+          chart.canvas.drawCircle(Offset(point.dx, point.dy), dotRadius,
+              dotPaint..color = Colors.white);
           //再画空心
           if (isHollow) {
             dotPaint.style = PaintingStyle.stroke;
           } else {
             dotPaint.style = PaintingStyle.fill;
           }
-          chart.canvas.drawCircle(Offset(point.dx, point.dy), dotRadius, dotPaint..color = dotColorList[index]);
+          chart.canvas.drawCircle(Offset(point.dx, point.dy), dotRadius,
+              dotPaint..color = dotColorList[index]);
         }
       }
     });

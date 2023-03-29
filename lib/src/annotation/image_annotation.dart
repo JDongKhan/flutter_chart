@@ -37,7 +37,7 @@ class ImageAnnotation extends Annotation {
   }
 
   @override
-  void draw() {
+  void draw(final Offset offset) {
     if (coordinateChart is LineBarChartCoordinateRender) {
       LineBarChartCoordinateRender chart = coordinateChart as LineBarChartCoordinateRender;
       num xPo = positions[0];

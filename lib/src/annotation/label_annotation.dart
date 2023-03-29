@@ -21,10 +21,10 @@ class LabelAnnotation extends Annotation {
     this.textStyle = const TextStyle(color: Colors.red),
   }) : assert(positions != null || anchor != null);
   @override
-  void draw() {
+  void draw(final Offset offset) {
     if (coordinateChart is LineBarChartCoordinateRender) {
       LineBarChartCoordinateRender chart = coordinateChart as LineBarChartCoordinateRender;
-      Offset offset;
+      Offset ost;
       if (positions != null) {
         num xPo = positions![0];
         num yPo = positions![1];
@@ -45,9 +45,9 @@ class LabelAnnotation extends Annotation {
             top = chart.contentRect.bottom - itemHeight / chart.state.zoom;
           }
         }
-        offset = Offset(left, top).translate(this.offset.dx, this.offset.dy);
+        ost = Offset(left, top).translate(this.offset.dx, this.offset.dy);
       } else {
-        offset = anchor!(chart.size);
+        ost = anchor!(chart.size);
       }
 
       TextPainter(
@@ -62,7 +62,7 @@ class LabelAnnotation extends Annotation {
           minWidth: 0,
           maxWidth: chart.size.width,
         )
-        ..paint(chart.canvas, offset);
+        ..paint(chart.canvas, ost);
     }
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'chart_coordinate_render.dart';
 
 /// @author jd
@@ -12,6 +14,7 @@ abstract class ChartRender {
     this.coordinateChart = coordinateChart;
   }
 
+  //自己做偏移粒度会更细
   double withXOffset(double offset, [bool scrollable = true]) {
     return coordinateChart.withXOffset(offset, scrollable);
   }
@@ -20,9 +23,10 @@ abstract class ChartRender {
     return coordinateChart.withXZoom(offset);
   }
 
+  //自己做偏移粒度会更细
   double withYOffset(double offset, [bool scrollable = true]) {
     return coordinateChart.withYOffset(offset, scrollable);
   }
 
-  void draw();
+  void draw(final Offset offset);
 }

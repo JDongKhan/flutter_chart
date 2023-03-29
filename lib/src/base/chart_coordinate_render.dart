@@ -45,9 +45,9 @@ typedef ChartTooltipFormatter<T> = InlineSpan? Function(List<T?>);
 
 //渲染器， 每次刷新会重新构造，切忌不要存放状态数据，数据都在state里面
 abstract class ChartCoordinateRender {
-  //图形外边距，用于控制两轴边距
+  //图形外边距，用于控制坐标轴的外边距
   final EdgeInsets margin;
-  //图形内边距，用于控制图形内容距两周的距离
+  //图形内边距，用于控制坐标轴的内边距
   final EdgeInsets padding;
   //缩放比例
   final bool zoomHorizontal;
@@ -86,19 +86,22 @@ abstract class ChartCoordinateRender {
 
   //图形内容的外边距信息
   EdgeInsets contentMargin;
+  //未处理的坐标  原点在左上角
   Rect get contentRect => Rect.fromLTRB(contentMargin.left, contentMargin.top, size.width - contentMargin.left, size.height - contentMargin.bottom);
 
-  double transformBottomCoordinate(double bottom) {
-    return size.height - bottom;
+  //将原点在左下角的逻辑坐标转换成物理坐标
+
+  //将原点在左下角的逻辑坐标转换成物理坐标
+  double transformY(double dy) {
+    return size.height - dy;
   }
 
-  double transformRightCoordinate(double right) {
-    return right;
+  Offset transformOffset(Offset offset) {
+    return Offset(offset.dx, size.height - offset.dy);
   }
 
-  //逻辑坐标系在左下角,而物理坐标系在左上角
-  Rect transformRectCoordinate(Rect rect) {
-    return Rect.fromLTWH(rect.left, size.height - rect.top, rect.width, rect.height);
+  Rect transformRect(Rect rect) {
+    return Rect.fromLTRB(rect.left, size.height - rect.top, rect.right, size.height - rect.bottom);
   }
 
   void init(Canvas canvas, Size size) {
@@ -107,6 +110,13 @@ abstract class ChartCoordinateRender {
     for (var element in charts) {
       element.init(this);
     }
+  }
+
+  Offset withOffset(Offset offset, [bool scrollable = true]) {
+    if (scrollable) {
+      return Offset(offset.dx - state.offset.dx, offset.dy - state.offset.dy);
+    }
+    return offset;
   }
 
   double withXOffset(double offset, [bool scrollable = true]) {

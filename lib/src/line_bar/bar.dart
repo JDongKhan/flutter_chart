@@ -28,8 +28,9 @@ class Bar<T> extends ChartBodyRender<T> {
     this.highlightColor = Colors.yellow,
   });
   @override
-  void draw() {
-    LineBarChartCoordinateRender chart = coordinateChart as LineBarChartCoordinateRender;
+  void draw(final Offset offset) {
+    LineBarChartCoordinateRender chart =
+        coordinateChart as LineBarChartCoordinateRender;
     List<ChartShapeState> shapeList = [];
     Paint paint = Paint()
       ..strokeWidth = 1
@@ -37,12 +38,14 @@ class Bar<T> extends ChartBodyRender<T> {
       ..style = PaintingStyle.fill;
     for (int index = 0; index < data.length; index++) {
       T value = data[index];
-      shapeList.add(_draw(chart, paint, index, value));
+      shapeList.add(drawBar(chart, paint, index, value));
     }
     chart.state.bodyStateList[positionIndex]?.shapeList = shapeList;
   }
 
-  ChartShapeState _draw(LineBarChartCoordinateRender chart, Paint paint, int index, T data) {
+  //可以重写 自定义特殊的图形
+  ChartShapeState drawBar(
+      LineBarChartCoordinateRender chart, Paint paint, int index, T data) {
     num po = position.call(data);
     num v = value.call(data);
     if (v == 0) {
@@ -51,7 +54,8 @@ class Bar<T> extends ChartBodyRender<T> {
     double bottom = chart.size.height - chart.contentMargin.bottom;
     double contentHeight = chart.size.height - chart.contentMargin.vertical;
 
-    double left = chart.contentMargin.left + chart.xAxis.density * po - itemWidth / 2;
+    double left =
+        chart.contentMargin.left + chart.xAxis.density * po - itemWidth / 2;
     left = withXOffset(left);
     left = withXZoom(left);
 
@@ -70,13 +74,8 @@ class Bar<T> extends ChartBodyRender<T> {
       paint.color = color;
     }
     //开始绘制，bar不同于line，在循环中就可以绘制
-    drawBar(chart.canvas, rect, paint);
+    chart.canvas.drawRect(rect, paint);
     return shape;
-  }
-
-  //可以重写 自定义特殊的图形
-  void drawBar(Canvas canvas, Rect rect, Paint paint) {
-    canvas.drawRect(rect, paint);
   }
 }
 
@@ -112,22 +111,24 @@ class StackBar<T> extends ChartBodyRender<T> {
     this.padding = 5,
   });
   @override
-  void draw() {
-    LineBarChartCoordinateRender chart = coordinateChart as LineBarChartCoordinateRender;
+  void draw(final Offset offset) {
+    LineBarChartCoordinateRender chart =
+        coordinateChart as LineBarChartCoordinateRender;
     List<ChartShapeState> shapeList = [];
     for (int index = 0; index < data.length; index++) {
       T value = data[index];
       if (direction == Axis.horizontal) {
-        shapeList.add(_drawHorizontal(chart, index, value));
+        shapeList.add(drawHorizontalBar(chart, index, value));
       } else {
-        shapeList.add(_drawVertical(chart, index, value));
+        shapeList.add(drawVerticalBar(chart, index, value));
       }
     }
     chart.state.bodyStateList[positionIndex]?.shapeList = shapeList;
   }
 
   //水平排列图形
-  ChartShapeState _drawHorizontal(LineBarChartCoordinateRender chart, int index, T data) {
+  ChartShapeState drawHorizontalBar(
+      LineBarChartCoordinateRender chart, int index, T data) {
     num po = position.call(data);
     List<num> vas = values.call(data);
     assert(colors.length >= vas.length);
@@ -141,7 +142,10 @@ class StackBar<T> extends ChartBodyRender<T> {
 
     double center = vas.length * itemWidth / 2;
 
-    double left = chart.contentMargin.left + chart.xAxis.density * po - itemWidth / 2 - center;
+    double left = chart.contentMargin.left +
+        chart.xAxis.density * po -
+        itemWidth / 2 -
+        center;
     left = withXOffset(left);
     left = withXZoom(left);
 
@@ -169,7 +173,7 @@ class StackBar<T> extends ChartBodyRender<T> {
         paint.color = highlightColor;
       }
       //画图
-      drawBar(chart.canvas, rect, paint);
+      chart.canvas.drawRect(rect, paint);
       left = left + itemWidth + padding;
       shape.children.add(stackShape);
       stackIndex++;
@@ -177,7 +181,8 @@ class StackBar<T> extends ChartBodyRender<T> {
     return shape;
   }
 
-  ChartShapeState _drawVertical(LineBarChartCoordinateRender chart, int index, T data) {
+  ChartShapeState drawVerticalBar(
+      LineBarChartCoordinateRender chart, int index, T data) {
     num po = position.call(data);
     List<num> vas = values.call(data);
     assert(colors.length >= vas.length);
@@ -191,7 +196,8 @@ class StackBar<T> extends ChartBodyRender<T> {
     double bottom = chart.size.height - chart.contentMargin.bottom;
     double contentHeight = chart.size.height - chart.contentMargin.vertical;
     int stackIndex = 0;
-    double left = chart.contentMargin.left + chart.xAxis.density * po - itemWidth / 2;
+    double left =
+        chart.contentMargin.left + chart.xAxis.density * po - itemWidth / 2;
     left = withXOffset(left);
     left = withXZoom(left);
     ChartShapeState shape = ChartShapeState.rect(
@@ -218,15 +224,10 @@ class StackBar<T> extends ChartBodyRender<T> {
         paint.color = highlightColor;
         shape.children.add(stackShape);
       }
-      drawBar(chart.canvas, rect, paint);
+      chart.canvas.drawRect(rect, paint);
       stackIndex++;
       bottom = top;
     }
     return shape;
-  }
-
-  //可以重写，依靠rect和paint修改成特殊的样式
-  void drawBar(Canvas canvas, Rect rect, Paint paint) {
-    canvas.drawRect(rect, paint);
   }
 }

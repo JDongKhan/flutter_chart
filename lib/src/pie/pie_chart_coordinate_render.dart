@@ -28,7 +28,7 @@ class PieChartCoordinateRender extends ChartCoordinateRender {
     _drawCircle(canvas, size);
     _drawBackgroundAnnotations(canvas, size);
     for (var element in charts) {
-      element.draw();
+      element.draw(state.offset);
     }
     _drawForegroundAnnotations(canvas, size);
   }
@@ -55,7 +55,7 @@ class PieChartCoordinateRender extends ChartCoordinateRender {
   void _drawBackgroundAnnotations(Canvas canvas, Size size) {
     backgroundAnnotations?.forEach((element) {
       element.init(this);
-      element.draw();
+      element.draw(state.offset);
     });
   }
 
@@ -63,7 +63,7 @@ class PieChartCoordinateRender extends ChartCoordinateRender {
   void _drawForegroundAnnotations(Canvas canvas, Size size) {
     foregroundAnnotations?.forEach((element) {
       element.init(this);
-      element.draw();
+      element.draw(state.offset);
     });
   }
 

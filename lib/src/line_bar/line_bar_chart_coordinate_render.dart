@@ -34,6 +34,10 @@ class XAxis {
     this.dashPainter,
     required this.max,
   });
+
+  num widthOf(num value) {
+    return density * value;
+  }
 }
 
 class YAxis {
@@ -64,6 +68,10 @@ class YAxis {
     this.dashPainter,
     this.offset,
   });
+
+  num heightOf(num value) {
+    return density * value;
+  }
 }
 
 class LineBarChartCoordinateRender extends ChartCoordinateRender {
@@ -71,8 +79,10 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
   final List<YAxis> yAxis;
   final XAxis xAxis;
   LineBarChartCoordinateRender({
-    super.margin = const EdgeInsets.only(left: 30, top: 0, right: 0, bottom: 25),
-    super.padding = const EdgeInsets.only(left: 30, top: 0, right: 0, bottom: 0),
+    super.margin =
+        const EdgeInsets.only(left: 30, top: 0, right: 0, bottom: 25),
+    super.padding =
+        const EdgeInsets.only(left: 30, top: 0, right: 0, bottom: 0),
     required super.charts,
     super.backgroundAnnotations,
     super.foregroundAnnotations,
@@ -83,8 +93,7 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
     super.crossHair = const CrossHairStyle(),
     required this.yAxis,
     XAxis? xAxis,
-  })  : assert(zoomVertical == false, '暂时不支持zoomVertical'),
-        assert(yAxis.isNotEmpty),
+  })  : assert(yAxis.isNotEmpty),
         xAxis = xAxis ?? XAxis(max: 7);
 
   @override
@@ -95,7 +104,8 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
     double height = size.height;
     int count = xAxis.count;
     //每格的宽度，用于控制一屏最多显示个数
-    double density = (width - contentMargin.horizontal) / count / xAxis.interval;
+    double density =
+        (width - contentMargin.horizontal) / count / xAxis.interval;
     //x轴密度 即1 value 等于多少尺寸
     if (zoomHorizontal) {
       xAxis.density = density * state.zoom;
@@ -121,14 +131,21 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
   void paint(Canvas canvas, Size size) {
     Rect rect = Rect.fromLTWH(0, 0, size.width, size.height);
     canvas.clipRect(rect);
+    // canvas.save();
+    // 如果按坐标系切，就会面临坐标轴和里面的内容重复循环的问题，该组件的本意是尽可能减少无畏的循环，提高性能，如果
+    //给y轴切出来，超出这个范围就隐藏
+    // canvas.clipRect(Rect.fromLTWH(0, 0, margin.left, size.height));
     _drawYAxis(canvas, size);
+    // canvas.restore();
+
     //防止超过y轴
-    canvas.clipRect(Rect.fromLTWH(margin.left, 0, size.width - margin.horizontal, size.height));
+    canvas.clipRect(Rect.fromLTWH(
+        margin.left, 0, size.width - margin.horizontal, size.height));
     _drawXAxis(canvas, size);
     _drawBackgroundAnnotations(canvas, size);
     //绘图
     for (var element in charts) {
-      element.draw();
+      element.draw(state.offset);
     }
     _drawForegroundAnnotations(canvas, size);
     _drawCrosshair(canvas, size);
@@ -153,27 +170,33 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
       //先画文字和虚线
       for (int i = 0; i <= count; i++) {
         String text = yA.formatter?.call(i) ?? '${min + itemValue * i}';
-        double top = size.height - margin.bottom - itemHeight * i;
+        double top = size.height - contentMargin.bottom - itemHeight * i;
+        top = withYOffset(top);
         if (i == count) {
-          _drawYTextPaint(canvas, text, yA.textStyle, yAxisIndex > 0, left, top, false);
+          _drawYTextPaint(
+              canvas, text, yA.textStyle, yAxisIndex > 0, left, top, false);
         } else {
-          _drawYTextPaint(canvas, text, yA.textStyle, yAxisIndex > 0, left, top, true);
+          _drawYTextPaint(
+              canvas, text, yA.textStyle, yAxisIndex > 0, left, top, true);
         }
-        //绘制格子线
+        //绘制格子线  先放一起，以免再次遍历
         if (yA.drawGrid) {
-          _drawGridLine(canvas, Offset(left, top), Offset(size.width - margin.right, top), paint, yA.dashPainter);
+          _drawGridLine(canvas, Offset(left, top),
+              Offset(size.width - margin.right, top), paint, yA.dashPainter);
         }
       }
       //再画实线
       if (yA.drawLine) {
-        canvas.drawLine(Offset(left, margin.top), Offset(left, size.height - margin.bottom), paint);
+        canvas.drawLine(Offset(left, margin.top),
+            Offset(left, size.height - margin.bottom), paint);
       }
 
       yAxisIndex++;
     }
   }
 
-  void _drawGridLine(Canvas canvas, Offset p1, Offset p2, Paint paint, DashPainter? dashPainter) {
+  void _drawGridLine(Canvas canvas, Offset p1, Offset p2, Paint paint,
+      DashPainter? dashPainter) {
     Path path = Path()
       ..moveTo(p1.dx, p1.dy)
       ..lineTo(p2.dx, p2.dy);
@@ -181,7 +204,8 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
     painter.paint(canvas, path, paint);
   }
 
-  void _drawYTextPaint(Canvas canvas, String text, TextStyle textStyle, bool right, double left, double top, bool middle) {
+  void _drawYTextPaint(Canvas canvas, String text, TextStyle textStyle,
+      bool right, double left, double top, bool middle) {
     var textPainter = TextPainter(
       text: TextSpan(
         text: text,
@@ -220,18 +244,28 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
       //   _drawXTextPaint(canvas, '${i + 1}', size,
       //       size.width - padding.right - contentPadding.right - 5);
       // }
+      //先放一起，以免再次遍历
       if (xAxis.drawGrid) {
-        _drawGridLine(canvas, Offset(left, margin.top), Offset(left, size.height - margin.bottom), paint, xAxis.dashPainter);
+        _drawGridLine(
+            canvas,
+            Offset(left, margin.top),
+            Offset(left, size.height - margin.bottom),
+            paint,
+            xAxis.dashPainter);
       }
     }
 
     //划线
     if (xAxis.drawLine) {
-      canvas.drawLine(Offset(margin.left, size.height - margin.bottom), Offset(size.width - margin.right, size.height - margin.bottom), paint);
+      canvas.drawLine(
+          Offset(margin.left, size.height - margin.bottom),
+          Offset(size.width - margin.right, size.height - margin.bottom),
+          paint);
     }
   }
 
-  void _drawXTextPaint(Canvas canvas, String text, TextStyle textStyle, Size size, double left) {
+  void _drawXTextPaint(
+      Canvas canvas, String text, TextStyle textStyle, Size size, double left) {
     var textPainter = TextPainter(
       text: TextSpan(
         text: text,
@@ -351,6 +385,9 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
         items.add(item);
       }
     }
+    if (items.isEmpty) {
+      return;
+    }
     InlineSpan? textSpan = tooltipFormatter?.call(items);
     if (textSpan == null) {
       return;
@@ -376,18 +413,29 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
     var textPaintPoint = anchor + padding.topLeft;
     //是否约束在组件范围内
     const bool constrained = true;
-    Size contentSize = Size(size.width - padding.horizontal, size.height - padding.vertical);
+    Size contentSize =
+        Size(size.width - padding.horizontal, size.height - padding.vertical);
     if (constrained) {
-      final horizontalAdjust = windowRect.left < 0 ? -windowRect.left : (windowRect.right > contentSize.width ? contentSize.width - windowRect.right : 0.0);
-      final verticalAdjust = windowRect.top < 0 ? -windowRect.top : (windowRect.bottom > contentSize.height ? contentSize.height - windowRect.bottom : 0.0);
+      final horizontalAdjust = windowRect.left < 0
+          ? -windowRect.left
+          : (windowRect.right > contentSize.width
+              ? contentSize.width - windowRect.right
+              : 0.0);
+      final verticalAdjust = windowRect.top < 0
+          ? -windowRect.top
+          : (windowRect.bottom > contentSize.height
+              ? contentSize.height - windowRect.bottom
+              : 0.0);
       if (horizontalAdjust != 0 || verticalAdjust != 0) {
         windowRect = windowRect.translate(horizontalAdjust, verticalAdjust);
-        textPaintPoint = textPaintPoint.translate(horizontalAdjust, verticalAdjust);
+        textPaintPoint =
+            textPaintPoint.translate(horizontalAdjust, verticalAdjust);
       }
     }
 
     const Radius radius = Radius.circular(3.0);
-    Path windowPath = Path()..addRRect(RRect.fromRectAndRadius(windowRect, radius));
+    Path windowPath = Path()
+      ..addRRect(RRect.fromRectAndRadius(windowRect, radius));
 
     Paint paint = Paint()
       ..color = Colors.white
@@ -407,7 +455,7 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
 
   @override
   void scroll(Offset delta) {
-    Offset newOffset = state.offset.translate(-delta.dx, delta.dy);
+    Offset newOffset = state.offset.translate(-delta.dx, -delta.dy);
     //校准偏移，不然缩小后可能起点都在中间了，或者无限滚动
     double x = newOffset.dx;
     double y = newOffset.dy;
@@ -434,7 +482,8 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
     //y轴
     double minYOffsetValue = (1 - state.zoom) * size.height / 2;
 
-    double chartContentHeight = padding.vertical + yAxis[0].density * yAxis[0].max;
+    double chartContentHeight =
+        padding.vertical + yAxis[0].density * yAxis[0].max;
     double chartViewPortHeight = size.height - margin.vertical;
     //因为offset可能为负的，换算成正值便于后面计算
     // double realYOffset = y - minYOffsetValue;
@@ -449,7 +498,7 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
       y = minYOffsetValue;
     }
 
-    state.offset = Offset(x, 0);
+    state.offset = Offset(x, y);
     // print(state.offset);
   }
 
@@ -458,7 +507,7 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
     if (backgroundAnnotations != null) {
       for (Annotation annotation in backgroundAnnotations!) {
         annotation.init(this);
-        annotation.draw();
+        annotation.draw(state.offset);
       }
     }
   }
@@ -468,7 +517,7 @@ class LineBarChartCoordinateRender extends ChartCoordinateRender {
     if (foregroundAnnotations != null) {
       for (Annotation annotation in foregroundAnnotations!) {
         annotation.init(this);
-        annotation.draw();
+        annotation.draw(state.offset);
       }
     }
   }

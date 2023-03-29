@@ -13,7 +13,7 @@ class RegionAnnotation extends Annotation {
     this.color = const Color(0xFFF5F5F5),
   });
   @override
-  void draw() {
+  void draw(final Offset offset) {
     if (coordinateChart is LineBarChartCoordinateRender) {
       LineBarChartCoordinateRender chart = coordinateChart as LineBarChartCoordinateRender;
       num po1 = positions[0];

@@ -19,7 +19,7 @@ class LimitAnnotation extends Annotation {
     this.strokeWidth = 1,
   });
   @override
-  void draw() {
+  void draw(final Offset offset) {
     if (coordinateChart is LineBarChartCoordinateRender) {
       LineBarChartCoordinateRender chart = coordinateChart as LineBarChartCoordinateRender;
       num po = limit;

@@ -62,8 +62,9 @@ class Pie<T> extends ChartBodyRender<T> {
     required super.position,
   });
   @override
-  void draw() {
-    PieChartCoordinateRender chart = coordinateChart as PieChartCoordinateRender;
+  void draw(final Offset offset) {
+    PieChartCoordinateRender chart =
+        coordinateChart as PieChartCoordinateRender;
     Canvas canvas = chart.canvas;
     Offset center = chart.center;
     double radius = chart.radius;
@@ -98,7 +99,8 @@ class Pie<T> extends ChartBodyRender<T> {
       //直接读取
       num percent = values[i] / total;
       // 计算出每个数据所占的弧度值
-      final sweepAngle = percent * pi * 2 * (direction == RotateDirection.forward ? 1 : -1);
+      final sweepAngle =
+          percent * pi * 2 * (direction == RotateDirection.forward ? 1 : -1);
       double rd = radius;
       //图形区域
       ChartShapeState shape = ChartShapeState.arc(
@@ -156,7 +158,8 @@ class Pie<T> extends ChartBodyRender<T> {
     if (spaceWidth == null) {
       return;
     }
-    PieChartCoordinateRender chart = coordinateChart as PieChartCoordinateRender;
+    PieChartCoordinateRender chart =
+        coordinateChart as PieChartCoordinateRender;
     Offset center = chart.center;
     Canvas canvas = chart.canvas;
     //开始线
@@ -181,19 +184,24 @@ class Pie<T> extends ChartBodyRender<T> {
     canvas.drawLine(start2Offset, end2Offset, paint);
   }
 
-  void _drawLineAndText(String? valueText, String? legend, int index, double radius, double startAngle, double sweepAngle) {
+  void _drawLineAndText(String? valueText, String? legend, int index,
+      double radius, double startAngle, double sweepAngle) {
     if (valueText == null && legend == null) {
       return;
     }
-    PieChartCoordinateRender chart = coordinateChart as PieChartCoordinateRender;
+    PieChartCoordinateRender chart =
+        coordinateChart as PieChartCoordinateRender;
     Offset center = chart.center;
     Canvas canvas = chart.canvas;
     //中心弧度
     final double radians = startAngle + sweepAngle / 2;
     double line1 = 10;
     double line2 = 40;
-    Offset point1 = Offset(cos(radians) * (radius), sin(radians) * (radius)).translate(center.dx, center.dy);
-    Offset point2 = Offset(cos(radians) * (radius + line1), sin(radians) * (radius + line1)).translate(center.dx, center.dy);
+    Offset point1 = Offset(cos(radians) * (radius), sin(radians) * (radius))
+        .translate(center.dx, center.dy);
+    Offset point2 =
+        Offset(cos(radians) * (radius + line1), sin(radians) * (radius + line1))
+            .translate(center.dx, center.dy);
     Paint paint = Paint()
       ..style = PaintingStyle.fill
       ..color = lineColor
@@ -226,12 +234,18 @@ class Pie<T> extends ChartBodyRender<T> {
           maxWidth: chart.size.width,
         );
       // 使用三角函数计算文字位置 并根据文字大小适配
-      Offset textOffset = Offset(isLeft ? point3.dx : point3.dx - legendTextPainter.width, point3.dy - legendTextPainter.height);
+      Offset textOffset = Offset(
+          isLeft ? point3.dx : point3.dx - legendTextPainter.width,
+          point3.dy - legendTextPainter.height);
       Paint dotPaint = Paint()
         ..style = PaintingStyle.fill
         ..color = colors[index]
         ..strokeWidth = 1;
-      canvas.drawCircle(Offset(textOffset.dx - 6, textOffset.dy + legendTextPainter.height / 2), 4, dotPaint);
+      canvas.drawCircle(
+          Offset(
+              textOffset.dx - 6, textOffset.dy + legendTextPainter.height / 2),
+          4,
+          dotPaint);
       legendTextPainter.paint(canvas, textOffset);
     }
 
@@ -249,7 +263,8 @@ class Pie<T> extends ChartBodyRender<T> {
           maxWidth: chart.size.width,
         );
       // 使用三角函数计算文字位置 并根据文字大小适配
-      Offset textOffset = Offset(isLeft ? point3.dx : point3.dx - valueTextPainter.width, point3.dy);
+      Offset textOffset = Offset(
+          isLeft ? point3.dx : point3.dx - valueTextPainter.width, point3.dy);
       valueTextPainter.paint(canvas, textOffset);
     }
   }
@@ -325,7 +340,8 @@ class Pie<T> extends ChartBodyRender<T> {
 
   //绘制中间文案
   void _drawCenterValue(String? valueText) {
-    PieChartCoordinateRender chart = coordinateChart as PieChartCoordinateRender;
+    PieChartCoordinateRender chart =
+        coordinateChart as PieChartCoordinateRender;
     //中心点文案
     if (centerTextStyle != null && valueText != null) {
       TextPainter valueTextPainter = TextPainter(
@@ -339,7 +355,10 @@ class Pie<T> extends ChartBodyRender<T> {
           minWidth: 0,
           maxWidth: chart.size.width,
         );
-      valueTextPainter.paint(chart.canvas, chart.center.translate(-valueTextPainter.width / 2, -valueTextPainter.height / 2));
+      valueTextPainter.paint(
+          chart.canvas,
+          chart.center.translate(
+              -valueTextPainter.width / 2, -valueTextPainter.height / 2));
     }
   }
 

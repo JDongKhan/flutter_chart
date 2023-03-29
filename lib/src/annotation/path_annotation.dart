@@ -16,7 +16,7 @@ class PathAnnotation extends Annotation {
     this.anchor,
   });
   @override
-  void draw() {
+  void draw(final Offset offset) {
     if (coordinateChart is LineBarChartCoordinateRender) {
       LineBarChartCoordinateRender chart = coordinateChart as LineBarChartCoordinateRender;
       Paint paint = Paint()
@@ -26,8 +26,8 @@ class PathAnnotation extends Annotation {
 
       Path newPath = path;
       if (anchor != null) {
-        Offset offset = anchor!(chart.size);
-        final matrix = Matrix4.identity()..leftTranslate(offset.dx, offset.dy);
+        Offset ost = anchor!(chart.size);
+        final matrix = Matrix4.identity()..leftTranslate(ost.dx, ost.dy);
         newPath = path.transform(matrix.storage);
       }
       chart.canvas.drawPath(newPath, paint);
