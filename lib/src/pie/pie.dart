@@ -32,7 +32,7 @@ class Pie<T> extends ChartBodyRender<T> {
   final TextStyle textStyle;
   //图例样式
   final TextStyle legendTextStyle;
-  //中间文案样式
+  //中间文案样式 为空则不显示
   final TextStyle? centerTextStyle;
   //扇形的方向
   final RotateDirection direction;
@@ -110,6 +110,7 @@ class Pie<T> extends ChartBodyRender<T> {
       );
       shapeList.add(shape);
 
+      //放大区域
       ChartShapeState tapShape = shape;
       //判断是否选中
       bool selected = shape.hitTest(chart.state.gesturePoint);
@@ -124,9 +125,20 @@ class Pie<T> extends ChartBodyRender<T> {
           outRadius: rd,
         );
       }
-      drawItem(canvas, tapShape.path!, paint..color = colors[i]);
+      drawPie(canvas, tapShape.path!, paint..color = colors[i]);
+      //绘制间隙
       _drawSpaceLine(rd, startAngle, sweepAngle);
-      _drawLineAndText(item, index, rd, startAngle, sweepAngle);
+
+      String? valueText = valueFormatter?.call(item);
+      String? legend = legendFormatter?.call(item);
+
+      //绘制引导线
+      _drawLineAndText(valueText, legend, index, rd, startAngle, sweepAngle);
+
+      //选中就绘制
+      if (selected) {
+        _drawCenterValue(valueText);
+      }
       //画圆弧
       // baseChart.canvas.drawArc(
       //     newRect, startAngle, sweepAngle, true, paint..color = colors[i]);
@@ -169,9 +181,7 @@ class Pie<T> extends ChartBodyRender<T> {
     canvas.drawLine(start2Offset, end2Offset, paint);
   }
 
-  void _drawLineAndText(T item, int index, double radius, double startAngle, double sweepAngle) {
-    String? valueText = valueFormatter?.call(item);
-    String? legend = legendFormatter?.call(item);
+  void _drawLineAndText(String? valueText, String? legend, int index, double radius, double startAngle, double sweepAngle) {
     if (valueText == null && legend == null) {
       return;
     }
@@ -313,8 +323,28 @@ class Pie<T> extends ChartBodyRender<T> {
   //   }
   // }
 
+  //绘制中间文案
+  void _drawCenterValue(String? valueText) {
+    PieChartCoordinateRender chart = coordinateChart as PieChartCoordinateRender;
+    //中心点文案
+    if (centerTextStyle != null && valueText != null) {
+      TextPainter valueTextPainter = TextPainter(
+        textAlign: TextAlign.start,
+        text: TextSpan(
+          text: valueText,
+          style: centerTextStyle,
+        ),
+        textDirection: TextDirection.ltr,
+      )..layout(
+          minWidth: 0,
+          maxWidth: chart.size.width,
+        );
+      valueTextPainter.paint(chart.canvas, chart.center.translate(-valueTextPainter.width / 2, -valueTextPainter.height / 2));
+    }
+  }
+
   //可以重写，依靠path和paint修改成特殊的样式
-  void drawItem(Canvas canvas, Path path, Paint paint) {
+  void drawPie(Canvas canvas, Path path, Paint paint) {
     canvas.drawPath(path, paint);
   }
 }

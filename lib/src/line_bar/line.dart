@@ -11,7 +11,9 @@ typedef LinePosition<T> = List<num> Function(T);
 class Line<T> extends ChartBodyRender<T> {
   final LinePosition values;
   final List<Color> colors;
+  final List<Color>? dotColors;
   final double dotRadius;
+  final bool isHollow;
   final double strokeWidth;
   Line({
     required super.data,
@@ -19,23 +21,16 @@ class Line<T> extends ChartBodyRender<T> {
     required this.values,
     super.yAxisPosition = 0,
     this.colors = colors10,
+    this.dotColors,
     this.dotRadius = 2,
     this.strokeWidth = 1,
+    this.isHollow = true,
   });
 
   @override
   void draw() {
     LineBarChartCoordinateRender chart = coordinateChart as LineBarChartCoordinateRender;
     List<ChartShapeState> shapeList = [];
-    //线
-    Paint paint = Paint()
-      ..strokeWidth = strokeWidth
-      ..style = PaintingStyle.stroke;
-
-    //点
-    Paint dotPaint = Paint()
-      ..strokeWidth = strokeWidth
-      ..style = PaintingStyle.fill;
 
     int index = 0;
     //offset.dx 滚动偏移  (src.zoom - 1) * (src.size.width / 2) 缩放
@@ -46,10 +41,10 @@ class Line<T> extends ChartBodyRender<T> {
     double right = chart.size.width - chart.contentMargin.right;
     double top = chart.contentMargin.top;
     double bottom = chart.size.height - chart.contentMargin.bottom;
-    Map<int, Path> pathMap = {};
+    Map<int, LineInfo> pathMap = {};
     ChartShapeState? lastShape;
     num? lastXvs;
-    //遍历数据
+    //遍历数据 处理数据信息
     for (T value in data) {
       num xvs = position.call(value);
       if (lastXvs != null) {
@@ -65,25 +60,23 @@ class Line<T> extends ChartBodyRender<T> {
       if (chart.state.gesturePoint != null && (currentShapeList?[index].hitTest(chart.state.gesturePoint!) == true)) {
         chart.state.bodyStateList[positionIndex]?.selectedIndex = index;
       }
-
       //一条数据下可能多条线
       for (int valueIndex = 0; valueIndex < yvs.length; valueIndex++) {
         //每条线用map存放下，以便后面统一绘制
-        Path? path = pathMap[valueIndex];
-        if (path == null) {
-          path = Path();
-          pathMap[valueIndex] = path;
+        LineInfo? lineInfo = pathMap[valueIndex];
+        if (lineInfo == null) {
+          lineInfo = LineInfo();
+          pathMap[valueIndex] = lineInfo;
         }
         //计算点的位置
         num value = yvs[valueIndex];
         double yPo = bottom - (value * chart.yAxis[yAxisPosition].density);
         if (index == 0) {
-          path.moveTo(xPo, yPo);
+          lineInfo.path.moveTo(xPo, yPo);
         } else {
-          path.lineTo(xPo, yPo);
+          lineInfo.path.lineTo(xPo, yPo);
         }
-        //先画点
-        chart.canvas.drawCircle(Offset(xPo, yPo), dotRadius, dotPaint..color = colors[valueIndex]);
+        lineInfo.pointList.add(Offset(xPo, yPo));
         //存放点的位置
         ChartShapeState shape = ChartShapeState.rect(rect: Rect.fromCenter(center: Offset(xPo, yPo), width: dotRadius, height: dotRadius));
         shapes.add(shape);
@@ -141,11 +134,45 @@ class Line<T> extends ChartBodyRender<T> {
     //   chart.canvas.drawRect(newRect, newPaint);
     //   i++;
     // }
-
-    pathMap.forEach((index, path) {
-      chart.canvas.drawPath(path, paint..color = colors[index]);
-    });
-
+    //开始绘制了
+    drawLine(pathMap);
     chart.state.bodyStateList[positionIndex]?.shapeList = shapeList;
   }
+
+  void drawLine(Map<int, LineInfo> pathMap) {
+    LineBarChartCoordinateRender chart = coordinateChart as LineBarChartCoordinateRender;
+    //线
+    Paint paint = Paint()
+      ..strokeWidth = strokeWidth
+      ..style = PaintingStyle.stroke;
+    //点
+    Paint dotPaint = Paint()..strokeWidth = strokeWidth;
+
+    List<Color> dotColorList = dotColors ?? colors;
+    pathMap.forEach((index, lineInfo) {
+      //先画线
+      chart.canvas.drawPath(lineInfo.path, paint..color = colors[index]);
+      //先画点
+      if (dotRadius > 0) {
+        for (Offset point in lineInfo.pointList) {
+          //先用白色覆盖
+          dotPaint.style = PaintingStyle.fill;
+          chart.canvas.drawCircle(Offset(point.dx, point.dy), dotRadius, dotPaint..color = Colors.white);
+          //再画空心
+          if (isHollow) {
+            dotPaint.style = PaintingStyle.stroke;
+          } else {
+            dotPaint.style = PaintingStyle.fill;
+          }
+          chart.canvas.drawCircle(Offset(point.dx, point.dy), dotRadius, dotPaint..color = dotColorList[index]);
+        }
+      }
+    });
+  }
+}
+
+class LineInfo {
+  final Path path = Path();
+  final List<Offset> pointList = [];
+  LineInfo();
 }

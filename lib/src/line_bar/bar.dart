@@ -69,12 +69,13 @@ class Bar<T> extends ChartBodyRender<T> {
     } else {
       paint.color = color;
     }
-    drawItem(chart.canvas, rect, paint);
+    //开始绘制，bar不同于line，在循环中就可以绘制
+    drawBar(chart.canvas, rect, paint);
     return shape;
   }
 
   //可以重写 自定义特殊的图形
-  void drawItem(Canvas canvas, Rect rect, Paint paint) {
+  void drawBar(Canvas canvas, Rect rect, Paint paint) {
     canvas.drawRect(rect, paint);
   }
 }
@@ -168,14 +169,13 @@ class StackBar<T> extends ChartBodyRender<T> {
         paint.color = highlightColor;
       }
       //画图
-      drawItem(chart.canvas,rect,paint);
+      drawBar(chart.canvas, rect, paint);
       left = left + itemWidth + padding;
       shape.children.add(stackShape);
       stackIndex++;
     }
     return shape;
   }
-
 
   ChartShapeState _drawVertical(LineBarChartCoordinateRender chart, int index, T data) {
     num po = position.call(data);
@@ -218,17 +218,15 @@ class StackBar<T> extends ChartBodyRender<T> {
         paint.color = highlightColor;
         shape.children.add(stackShape);
       }
-      drawItem(chart.canvas,rect,paint);
+      drawBar(chart.canvas, rect, paint);
       stackIndex++;
       bottom = top;
     }
     return shape;
   }
 
-
   //可以重写，依靠rect和paint修改成特殊的样式
-  void drawItem(Canvas canvas, Rect rect, Paint paint){
+  void drawBar(Canvas canvas, Rect rect, Paint paint) {
     canvas.drawRect(rect, paint);
   }
-
 }
