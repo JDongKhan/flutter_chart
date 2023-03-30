@@ -9,22 +9,34 @@ typedef LinePosition<T> = List<num> Function(T);
 
 /// @author JD
 class Line<T> extends ChartBodyRender<T> {
+  //每个点对应的值
   final LinePosition values;
+  //线颜色
   final List<Color> colors;
+  //优先级高于colors
+  final List<Shader>? shaders;
+  //点的颜色
   final List<Color>? dotColors;
+  //点半径
   final double dotRadius;
+  //是否有空心圆
   final bool isHollow;
+  //线宽
   final double strokeWidth;
+  //填充颜色
+  final bool? filled;
   Line({
     required super.data,
     required super.position,
     required this.values,
     super.yAxisPosition = 0,
     this.colors = colors10,
+    this.shaders,
     this.dotColors,
     this.dotRadius = 2,
     this.strokeWidth = 1,
     this.isHollow = false,
+    this.filled = false,
   });
 
   @override
@@ -54,6 +66,7 @@ class Line<T> extends ChartBodyRender<T> {
       List<num> yvs = values.call(value);
       List<ChartShapeState> shapes = [];
       assert(colors.length >= yvs.length, '颜色配置跟数据源不匹配');
+      assert(shaders == null || shaders!.length >= yvs.length, '颜色配置跟数据源不匹配');
       double xPo = xvs * chart.xAxis.density + left;
 
       //先判断是否选中，此场景是第一次渲染之后点击才有，所以用老数据即可
@@ -88,45 +101,15 @@ class Line<T> extends ChartBodyRender<T> {
                 center: Offset(xPo, yPo), width: dotRadius, height: dotRadius));
         shapes.add(shape);
       }
-      //调整热区
-      Rect currentRect = Rect.fromLTRB(xPo, top, xPo + dotRadius * 2, bottom);
-      Rect currentTapRect;
-      if (lastShape == null) {
-        //说明当前是第一个
-        currentTapRect = Rect.fromLTRB(left, top, right, bottom);
-      } else {
-        //正序
-        if (lastXvs! < xvs) {
-          double leftDiff = currentRect.left - lastShape.rect!.right;
-          //最后一个
-          if (index == data.length - 1) {
-            currentTapRect = Rect.fromLTRB(
-                currentRect.left - leftDiff / 2, top, right, bottom);
-          } else {
-            currentTapRect = Rect.fromLTRB(currentRect.left - leftDiff / 2, top,
-                xPo + dotRadius * 2, bottom);
-          }
-          //调整前面一个
-          lastShape.adjustHotRect(right: leftDiff / 2);
-        } else {
-          //逆序
-          double rightDiff = currentRect.right - lastShape.rect!.left;
-          //因为是逆序，这是就是最左边的那个
-          if (index == data.length - 1) {
-            currentTapRect = Rect.fromLTRB(
-                left, top, currentRect.right - rightDiff / 2, bottom);
-          } else {
-            currentTapRect = Rect.fromLTRB(
-                xPo, top, currentRect.right - rightDiff / 2, bottom);
-          }
-          //调整前面一个
-          lastShape.adjustHotRect(left: rightDiff / 2);
-        }
-      }
 
-      ChartShapeState shape =
-          ChartShapeState.rect(rect: currentRect, hotRect: currentTapRect);
+      Rect currentRect = Rect.fromLTRB(xPo, top, xPo + dotRadius * 2, bottom);
+      ChartShapeState shape = ChartShapeState.rect(rect: currentRect);
+      shape.left = left;
+      shape.right = right;
       shape.children.addAll(shapes);
+      //这里用链表解决查找附近节点的问题
+      shape.preShapeState = lastShape;
+      lastShape?.nextShapeState = shape;
       shapeList.add(shape);
 
       lastShape = shape;
@@ -138,7 +121,11 @@ class Line<T> extends ChartBodyRender<T> {
     //开启后可查看热区是否正确
     // int i = 0;
     // for (var element in shapeList) {
-    //   Rect newRect = Rect.fromLTRB(element.hotRect!.left + 1, element.hotRect!.top + 1, element.hotRect!.right - 1, element.hotRect!.bottom);
+    //   Rect newRect = Rect.fromLTRB(
+    //       element.getHotRect()!.left + 1,
+    //       element.getHotRect()!.top + 1,
+    //       element.getHotRect()!.right - 1,
+    //       element.getHotRect()!.bottom);
     //   Paint newPaint = Paint()
     //     ..color = colors10[i]
     //     ..strokeWidth = strokeWidth
@@ -161,10 +148,32 @@ class Line<T> extends ChartBodyRender<T> {
     //点
     Paint dotPaint = Paint()..strokeWidth = strokeWidth;
 
+    Paint? fullPaint;
+    if (filled == true) {
+      fullPaint = Paint()
+        ..strokeWidth = strokeWidth
+        ..style = PaintingStyle.fill;
+    }
+
     List<Color> dotColorList = dotColors ?? colors;
     pathMap.forEach((index, lineInfo) {
       //先画线
       chart.canvas.drawPath(lineInfo.path, paint..color = colors[index]);
+      //然后填充颜色
+      if (filled == true) {
+        Offset last = lineInfo.pointList.last;
+        Offset first = lineInfo.pointList.first;
+        lineInfo.path
+          ..lineTo(last.dx, chart.contentRect.bottom)
+          ..lineTo(first.dx, chart.contentRect.bottom);
+
+        if (shaders != null) {
+          fullPaint!.shader = shaders![index];
+        } else {
+          fullPaint!.color = colors[index];
+        }
+        chart.canvas.drawPath(lineInfo.path, fullPaint);
+      }
       //先画点
       if (dotRadius > 0) {
         for (Offset point in lineInfo.pointList) {

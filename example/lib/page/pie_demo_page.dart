@@ -130,7 +130,7 @@ class PieChartDemoPage extends StatelessWidget {
                   ChartWidget(
                     builder: () => CircularChartCoordinateRender(
                       margin: const EdgeInsets.only(bottom: 10),
-                      paintStrokeCap: StrokeCap.round,
+                      strokeCap: StrokeCap.round,
                       borderColor: Colors.grey,
                       borderWidth: 13,
                       arcPosition: ArcPosition.up,
@@ -138,7 +138,7 @@ class PieChartDemoPage extends StatelessWidget {
                         Progress(
                           strokeWidth: 9,
                           endPoint: true,
-                          paintStrokeCap: StrokeCap.round,
+                          strokeCap: StrokeCap.round,
                           data: [0.5, 0.2],
                           colors: [Colors.yellow, Colors.red],
                           position: (item) => item,

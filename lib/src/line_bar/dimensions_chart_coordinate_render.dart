@@ -493,23 +493,27 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
       x = minXOffsetValue;
     }
 
-    //y轴
-    double minYOffsetValue = (1 - state.zoom) * size.height / 2;
+    if (zoomVertical) {
+      //y轴
+      double minYOffsetValue = (1 - state.zoom) * size.height / 2;
 
-    double chartContentHeight =
-        padding.vertical + yAxis[0].density * yAxis[0].max;
-    double chartViewPortHeight = size.height - margin.vertical;
-    //因为offset可能为负的，换算成正值便于后面计算
-    // double realYOffset = y - minYOffsetValue;
-    //说明内容超出了组件
-    if (chartContentHeight > chartViewPortHeight) {
-      if (y < minYOffsetValue) {
+      double chartContentHeight =
+          padding.vertical + yAxis[0].density * yAxis[0].max;
+      double chartViewPortHeight = size.height - margin.vertical;
+      //因为offset可能为负的，换算成正值便于后面计算
+      // double realYOffset = y - minYOffsetValue;
+      //说明内容超出了组件
+      if (chartContentHeight > chartViewPortHeight) {
+        if (y < minYOffsetValue) {
+          y = minYOffsetValue;
+        } else if (y > (chartContentHeight - chartViewPortHeight)) {
+          y = (chartContentHeight - chartViewPortHeight);
+        }
+      } else {
         y = minYOffsetValue;
-      } else if (y > (chartContentHeight - chartViewPortHeight)) {
-        y = (chartContentHeight - chartViewPortHeight);
       }
     } else {
-      y = minYOffsetValue;
+      y = 0;
     }
 
     state.offset = Offset(x, y);
