@@ -97,6 +97,58 @@ class PieChartDemoPage extends StatelessWidget {
                 ),
               ),
             ),
+            const Text('Progress Pie'),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 40),
+              height: 200,
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    top: 100,
+                    child: Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: const [
+                          Text(
+                            '5%',
+                            style: TextStyle(
+                              fontSize: 24,
+                              color: Colors.black,
+                            ),
+                          ),
+                          Text(
+                            '完成度',
+                            style: TextStyle(
+                              fontSize: 30,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  ChartWidget(
+                    builder: () => CircularChartCoordinateRender(
+                      margin: const EdgeInsets.only(bottom: 10),
+                      paintStrokeCap: StrokeCap.round,
+                      borderColor: Colors.grey,
+                      borderWidth: 13,
+                      arcPosition: ArcPosition.up,
+                      charts: [
+                        Progress(
+                          strokeWidth: 9,
+                          endPoint: true,
+                          paintStrokeCap: StrokeCap.round,
+                          data: [0.5, 0.2],
+                          colors: [Colors.yellow, Colors.red],
+                          position: (item) => item,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),

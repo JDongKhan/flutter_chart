@@ -442,7 +442,21 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
       ..strokeWidth = 0.2;
     const elevation = 3.0;
     const Color backgroundColor = Colors.white;
-    canvas.drawShadow(windowPath, backgroundColor, elevation, true);
+    canvas.drawShadow(windowPath, backgroundColor, elevation, false);
+    // drawShadows(canvas, windowPath, [
+    //   BoxShadow(
+    //     color: Colors.black.withOpacity(0.05),
+    //     offset: const Offset(0, 0),
+    //     blurRadius: 2,
+    //     spreadRadius: -3,
+    //   ),
+    //   BoxShadow(
+    //     color: Colors.black.withOpacity(0.05),
+    //     offset: const Offset(0, 0),
+    //     blurRadius: 2,
+    //     spreadRadius: 2,
+    //   )
+    // ]);
 
     canvas.drawPath(windowPath, paint);
 
@@ -520,5 +534,27 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
         annotation.draw(state.offset);
       }
     }
+  }
+
+  //绘制阴影
+  static void drawShadows(Canvas canvas, Path path, List<BoxShadow> shadows) {
+    for (final BoxShadow shadow in shadows) {
+      final Paint shadowPainter = shadow.toPaint();
+      if (shadow.spreadRadius == 0) {
+        canvas.drawPath(path.shift(shadow.offset), shadowPainter);
+      } else {
+        Rect zone = path.getBounds();
+        double xScale = (zone.width + shadow.spreadRadius) / zone.width;
+        double yScale = (zone.height + shadow.spreadRadius) / zone.height;
+        Matrix4 m4 = Matrix4.identity();
+        m4.translate(zone.width / 2, zone.height / 2);
+        m4.scale(xScale, yScale);
+        m4.translate(-zone.width / 2, -zone.height / 2);
+        canvas.drawPath(
+            path.shift(shadow.offset).transform(m4.storage), shadowPainter);
+      }
+    }
+    Paint whitePaint = Paint()..color = Colors.black;
+    canvas.drawPath(path, whitePaint);
   }
 }

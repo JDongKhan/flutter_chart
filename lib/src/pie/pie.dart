@@ -18,6 +18,8 @@ enum RotateDirection {
 class Pie<T> extends ChartBodyRender<T> {
   //颜色
   final List<Color> colors;
+  //优先级高于colors
+  final List<Shader>? shaders;
   //引导线颜色
   final Color lineColor;
   //内圆半径
@@ -41,6 +43,7 @@ class Pie<T> extends ChartBodyRender<T> {
 
   Pie({
     this.colors = colors10,
+    this.shaders,
     this.holeRadius = 0,
     this.textStyle = const TextStyle(
       fontSize: 12,
@@ -93,6 +96,7 @@ class Pie<T> extends ChartBodyRender<T> {
     double startAngle = 0;
     List<ChartShapeState> shapeList = [];
     assert(colors.length >= data.length);
+    assert(shaders == null || shaders!.length >= data.length);
     int index = 0;
     for (int i = 0; i < data.length; i++) {
       T item = data[i];
@@ -127,7 +131,12 @@ class Pie<T> extends ChartBodyRender<T> {
           outRadius: rd,
         );
       }
-      drawPie(canvas, tapShape.path!, paint..color = colors[i]);
+      if (shaders != null) {
+        paint.shader = shaders![i];
+      } else {
+        paint.color = colors[i];
+      }
+      drawPie(canvas, tapShape.path!, paint);
       //绘制间隙
       _drawSpaceLine(rd, startAngle, sweepAngle);
 

@@ -16,6 +16,8 @@ class Bar<T> extends ChartBodyRender<T> {
   final BarPosition value;
   //颜色
   final Color color;
+  //优先级高于color
+  final Shader? shader;
   //高亮颜色
   final Color highlightColor;
   Bar({
@@ -25,6 +27,7 @@ class Bar<T> extends ChartBodyRender<T> {
     super.yAxisPosition,
     this.itemWidth = 20,
     this.color = Colors.blue,
+    this.shader,
     this.highlightColor = Colors.yellow,
   });
   @override
@@ -34,7 +37,6 @@ class Bar<T> extends ChartBodyRender<T> {
     List<ChartShapeState> shapeList = [];
     Paint paint = Paint()
       ..strokeWidth = 1
-      ..color = color
       ..style = PaintingStyle.fill;
     for (int index = 0; index < data.length; index++) {
       T value = data[index];
@@ -44,8 +46,8 @@ class Bar<T> extends ChartBodyRender<T> {
   }
 
   //可以重写 自定义特殊的图形
-  ChartShapeState drawBar(DimensionsChartCoordinateRender chart, Paint paint,
-      int index, T data) {
+  ChartShapeState drawBar(
+      DimensionsChartCoordinateRender chart, Paint paint, int index, T data) {
     num po = position.call(data);
     num v = value.call(data);
     if (v == 0) {
@@ -71,7 +73,11 @@ class Bar<T> extends ChartBodyRender<T> {
       chart.state.bodyStateList[positionIndex]?.selectedIndex = index;
       paint.color = highlightColor;
     } else {
-      paint.color = color;
+      if (shader != null) {
+        paint.shader = shader;
+      } else {
+        paint.color = color;
+      }
     }
     //开始绘制，bar不同于line，在循环中就可以绘制
     chart.canvas.drawRect(rect, paint);
@@ -89,6 +95,8 @@ class StackBar<T> extends ChartBodyRender<T> {
   final double itemWidth;
   //多个颜色
   final List<Color> colors;
+  //优先级高于colors
+  final List<Shader>? shaders;
   //高亮颜色
   final Color highlightColor;
   //方向
@@ -105,6 +113,7 @@ class StackBar<T> extends ChartBodyRender<T> {
     super.yAxisPosition = 0,
     this.highlightColor = Colors.yellow,
     this.colors = colors10,
+    this.shaders,
     this.itemWidth = 20,
     this.direction = Axis.horizontal,
     this.full = false,
@@ -132,6 +141,7 @@ class StackBar<T> extends ChartBodyRender<T> {
     num po = position.call(data);
     List<num> vas = values.call(data);
     assert(colors.length >= vas.length);
+    assert(shaders == null || shaders!.length >= vas.length);
     num total = chart.yAxis[yAxisPosition].max;
     if (total == 0) {
       return ChartShapeState();
@@ -165,9 +175,13 @@ class StackBar<T> extends ChartBodyRender<T> {
       Rect rect = Rect.fromLTWH(left, top, itemWidth, itemHeight);
       ChartShapeState stackShape = ChartShapeState.rect(rect: rect);
       Paint paint = Paint()
-        ..color = colors[stackIndex]
         ..strokeWidth = 1
         ..style = PaintingStyle.fill;
+      if (shaders != null) {
+        paint.shader = shaders![stackIndex];
+      } else {
+        paint.color = colors[stackIndex];
+      }
       if (stackShape.hitTest(chart.state.gesturePoint)) {
         chart.state.bodyStateList[positionIndex]?.selectedIndex = index;
         paint.color = highlightColor;
@@ -186,6 +200,7 @@ class StackBar<T> extends ChartBodyRender<T> {
     num po = position.call(data);
     List<num> vas = values.call(data);
     assert(colors.length >= vas.length);
+    assert(shaders == null || shaders!.length >= vas.length);
     num total = chart.yAxis[yAxisPosition].max;
     if (full) {
       total = vas.fold(0, (previousValue, element) => previousValue + element);
@@ -214,9 +229,13 @@ class StackBar<T> extends ChartBodyRender<T> {
       double itemHeight = contentHeight * present;
       double top = bottom - itemHeight;
       Paint paint = Paint()
-        ..color = colors[stackIndex]
         ..strokeWidth = 1
         ..style = PaintingStyle.fill;
+      if (shaders != null) {
+        paint.shader = shaders![stackIndex];
+      } else {
+        paint.color = colors[stackIndex];
+      }
       Rect rect = Rect.fromLTWH(left, top, itemWidth, itemHeight);
       ChartShapeState stackShape = ChartShapeState.rect(rect: rect);
       if (stackShape.hitTest(chart.state.gesturePoint)) {
