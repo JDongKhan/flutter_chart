@@ -74,11 +74,11 @@ class YAxis {
   }
 }
 
-class TwoDimensionsChartCoordinateRender extends ChartCoordinateRender {
+class DimensionsChartCoordinateRender extends ChartCoordinateRender {
   //坐标系颜色
   final List<YAxis> yAxis;
   final XAxis xAxis;
-  TwoDimensionsChartCoordinateRender({
+  DimensionsChartCoordinateRender({
     super.margin =
         const EdgeInsets.only(left: 30, top: 0, right: 0, bottom: 25),
     super.padding =

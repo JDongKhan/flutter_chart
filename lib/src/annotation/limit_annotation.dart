@@ -20,9 +20,9 @@ class LimitAnnotation extends Annotation {
   });
   @override
   void draw(final Offset offset) {
-    if (coordinateChart is TwoDimensionsChartCoordinateRender) {
-      TwoDimensionsChartCoordinateRender chart =
-          coordinateChart as TwoDimensionsChartCoordinateRender;
+    if (coordinateChart is DimensionsChartCoordinateRender) {
+      DimensionsChartCoordinateRender chart =
+          coordinateChart as DimensionsChartCoordinateRender;
       num po = limit;
       double itemHeight = po * chart.yAxis[0].density;
       Offset start =

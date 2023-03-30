@@ -51,7 +51,7 @@ class BarChartDemoPage extends StatelessWidget {
                 SizedBox(
                   height: 200,
                   child: ChartWidget(
-                    builder: () => TwoDimensionsChartCoordinateRender(
+                    builder: () => DimensionsChartCoordinateRender(
                       margin: const EdgeInsets.only(
                           left: 40, top: 0, right: 0, bottom: 30),
                       yAxis: [
@@ -92,7 +92,7 @@ class BarChartDemoPage extends StatelessWidget {
                 SizedBox(
                   height: 200,
                   child: ChartWidget(
-                    builder: () => TwoDimensionsChartCoordinateRender(
+                    builder: () => DimensionsChartCoordinateRender(
                       margin: const EdgeInsets.only(
                           left: 40, top: 0, right: 0, bottom: 30),
                       yAxis: [
@@ -135,7 +135,7 @@ class BarChartDemoPage extends StatelessWidget {
                 SizedBox(
                   height: 200,
                   child: ChartWidget(
-                    builder: () => TwoDimensionsChartCoordinateRender(
+                    builder: () => DimensionsChartCoordinateRender(
                       yAxis: [
                         YAxis(
                           min: 0,
@@ -177,7 +177,7 @@ class BarChartDemoPage extends StatelessWidget {
                 SizedBox(
                   height: 200,
                   child: ChartWidget(
-                    builder: () => TwoDimensionsChartCoordinateRender(
+                    builder: () => DimensionsChartCoordinateRender(
                       margin: const EdgeInsets.only(
                           left: 40, top: 0, right: 0, bottom: 30),
                       yAxis: [

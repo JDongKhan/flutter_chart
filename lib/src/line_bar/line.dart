@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../base/chart_body_render.dart';
 import '../base/chart_coordinate_render.dart';
 import '../base/chart_state.dart';
-import 'two_dimensions_chart_coordinate_render.dart';
+import 'dimensions_chart_coordinate_render.dart';
 
 typedef LinePosition<T> = List<num> Function(T);
 
@@ -29,8 +29,8 @@ class Line<T> extends ChartBodyRender<T> {
 
   @override
   void draw(final Offset offset) {
-    TwoDimensionsChartCoordinateRender chart =
-        coordinateChart as TwoDimensionsChartCoordinateRender;
+    DimensionsChartCoordinateRender chart =
+        coordinateChart as DimensionsChartCoordinateRender;
     List<ChartShapeState> shapeList = [];
 
     int index = 0;
@@ -152,8 +152,8 @@ class Line<T> extends ChartBodyRender<T> {
   }
 
   void drawLine(Map<int, LineInfo> pathMap) {
-    TwoDimensionsChartCoordinateRender chart =
-        coordinateChart as TwoDimensionsChartCoordinateRender;
+    DimensionsChartCoordinateRender chart =
+        coordinateChart as DimensionsChartCoordinateRender;
     //线
     Paint paint = Paint()
       ..strokeWidth = strokeWidth

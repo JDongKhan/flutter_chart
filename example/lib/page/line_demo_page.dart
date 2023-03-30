@@ -65,7 +65,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
           SizedBox(
             height: 200,
             child: ChartWidget(
-              builder: () => TwoDimensionsChartCoordinateRender(
+              builder: () => DimensionsChartCoordinateRender(
                 zoomHorizontal: true,
                 // zoomVertical: true,
                 crossHair: const CrossHairStyle(
@@ -115,7 +115,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                       SizedBox(
                         height: 200,
                         child: ChartWidget(
-                          builder: () => TwoDimensionsChartCoordinateRender(
+                          builder: () => DimensionsChartCoordinateRender(
                             crossHair: const CrossHairStyle(
                                 adjustHorizontal: true, adjustVertical: true),
                             margin: const EdgeInsets.only(
@@ -160,7 +160,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                         // color: Colors.yellow,
                         height: 200,
                         child: ChartWidget(
-                          builder: () => TwoDimensionsChartCoordinateRender(
+                          builder: () => DimensionsChartCoordinateRender(
                             zoomHorizontal: true,
                             foregroundAnnotations: [
                               LimitAnnotation(limit: 380),
@@ -220,7 +220,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                         // color: Colors.yellow,
                         height: 200,
                         child: ChartWidget(
-                          builder: () => TwoDimensionsChartCoordinateRender(
+                          builder: () => DimensionsChartCoordinateRender(
                             margin: const EdgeInsets.only(
                                 left: 40, top: 5, right: 30, bottom: 30),
                             //提示的文案信息

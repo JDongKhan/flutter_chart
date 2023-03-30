@@ -40,9 +40,9 @@ class ImageAnnotation extends Annotation {
 
   @override
   void draw(final Offset offset) {
-    if (coordinateChart is TwoDimensionsChartCoordinateRender) {
-      TwoDimensionsChartCoordinateRender chart =
-          coordinateChart as TwoDimensionsChartCoordinateRender;
+    if (coordinateChart is DimensionsChartCoordinateRender) {
+      DimensionsChartCoordinateRender chart =
+          coordinateChart as DimensionsChartCoordinateRender;
       num xPo = positions[0];
       num yPo = positions[1];
       double itemWidth = xPo * chart.xAxis.density;

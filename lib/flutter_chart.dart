@@ -9,7 +9,7 @@ export 'src/base/chart_coordinate_render.dart';
 export 'src/base/chart_state.dart';
 export 'src/line_bar/bar.dart';
 export 'src/line_bar/line.dart';
-export 'src/line_bar/two_dimensions_chart_coordinate_render.dart';
+export 'src/line_bar/dimensions_chart_coordinate_render.dart';
 export 'src/pie/circular_chart_coordinate_render.dart';
 export 'src/pie/pie.dart';
 export 'src/utils/chart_utils.dart';

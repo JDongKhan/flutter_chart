@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../line_bar/two_dimensions_chart_coordinate_render.dart';
+import '../line_bar/dimensions_chart_coordinate_render.dart';
 import 'annotation.dart';
 
 //区间标注
@@ -14,9 +14,9 @@ class RegionAnnotation extends Annotation {
   });
   @override
   void draw(final Offset offset) {
-    if (coordinateChart is TwoDimensionsChartCoordinateRender) {
-      TwoDimensionsChartCoordinateRender chart =
-          coordinateChart as TwoDimensionsChartCoordinateRender;
+    if (coordinateChart is DimensionsChartCoordinateRender) {
+      DimensionsChartCoordinateRender chart =
+          coordinateChart as DimensionsChartCoordinateRender;
       num po1 = positions[0];
       num po2 = positions[1];
       double start = chart.contentMargin.left + po1 * chart.xAxis.density;
