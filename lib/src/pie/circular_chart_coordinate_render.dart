@@ -14,7 +14,7 @@ enum ArcPosition {
 class CircularChartCoordinateRender extends ChartCoordinateRender {
   final double borderWidth;
   final Color borderColor;
-  final StrokeCap? paintStrokeCap;
+  final StrokeCap? strokeCap;
   final ArcPosition arcPosition;
   CircularChartCoordinateRender({
     super.margin = EdgeInsets.zero,
@@ -22,7 +22,7 @@ class CircularChartCoordinateRender extends ChartCoordinateRender {
     required super.charts,
     this.arcPosition = ArcPosition.none,
     this.borderWidth = 1,
-    this.paintStrokeCap,
+    this.strokeCap,
     this.borderColor = Colors.white,
   });
 
@@ -52,14 +52,14 @@ class CircularChartCoordinateRender extends ChartCoordinateRender {
       ..isAntiAlias = true
       ..strokeWidth = borderWidth;
 
-    if (paintStrokeCap != null) {
-      paint.strokeCap = paintStrokeCap!;
+    if (strokeCap != null) {
+      paint.strokeCap = strokeCap!;
     }
 
     //满圆
     if (arcPosition == ArcPosition.none) {
       // 确定圆的半径
-      radius = min(sw, sh) / 2 - borderWidth * 2;
+      radius = min(sw, sh) / 2 - borderWidth / 2;
       // 定义中心点
       center = size.center(Offset.zero);
       // 使用 Canvas 的 drawCircle 绘制
@@ -68,7 +68,7 @@ class CircularChartCoordinateRender extends ChartCoordinateRender {
       //带有弧度
       double maxSize = max(sw, sh);
       double minSize = min(sw, sh);
-      radius = min(maxSize / 2, minSize) - borderWidth;
+      radius = min(maxSize / 2, minSize) - borderWidth / 2;
       center = size.center(Offset.zero);
       double startAngle = 0;
       double sweepAngle = pi;

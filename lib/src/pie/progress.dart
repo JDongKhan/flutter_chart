@@ -8,18 +8,22 @@ import 'circular_chart_coordinate_render.dart';
 
 class Progress<T> extends ChartBodyRender<T> {
   final double strokeWidth;
-  final StrokeCap? paintStrokeCap;
+  final double startAngle;
+  final double fullSweepAngle;
+  final StrokeCap? strokeCap;
   //颜色
   final List<Color> colors;
   //结尾画小原点
-  bool endPoint;
+  final bool endPoint;
   Progress({
     required super.data,
     required super.position,
     this.endPoint = false,
     this.colors = colors10,
     this.strokeWidth = 1,
-    this.paintStrokeCap,
+    this.startAngle = pi,
+    this.fullSweepAngle = pi * 2,
+    this.strokeCap,
   });
 
   @override
@@ -36,8 +40,8 @@ class Progress<T> extends ChartBodyRender<T> {
       ..isAntiAlias = true
       ..strokeWidth = strokeWidth;
 
-    if (paintStrokeCap != null) {
-      paint.strokeCap = paintStrokeCap!;
+    if (strokeCap != null) {
+      paint.strokeCap = strokeCap!;
     }
 
     Paint? pointPaint;
@@ -52,15 +56,13 @@ class Progress<T> extends ChartBodyRender<T> {
     int index = 0;
     num? lastXvs;
 
-    double startAngle = pi;
-
     for (T item in data) {
       num po = position.call(item);
 
       if (lastXvs != null) {
         assert(lastXvs > po, '数据必须降序，否则会被挡住');
       }
-      double sweepAngle = pi * po;
+      double sweepAngle = fullSweepAngle * po;
       Path path = Path()
         ..addArc(
           Rect.fromCenter(
