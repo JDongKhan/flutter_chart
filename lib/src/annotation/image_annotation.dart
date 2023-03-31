@@ -48,8 +48,15 @@ class ImageAnnotation extends Annotation {
       double itemWidth = xPo * chart.xAxis.density;
       double itemHeight = yPo * chart.yAxis[yAxisPosition].density;
       Offset offset = Offset(
-          withXOffset(chart.contentMargin.left + itemWidth, scroll),
-          withYOffset(chart.contentRect.bottom - itemHeight, scroll));
+        withXOffset(
+          chart.transformUtils.transformX(itemWidth, containPadding: true),
+          scroll,
+        ),
+        withYOffset(
+          chart.transformUtils.transformY(itemHeight, containPadding: true),
+          scroll,
+        ),
+      );
       Paint paint = Paint()
         ..color = Colors.blue
         ..isAntiAlias = true

@@ -19,10 +19,10 @@ class RegionAnnotation extends Annotation {
           coordinateChart as DimensionsChartCoordinateRender;
       num po1 = positions[0];
       num po2 = positions[1];
-      double start = chart.contentMargin.left + po1 * chart.xAxis.density;
+      double start = chart.transformUtils.transformX(po1 * chart.xAxis.density);
       start = withXOffset(start);
       start = withXZoom(start);
-      double end = chart.contentMargin.left + po2 * chart.xAxis.density;
+      double end = chart.transformUtils.transformX(po2 * chart.xAxis.density);
       end = withXOffset(end);
       end = withXZoom(end);
 

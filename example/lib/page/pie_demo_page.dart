@@ -142,6 +142,22 @@ class PieChartDemoPage extends StatelessWidget {
                 ],
               ),
             ),
+            const Text('Wave Progress'),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 40),
+              height: 200,
+              child: ChartWidget(
+                builder: () => CircularChartCoordinateRender(
+                  borderColor: Colors.grey,
+                  charts: [
+                    WaveProgress(
+                      data: [0.5],
+                      position: (item) => item,
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),

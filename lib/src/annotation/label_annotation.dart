@@ -31,8 +31,14 @@ class LabelAnnotation extends Annotation {
         num yPo = positions![1];
         double itemWidth = xPo * chart.xAxis.density;
         double itemHeight = yPo * chart.yAxis[yAxisPosition].density;
-        double left = chart.contentMargin.left + itemWidth;
-        double top = chart.contentRect.bottom - itemHeight;
+        double left = chart.transformUtils.transformX(
+          itemWidth,
+          containPadding: true,
+        );
+        double top = chart.transformUtils.transformY(
+          itemHeight,
+          containPadding: true,
+        );
         if (scroll) {
           left = withXOffset(left);
           left = withXZoom(left);
@@ -40,10 +46,16 @@ class LabelAnnotation extends Annotation {
         } else {
           //不跟随缩放
           if (chart.zoomHorizontal) {
-            left = chart.contentMargin.left + itemWidth / chart.state.zoom;
+            left = chart.transformUtils.transformX(
+              itemWidth / chart.state.zoom,
+              containPadding: true,
+            );
           }
           if (chart.zoomVertical) {
-            top = chart.contentRect.bottom - itemHeight / chart.state.zoom;
+            top = chart.transformUtils.transformY(
+              itemHeight / chart.state.zoom,
+              containPadding: true,
+            );
           }
         }
         ost = Offset(left, top).translate(this.offset.dx, this.offset.dy);

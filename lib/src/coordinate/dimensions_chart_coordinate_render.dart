@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../flutter_chart.dart';
 import '../base/chart_body_render.dart';
+import '../utils/transform_utils.dart';
 import '../widget/dash_painter.dart';
 
 /// @author JD
@@ -150,6 +151,16 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
   void paint(Canvas canvas, Size size) {
     Rect rect = Rect.fromLTWH(0, 0, size.width, size.height);
     canvas.clipRect(rect);
+
+    //转换工具
+    transformUtils = TransformUtils(
+      anchor: Offset(margin.left, size.height - margin.bottom),
+      offset: state.offset,
+      size: size,
+      padding: padding,
+      reverseX: false,
+      reverseY: true,
+    );
     // canvas.save();
     // 如果按坐标系切，就会面临坐标轴和里面的内容重复循环的问题，该组件的本意是尽可能减少无畏的循环，提高性能，如果
     //给y轴切出来，超出这个范围就隐藏

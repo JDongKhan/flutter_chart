@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import '../base/chart_coordinate_render.dart';
+import '../utils/transform_utils.dart';
 
 enum ArcPosition {
   none,
@@ -64,6 +65,14 @@ class CircularChartCoordinateRender extends ChartCoordinateRender {
       center = size.center(Offset.zero);
       // 使用 Canvas 的 drawCircle 绘制
       canvas.drawCircle(center, radius, paint);
+      transformUtils = TransformUtils(
+        anchor: center,
+        size: size,
+        padding: padding,
+        offset: state.offset,
+        reverseX: false,
+        reverseY: false,
+      );
     } else {
       //带有弧度
       double maxSize = max(sw, sh);
@@ -75,8 +84,24 @@ class CircularChartCoordinateRender extends ChartCoordinateRender {
       if (arcPosition == ArcPosition.up) {
         startAngle = pi;
         center = Offset(center.dx, size.height - contentMargin.bottom);
+        transformUtils = TransformUtils(
+          anchor: center,
+          size: size,
+          padding: padding,
+          offset: state.offset,
+          reverseX: false,
+          reverseY: true,
+        );
       } else if (arcPosition == ArcPosition.down) {
         center = Offset(center.dx, contentMargin.top);
+        transformUtils = TransformUtils(
+          anchor: center,
+          size: size,
+          padding: padding,
+          offset: state.offset,
+          reverseX: false,
+          reverseY: false,
+        );
       }
       Path path = Path()
         ..addArc(

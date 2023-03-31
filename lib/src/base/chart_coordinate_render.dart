@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../annotation/annotation.dart';
+import '../utils/transform_utils.dart';
 import '../widget/chart_widget.dart';
 import 'chart_body_render.dart';
 import 'chart_state.dart';
@@ -60,6 +61,8 @@ abstract class ChartCoordinateRender {
   final ChartTooltipFormatter? tooltipFormatter;
   //十字准星样式
   final CrossHairStyle crossHair;
+  //坐标转换工具
+  late TransformUtils transformUtils;
 
   final List<Annotation>? backgroundAnnotations;
   final List<Annotation>? foregroundAnnotations;
@@ -75,7 +78,11 @@ abstract class ChartCoordinateRender {
     this.backgroundAnnotations,
     this.foregroundAnnotations,
     this.crossHair = const CrossHairStyle(),
-  }) : contentMargin = EdgeInsets.fromLTRB(margin.left + padding.left, margin.top + padding.top, margin.right + padding.right, margin.bottom + padding.bottom);
+  }) : contentMargin = EdgeInsets.fromLTRB(
+            margin.left + padding.left,
+            margin.top + padding.top,
+            margin.right + padding.right,
+            margin.bottom + padding.bottom);
 
   //共享数据
   late ChartState state;
@@ -87,22 +94,8 @@ abstract class ChartCoordinateRender {
   //图形内容的外边距信息
   EdgeInsets contentMargin;
   //未处理的坐标  原点在左上角
-  Rect get contentRect => Rect.fromLTRB(contentMargin.left, contentMargin.top, size.width - contentMargin.left, size.height - contentMargin.bottom);
-
-  //将原点在左下角的逻辑坐标转换成物理坐标
-
-  //将原点在左下角的逻辑坐标转换成物理坐标
-  double transformY(double dy) {
-    return size.height - dy;
-  }
-
-  Offset transformOffset(Offset offset) {
-    return Offset(offset.dx, size.height - offset.dy);
-  }
-
-  Rect transformRect(Rect rect) {
-    return Rect.fromLTRB(rect.left, size.height - rect.top, rect.right, size.height - rect.bottom);
-  }
+  Rect get contentRect => Rect.fromLTRB(contentMargin.left, contentMargin.top,
+      size.width - contentMargin.left, size.height - contentMargin.bottom);
 
   void init(Canvas canvas, Size size) {
     this.canvas = canvas;

@@ -25,10 +25,20 @@ class LimitAnnotation extends Annotation {
           coordinateChart as DimensionsChartCoordinateRender;
       num po = limit;
       double itemHeight = po * chart.yAxis[0].density;
-      Offset start =
-          Offset(chart.padding.left, chart.contentRect.bottom - itemHeight);
-      Offset end = Offset(chart.size.width - chart.padding.right,
-          chart.contentRect.bottom - itemHeight);
+      Offset start = Offset(
+        chart.padding.left,
+        chart.transformUtils.transformY(
+          itemHeight,
+          containPadding: true,
+        ),
+      );
+      Offset end = Offset(
+        chart.size.width - chart.padding.right,
+        chart.transformUtils.transformY(
+          itemHeight,
+          containPadding: true,
+        ),
+      );
 
       Paint paint = Paint()
         ..color = color

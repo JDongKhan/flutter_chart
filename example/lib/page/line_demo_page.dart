@@ -165,9 +165,13 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                               LimitAnnotation(limit: 210),
                               if (logoImage != null)
                                 ImageAnnotation(
-                                    image: logoImage!,
-                                    positions: [1, 200],
-                                    offset: Offset(-10, -10)),
+                                  image: logoImage!,
+                                  onTap: (ann) {
+                                    print('点击事件');
+                                  },
+                                  positions: [1, 200],
+                                  offset: const Offset(-10, -10),
+                                ),
                               LabelAnnotation(
                                   positions: [6, 380],
                                   text: '380',
