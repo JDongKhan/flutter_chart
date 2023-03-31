@@ -14,24 +14,35 @@ class WaveProgress<T> extends ChartBodyRender<T> {
     Offset center = chart.center;
     double radius = chart.radius;
     Canvas canvas = chart.canvas;
-
-    Offset progressCenter = Offset(center.dx, center.dy + radius);
-
     canvas.clipPath(
         Path()..addOval(Rect.fromCircle(center: center, radius: radius)));
 
-    TransformUtils transformUtils = TransformUtils(
-      anchor: progressCenter,
-      size: chart.size,
-      offset: offset,
-      padding: chart.padding,
-      reverseX: false,
-      reverseY: true,
-    );
+    TransformUtils transformUtils;
+    //处理圆形场景
+    if (chart.arcPosition == ArcPosition.none) {
+      Offset progressCenter = Offset(center.dx, center.dy + radius);
+      transformUtils = TransformUtils(
+        anchor: progressCenter,
+        size: chart.size,
+        offset: offset,
+        padding: chart.padding,
+        reverseX: false,
+        reverseY: true,
+      );
+    } else {
+      //半圆就不用特别处理了
+      transformUtils = chart.transformUtils;
+    }
 
     for (T item in data) {
       num po = position.call(item);
-      double waterHeight = radius * 2 * po;
+      double height = radius * 2;
+      if (chart.arcPosition == ArcPosition.none) {
+        height = radius * 2;
+      } else {
+        height = radius;
+      }
+      double waterHeight = height * po;
       Paint paint = Paint()
         ..color = Colors.red
         ..style = PaintingStyle.fill;
@@ -66,8 +77,10 @@ class WaveProgress<T> extends ChartBodyRender<T> {
       path.cubicTo(po1x, po1Y, po2x, po2y, end.dx, end.dy);
       start = end;
     }
-    path.lineTo(last.dx, last.dy + radius);
-    path.lineTo(first.dx, first.dy + radius);
+    Offset end1 = transformUtils.transformOffset(Offset(radius, 0));
+    Offset end2 = transformUtils.transformOffset(Offset(-radius, 0));
+    path.lineTo(end1.dx, end1.dy);
+    path.lineTo(end2.dx, end2.dy);
     // path.lineTo(end.dx, end.dy);
     path.close();
     return path;
