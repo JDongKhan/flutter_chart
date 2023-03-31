@@ -16,13 +16,19 @@ class XAxis {
   final AxisFormatter? formatter;
   //每1个逻辑value代表多宽
   late double density;
+  //是否画格子线
   final bool drawGrid;
+  //是否有分隔线
+  final bool drawDivider;
   //是否绘制最下面一行的线
   bool drawLine;
   //虚线
   final DashPainter? dashPainter;
+  //文字颜色
   final TextStyle textStyle;
+  //最边上的线的颜色
   final Color lineColor;
+
   XAxis({
     this.formatter,
     this.interval = 1,
@@ -32,6 +38,7 @@ class XAxis {
     this.lineColor = Colors.grey,
     this.textStyle = const TextStyle(fontSize: 12, color: Colors.grey),
     this.dashPainter,
+    this.drawDivider = true,
     required this.max,
   });
 
@@ -41,20 +48,31 @@ class XAxis {
 }
 
 class YAxis {
+  //是否开启 暂时未启用
   final bool enable;
   final num min;
   final num max;
   //一屏显示的数量
   final int count;
+  //文案格式化
   final AxisFormatter? formatter;
+  //是否画轴线
   final bool drawLine;
+  //是否画格子线
   final bool drawGrid;
+  //是否有分隔线
+  final bool drawDivider;
   //密度
   late double density;
+  //虚线
   final DashPainter? dashPainter;
+  //轴的偏移
   final AxisOffset? offset;
+  //文字风格
   final TextStyle textStyle;
+  //最边上线的颜色
   final Color lineColor;
+
   YAxis({
     this.enable = true,
     required this.min,
@@ -66,6 +84,7 @@ class YAxis {
     this.lineColor = Colors.grey,
     this.textStyle = const TextStyle(fontSize: 12, color: Colors.grey),
     this.dashPainter,
+    this.drawDivider = true,
     this.offset,
   });
 
@@ -184,6 +203,9 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
           _drawGridLine(canvas, Offset(left, top),
               Offset(size.width - margin.right, top), paint, yA.dashPainter);
         }
+        if (yA.drawLine && yA.drawDivider) {
+          canvas.drawLine(Offset(left, top), Offset(left + 3, top), paint);
+        }
       }
       //再画实线
       if (yA.drawLine) {
@@ -252,6 +274,11 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
             Offset(left, size.height - margin.bottom),
             paint,
             xAxis.dashPainter);
+      }
+
+      if (xAxis.drawLine && xAxis.drawDivider) {
+        canvas.drawLine(Offset(left, size.height - margin.bottom),
+            Offset(left, size.height - margin.bottom - 3), paint);
       }
     }
 

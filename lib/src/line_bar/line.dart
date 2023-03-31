@@ -25,6 +25,8 @@ class Line<T> extends ChartBodyRender<T> {
   final double strokeWidth;
   //填充颜色
   final bool? filled;
+  //曲线
+  final bool isCurve;
   Line({
     required super.data,
     required super.position,
@@ -37,6 +39,7 @@ class Line<T> extends ChartBodyRender<T> {
     this.strokeWidth = 1,
     this.isHollow = false,
     this.filled = false,
+    this.isCurve = false,
   });
 
   @override
@@ -92,7 +95,35 @@ class Line<T> extends ChartBodyRender<T> {
         if (index == 0) {
           lineInfo.path.moveTo(xPo, yPo);
         } else {
-          lineInfo.path.lineTo(xPo, yPo);
+          if (isCurve) {
+            ChartShapeState lastChild = lastShape!.children[valueIndex];
+            double preX = lastChild.rect!.center.dx;
+            double preY = lastChild.rect!.center.dy;
+            double xDiff = xPo - preX;
+            double centerX1 = preX + xDiff / 2;
+            double centerY1 = preY;
+
+            double centerX2 = xPo - xDiff / 2;
+            double centerY2 = yPo;
+
+            // chart.canvas.drawCircle(
+            //     Offset(centerX1, centerY1), 2, Paint()..color = Colors.red);
+            //
+            // chart.canvas.drawCircle(
+            //     Offset(centerX2, centerY2), 2, Paint()..color = Colors.blue);
+
+            //绘制贝塞尔路径
+            lineInfo.path.cubicTo(
+              centerX1,
+              centerY1, // control point 1
+              centerX2,
+              centerY2, //  control point 2
+              xPo,
+              yPo,
+            );
+          } else {
+            lineInfo.path.lineTo(xPo, yPo);
+          }
         }
         lineInfo.pointList.add(Offset(xPo, yPo));
         //存放点的位置
