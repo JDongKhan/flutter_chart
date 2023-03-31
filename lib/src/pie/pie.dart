@@ -41,6 +41,11 @@ class Pie<T> extends ChartBodyRender<T> {
   //百分比
   final double? spaceWidth;
 
+  //是否显示引导线
+  final bool guideLine;
+  //是否在图中显示value
+  final bool showValue;
+
   Pie({
     this.colors = colors10,
     this.shaders,
@@ -61,6 +66,8 @@ class Pie<T> extends ChartBodyRender<T> {
     this.legendFormatter,
     this.centerTextStyle,
     this.direction = RotateDirection.forward,
+    this.guideLine = false,
+    this.showValue = false,
     required super.data,
     required super.position,
   });
@@ -144,8 +151,9 @@ class Pie<T> extends ChartBodyRender<T> {
       String? legend = legendFormatter?.call(item);
 
       //绘制引导线
-      _drawLineAndText(valueText, legend, index, rd, startAngle, sweepAngle);
-
+      if (guideLine) {
+        _drawLineAndText(valueText, legend, index, rd, startAngle, sweepAngle);
+      }
       //选中就绘制
       if (selected) {
         _drawCenterValue(valueText);
@@ -154,7 +162,9 @@ class Pie<T> extends ChartBodyRender<T> {
       // baseChart.canvas.drawArc(
       //     newRect, startAngle, sweepAngle, true, paint..color = colors[i]);
       // _drawLegend(item, radius, startAngle, sweepAngle);
-      // _drawValue(item, radius, startAngle, sweepAngle, selected);
+      if (showValue) {
+        _drawValue(valueText, radius, startAngle, sweepAngle, selected);
+      }
       //继续下一个
       startAngle = startAngle + sweepAngle;
       index++;
@@ -305,47 +315,36 @@ class Pie<T> extends ChartBodyRender<T> {
   //   }
   // }
   //
-  // void _drawValue(T item, double radius, double startAngle, double sweepAngle, bool selected) {
-  //   PieChartCoordinateRender chart = coordinateChart as PieChartCoordinateRender;
-  //   //中心弧度
-  //   final double radians = startAngle + sweepAngle / 2;
-  //   //画value
-  //   String? valueText = valueFormatter?.call(item);
-  //   if (textStyle != null && valueText != null) {
-  //     // 使用 TextPainter 绘制文字标识
-  //     TextPainter valueTextPainter = TextPainter(
-  //       textAlign: TextAlign.start,
-  //       text: TextSpan(
-  //         text: valueText,
-  //         style: textStyle,
-  //       ),
-  //       textDirection: TextDirection.ltr,
-  //     )..layout(
-  //         minWidth: 0,
-  //         maxWidth: chart.size.width,
-  //       );
-  //     // 使用三角函数计算文字位置 并根据文字大小适配
-  //     double x = cos(radians) * (radius / 2 + valueTextOffset) + chart.size.width / 2 - valueTextPainter.width / 2;
-  //     double y = sin(radians) * (radius / 2 + valueTextOffset) + chart.size.height / 2 - valueTextPainter.height / 2;
-  //     valueTextPainter.paint(chart.canvas, Offset(x, y));
-  //   }
-  //
-  //   //中心点文案
-  //   if (centerTextStyle != null && selected && valueText != null) {
-  //     TextPainter valueTextPainter = TextPainter(
-  //       textAlign: TextAlign.start,
-  //       text: TextSpan(
-  //         text: valueText,
-  //         style: centerTextStyle,
-  //       ),
-  //       textDirection: TextDirection.ltr,
-  //     )..layout(
-  //         minWidth: 0,
-  //         maxWidth: chart.size.width,
-  //       );
-  //     valueTextPainter.paint(chart.canvas, chart.center.translate(-valueTextPainter.width / 2, -valueTextPainter.height / 2));
-  //   }
-  // }
+  void _drawValue(String? valueText, double radius, double startAngle,
+      double sweepAngle, bool selected) {
+    CircularChartCoordinateRender chart =
+        coordinateChart as CircularChartCoordinateRender;
+    //中心弧度
+    final double radians = startAngle + sweepAngle / 2;
+    //画value
+    if (valueText != null) {
+      // 使用 TextPainter 绘制文字标识
+      TextPainter valueTextPainter = TextPainter(
+        textAlign: TextAlign.start,
+        text: TextSpan(
+          text: valueText,
+          style: textStyle,
+        ),
+        textDirection: TextDirection.ltr,
+      )..layout(
+          minWidth: 0,
+          maxWidth: chart.size.width,
+        );
+      // 使用三角函数计算文字位置 并根据文字大小适配
+      double x = cos(radians) * (radius / 2 + valueTextOffset) +
+          chart.size.width / 2 -
+          valueTextPainter.width / 2;
+      double y = sin(radians) * (radius / 2 + valueTextOffset) +
+          chart.size.height / 2 -
+          valueTextPainter.height / 2;
+      valueTextPainter.paint(chart.canvas, Offset(x, y));
+    }
+  }
 
   //绘制中间文案
   void _drawCenterValue(String? valueText) {

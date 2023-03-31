@@ -45,28 +45,17 @@ class PieChartDemoPage extends StatelessWidget {
         child: Column(
           children: [
             const Text('Pie'),
-            Container(
-              // color: Colors.red,
+            SizedBox(
               height: 200,
               child: ChartWidget(
                 builder: () => CircularChartCoordinateRender(
-                  margin: const EdgeInsets.all(10),
-                  padding: const EdgeInsets.all(5),
+                  margin: const EdgeInsets.all(30),
                   charts: [
                     Pie(
                       data: dataList,
+                      showValue: true,
                       position: (item) =>
                           (double.parse(item['value1'].toString())),
-                      direction: RotateDirection.reverse,
-                      textStyle: const TextStyle(
-                        fontSize: 12,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      legendFormatter: (item) {
-                        return (item['time'] as DateTime)
-                            .toStringWithFormat(format: 'MM-dd');
-                      },
                       valueFormatter: (item) => item['value1'].toString(),
                     ),
                   ],
@@ -78,19 +67,24 @@ class PieChartDemoPage extends StatelessWidget {
               height: 200,
               child: ChartWidget(
                 builder: () => CircularChartCoordinateRender(
-                  margin: const EdgeInsets.only(
-                      left: 40, top: 0, right: 0, bottom: 10),
+                  margin: const EdgeInsets.all(30),
                   charts: [
                     Pie(
+                      guideLine: true,
                       data: dataList,
                       position: (item) =>
                           (double.parse(item['value1'].toString())),
                       holeRadius: 40,
                       valueTextOffset: 20,
+                      legendFormatter: (item) {
+                        return (item['time'] as DateTime)
+                            .toStringWithFormat(format: 'MM-dd');
+                      },
                       centerTextStyle: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold),
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                       valueFormatter: (item) => item['value1'].toString(),
                     ),
                   ],
@@ -140,7 +134,6 @@ class PieChartDemoPage extends StatelessWidget {
                           endPoint: true,
                           strokeCap: StrokeCap.round,
                           data: [0.5, 0.2],
-                          colors: [Colors.yellow, Colors.red],
                           position: (item) => item,
                         ),
                       ],

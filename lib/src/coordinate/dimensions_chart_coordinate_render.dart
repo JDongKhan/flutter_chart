@@ -12,7 +12,7 @@ class XAxis {
   //方便计算，count代表一屏显示的格子数
   final int count;
   final num interval;
-  final num max;
+  final num? max;
   final AxisFormatter? formatter;
   //每1个逻辑value代表多宽
   late double density;
@@ -39,7 +39,7 @@ class XAxis {
     this.textStyle = const TextStyle(fontSize: 12, color: Colors.grey),
     this.dashPainter,
     this.drawDivider = true,
-    required this.max,
+    this.max,
   });
 
   num widthOf(num value) {
@@ -254,14 +254,16 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
       ..strokeWidth = 0.2;
 
     //实际要显示的数量
-    int count = xAxis.max ~/ xAxis.interval;
+    int count = (xAxis.max ?? xAxis.count) ~/ xAxis.interval;
     for (int i = 0; i < count; i++) {
-      String text = xAxis.formatter?.call(i) ?? '$i';
-
+      String? text = xAxis.formatter?.call(i);
       double left = contentMargin.left + density * interval * i;
       left = withXOffset(left);
       left = withXZoom(left);
-      _drawXTextPaint(canvas, text, xAxis.textStyle, size, left);
+
+      if (text != null) {
+        _drawXTextPaint(canvas, text, xAxis.textStyle, size, left);
+      }
       // if (i == dreamXAxisCount - 1) {
       //   _drawXTextPaint(canvas, '${i + 1}', size,
       //       size.width - padding.right - contentPadding.right - 5);
@@ -506,7 +508,8 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     if (x < minXOffsetValue) {
       x = minXOffsetValue;
     }
-    double chartContentWidth = padding.horizontal + xAxis.density * xAxis.max;
+    double chartContentWidth =
+        padding.horizontal + xAxis.density * (xAxis.max ?? xAxis.count);
     double chartViewPortWidth = size.width - margin.horizontal;
     //因为offset可能为负的，换算成正值便于后面计算
     double realXOffset = x - minXOffsetValue;
