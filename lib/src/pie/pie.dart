@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import '../base/chart_body_render.dart';
 import '../base/chart_coordinate_render.dart';
 import '../base/chart_state.dart';
-import 'circular_chart_coordinate_render.dart';
+import '../coordinate/circular_chart_coordinate_render.dart';
 
 /// @author JD
 typedef ValueFormatter<T> = String Function(T);

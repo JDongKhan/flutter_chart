@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../base/chart_body_render.dart';
 import '../base/chart_coordinate_render.dart';
 import '../base/chart_state.dart';
-import 'dimensions_chart_coordinate_render.dart';
+import '../coordinate/dimensions_chart_coordinate_render.dart';
 
 typedef BarPosition<T> = num Function(T);
 

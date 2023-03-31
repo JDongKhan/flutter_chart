@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 
 import '../base/chart_body_render.dart';
 import '../base/chart_coordinate_render.dart';
-import 'circular_chart_coordinate_render.dart';
+import '../coordinate/circular_chart_coordinate_render.dart';
 
 class Progress<T> extends ChartBodyRender<T> {
+  //线宽
   final double strokeWidth;
+  //开始弧度，可以调整起始位置
   final double startAngle;
-  final double fullSweepAngle;
+  //结尾样式
   final StrokeCap? strokeCap;
   //颜色
   final List<Color> colors;
@@ -20,9 +22,8 @@ class Progress<T> extends ChartBodyRender<T> {
     required super.position,
     this.endPoint = false,
     this.colors = colors10,
-    this.strokeWidth = 1,
     this.startAngle = pi,
-    this.fullSweepAngle = pi * 2,
+    this.strokeWidth = 1,
     this.strokeCap,
   });
 
@@ -55,6 +56,17 @@ class Progress<T> extends ChartBodyRender<T> {
     }
     int index = 0;
     num? lastXvs;
+
+    double startAngle = this.startAngle;
+    double fullSweepAngle = pi;
+    //
+    if (chart.arcPosition == ArcPosition.none) {
+      fullSweepAngle = pi * 2;
+    } else if (chart.arcPosition == ArcPosition.up) {
+      fullSweepAngle = pi;
+    } else if (chart.arcPosition == ArcPosition.down) {
+      startAngle = 0;
+    }
 
     for (T item in data) {
       num po = position.call(item);

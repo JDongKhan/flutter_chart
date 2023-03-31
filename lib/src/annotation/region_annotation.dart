@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../line_bar/dimensions_chart_coordinate_render.dart';
+import '../coordinate/dimensions_chart_coordinate_render.dart';
 import 'annotation.dart';
 
 //区间标注
