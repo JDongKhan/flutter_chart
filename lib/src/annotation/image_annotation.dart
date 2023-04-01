@@ -8,17 +8,19 @@ import '../../flutter_chart.dart';
 /// @author jd
 class ImageAnnotation extends Annotation {
   final ui.Image image;
-  final List<num> positions;
+  final List<num>? positions;
+  final Offset Function(Size)? anchor;
   final Offset offset;
   ImageAnnotation({
     super.userInfo,
     super.onTap,
     super.scroll = true,
     super.yAxisPosition = 0,
+    this.anchor,
     required this.image,
-    required this.positions,
+    this.positions,
     this.offset = Offset.zero,
-  });
+  }) : assert(positions != null || anchor != null);
 
   //获取网络图片 返回ui.Image
   static Future<ui.Image> getNetImage(String url, {width, height}) async {
@@ -43,20 +45,25 @@ class ImageAnnotation extends Annotation {
     if (coordinateChart is DimensionsChartCoordinateRender) {
       DimensionsChartCoordinateRender chart =
           coordinateChart as DimensionsChartCoordinateRender;
-      num xPo = positions[0];
-      num yPo = positions[1];
-      double itemWidth = xPo * chart.xAxis.density;
-      double itemHeight = yPo * chart.yAxis[yAxisPosition].density;
-      Offset offset = Offset(
-        withXOffset(
-          chart.transformUtils.transformX(itemWidth, containPadding: true),
-          scroll,
-        ),
-        withYOffset(
-          chart.transformUtils.transformY(itemHeight, containPadding: true),
-          scroll,
-        ),
-      );
+      Offset ost;
+      if (positions != null) {
+        num xPo = positions![0];
+        num yPo = positions![1];
+        double itemWidth = xPo * chart.xAxis.density;
+        double itemHeight = yPo * chart.yAxis[yAxisPosition].density;
+        ost = Offset(
+          withXOffset(
+            chart.transformUtils.transformX(itemWidth, containPadding: true),
+            scroll,
+          ),
+          withYOffset(
+            chart.transformUtils.transformY(itemHeight, containPadding: true),
+            scroll,
+          ),
+        );
+      } else {
+        ost = anchor!(chart.size);
+      }
       Paint paint = Paint()
         ..color = Colors.blue
         ..isAntiAlias = true
@@ -64,11 +71,19 @@ class ImageAnnotation extends Annotation {
         ..strokeCap = StrokeCap.butt
         ..strokeWidth = 30;
       coordinateChart.canvas.drawImage(
-          image, offset.translate(this.offset.dx, this.offset.dy), paint);
-      Rect rect = Rect.fromLTWH(offset.dx, offset.dy, image.width.toDouble(),
-          image.height.toDouble());
-      if (chart.state.gesturePoint != null &&
-          rect.contains(chart.state.gesturePoint!)) {
+          image,
+          ost.translate(
+            this.offset.dx - image.width / 2,
+            this.offset.dy - image.height / 2,
+          ),
+          paint);
+      Rect rect = Rect.fromCenter(
+        center: Offset(ost.dx, ost.dy),
+        width: image.width.toDouble(),
+        height: image.height.toDouble(),
+      );
+      if (chart.controller.gesturePoint != null &&
+          rect.contains(chart.controller.gesturePoint!)) {
         Future.microtask(() => onTap?.call(this));
       }
     }

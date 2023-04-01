@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../base/chart_body_render.dart';
 import '../base/chart_coordinate_render.dart';
-import '../base/chart_state.dart';
+import '../base/chart_shape_state.dart';
 import '../coordinate/dimensions_chart_coordinate_render.dart';
 
 typedef BarPosition<T> = num Function(T);
@@ -42,7 +42,7 @@ class Bar<T> extends ChartBodyRender<T> {
       T value = data[index];
       shapeList.add(drawBar(chart, paint, index, value));
     }
-    chart.state.bodyStateList[positionIndex]?.shapeList = shapeList;
+    chart.controller.childrenController[positionIndex]?.shapeList = shapeList;
   }
 
   //可以重写 自定义特殊的图形
@@ -69,8 +69,8 @@ class Bar<T> extends ChartBodyRender<T> {
     ChartShapeState shape = ChartShapeState.rect(
       rect: rect,
     );
-    if (shape.hitTest(chart.state.gesturePoint)) {
-      chart.state.bodyStateList[positionIndex]?.selectedIndex = index;
+    if (shape.hitTest(chart.controller.gesturePoint)) {
+      chart.controller.childrenController[positionIndex]?.selectedIndex = index;
       paint.color = highlightColor;
     } else {
       if (shader != null) {
@@ -132,7 +132,7 @@ class StackBar<T> extends ChartBodyRender<T> {
         shapeList.add(drawVerticalBar(chart, index, value));
       }
     }
-    chart.state.bodyStateList[positionIndex]?.shapeList = shapeList;
+    chart.controller.childrenController[positionIndex]?.shapeList = shapeList;
   }
 
   //水平排列图形
@@ -182,8 +182,9 @@ class StackBar<T> extends ChartBodyRender<T> {
       } else {
         paint.color = colors[stackIndex];
       }
-      if (stackShape.hitTest(chart.state.gesturePoint)) {
-        chart.state.bodyStateList[positionIndex]?.selectedIndex = index;
+      if (stackShape.hitTest(chart.controller.gesturePoint)) {
+        chart.controller.childrenController[positionIndex]?.selectedIndex =
+            index;
         paint.color = highlightColor;
       }
       //画图
@@ -238,8 +239,9 @@ class StackBar<T> extends ChartBodyRender<T> {
       }
       Rect rect = Rect.fromLTWH(left, top, itemWidth, itemHeight);
       ChartShapeState stackShape = ChartShapeState.rect(rect: rect);
-      if (stackShape.hitTest(chart.state.gesturePoint)) {
-        chart.state.bodyStateList[positionIndex]?.selectedIndex = index;
+      if (stackShape.hitTest(chart.controller.gesturePoint)) {
+        chart.controller.childrenController[positionIndex]?.selectedIndex =
+            index;
         paint.color = highlightColor;
         shape.children.add(stackShape);
       }

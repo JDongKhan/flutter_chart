@@ -20,6 +20,7 @@ class CircularChartCoordinateRender extends ChartCoordinateRender {
   CircularChartCoordinateRender({
     super.margin = EdgeInsets.zero,
     super.padding = EdgeInsets.zero,
+    super.safeArea,
     required super.charts,
     this.arcPosition = ArcPosition.none,
     this.borderWidth = 1,
@@ -37,7 +38,7 @@ class CircularChartCoordinateRender extends ChartCoordinateRender {
     _drawCircle(canvas, size);
     _drawBackgroundAnnotations(canvas, size);
     for (var element in charts) {
-      element.draw(state.offset);
+      element.draw(controller.offset);
     }
     _drawForegroundAnnotations(canvas, size);
   }
@@ -69,7 +70,7 @@ class CircularChartCoordinateRender extends ChartCoordinateRender {
         anchor: center,
         size: size,
         padding: padding,
-        offset: state.offset,
+        offset: controller.offset,
         reverseX: false,
         reverseY: false,
       );
@@ -88,7 +89,7 @@ class CircularChartCoordinateRender extends ChartCoordinateRender {
           anchor: center,
           size: size,
           padding: padding,
-          offset: state.offset,
+          offset: controller.offset,
           reverseX: false,
           reverseY: true,
         );
@@ -98,7 +99,7 @@ class CircularChartCoordinateRender extends ChartCoordinateRender {
           anchor: center,
           size: size,
           padding: padding,
-          offset: state.offset,
+          offset: controller.offset,
           reverseX: false,
           reverseY: false,
         );
@@ -121,7 +122,7 @@ class CircularChartCoordinateRender extends ChartCoordinateRender {
   void _drawBackgroundAnnotations(Canvas canvas, Size size) {
     backgroundAnnotations?.forEach((element) {
       element.init(this);
-      element.draw(state.offset);
+      element.draw(controller.offset);
     });
   }
 
@@ -129,7 +130,7 @@ class CircularChartCoordinateRender extends ChartCoordinateRender {
   void _drawForegroundAnnotations(Canvas canvas, Size size) {
     foregroundAnnotations?.forEach((element) {
       element.init(this);
-      element.draw(state.offset);
+      element.draw(controller.offset);
     });
   }
 

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../base/chart_body_render.dart';
 import '../base/chart_coordinate_render.dart';
-import '../base/chart_state.dart';
+import '../base/chart_shape_state.dart';
 import '../coordinate/circular_chart_coordinate_render.dart';
 
 /// @author JD
@@ -126,10 +126,10 @@ class Pie<T> extends ChartBodyRender<T> {
       //放大区域
       ChartShapeState tapShape = shape;
       //判断是否选中
-      bool selected = shape.hitTest(chart.state.gesturePoint);
+      bool selected = shape.hitTest(chart.controller.gesturePoint);
       if (selected) {
         rd = radius + 2;
-        chart.state.bodyStateList[positionIndex]?.selectedIndex = i;
+        chart.controller.childrenController[positionIndex]?.selectedIndex = i;
         tapShape = ChartShapeState.arc(
           center: center,
           startAngle: startAngle,
@@ -169,7 +169,7 @@ class Pie<T> extends ChartBodyRender<T> {
       startAngle = startAngle + sweepAngle;
       index++;
     }
-    chart.state.bodyStateList[positionIndex]?.shapeList = shapeList;
+    chart.controller.childrenController[positionIndex]?.shapeList = shapeList;
   }
 
   //画空隙线

@@ -4,7 +4,7 @@ import '../annotation/annotation.dart';
 import '../utils/transform_utils.dart';
 import '../widget/chart_widget.dart';
 import 'chart_body_render.dart';
-import 'chart_state.dart';
+import 'chart_controller.dart';
 
 ///
 /// @author JD
@@ -61,6 +61,7 @@ abstract class ChartCoordinateRender {
   final ChartTooltipFormatter? tooltipFormatter;
   //十字准星样式
   final CrossHairStyle crossHair;
+  final EdgeInsets? safeArea;
   //坐标转换工具
   late TransformUtils transformUtils;
 
@@ -77,6 +78,7 @@ abstract class ChartCoordinateRender {
     this.zoomVertical = false,
     this.backgroundAnnotations,
     this.foregroundAnnotations,
+    this.safeArea,
     this.crossHair = const CrossHairStyle(),
   }) : contentMargin = EdgeInsets.fromLTRB(
             margin.left + padding.left,
@@ -85,7 +87,7 @@ abstract class ChartCoordinateRender {
             margin.bottom + padding.bottom);
 
   //共享数据
-  late ChartState state;
+  late ChartController controller;
   //画布
   late Canvas canvas;
   //画布尺寸
@@ -107,28 +109,29 @@ abstract class ChartCoordinateRender {
 
   Offset withOffset(Offset offset, [bool scrollable = true]) {
     if (scrollable) {
-      return Offset(offset.dx - state.offset.dx, offset.dy - state.offset.dy);
+      return Offset(
+          offset.dx - controller.offset.dx, offset.dy - controller.offset.dy);
     }
     return offset;
   }
 
   double withXOffset(double offset, [bool scrollable = true]) {
     if (scrollable) {
-      return offset - state.offset.dx;
+      return offset - controller.offset.dx;
     }
     return offset;
   }
 
   double withXZoom(double offset) {
     if (zoomHorizontal) {
-      return offset - (state.zoom - 1) * (size.width / 2);
+      return offset - (controller.zoom - 1) * (size.width / 2);
     }
     return offset;
   }
 
   double withYOffset(double offset, [bool scrollable = true]) {
     if (scrollable) {
-      return offset - state.offset.dy;
+      return offset - controller.offset.dy;
     }
     return offset;
   }

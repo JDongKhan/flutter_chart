@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../base/chart_body_render.dart';
 import '../base/chart_coordinate_render.dart';
-import '../base/chart_state.dart';
+import '../base/chart_shape_state.dart';
 import '../coordinate/dimensions_chart_coordinate_render.dart';
 
 typedef LinePosition<T> = List<num> Function(T);
@@ -74,11 +74,12 @@ class Line<T> extends ChartBodyRender<T> {
 
       //先判断是否选中，此场景是第一次渲染之后点击才有，所以用老数据即可
       List<ChartShapeState>? currentShapeList =
-          chart.state.bodyStateList[positionIndex]?.shapeList;
-      if (chart.state.gesturePoint != null &&
-          (currentShapeList?[index].hitTest(chart.state.gesturePoint!) ==
+          chart.controller.childrenController[positionIndex]?.shapeList;
+      if (chart.controller.gesturePoint != null &&
+          (currentShapeList?[index].hitTest(chart.controller.gesturePoint!) ==
               true)) {
-        chart.state.bodyStateList[positionIndex]?.selectedIndex = index;
+        chart.controller.childrenController[positionIndex]?.selectedIndex =
+            index;
       }
       //一条数据下可能多条线
       for (int valueIndex = 0; valueIndex < yvs.length; valueIndex++) {
@@ -158,7 +159,7 @@ class Line<T> extends ChartBodyRender<T> {
     //       element.getHotRect()!.right - 1,
     //       element.getHotRect()!.bottom);
     //   Paint newPaint = Paint()
-    //     ..color = colors10[i]
+    //     ..color = colors10[i % colors10.length]
     //     ..strokeWidth = strokeWidth
     //     ..style = PaintingStyle.stroke;
     //   chart.canvas.drawRect(newRect, newPaint);
@@ -166,7 +167,7 @@ class Line<T> extends ChartBodyRender<T> {
     // }
     //开始绘制了
     drawLine(pathMap);
-    chart.state.bodyStateList[positionIndex]?.shapeList = shapeList;
+    chart.controller.childrenController[positionIndex]?.shapeList = shapeList;
   }
 
   void drawLine(Map<int, LineInfo> pathMap) {

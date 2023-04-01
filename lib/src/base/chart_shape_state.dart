@@ -1,46 +1,9 @@
+//存放每条数据对应的绘图信息
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:flutter/foundation.dart';
+const double _maxWidth = 20;
 
-//数据共享，便于各个节点使用
-class ChartState extends ChangeNotifier {
-  Offset? _gesturePoint;
-  set gesturePoint(value) {
-    if (value != _gesturePoint) {
-      _gesturePoint = value;
-      notifyListeners();
-    }
-  }
-
-  Offset? get gesturePoint => _gesturePoint;
-
-  double _zoom = 1;
-  //缩放
-  double get zoom => _zoom;
-  set zoom(v) {
-    gesturePoint = null;
-    _zoom = v;
-  }
-
-  //偏移
-  Offset _offset = Offset.zero;
-  Offset get offset => _offset;
-  set offset(v) {
-    gesturePoint = null;
-    _offset = v;
-  }
-
-  //根据位置缓存配置信息
-  Map<int, CharBodyState> bodyStateList = {};
-}
-
-class CharBodyState {
-  int? selectedIndex;
-  List<ChartShapeState>? shapeList;
-}
-
-//存放每条数据对应的绘图信息
 class ChartShapeState {
   Rect? rect;
   Path? path;
@@ -113,10 +76,16 @@ class ChartShapeState {
       if (reverse) {
         reverse = true;
         double diff = next.rect!.right - rect!.left;
+        if (diff > _maxWidth) {
+          diff = _maxWidth;
+        }
         l = rect!.left + diff / 2;
         r = right!;
       } else {
         double diff = next.rect!.left - rect!.right;
+        if (diff > _maxWidth) {
+          diff = _maxWidth;
+        }
         r = rect!.right + diff / 2;
         l = left!;
       }
@@ -131,10 +100,16 @@ class ChartShapeState {
       if (reverse) {
         reverse = true;
         double diff = rect!.right - pre.rect!.left;
+        if (diff > _maxWidth) {
+          diff = _maxWidth;
+        }
         l = left!;
         r = rect!.right + diff / 2;
       } else {
         double diff = rect!.left - pre.rect!.right;
+        if (diff > _maxWidth) {
+          diff = _maxWidth;
+        }
         l = rect!.left - diff / 2;
         r = right!;
       }
@@ -150,11 +125,20 @@ class ChartShapeState {
       if (reverse) {
         reverse = true;
         double diff = rect!.right - pre.rect!.left;
+        if (diff > _maxWidth) {
+          diff = _maxWidth;
+        }
         l = left!;
         r = rect!.right + diff / 2;
       } else {
         double diffLeft = rect!.left - pre.rect!.right;
         double diffRight = next.rect!.left - rect!.right;
+        if (diffLeft > _maxWidth) {
+          diffLeft = _maxWidth;
+        }
+        if (diffRight > _maxWidth) {
+          diffRight = _maxWidth;
+        }
         l = rect!.left - diffLeft / 2;
         r = rect!.right + diffRight / 2;
       }

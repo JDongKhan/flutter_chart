@@ -47,13 +47,13 @@ class LabelAnnotation extends Annotation {
           //不跟随缩放
           if (chart.zoomHorizontal) {
             left = chart.transformUtils.transformX(
-              itemWidth / chart.state.zoom,
+              itemWidth / chart.controller.zoom,
               containPadding: true,
             );
           }
           if (chart.zoomVertical) {
             top = chart.transformUtils.transformY(
-              itemHeight / chart.state.zoom,
+              itemHeight / chart.controller.zoom,
               containPadding: true,
             );
           }

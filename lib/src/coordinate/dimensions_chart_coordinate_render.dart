@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../flutter_chart.dart';
 import '../base/chart_body_render.dart';
+import '../base/chart_shape_state.dart';
 import '../utils/transform_utils.dart';
 import '../widget/dash_painter.dart';
 
@@ -111,6 +112,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     super.zoomHorizontal,
     super.zoomVertical = false,
     super.crossHair = const CrossHairStyle(),
+    super.safeArea,
     required this.yAxis,
     XAxis? xAxis,
   })  : assert(yAxis.isNotEmpty),
@@ -128,7 +130,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
         (width - contentMargin.horizontal) / count / xAxis.interval;
     //x轴密度 即1 value 等于多少尺寸
     if (zoomHorizontal) {
-      xAxis.density = density * state.zoom;
+      xAxis.density = density * controller.zoom;
     } else {
       xAxis.density = density;
     }
@@ -140,7 +142,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
       double itemHeight = (height - margin.vertical) / yCount;
       double itemValue = (max - min) / yCount;
       if (zoomVertical) {
-        yA.density = itemHeight / itemValue * state.zoom;
+        yA.density = itemHeight / itemValue * controller.zoom;
       } else {
         yA.density = itemHeight / itemValue;
       }
@@ -155,7 +157,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     //转换工具
     transformUtils = TransformUtils(
       anchor: Offset(margin.left, size.height - margin.bottom),
-      offset: state.offset,
+      offset: controller.offset,
       size: size,
       padding: padding,
       reverseX: false,
@@ -175,7 +177,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     _drawBackgroundAnnotations(canvas, size);
     //绘图
     for (var element in charts) {
-      element.draw(state.offset);
+      element.draw(controller.offset);
     }
     _drawForegroundAnnotations(canvas, size);
     _drawCrosshair(canvas, size);
@@ -326,7 +328,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
 
   void _drawCrosshair(Canvas canvas, Size size) {
     //十字准星
-    Offset? anchor = state.gesturePoint;
+    Offset? anchor = controller.gesturePoint;
     if (anchor == null) {
       return;
     }
@@ -337,8 +339,9 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     double diffLeft = 0;
 
     //查找更贴近点击的那条数据
-    for (MapEntry<int, CharBodyState> entry in state.bodyStateList.entries) {
-      CharBodyState value = entry.value;
+    for (MapEntry<int, CharBodyController> entry
+        in controller.childrenController.entries) {
+      CharBodyController value = entry.value;
       int? index = value.selectedIndex;
       if (index == null) {
         continue;
@@ -403,13 +406,14 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     Canvas canvas,
     Size size,
   ) {
-    Offset? anchor = state.gesturePoint;
+    Offset? anchor = controller.gesturePoint;
     if (anchor == null) {
       return;
     }
     if (tooltipRenderer != null) {
       List<int?> index = [];
-      for (MapEntry<int, CharBodyState> entry in state.bodyStateList.entries) {
+      for (MapEntry<int, CharBodyController> entry
+          in controller.childrenController.entries) {
         index.add(entry.value.selectedIndex);
       }
       tooltipRenderer?.call(canvas, size, anchor, index);
@@ -451,20 +455,25 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     );
 
     var textPaintPoint = anchor + padding.topLeft;
-    //是否约束在组件范围内
     const bool constrained = true;
-    Size contentSize =
-        Size(size.width - padding.horizontal, size.height - padding.vertical);
+    Rect kSafeArea;
+    if (safeArea != null) {
+      kSafeArea = Rect.fromLTRB(safeArea!.left, safeArea!.top,
+          size.width - safeArea!.right, size.height - safeArea!.bottom);
+    } else {
+      kSafeArea = Rect.fromLTRB(margin.left, margin.top,
+          size.width - margin.right, size.height - margin.bottom);
+    }
     if (constrained) {
-      final horizontalAdjust = windowRect.left < 0
-          ? -windowRect.left
-          : (windowRect.right > contentSize.width
-              ? contentSize.width - windowRect.right
+      final horizontalAdjust = windowRect.left < kSafeArea.left
+          ? (kSafeArea.left - windowRect.left)
+          : (windowRect.right > kSafeArea.right
+              ? (kSafeArea.right - windowRect.right)
               : 0.0);
-      final verticalAdjust = windowRect.top < 0
-          ? -windowRect.top
-          : (windowRect.bottom > contentSize.height
-              ? contentSize.height - windowRect.bottom
+      final verticalAdjust = windowRect.top < kSafeArea.top
+          ? (kSafeArea.top - windowRect.top)
+          : (windowRect.bottom > kSafeArea.bottom
+              ? (kSafeArea.bottom - windowRect.bottom)
               : 0.0);
       if (horizontalAdjust != 0 || verticalAdjust != 0) {
         windowRect = windowRect.translate(horizontalAdjust, verticalAdjust);
@@ -509,12 +518,12 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
 
   @override
   void scroll(Offset delta) {
-    Offset newOffset = state.offset.translate(-delta.dx, -delta.dy);
+    Offset newOffset = controller.offset.translate(-delta.dx, -delta.dy);
     //校准偏移，不然缩小后可能起点都在中间了，或者无限滚动
     double x = newOffset.dx;
     double y = newOffset.dy;
     //因为缩放最小值可能为负的了
-    double minXOffsetValue = (1 - state.zoom) * size.width / 2;
+    double minXOffsetValue = (1 - controller.zoom) * size.width / 2;
     // print('$x -- $minXOffsetValue');
     if (x < minXOffsetValue) {
       x = minXOffsetValue;
@@ -536,7 +545,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
 
     if (zoomVertical) {
       //y轴
-      double minYOffsetValue = (1 - state.zoom) * size.height / 2;
+      double minYOffsetValue = (1 - controller.zoom) * size.height / 2;
 
       double chartContentHeight =
           padding.vertical + yAxis[0].density * yAxis[0].max;
@@ -557,7 +566,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
       y = 0;
     }
 
-    state.offset = Offset(x, y);
+    controller.offset = Offset(x, y);
     // print(state.offset);
   }
 
@@ -566,7 +575,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     if (backgroundAnnotations != null) {
       for (Annotation annotation in backgroundAnnotations!) {
         annotation.init(this);
-        annotation.draw(state.offset);
+        annotation.draw(controller.offset);
       }
     }
   }
@@ -576,7 +585,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     if (foregroundAnnotations != null) {
       for (Annotation annotation in foregroundAnnotations!) {
         annotation.init(this);
-        annotation.draw(state.offset);
+        annotation.draw(controller.offset);
       }
     }
   }
@@ -601,5 +610,23 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     }
     Paint whitePaint = Paint()..color = Colors.black;
     canvas.drawPath(path, whitePaint);
+  }
+}
+
+class ChartTapInfoDialog {
+  OverlayEntry? _dialogEntry;
+  void show({
+    required BuildContext context,
+    required WidgetBuilder builder,
+  }) {
+    dismiss();
+    _dialogEntry = OverlayEntry(builder: (c) {
+      return builder.call(c);
+    });
+    Overlay.of(context).insert(_dialogEntry!);
+  }
+
+  void dismiss() {
+    _dialogEntry?.remove();
   }
 }
