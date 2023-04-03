@@ -42,7 +42,7 @@ class CrossHairStyle {
   });
 }
 
-typedef ChartTooltipFormatter<T> = InlineSpan? Function(List<T?>);
+typedef ChartTooltipFormatter = InlineSpan? Function(List<CharBodyState>);
 
 //渲染器， 每次刷新会重新构造，切忌不要存放状态数据，数据都在state里面
 abstract class ChartCoordinateRender {
@@ -57,6 +57,8 @@ abstract class ChartCoordinateRender {
   final List<ChartBodyRender> charts;
   //自定义提示框的样式
   final TooltipRenderer? tooltipRenderer;
+  //用widget弹框来处理点击
+  final TooltipWidgetRenderer? tooltipWidgetRenderer;
   //自定义提示文案
   final ChartTooltipFormatter? tooltipFormatter;
   //十字准星样式
@@ -74,6 +76,7 @@ abstract class ChartCoordinateRender {
     required this.charts,
     this.tooltipRenderer,
     this.tooltipFormatter,
+    this.tooltipWidgetRenderer,
     this.zoomHorizontal = false,
     this.zoomVertical = false,
     this.backgroundAnnotations,

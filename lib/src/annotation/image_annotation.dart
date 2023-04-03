@@ -64,12 +64,7 @@ class ImageAnnotation extends Annotation {
       } else {
         ost = anchor!(chart.size);
       }
-      Paint paint = Paint()
-        ..color = Colors.blue
-        ..isAntiAlias = true
-        ..style = PaintingStyle.stroke
-        ..strokeCap = StrokeCap.butt
-        ..strokeWidth = 30;
+      Paint paint = Paint()..isAntiAlias = true;
       coordinateChart.canvas.drawImage(
           image,
           ost.translate(
@@ -82,8 +77,8 @@ class ImageAnnotation extends Annotation {
         width: image.width.toDouble(),
         height: image.height.toDouble(),
       );
-      if (chart.controller.gesturePoint != null &&
-          rect.contains(chart.controller.gesturePoint!)) {
+      if (chart.controller.localPosition != null &&
+          rect.contains(chart.controller.localPosition!)) {
         Future.microtask(() => onTap?.call(this));
       }
     }

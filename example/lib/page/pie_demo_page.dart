@@ -48,7 +48,7 @@ class PieChartDemoPage extends StatelessWidget {
             SizedBox(
               height: 200,
               child: ChartWidget(
-                builder: () => CircularChartCoordinateRender(
+                coordinateRender: CircularChartCoordinateRender(
                   margin: const EdgeInsets.all(30),
                   charts: [
                     Pie(
@@ -66,7 +66,7 @@ class PieChartDemoPage extends StatelessWidget {
             SizedBox(
               height: 200,
               child: ChartWidget(
-                builder: () => CircularChartCoordinateRender(
+                coordinateRender: CircularChartCoordinateRender(
                   margin: const EdgeInsets.all(30),
                   charts: [
                     Pie(
@@ -122,7 +122,7 @@ class PieChartDemoPage extends StatelessWidget {
                     ),
                   ),
                   ChartWidget(
-                    builder: () => CircularChartCoordinateRender(
+                    coordinateRender: CircularChartCoordinateRender(
                       margin: const EdgeInsets.only(bottom: 10),
                       strokeCap: StrokeCap.round,
                       borderColor: Colors.grey,
@@ -147,7 +147,7 @@ class PieChartDemoPage extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 40),
               height: 200,
               child: ChartWidget(
-                builder: () => CircularChartCoordinateRender(
+                coordinateRender: CircularChartCoordinateRender(
                   borderColor: Colors.grey,
                   charts: [
                     WaveProgress(

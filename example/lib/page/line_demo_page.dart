@@ -65,7 +65,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
           SizedBox(
             height: 200,
             child: ChartWidget(
-              builder: () => DimensionsChartCoordinateRender(
+              coordinateRender: DimensionsChartCoordinateRender(
                 zoomHorizontal: true,
                 // zoomVertical: true,
                 crossHair: const CrossHairStyle(
@@ -73,7 +73,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                 //提示的文案信息
                 tooltipFormatter: (list) {
                   return TextSpan(
-                    text: list.map((e) => e['value1']).toString(),
+                    text: list.map((e) => e.selectedIndex).toString(),
                     style: const TextStyle(
                       color: Colors.black,
                     ),
@@ -113,7 +113,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                       SizedBox(
                         height: 200,
                         child: ChartWidget(
-                          builder: () => DimensionsChartCoordinateRender(
+                          coordinateRender: DimensionsChartCoordinateRender(
                             crossHair: const CrossHairStyle(
                                 adjustHorizontal: true, adjustVertical: true),
                             margin: const EdgeInsets.only(
@@ -121,7 +121,8 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                             //提示的文案信息
                             tooltipFormatter: (list) {
                               return TextSpan(
-                                text: list.map((e) => e['value1']).toString(),
+                                text:
+                                    list.map((e) => e.selectedIndex).toString(),
                                 style: const TextStyle(
                                   color: Colors.black,
                                 ),
@@ -158,7 +159,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                         // color: Colors.yellow,
                         height: 200,
                         child: ChartWidget(
-                          builder: () => DimensionsChartCoordinateRender(
+                          coordinateRender: DimensionsChartCoordinateRender(
                             zoomHorizontal: true,
                             foregroundAnnotations: [
                               LimitAnnotation(limit: 380),
@@ -170,7 +171,6 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                                     print('点击事件');
                                   },
                                   positions: [1, 200],
-                                  offset: const Offset(-10, -10),
                                 ),
                               LabelAnnotation(
                                   positions: [6, 380],
@@ -187,7 +187,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                             crossHair: const CrossHairStyle(
                                 adjustHorizontal: true, adjustVertical: true),
                             tooltipFormatter: (list) => TextSpan(
-                              text: list.map((e) => e['value1']).toString(),
+                              text: list.map((e) => e.selectedIndex).toString(),
                               style: const TextStyle(
                                 color: Colors.black,
                               ),
@@ -222,14 +222,14 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                         // color: Colors.yellow,
                         height: 200,
                         child: ChartWidget(
-                          builder: () => DimensionsChartCoordinateRender(
+                          coordinateRender: DimensionsChartCoordinateRender(
                             margin: const EdgeInsets.only(
                                 left: 40, top: 5, right: 30, bottom: 30),
                             //提示的文案信息
                             crossHair: const CrossHairStyle(
                                 adjustHorizontal: true, adjustVertical: true),
                             tooltipFormatter: (list) => TextSpan(
-                              text: list.map((e) => e['value1']).toString(),
+                              text: list.map((e) => e.selectedIndex).toString(),
                               style: const TextStyle(
                                 color: Colors.black,
                               ),
@@ -237,9 +237,11 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                             yAxis: [
                               YAxis(min: 0, max: 500, drawGrid: true),
                               YAxis(
-                                  min: 0,
-                                  max: 400,
-                                  offset: (size) => Offset(size.width - 70, 0)),
+                                min: 0,
+                                max: 400,
+                                drawDivider: false,
+                                offset: (size) => Offset(size.width - 70, 0),
+                              ),
                             ],
                             xAxis: XAxis(
                               count: 7,

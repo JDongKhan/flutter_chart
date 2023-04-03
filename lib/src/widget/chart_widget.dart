@@ -7,26 +7,28 @@ import '../base/chart_coordinate_render.dart';
 /// @author JD
 ///
 typedef TooltipRenderer = void Function(
-    Canvas, Size size, Offset anchor, List<int?> indexs);
-typedef ChartCoordinateRenderBuilder = ChartCoordinateRender Function();
+    Canvas, Size size, Offset anchor, List<CharBodyState> indexs);
+typedef TooltipWidgetRenderer = PreferredSizeWidget? Function(
+    BuildContext context, List<CharBodyState>);
+// typedef ChartCoordinateRenderBuilder = ChartCoordinateRender Function();
 
 //本widget只是起到提供Canvas的功能，不支持任何传参，避免参数来回传递导致难以维护以及混乱，需要自定义可自行去对应渲染器
 class ChartWidget extends StatefulWidget {
-  final ChartCoordinateRenderBuilder builder;
+  final ChartCoordinateRender coordinateRender;
   final ChartController? controller;
+  //处于弹框和chart之间
+  final Widget? foregroundWidget;
   const ChartWidget({
     Key? key,
-    required this.builder,
+    required this.coordinateRender,
     this.controller,
+    this.foregroundWidget,
   }) : super(key: key);
   @override
   State<ChartWidget> createState() => _ChartWidgetState();
 }
 
 class _ChartWidgetState extends State<ChartWidget> {
-  Offset offset = Offset.zero;
-  double zoom = 1.0;
-  double _beforeZoom = 1.0;
   late ChartController _controller;
 
   @override
@@ -53,85 +55,235 @@ class _ChartWidgetState extends State<ChartWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, cs) {
-      ChartCoordinateRender baseChart = widget.builder.call();
-      baseChart.controller = _controller;
-      for (int i = 0; i < baseChart.charts.length; i++) {
-        ChartBodyRender body = baseChart.charts[i];
-        body.positionIndex = i;
-        CharBodyController? c = _controller.childrenController[i];
-        if (c == null) {
-          c = CharBodyController(_controller);
-          _controller.childrenController[i] = c;
-        }
-        body.bodyState = c;
-      }
-
-      return _buildWidget(baseChart, cs.maxWidth, cs.maxHeight);
-    });
+    _controller.tooltipStateSetter = null;
+    return _buildBody();
   }
 
-  Widget _buildWidget(
-      ChartCoordinateRender chart, double width, double height) {
+  Widget _buildBody() {
+    return RepaintBoundary(
+      child: LayoutBuilder(
+        builder: (context, cs) {
+          ChartCoordinateRender baseChart = widget.coordinateRender;
+          baseChart.controller = _controller;
+
+          _controller.childrenState.clear();
+          //关联子状态
+          for (int i = 0; i < baseChart.charts.length; i++) {
+            ChartBodyRender body = baseChart.charts[i];
+            CharBodyState c = CharBodyState(_controller);
+            body.bodyState = c;
+            _controller.childrenState.add(c);
+          }
+
+          Size size = Size(cs.maxWidth, cs.maxHeight);
+
+          List<Widget> childrenWidget = [];
+          //图表 chart
+          Widget chartWidget = _ChartCoreWidget(
+            size: size,
+            controller: _controller,
+            chartCoordinateRender: baseChart,
+          );
+          childrenWidget.add(chartWidget);
+
+          //前景组件图层
+          if (widget.foregroundWidget != null) {
+            childrenWidget.add(widget.foregroundWidget!);
+          }
+          //弹框图层
+          if (baseChart.tooltipWidgetRenderer != null) {
+            childrenWidget.add(_buildTooltipWidget(baseChart, size));
+          }
+          if (childrenWidget.length > 1) {
+            return Stack(
+              children: childrenWidget,
+            );
+          }
+          return chartWidget;
+        },
+      ),
+    );
+  }
+
+  Widget _buildTooltipWidget(ChartCoordinateRender baseChart, Size size) {
+    return StatefulBuilder(
+      builder: (BuildContext context, StateSetter setState) {
+        _controller.tooltipStateSetter = setState;
+        if (_controller.localPosition == null) {
+          return const SizedBox.shrink();
+        }
+        Offset offset = Offset(_controller.localPosition?.dx ?? 0,
+            _controller.localPosition?.dy ?? 0);
+
+        PreferredSizeWidget? widget = baseChart.tooltipWidgetRenderer!
+            .call(context, _controller.childrenState);
+
+        if (widget == null) {
+          return const SizedBox.shrink();
+        }
+
+        //边界处理
+        Rect rect = _adjustRect(
+            Rect.fromLTWH(offset.dx, offset.dy, widget.preferredSize.width,
+                widget.preferredSize.height),
+            size);
+
+        return Positioned(
+          left: rect.left,
+          top: rect.top,
+          child: Container(
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+              boxShadow: [
+                BoxShadow(
+                  color: Color(0x66cecece),
+                  blurRadius: 3,
+                  spreadRadius: 1,
+                ),
+              ],
+            ),
+            child: widget,
+          ),
+        );
+      },
+    );
+  }
+
+  Rect _adjustRect(
+    Rect windowRect,
+    Size size,
+  ) {
+    Rect kSafeArea = Rect.fromLTRB(0, 0, size.width, size.height);
+    final horizontalAdjust = windowRect.left < kSafeArea.left
+        ? (kSafeArea.left - windowRect.left)
+        : (windowRect.right > kSafeArea.right
+            ? (kSafeArea.right - windowRect.right)
+            : 0.0);
+    final verticalAdjust = windowRect.top < kSafeArea.top
+        ? (kSafeArea.top - windowRect.top)
+        : (windowRect.bottom > kSafeArea.bottom
+            ? (kSafeArea.bottom - windowRect.bottom)
+            : 0.0);
+    if (horizontalAdjust != 0 || verticalAdjust != 0) {
+      windowRect = windowRect.translate(horizontalAdjust, verticalAdjust);
+    }
+
+    return windowRect;
+  }
+}
+
+class _ChartCoreWidget extends StatefulWidget {
+  final Size size;
+  final ChartController controller;
+  final ChartCoordinateRender chartCoordinateRender;
+  const _ChartCoreWidget({
+    Key? key,
+    required this.size,
+    required this.controller,
+    required this.chartCoordinateRender,
+  }) : super(key: key);
+
+  @override
+  State<_ChartCoreWidget> createState() => _ChartCoreWidgetState();
+}
+
+class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
+  Offset offset = Offset.zero;
+  double zoom = 1.0;
+  double _beforeZoom = 1.0;
+
+  bool needRepaint = false;
+
+  @override
+  Widget build(BuildContext context) {
+    //重置
+    for (var element in widget.controller.childrenState) {
+      element.selectedIndex = null;
+    }
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTapUp: (TapUpDetails details) {
-        _controller.gesturePoint = details.localPosition;
+        widget.controller.localPosition = details.localPosition;
+        needRepaint = true;
         setState(() {});
       },
       onScaleStart: (ScaleStartDetails details) {
         _beforeZoom = zoom;
       },
       onScaleUpdate: (ScaleUpdateDetails details) {
+        //先清除手势
+        widget.controller.clearPosition();
         //缩放
         if (details.scale != 1) {
-          if (chart.zoomHorizontal || chart.zoomVertical) {
+          if (widget.chartCoordinateRender.zoomHorizontal ||
+              widget.chartCoordinateRender.zoomVertical) {
             setState(() {
+              needRepaint = true;
               zoom = _beforeZoom * details.scale;
-              _controller.zoom = zoom;
+              widget.controller.zoom = zoom;
             });
           }
         } else if (details.pointerCount == 1 && details.scale == 1) {
           //移动
-          chart.scroll(details.focalPointDelta);
-          setState(() {});
+          widget.chartCoordinateRender.scroll(details.focalPointDelta);
+          setState(() {
+            needRepaint = true;
+          });
         }
       },
       onScaleEnd: (ScaleEndDetails details) {
         //这里可以处理减速的操作
+        needRepaint = false;
         // print(details.velocity);
       },
       child: SizedBox(
-        width: width,
-        height: height,
+        width: widget.size.width,
+        height: widget.size.height,
         child: CustomPaint(
           painter: _ChartPainter(
-            chart: chart,
+            repaint: repaint(),
+            chart: widget.chartCoordinateRender,
           ),
         ),
       ),
     );
+  }
+
+  //是否重绘
+  bool repaint() {
+    bool localRepaint = needRepaint;
+    needRepaint = false;
+    return localRepaint;
   }
 }
 
 //画图
 class _ChartPainter extends CustomPainter {
   final ChartCoordinateRender chart;
+  final bool repaint;
   _ChartPainter({
     required this.chart,
+    this.repaint = false,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
-    chart.controller.childrenController.forEach((key, value) {
-      value.selectedIndex = null;
-    });
     //初始化
     chart.init(canvas, size);
     chart.paint(canvas, size);
   }
 
   @override
-  bool shouldRepaint(covariant _ChartPainter oldDelegate) =>
-      oldDelegate.chart != chart;
+  bool shouldRepaint(covariant _ChartPainter oldDelegate) {
+    if (oldDelegate.chart != chart) {
+      return true;
+    }
+    ChartController oldController = oldDelegate.chart.controller;
+    ChartController newController = chart.controller;
+    if (oldController != newController) {
+      return true;
+    }
+    return repaint;
+  }
 }

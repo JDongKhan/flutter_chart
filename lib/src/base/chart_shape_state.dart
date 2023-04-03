@@ -63,7 +63,8 @@ class ChartShapeState {
       //2、该图不需要处理热区
       if (left != null && right != null) {
         //说明是第一种情况
-        return Rect.fromLTRB(left!, rect!.top, right!, rect!.bottom);
+        return Rect.fromLTRB(rect!.left - _maxWidth, rect!.top,
+            rect!.right + _maxWidth, rect!.bottom);
       }
       return null;
     } else if (preShapeState == null && nextShapeState != null) {

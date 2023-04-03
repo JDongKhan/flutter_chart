@@ -73,13 +73,11 @@ class Line<T> extends ChartBodyRender<T> {
       double xPo = xvs * chart.xAxis.density + left;
 
       //先判断是否选中，此场景是第一次渲染之后点击才有，所以用老数据即可
-      List<ChartShapeState>? currentShapeList =
-          chart.controller.childrenController[positionIndex]?.shapeList;
-      if (chart.controller.gesturePoint != null &&
-          (currentShapeList?[index].hitTest(chart.controller.gesturePoint!) ==
+      List<ChartShapeState>? currentShapeList = bodyState.shapeList;
+      if (chart.controller.localPosition != null &&
+          (currentShapeList?[index].hitTest(chart.controller.localPosition!) ==
               true)) {
-        chart.controller.childrenController[positionIndex]?.selectedIndex =
-            index;
+        bodyState.selectedIndex = index;
       }
       //一条数据下可能多条线
       for (int valueIndex = 0; valueIndex < yvs.length; valueIndex++) {
@@ -167,7 +165,7 @@ class Line<T> extends ChartBodyRender<T> {
     // }
     //开始绘制了
     drawLine(pathMap);
-    chart.controller.childrenController[positionIndex]?.shapeList = shapeList;
+    bodyState.shapeList = shapeList;
   }
 
   void drawLine(Map<int, LineInfo> pathMap) {

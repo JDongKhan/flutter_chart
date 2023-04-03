@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../flutter_chart.dart';
-import '../base/chart_body_render.dart';
 import '../base/chart_shape_state.dart';
 import '../utils/transform_utils.dart';
 import '../widget/dash_painter.dart';
@@ -37,7 +36,7 @@ class XAxis {
     this.count = 7,
     this.drawLine = true,
     this.drawGrid = false,
-    this.lineColor = Colors.grey,
+    this.lineColor = const Color(0xffcecece),
     this.textStyle = const TextStyle(fontSize: 12, color: Colors.grey),
     this.dashPainter,
     this.drawDivider = true,
@@ -109,6 +108,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     super.foregroundAnnotations,
     super.tooltipRenderer,
     super.tooltipFormatter,
+    super.tooltipWidgetRenderer,
     super.zoomHorizontal,
     super.zoomVertical = false,
     super.crossHair = const CrossHairStyle(),
@@ -196,7 +196,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
       Paint paint = Paint()
         ..color = yA.lineColor
         ..style = PaintingStyle.stroke
-        ..strokeWidth = 0.2;
+        ..strokeWidth = 1;
 
       double left = margin.left + offset.dx;
       //先画文字和虚线
@@ -235,7 +235,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     Path path = Path()
       ..moveTo(p1.dx, p1.dy)
       ..lineTo(p2.dx, p2.dy);
-    DashPainter painter = dashPainter ?? const DashPainter(span: 5, step: 5);
+    DashPainter painter = dashPainter ?? const DashPainter(span: 6, step: 3);
     painter.paint(canvas, path, paint);
   }
 
@@ -264,7 +264,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     num interval = xAxis.interval;
     Paint paint = Paint()
       ..color = xAxis.lineColor
-      ..strokeWidth = 0.2;
+      ..strokeWidth = 1;
 
     //实际要显示的数量
     int count = (xAxis.max ?? xAxis.count) ~/ xAxis.interval;
@@ -328,7 +328,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
 
   void _drawCrosshair(Canvas canvas, Size size) {
     //十字准星
-    Offset? anchor = controller.gesturePoint;
+    Offset? anchor = controller.localPosition;
     if (anchor == null) {
       return;
     }
@@ -339,14 +339,12 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     double diffLeft = 0;
 
     //查找更贴近点击的那条数据
-    for (MapEntry<int, CharBodyController> entry
-        in controller.childrenController.entries) {
-      CharBodyController value = entry.value;
-      int? index = value.selectedIndex;
+    for (CharBodyState entry in controller.childrenState) {
+      int? index = entry.selectedIndex;
       if (index == null) {
         continue;
       }
-      ChartShapeState? shape = value.shapeList?[index];
+      ChartShapeState? shape = entry.shapeList?[index];
       if (shape == null) {
         continue;
       }
@@ -406,33 +404,23 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     Canvas canvas,
     Size size,
   ) {
-    Offset? anchor = controller.gesturePoint;
+    Offset? anchor = controller.localPosition;
     if (anchor == null) {
       return;
     }
-    if (tooltipRenderer != null) {
-      List<int?> index = [];
-      for (MapEntry<int, CharBodyController> entry
-          in controller.childrenController.entries) {
-        index.add(entry.value.selectedIndex);
-      }
-      tooltipRenderer?.call(canvas, size, anchor, index);
+
+    //用widget实现
+    if (tooltipWidgetRenderer != null) {
+      controller.notifyTooltip();
       return;
     }
 
-    List items = [];
-    for (int i = 0; i < charts.length; i++) {
-      ChartBodyRender element = charts[i];
-      int? selectIndex = element.bodyState.selectedIndex;
-      if (selectIndex != null) {
-        dynamic item = element.data[i];
-        items.add(item);
-      }
-    }
-    if (items.isEmpty) {
+    if (tooltipRenderer != null) {
+      tooltipRenderer?.call(canvas, size, anchor, controller.childrenState);
       return;
     }
-    InlineSpan? textSpan = tooltipFormatter?.call(items);
+
+    InlineSpan? textSpan = tooltipFormatter?.call(controller.childrenState);
     if (textSpan == null) {
       return;
     }
@@ -443,7 +431,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     );
     textPainter.layout();
 
-    const EdgeInsets padding = EdgeInsets.all(5);
+    const EdgeInsets padding = EdgeInsets.all(10);
     final width = padding.left + textPainter.width + padding.right;
     final height = padding.top + textPainter.height + padding.bottom;
 

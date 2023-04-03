@@ -42,7 +42,7 @@ class Bar<T> extends ChartBodyRender<T> {
       T value = data[index];
       shapeList.add(drawBar(chart, paint, index, value));
     }
-    chart.controller.childrenController[positionIndex]?.shapeList = shapeList;
+    bodyState.shapeList = shapeList;
   }
 
   //可以重写 自定义特殊的图形
@@ -69,8 +69,8 @@ class Bar<T> extends ChartBodyRender<T> {
     ChartShapeState shape = ChartShapeState.rect(
       rect: rect,
     );
-    if (shape.hitTest(chart.controller.gesturePoint)) {
-      chart.controller.childrenController[positionIndex]?.selectedIndex = index;
+    if (shape.hitTest(chart.controller.localPosition)) {
+      bodyState.selectedIndex = index;
       paint.color = highlightColor;
     } else {
       if (shader != null) {
@@ -132,7 +132,7 @@ class StackBar<T> extends ChartBodyRender<T> {
         shapeList.add(drawVerticalBar(chart, index, value));
       }
     }
-    chart.controller.childrenController[positionIndex]?.shapeList = shapeList;
+    bodyState.shapeList = shapeList;
   }
 
   //水平排列图形
@@ -182,9 +182,8 @@ class StackBar<T> extends ChartBodyRender<T> {
       } else {
         paint.color = colors[stackIndex];
       }
-      if (stackShape.hitTest(chart.controller.gesturePoint)) {
-        chart.controller.childrenController[positionIndex]?.selectedIndex =
-            index;
+      if (stackShape.hitTest(chart.controller.localPosition)) {
+        bodyState.selectedIndex = index;
         paint.color = highlightColor;
       }
       //画图
@@ -239,9 +238,8 @@ class StackBar<T> extends ChartBodyRender<T> {
       }
       Rect rect = Rect.fromLTWH(left, top, itemWidth, itemHeight);
       ChartShapeState stackShape = ChartShapeState.rect(rect: rect);
-      if (stackShape.hitTest(chart.controller.gesturePoint)) {
-        chart.controller.childrenController[positionIndex]?.selectedIndex =
-            index;
+      if (stackShape.hitTest(chart.controller.localPosition)) {
+        bodyState.selectedIndex = index;
         paint.color = highlightColor;
         shape.children.add(stackShape);
       }

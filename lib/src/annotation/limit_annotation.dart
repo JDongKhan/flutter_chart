@@ -49,7 +49,7 @@ class LimitAnnotation extends Annotation {
         ..moveTo(start.dx, start.dy)
         ..lineTo(end.dx, end.dy);
       DashPainter painter =
-          dashPainter ?? const DashPainter(span: 5, step: 5, pointCount: 0);
+          dashPainter ?? const DashPainter(span: 3, step: 5, pointCount: 0);
       painter.paint(chart.canvas, path, paint);
     }
   }
