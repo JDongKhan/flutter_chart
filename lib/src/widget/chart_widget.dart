@@ -60,6 +60,7 @@ class _ChartWidgetState extends State<ChartWidget> {
   }
 
   Widget _buildBody() {
+    //避免和外部的layer合成
     return RepaintBoundary(
       child: LayoutBuilder(
         builder: (context, cs) {
@@ -240,10 +241,12 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
       child: SizedBox(
         width: widget.size.width,
         height: widget.size.height,
-        child: CustomPaint(
-          painter: _ChartPainter(
-            repaint: repaint(),
-            chart: widget.chartCoordinateRender,
+        child: RepaintBoundary(
+          child: CustomPaint(
+            painter: _ChartPainter(
+              repaint: repaint(),
+              chart: widget.chartCoordinateRender,
+            ),
           ),
         ),
       ),

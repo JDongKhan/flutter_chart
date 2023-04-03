@@ -86,7 +86,7 @@ class Progress<T> extends ChartBodyRender<T> {
           sweepAngle,
         );
       canvas.drawPath(path, paint..color = colors[index]);
-      if (pointPaint != null) {
+      if (pointPaint != null && sweepAngle > 0) {
         double endAngle = startAngle + sweepAngle;
         var startX = cos(endAngle) * radius + center.dx;
         var startY = sin(endAngle) * radius + center.dy;
