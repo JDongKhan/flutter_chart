@@ -51,15 +51,12 @@ class ImageAnnotation extends Annotation {
         num yPo = positions![1];
         double itemWidth = xPo * chart.xAxis.density;
         double itemHeight = yPo * chart.yAxis[yAxisPosition].density;
-        ost = Offset(
-          withXOffset(
+        ost = chart.transformUtils.withZoomOffset(
+          Offset(
             chart.transformUtils.transformX(itemWidth, containPadding: true),
-            scroll,
-          ),
-          withYOffset(
             chart.transformUtils.transformY(itemHeight, containPadding: true),
-            scroll,
           ),
+          scroll,
         );
       } else {
         ost = anchor!(chart.size);

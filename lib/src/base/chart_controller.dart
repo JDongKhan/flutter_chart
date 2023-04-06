@@ -18,7 +18,6 @@ class ChartController extends ChangeNotifier {
   //缩放
   double get zoom => _zoom;
   set zoom(v) {
-    localPosition = null;
     _zoom = v;
   }
 
@@ -26,7 +25,6 @@ class ChartController extends ChangeNotifier {
   Offset _offset = Offset.zero;
   Offset get offset => _offset;
   set offset(v) {
-    localPosition = null;
     _offset = v;
   }
 
@@ -35,8 +33,10 @@ class ChartController extends ChangeNotifier {
   }
 
   void clearPosition() {
-    localPosition = null;
-    notifyTooltip();
+    if (localPosition != null) {
+      localPosition = null;
+      notifyTooltip();
+    }
   }
 
   void notifyTooltip() {

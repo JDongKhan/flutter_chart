@@ -58,8 +58,7 @@ class Bar<T> extends ChartBodyRender<T> {
 
     double left =
         chart.contentMargin.left + chart.xAxis.density * po - itemWidth / 2;
-    left = withXOffset(left);
-    left = withXZoom(left);
+    left = chart.transformUtils.withXZoomOffset(left);
 
     double present = v / chart.yAxis[yAxisPosition].max;
     double itemHeight = contentHeight * present;
@@ -156,8 +155,7 @@ class StackBar<T> extends ChartBodyRender<T> {
         chart.xAxis.density * po -
         itemWidth / 2 -
         center;
-    left = withXOffset(left);
-    left = withXZoom(left);
+    left = chart.transformUtils.withXZoomOffset(left);
 
     ChartShapeState shape = ChartShapeState.rect(
       rect: Rect.fromLTWH(
@@ -213,8 +211,7 @@ class StackBar<T> extends ChartBodyRender<T> {
     int stackIndex = 0;
     double left =
         chart.contentMargin.left + chart.xAxis.density * po - itemWidth / 2;
-    left = withXOffset(left);
-    left = withXZoom(left);
+    left = chart.transformUtils.withXZoomOffset(left);
     ChartShapeState shape = ChartShapeState.rect(
       rect: Rect.fromLTWH(
         left,

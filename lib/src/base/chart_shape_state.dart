@@ -4,6 +4,7 @@ import 'dart:ui';
 
 const double _maxWidth = 20;
 
+//每个图形的状态
 class ChartShapeState {
   Rect? rect;
   Path? path;
@@ -11,17 +12,22 @@ class ChartShapeState {
     this.rect,
     this.path,
   });
+  //此处用链表来解决查找附近其他图形的逻辑
   //前面一个图形的信息 目的为了解决图形之间的关联信息
   ChartShapeState? preShapeState;
   //下一个图形的信息
   ChartShapeState? nextShapeState;
+  //坐标系最左边
   double? left;
+  //坐标系最右边
   double? right;
   //某条数据下 可能会有多条数据
   List<ChartShapeState> children = [];
 
+  //矩形
   ChartShapeState.rect({required this.rect});
 
+  //弧 用path保存 path不便于计算
   ChartShapeState.arc({
     required Offset center, // 中心点
     required double innerRadius, // 小圆半径
@@ -80,15 +86,15 @@ class ChartShapeState {
         if (diff > _maxWidth) {
           diff = _maxWidth;
         }
-        l = rect!.left + diff / 2;
-        r = right!;
+        l = rect!.left - diff / 2;
+        r = rect!.right + _maxWidth;
       } else {
         double diff = next.rect!.left - rect!.right;
         if (diff > _maxWidth) {
           diff = _maxWidth;
         }
+        l = rect!.left - _maxWidth;
         r = rect!.right + diff / 2;
-        l = left!;
       }
       return Rect.fromLTRB(l, rect!.top, r, rect!.bottom);
     } else if (preShapeState != null && nextShapeState == null) {
@@ -104,7 +110,7 @@ class ChartShapeState {
         if (diff > _maxWidth) {
           diff = _maxWidth;
         }
-        l = left!;
+        l = rect!.left - _maxWidth;
         r = rect!.right + diff / 2;
       } else {
         double diff = rect!.left - pre.rect!.right;
@@ -112,7 +118,7 @@ class ChartShapeState {
           diff = _maxWidth;
         }
         l = rect!.left - diff / 2;
-        r = right!;
+        r = rect!.right + _maxWidth;
       }
       return Rect.fromLTRB(l, rect!.top, r, rect!.bottom);
     } else if (preShapeState != null && nextShapeState != null) {

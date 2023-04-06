@@ -40,7 +40,8 @@ class Pie<T> extends ChartBodyRender<T> {
   final RotateDirection direction;
   //百分比
   final double? spaceWidth;
-
+  //是否能点击
+  final bool enableTap;
   //是否显示引导线
   final bool guideLine;
   //是否在图中显示value
@@ -68,6 +69,7 @@ class Pie<T> extends ChartBodyRender<T> {
     this.direction = RotateDirection.forward,
     this.guideLine = false,
     this.showValue = false,
+    this.enableTap = true,
     required super.data,
     required super.position,
   });
@@ -126,7 +128,8 @@ class Pie<T> extends ChartBodyRender<T> {
       //放大区域
       ChartShapeState tapShape = shape;
       //判断是否选中
-      bool selected = shape.hitTest(chart.controller.localPosition);
+      bool selected =
+          enableTap && shape.hitTest(chart.controller.localPosition);
       if (selected) {
         rd = radius + 2;
         bodyState.selectedIndex = i;
@@ -163,7 +166,7 @@ class Pie<T> extends ChartBodyRender<T> {
       //     newRect, startAngle, sweepAngle, true, paint..color = colors[i]);
       // _drawLegend(item, radius, startAngle, sweepAngle);
       if (showValue) {
-        _drawValue(valueText, radius, startAngle, sweepAngle, selected);
+        _drawValue(valueText, radius, startAngle, sweepAngle);
       }
       //继续下一个
       startAngle = startAngle + sweepAngle;
@@ -315,8 +318,8 @@ class Pie<T> extends ChartBodyRender<T> {
   //   }
   // }
   //
-  void _drawValue(String? valueText, double radius, double startAngle,
-      double sweepAngle, bool selected) {
+  void _drawValue(
+      String? valueText, double radius, double startAngle, double sweepAngle) {
     CircularChartCoordinateRender chart =
         coordinateChart as CircularChartCoordinateRender;
     //中心弧度

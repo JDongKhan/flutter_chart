@@ -110,35 +110,6 @@ abstract class ChartCoordinateRender {
     }
   }
 
-  Offset withOffset(Offset offset, [bool scrollable = true]) {
-    if (scrollable) {
-      return Offset(
-          offset.dx - controller.offset.dx, offset.dy - controller.offset.dy);
-    }
-    return offset;
-  }
-
-  double withXOffset(double offset, [bool scrollable = true]) {
-    if (scrollable) {
-      return offset - controller.offset.dx;
-    }
-    return offset;
-  }
-
-  double withXZoom(double offset) {
-    if (zoomHorizontal) {
-      return offset - (controller.zoom - 1) * (size.width / 2);
-    }
-    return offset;
-  }
-
-  double withYOffset(double offset, [bool scrollable = true]) {
-    if (scrollable) {
-      return offset - controller.offset.dy;
-    }
-    return offset;
-  }
-
   void scroll(Offset delta);
 
   void paint(Canvas canvas, Size size);

@@ -20,11 +20,9 @@ class RegionAnnotation extends Annotation {
       num po1 = positions[0];
       num po2 = positions[1];
       double start = chart.transformUtils.transformX(po1 * chart.xAxis.density);
-      start = withXOffset(start);
-      start = withXZoom(start);
+      start = chart.transformUtils.withXZoomOffset(start);
       double end = chart.transformUtils.transformX(po2 * chart.xAxis.density);
-      end = withXOffset(end);
-      end = withXZoom(end);
+      end = chart.transformUtils.withXZoomOffset(end);
 
       double top = chart.contentMargin.top;
       double bottom = chart.size.height - chart.contentMargin.bottom;

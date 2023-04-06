@@ -6,94 +6,8 @@ import '../utils/transform_utils.dart';
 import '../widget/dash_painter.dart';
 
 /// @author JD
-typedef AxisFormatter = String? Function(int);
-typedef AxisOffset = Offset? Function(Size size);
 
-class XAxis {
-  //方便计算，count代表一屏显示的格子数
-  final int count;
-  final num interval;
-  final num? max;
-  final AxisFormatter? formatter;
-  //每1个逻辑value代表多宽
-  late double density;
-  //是否画格子线
-  final bool drawGrid;
-  //是否有分隔线
-  final bool drawDivider;
-  //是否绘制最下面一行的线
-  bool drawLine;
-  //虚线
-  final DashPainter? dashPainter;
-  //文字颜色
-  final TextStyle textStyle;
-  //最边上的线的颜色
-  final Color lineColor;
-
-  XAxis({
-    this.formatter,
-    this.interval = 1,
-    this.count = 7,
-    this.drawLine = true,
-    this.drawGrid = false,
-    this.lineColor = const Color(0x99cccccc),
-    this.textStyle = const TextStyle(fontSize: 12, color: Colors.grey),
-    this.dashPainter,
-    this.drawDivider = true,
-    this.max,
-  });
-
-  num widthOf(num value) {
-    return density * value;
-  }
-}
-
-class YAxis {
-  //是否开启 暂时未启用
-  final bool enable;
-  final num min;
-  final num max;
-  //一屏显示的数量
-  final int count;
-  //文案格式化
-  final AxisFormatter? formatter;
-  //是否画轴线
-  final bool drawLine;
-  //是否画格子线
-  final bool drawGrid;
-  //是否有分隔线
-  final bool drawDivider;
-  //密度
-  late double density;
-  //虚线
-  final DashPainter? dashPainter;
-  //轴的偏移
-  final AxisOffset? offset;
-  //文字风格
-  final TextStyle textStyle;
-  //最边上线的颜色
-  final Color lineColor;
-
-  YAxis({
-    this.enable = true,
-    required this.min,
-    required this.max,
-    this.formatter,
-    this.count = 5,
-    this.drawLine = true,
-    this.drawGrid = false,
-    this.lineColor = const Color(0x99cccccc),
-    this.textStyle = const TextStyle(fontSize: 12, color: Colors.grey),
-    this.dashPainter,
-    this.drawDivider = true,
-    this.offset,
-  });
-
-  num heightOf(num value) {
-    return density * value;
-  }
-}
-
+/// 象限坐标系
 class DimensionsChartCoordinateRender extends ChartCoordinateRender {
   //坐标系颜色
   final List<YAxis> yAxis;
@@ -116,6 +30,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     required this.yAxis,
     XAxis? xAxis,
   })  : assert(yAxis.isNotEmpty),
+        assert(zoomVertical == false, '暂不支持垂直方向缩放'),
         xAxis = xAxis ?? XAxis(max: 7);
 
   @override
@@ -157,8 +72,11 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     //转换工具
     transformUtils = TransformUtils(
       anchor: Offset(margin.left, size.height - margin.bottom),
+      zoom: controller.zoom,
       offset: controller.offset,
       size: size,
+      zoomVertical: zoomVertical,
+      zoomHorizontal: zoomHorizontal,
       padding: padding,
       reverseX: false,
       reverseY: true,
@@ -203,7 +121,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
       for (int i = 0; i <= count; i++) {
         String text = yA.formatter?.call(i) ?? '${min + itemValue * i}';
         double top = size.height - contentMargin.bottom - itemHeight * i;
-        top = withYOffset(top);
+        top = transformUtils.withYOffset(top);
         if (i == count) {
           _drawYTextPaint(
               canvas, text, yA.textStyle, yAxisIndex > 0, left, top, false);
@@ -268,11 +186,16 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
 
     //实际要显示的数量
     int count = (xAxis.max ?? xAxis.count) ~/ xAxis.interval;
+    double xLabelZoom = controller.zoom > 1 ? 1 : controller.zoom;
+    int xZoom = (1 / xLabelZoom).round();
     for (int i = 0; i < count; i++) {
+      //处理缩放导致的x轴文字拥挤的问题
+      if (i % xZoom != 0) {
+        continue;
+      }
       String? text = xAxis.formatter?.call(i);
       double left = contentMargin.left + density * interval * i;
-      left = withXOffset(left);
-      left = withXZoom(left);
+      left = transformUtils.withXZoomOffset(left);
 
       if (text != null) {
         _drawXTextPaint(canvas, text, xAxis.textStyle, size, left);
@@ -510,51 +433,59 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     //校准偏移，不然缩小后可能起点都在中间了，或者无限滚动
     double x = newOffset.dx;
     double y = newOffset.dy;
-    //因为缩放最小值可能为负的了
-    double minXOffsetValue = (1 - controller.zoom) * size.width / 2;
-    // print('$x -- $minXOffsetValue');
-    if (x < minXOffsetValue) {
-      x = minXOffsetValue;
+    if (x < 0) {
+      x = 0;
     }
-    double chartContentWidth =
-        padding.horizontal + xAxis.density * (xAxis.max ?? xAxis.count);
-    double chartViewPortWidth = size.width - margin.horizontal;
-    //因为offset可能为负的，换算成正值便于后面计算
-    double realXOffset = x - minXOffsetValue;
-    //说明内容超出了组件
-    if (chartContentWidth > chartViewPortWidth) {
-      //偏移+
-      if ((realXOffset + chartViewPortWidth) >= chartContentWidth) {
-        x = chartContentWidth - chartViewPortWidth + minXOffsetValue;
-      }
-    } else {
-      x = minXOffsetValue;
-    }
+    // //因为缩放最小值可能为负的了
+    // double zoom = controller.zoom;
+    // // zoom = zoom < 1 ? 1 : zoom;
+    // double minXOffsetValue = (1 - zoom) * size.width / 2;
+    // // print('$x -- $minXOffsetValue');
+    // if (x < minXOffsetValue) {
+    //   x = minXOffsetValue;
+    // }
+    // double chartContentWidth = xAxis.density * (xAxis.max ?? xAxis.count);
+    // double chartViewPortWidth = size.width - padding.horizontal;
+    // double maxOffset = chartContentWidth - chartViewPortWidth;
+    // if (x > maxOffset) {
+    //   x = maxOffset;
+    // }
+    // //因为offset可能为负的，换算成正值便于后面计算
+    // double realXOffset = x - minXOffsetValue;
+    // //说明内容超出了组件
+    // if (chartContentWidth > chartViewPortWidth) {
+    //   //偏移+
+    //   if ((realXOffset + chartViewPortWidth) >= chartContentWidth) {
+    //     x = chartContentWidth - chartViewPortWidth + minXOffsetValue;
+    //   }
+    // } else {
+    //   x = minXOffsetValue;
+    // }
+    //
+    // if (zoomVertical) {
+    //   //y轴
+    //   double minYOffsetValue = (1 - controller.zoom) * size.height / 2;
+    //
+    //   double chartContentHeight =
+    //       padding.vertical + yAxis[0].density * yAxis[0].max;
+    //   double chartViewPortHeight = size.height - margin.vertical;
+    //   //因为offset可能为负的，换算成正值便于后面计算
+    //   // double realYOffset = y - minYOffsetValue;
+    //   //说明内容超出了组件
+    //   if (chartContentHeight > chartViewPortHeight) {
+    //     if (y < minYOffsetValue) {
+    //       y = minYOffsetValue;
+    //     } else if (y > (chartContentHeight - chartViewPortHeight)) {
+    //       y = (chartContentHeight - chartViewPortHeight);
+    //     }
+    //   } else {
+    //     y = minYOffsetValue;
+    //   }
+    // } else {
+    //   y = 0;
+    // }
 
-    if (zoomVertical) {
-      //y轴
-      double minYOffsetValue = (1 - controller.zoom) * size.height / 2;
-
-      double chartContentHeight =
-          padding.vertical + yAxis[0].density * yAxis[0].max;
-      double chartViewPortHeight = size.height - margin.vertical;
-      //因为offset可能为负的，换算成正值便于后面计算
-      // double realYOffset = y - minYOffsetValue;
-      //说明内容超出了组件
-      if (chartContentHeight > chartViewPortHeight) {
-        if (y < minYOffsetValue) {
-          y = minYOffsetValue;
-        } else if (y > (chartContentHeight - chartViewPortHeight)) {
-          y = (chartContentHeight - chartViewPortHeight);
-        }
-      } else {
-        y = minYOffsetValue;
-      }
-    } else {
-      y = 0;
-    }
-
-    controller.offset = Offset(x, y);
+    controller.offset = Offset(x, 0);
     // print(state.offset);
   }
 
@@ -579,42 +510,114 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
   }
 
   //绘制阴影
-  static void drawShadows(Canvas canvas, Path path, List<BoxShadow> shadows) {
-    for (final BoxShadow shadow in shadows) {
-      final Paint shadowPainter = shadow.toPaint();
-      if (shadow.spreadRadius == 0) {
-        canvas.drawPath(path.shift(shadow.offset), shadowPainter);
-      } else {
-        Rect zone = path.getBounds();
-        double xScale = (zone.width + shadow.spreadRadius) / zone.width;
-        double yScale = (zone.height + shadow.spreadRadius) / zone.height;
-        Matrix4 m4 = Matrix4.identity();
-        m4.translate(zone.width / 2, zone.height / 2);
-        m4.scale(xScale, yScale);
-        m4.translate(-zone.width / 2, -zone.height / 2);
-        canvas.drawPath(
-            path.shift(shadow.offset).transform(m4.storage), shadowPainter);
-      }
-    }
-    Paint whitePaint = Paint()..color = Colors.black;
-    canvas.drawPath(path, whitePaint);
+  // static void drawShadows(Canvas canvas, Path path, List<BoxShadow> shadows) {
+  //   for (final BoxShadow shadow in shadows) {
+  //     final Paint shadowPainter = shadow.toPaint();
+  //     if (shadow.spreadRadius == 0) {
+  //       canvas.drawPath(path.shift(shadow.offset), shadowPainter);
+  //     } else {
+  //       Rect zone = path.getBounds();
+  //       double xScale = (zone.width + shadow.spreadRadius) / zone.width;
+  //       double yScale = (zone.height + shadow.spreadRadius) / zone.height;
+  //       Matrix4 m4 = Matrix4.identity();
+  //       m4.translate(zone.width / 2, zone.height / 2);
+  //       m4.scale(xScale, yScale);
+  //       m4.translate(-zone.width / 2, -zone.height / 2);
+  //       canvas.drawPath(
+  //           path.shift(shadow.offset).transform(m4.storage), shadowPainter);
+  //     }
+  //   }
+  //   Paint whitePaint = Paint()..color = Colors.black;
+  //   canvas.drawPath(path, whitePaint);
+  // }
+}
+
+typedef AxisFormatter = String? Function(int);
+typedef AxisOffset = Offset? Function(Size size);
+
+//x轴配置
+class XAxis {
+  //方便计算，count代表一屏显示的格子数
+  final int count;
+  final num interval;
+  final num? max;
+  final AxisFormatter? formatter;
+  //每1个逻辑value代表多宽
+  late double density;
+  //是否画格子线
+  final bool drawGrid;
+  //是否有分隔线
+  final bool drawDivider;
+  //是否绘制最下面一行的线
+  bool drawLine;
+  //虚线
+  final DashPainter? dashPainter;
+  //文字颜色
+  final TextStyle textStyle;
+  //最边上的线的颜色
+  final Color lineColor;
+
+  XAxis({
+    this.formatter,
+    this.interval = 1,
+    this.count = 7,
+    this.drawLine = true,
+    this.drawGrid = false,
+    this.lineColor = const Color(0x99cccccc),
+    this.textStyle = const TextStyle(fontSize: 12, color: Colors.grey),
+    this.dashPainter,
+    this.drawDivider = true,
+    this.max,
+  });
+
+  num widthOf(num value) {
+    return density * value;
   }
 }
 
-class ChartTapInfoDialog {
-  OverlayEntry? _dialogEntry;
-  void show({
-    required BuildContext context,
-    required WidgetBuilder builder,
-  }) {
-    dismiss();
-    _dialogEntry = OverlayEntry(builder: (c) {
-      return builder.call(c);
-    });
-    Overlay.of(context).insert(_dialogEntry!);
-  }
+//y轴配置
+class YAxis {
+  //是否开启 暂时未启用
+  final bool enable;
+  final num min;
+  final num max;
+  //一屏显示的数量
+  final int count;
+  //文案格式化
+  final AxisFormatter? formatter;
+  //是否画轴线
+  final bool drawLine;
+  //是否画格子线
+  final bool drawGrid;
+  //是否有分隔线
+  final bool drawDivider;
+  //密度
+  late double density;
+  //虚线
+  final DashPainter? dashPainter;
+  //轴的偏移
+  final AxisOffset? offset;
+  //文字风格
+  final TextStyle textStyle;
+  //最边上线的颜色
+  final Color lineColor;
 
-  void dismiss() {
-    _dialogEntry?.remove();
+  YAxis({
+    this.enable = true,
+    required this.min,
+    required this.max,
+    this.formatter,
+    this.count = 5,
+    this.drawLine = true,
+    this.drawGrid = false,
+    this.lineColor = const Color(0x99cccccc),
+    this.textStyle = const TextStyle(fontSize: 12, color: Colors.grey),
+    this.dashPainter,
+    this.drawDivider = true,
+    this.offset,
+  });
+
+  num heightOf(num value) {
+    return density * value;
   }
 }

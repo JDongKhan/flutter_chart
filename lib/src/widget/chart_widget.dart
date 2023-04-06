@@ -197,6 +197,23 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
   bool needRepaint = false;
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
+  @override
+  void didUpdateWidget(covariant _ChartCoreWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _reset();
+  }
+
+  void _reset() {
+    zoom = 1.0;
+    widget.controller.zoom = 1.0;
+    widget.controller.localPosition = null;
+  }
+
+  @override
   Widget build(BuildContext context) {
     //重置
     for (var element in widget.controller.childrenState) {
@@ -213,10 +230,10 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
         _beforeZoom = zoom;
       },
       onScaleUpdate: (ScaleUpdateDetails details) {
-        //先清除手势
-        widget.controller.clearPosition();
         //缩放
         if (details.scale != 1) {
+          //先清除手势
+          widget.controller.clearPosition();
           if (widget.chartCoordinateRender.zoomHorizontal ||
               widget.chartCoordinateRender.zoomVertical) {
             setState(() {
@@ -227,7 +244,9 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
           }
         } else if (details.pointerCount == 1 && details.scale == 1) {
           //移动
-          widget.chartCoordinateRender.scroll(details.focalPointDelta);
+          widget.chartCoordinateRender
+              .scroll(details.focalPointDelta / widget.controller.zoom);
+          // widget.controller.localPosition = details.localFocalPoint;
           setState(() {
             needRepaint = true;
           });

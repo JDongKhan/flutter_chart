@@ -40,9 +40,8 @@ class LabelAnnotation extends Annotation {
           containPadding: true,
         );
         if (scroll) {
-          left = withXOffset(left);
-          left = withXZoom(left);
-          top = withYOffset(top);
+          left = chart.transformUtils.withXZoomOffset(left);
+          top = chart.transformUtils.withYOffset(top);
         } else {
           //不跟随缩放
           if (chart.zoomHorizontal) {

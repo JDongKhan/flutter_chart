@@ -12,6 +12,7 @@ enum ArcPosition {
 }
 
 /// @author JD
+/// 圆形坐标系
 class CircularChartCoordinateRender extends ChartCoordinateRender {
   final double borderWidth;
   final Color borderColor;
@@ -70,6 +71,9 @@ class CircularChartCoordinateRender extends ChartCoordinateRender {
         anchor: center,
         size: size,
         padding: padding,
+        zoomVertical: zoomVertical,
+        zoomHorizontal: zoomHorizontal,
+        zoom: controller.zoom,
         offset: controller.offset,
         reverseX: false,
         reverseY: false,
@@ -89,6 +93,9 @@ class CircularChartCoordinateRender extends ChartCoordinateRender {
           anchor: center,
           size: size,
           padding: padding,
+          zoomVertical: zoomVertical,
+          zoomHorizontal: zoomHorizontal,
+          zoom: controller.zoom,
           offset: controller.offset,
           reverseX: false,
           reverseY: true,
@@ -99,6 +106,9 @@ class CircularChartCoordinateRender extends ChartCoordinateRender {
           anchor: center,
           size: size,
           padding: padding,
+          zoomVertical: zoomVertical,
+          zoomHorizontal: zoomHorizontal,
+          zoom: controller.zoom,
           offset: controller.offset,
           reverseX: false,
           reverseY: false,

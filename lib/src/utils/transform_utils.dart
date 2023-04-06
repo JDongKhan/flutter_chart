@@ -11,14 +11,18 @@ class TransformUtils {
   final Offset offset;
   //图形内边距，用于控制坐标轴的内边距
   final EdgeInsets padding;
-
-  Path path = Path();
+  final bool zoomHorizontal;
+  final bool zoomVertical;
+  final double zoom;
 
   TransformUtils({
     required this.anchor,
     required this.size,
     required this.offset,
+    required this.zoom,
     required this.padding,
+    required this.zoomVertical,
+    required this.zoomHorizontal,
     this.reverseX = false,
     this.reverseY = true,
   });
@@ -67,5 +71,40 @@ class TransformUtils {
     double x = transformX(offset.dx, containPadding: containPadding);
     double y = transformY(offset.dy, containPadding: containPadding);
     return Rect.fromLTWH(x, y, rect.width, rect.height);
+  }
+
+  //缩放后的偏移
+  Offset get zoomOffset {
+    double x = offset.dx;
+    double y = offset.dy;
+    if (zoomHorizontal) {
+      x = offset.dx + (zoom - 1) * offset.dx;
+    }
+    if (zoomVertical) {
+      y = offset.dy;
+    }
+    return Offset(x, y);
+  }
+
+  Offset withZoomOffset(Offset point, [bool scrollable = true]) {
+    if (scrollable) {
+      return Offset(point.dx - zoomOffset.dx, point.dy - zoomOffset.dy);
+    }
+    return point;
+  }
+
+  double withXZoomOffset(double dx, [bool scrollable = true]) {
+    if (scrollable) {
+      return dx - zoomOffset.dx;
+    }
+    return dx;
+  }
+
+  //
+  double withYOffset(double dy, [bool scrollable = true]) {
+    if (scrollable) {
+      return dy - zoomOffset.dy;
+    }
+    return dy;
   }
 }

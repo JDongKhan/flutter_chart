@@ -51,8 +51,7 @@ class Line<T> extends ChartBodyRender<T> {
     int index = 0;
     //offset.dx 滚动偏移  (src.zoom - 1) * (src.size.width / 2) 缩放
     double left = chart.contentMargin.left;
-    left = withXOffset(left);
-    left = withXZoom(left);
+    left = chart.transformUtils.withXZoomOffset(left);
 
     double right = chart.size.width - chart.contentMargin.right;
     double top = chart.contentMargin.top;
@@ -90,7 +89,7 @@ class Line<T> extends ChartBodyRender<T> {
         //计算点的位置
         num value = yvs[valueIndex];
         double yPo = bottom - (value * chart.yAxis[yAxisPosition].density);
-        yPo = withYOffset(yPo);
+        yPo = chart.transformUtils.withYOffset(yPo);
         if (index == 0) {
           lineInfo.path.moveTo(xPo, yPo);
         } else {
