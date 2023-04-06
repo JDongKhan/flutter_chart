@@ -53,6 +53,10 @@ abstract class ChartCoordinateRender {
   //缩放比例
   final bool zoomHorizontal;
   final bool zoomVertical;
+  //最小缩放
+  final double? minZoom;
+  //最大缩放
+  final double? maxZoom;
   //坐标系中间的绘图
   final List<ChartBodyRender> charts;
   //自定义提示框的样式
@@ -79,6 +83,8 @@ abstract class ChartCoordinateRender {
     this.tooltipWidgetRenderer,
     this.zoomHorizontal = false,
     this.zoomVertical = false,
+    this.minZoom,
+    this.maxZoom,
     this.backgroundAnnotations,
     this.foregroundAnnotations,
     this.safeArea,

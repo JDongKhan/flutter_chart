@@ -91,6 +91,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                 ),
                 charts: [
                   Line(
+                    isCurve: true,
                     data: dataList,
                     position: (item) => parserDateTimeToDayValue(
                         item['time'] as DateTime, startTime),

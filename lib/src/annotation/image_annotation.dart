@@ -16,6 +16,8 @@ class ImageAnnotation extends Annotation {
     super.onTap,
     super.scroll = true,
     super.yAxisPosition = 0,
+    super.minZoomVisible,
+    super.maxZoomVisible,
     this.anchor,
     required this.image,
     this.positions,
@@ -42,6 +44,17 @@ class ImageAnnotation extends Annotation {
 
   @override
   void draw(final Offset offset) {
+    if (minZoomVisible != null) {
+      if (coordinateChart.controller.zoom < minZoomVisible!) {
+        return;
+      }
+    }
+    if (maxZoomVisible != null) {
+      if (coordinateChart.controller.zoom > maxZoomVisible!) {
+        return;
+      }
+    }
+
     if (coordinateChart is DimensionsChartCoordinateRender) {
       DimensionsChartCoordinateRender chart =
           coordinateChart as DimensionsChartCoordinateRender;

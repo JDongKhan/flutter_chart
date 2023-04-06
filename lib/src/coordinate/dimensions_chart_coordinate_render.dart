@@ -25,6 +25,8 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     super.tooltipWidgetRenderer,
     super.zoomHorizontal,
     super.zoomVertical = false,
+    super.minZoom,
+    super.maxZoom,
     super.crossHair = const CrossHairStyle(),
     super.safeArea,
     required this.yAxis,
@@ -185,20 +187,45 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
       ..strokeWidth = 1;
 
     //实际要显示的数量
-    int count = (xAxis.max ?? xAxis.count) ~/ xAxis.interval;
-    double xLabelZoom = controller.zoom > 1 ? 1 : controller.zoom;
-    int xZoom = (1 / xLabelZoom).round();
+    int count = (xAxis.max ?? xAxis.count) ~/ interval;
+    //缩放时过滤逻辑
+    double xFilterZoom = 1 / controller.zoom;
+    //缩小时的策略
+    int xReduceInterval = (xFilterZoom < 1 ? 1 : xFilterZoom).round();
+    //放大后的策略
+    int? xDivideCount = xAxis.divideCount?.call(controller.zoom);
+    double? xAmplifyInterval;
+    if (xDivideCount != null && xDivideCount > 0) {
+      xAmplifyInterval = interval / xDivideCount;
+      // double xAmplifyInterval = (xFilterZoom > 1 ? 1 : xFilterZoom);
+      // int xCount = interval ~/ xAmplifyInterval;
+    }
+
     for (int i = 0; i < count; i++) {
-      //处理缩放导致的x轴文字拥挤的问题
-      if (i % xZoom != 0) {
+      //处理缩小导致的x轴文字拥挤的问题
+      if (i % xReduceInterval != 0) {
         continue;
       }
+
       String? text = xAxis.formatter?.call(i);
       double left = contentMargin.left + density * interval * i;
       left = transformUtils.withXZoomOffset(left);
 
       if (text != null) {
         _drawXTextPaint(canvas, text, xAxis.textStyle, size, left);
+      }
+
+      //处理放大时里面的内容
+      if (xDivideCount != null && xDivideCount > 0) {
+        for (int j = 1; j < xDivideCount; j++) {
+          num newValue = i + j * xAmplifyInterval!;
+          String? newText = xAxis.formatter?.call(newValue);
+          double left = contentMargin.left + density * interval * newValue;
+          left = transformUtils.withXZoomOffset(left);
+          if (newText != null) {
+            _drawXTextPaint(canvas, newText, xAxis.textStyle, size, left);
+          }
+        }
       }
       // if (i == dreamXAxisCount - 1) {
       //   _drawXTextPaint(canvas, '${i + 1}', size,
@@ -532,8 +559,10 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
   // }
 }
 
-typedef AxisFormatter = String? Function(int);
+typedef AxisFormatter = String? Function(num);
 typedef AxisOffset = Offset? Function(Size size);
+//放大时的数据
+typedef AxisDivideCountAtAmplify = int? Function(double);
 
 //x轴配置
 class XAxis {
@@ -556,7 +585,8 @@ class XAxis {
   final TextStyle textStyle;
   //最边上的线的颜色
   final Color lineColor;
-
+  //放大时单item下分隔数量
+  final AxisDivideCountAtAmplify? divideCount;
   XAxis({
     this.formatter,
     this.interval = 1,
@@ -567,6 +597,7 @@ class XAxis {
     this.textStyle = const TextStyle(fontSize: 12, color: Colors.grey),
     this.dashPainter,
     this.drawDivider = true,
+    this.divideCount,
     this.max,
   });
 

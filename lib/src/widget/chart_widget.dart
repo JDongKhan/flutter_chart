@@ -239,6 +239,14 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
             setState(() {
               needRepaint = true;
               zoom = _beforeZoom * details.scale;
+              double minZoom = widget.chartCoordinateRender.minZoom ?? 0;
+              double maxZoom =
+                  widget.chartCoordinateRender.maxZoom ?? double.infinity;
+              if (zoom < minZoom) {
+                zoom = minZoom;
+              } else if (zoom > maxZoom) {
+                zoom = maxZoom;
+              }
               widget.controller.zoom = zoom;
             });
           }

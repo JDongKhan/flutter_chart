@@ -5,6 +5,7 @@ import '../../flutter_chart.dart';
 class LabelAnnotation extends Annotation {
   final List<num>? positions;
   final TextStyle textStyle;
+  final TextAlign textAlign;
   final String text;
   //是否跟随滚动
   final Offset offset;
@@ -14,14 +15,28 @@ class LabelAnnotation extends Annotation {
     super.onTap,
     super.scroll = true,
     super.yAxisPosition = 0,
+    super.minZoomVisible,
+    super.maxZoomVisible,
     required this.text,
     this.positions,
     this.anchor,
     this.offset = Offset.zero,
+    this.textAlign = TextAlign.start,
     this.textStyle = const TextStyle(color: Colors.red),
   }) : assert(positions != null || anchor != null);
   @override
   void draw(final Offset offset) {
+    if (minZoomVisible != null) {
+      if (coordinateChart.controller.zoom < minZoomVisible!) {
+        return;
+      }
+    }
+    if (maxZoomVisible != null) {
+      if (coordinateChart.controller.zoom > maxZoomVisible!) {
+        return;
+      }
+    }
+
     if (coordinateChart is DimensionsChartCoordinateRender) {
       DimensionsChartCoordinateRender chart =
           coordinateChart as DimensionsChartCoordinateRender;
@@ -62,19 +77,23 @@ class LabelAnnotation extends Annotation {
         ost = anchor!(chart.size);
       }
 
-      TextPainter(
-        textAlign: TextAlign.center,
+      TextPainter textPainter = TextPainter(
         text: TextSpan(
           text: text,
           style: textStyle,
         ),
         textDirection: TextDirection.ltr,
-      )
-        ..layout(
+      )..layout(
           minWidth: 0,
           maxWidth: chart.size.width,
-        )
-        ..paint(chart.canvas, ost);
+        );
+
+      if (textAlign == TextAlign.end) {
+        ost = ost.translate(-textPainter.width, 0);
+      } else if (textAlign == TextAlign.center) {
+        ost = ost.translate(-textPainter.width / 2, 0);
+      }
+      textPainter.paint(chart.canvas, ost);
     }
   }
 }

@@ -9,11 +9,24 @@ class RegionAnnotation extends Annotation {
   final Color color;
   RegionAnnotation({
     super.scroll = true,
+    super.minZoomVisible,
+    super.maxZoomVisible,
     required this.positions,
     this.color = const Color(0xFFF5F5F5),
   });
   @override
   void draw(final Offset offset) {
+    if (minZoomVisible != null) {
+      if (coordinateChart.controller.zoom < minZoomVisible!) {
+        return;
+      }
+    }
+    if (maxZoomVisible != null) {
+      if (coordinateChart.controller.zoom > maxZoomVisible!) {
+        return;
+      }
+    }
+
     if (coordinateChart is DimensionsChartCoordinateRender) {
       DimensionsChartCoordinateRender chart =
           coordinateChart as DimensionsChartCoordinateRender;

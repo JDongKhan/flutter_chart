@@ -8,6 +8,8 @@ abstract class Annotation extends ChartRender {
   final int yAxisPosition;
   //携带额外信息
   final dynamic userInfo;
+  final double? minZoomVisible;
+  final double? maxZoomVisible;
   //标注可以点击
   final ValueChanged<Annotation>? onTap;
   Annotation({
@@ -15,5 +17,7 @@ abstract class Annotation extends ChartRender {
     this.yAxisPosition = 0,
     this.userInfo,
     this.onTap,
+    this.minZoomVisible,
+    this.maxZoomVisible,
   });
 }
