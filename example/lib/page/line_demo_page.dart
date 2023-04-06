@@ -85,13 +85,26 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                 xAxis: XAxis(
                   count: 7,
                   max: 7,
-                  formatter: (index) => startTime
-                      .add(Duration(days: index))
-                      .toStringWithFormat(format: 'dd'),
+                  divideCount: (zoom) => zoom.toInt(),
+                  formatter: (index) {
+                    double hours = (index % 1.0) * 24;
+                    double minutes = (hours % 1.0) * 60;
+                    if (hours == 0) {
+                      return startTime
+                          .add(Duration(days: index.toInt()))
+                          .toStringWithFormat(format: 'MM-dd');
+                    } else {
+                      return startTime
+                          .add(Duration(
+                              days: index.toInt(),
+                              hours: hours.toInt(),
+                              minutes: minutes.toInt()))
+                          .toStringWithFormat(format: 'HH:mm');
+                    }
+                  },
                 ),
                 charts: [
                   Line(
-                    isCurve: true,
                     data: dataList,
                     position: (item) => parserDateTimeToDayValue(
                         item['time'] as DateTime, startTime),
@@ -139,7 +152,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                               count: 7,
                               max: 7,
                               formatter: (index) => startTime
-                                  .add(Duration(days: index))
+                                  .add(Duration(days: index.toInt()))
                                   .toStringWithFormat(format: 'dd'),
                             ),
                             charts: [
@@ -201,7 +214,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                               max: 20,
                               drawLine: false,
                               formatter: (index) => startTime
-                                  .add(Duration(days: index))
+                                  .add(Duration(days: index.toInt()))
                                   .toStringWithFormat(format: 'dd'),
                             ),
                             charts: [
@@ -249,7 +262,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                               max: 20,
                               drawLine: false,
                               formatter: (index) => startTime
-                                  .add(Duration(days: index))
+                                  .add(Duration(days: index.toInt()))
                                   .toStringWithFormat(format: 'dd'),
                             ),
                             charts: [

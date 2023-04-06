@@ -65,7 +65,7 @@ class BarChartDemoPage extends StatelessWidget {
                         max: 30,
                         formatter: (index) {
                           return startTime
-                              .add(Duration(days: index))
+                              .add(Duration(days: index.toInt()))
                               .toStringWithFormat(format: 'dd');
                         },
                       ),
@@ -106,7 +106,7 @@ class BarChartDemoPage extends StatelessWidget {
                         max: 30,
                         formatter: (index) {
                           return startTime
-                              .add(Duration(days: index))
+                              .add(Duration(days: index.toInt()))
                               .toStringWithFormat(format: 'dd');
                         },
                       ),
@@ -149,7 +149,7 @@ class BarChartDemoPage extends StatelessWidget {
                         max: 30,
                         formatter: (index) {
                           return startTime
-                              .add(Duration(days: index))
+                              .add(Duration(days: index.toInt()))
                               .toStringWithFormat(format: 'dd');
                         },
                       ),
@@ -190,7 +190,7 @@ class BarChartDemoPage extends StatelessWidget {
                         count: 7,
                         max: 10,
                         formatter: (index) => startTime
-                            .add(Duration(days: index))
+                            .add(Duration(days: index.toInt()))
                             .toStringWithFormat(format: 'dd'),
                       ),
                       charts: [
