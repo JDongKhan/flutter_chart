@@ -60,7 +60,7 @@ BarChart:
 SizedBox(
 height: 200,
 child: ChartWidget(
-  builder: () => LineBarChartCoordinateRender(
+    coordinateRender: LineBarChartCoordinateRender(
     yAxis: [
       YAxis(
         min: 0,
@@ -105,7 +105,7 @@ LineChart
 // color: Colors.yellow,
 height: 200,
 child: ChartWidget(
-  builder: () => LineBarChartCoordinateRender(
+    coordinateRender: LineBarChartCoordinateRender(
     margin: const EdgeInsets.only(left: 40, top: 5, right: 30, bottom: 30),
     //提示的文案信息
     crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
@@ -163,7 +163,7 @@ PieChart
 SizedBox(
   height: 200,
   child: ChartWidget(
-    builder: () => PieChartCoordinateRender(
+      coordinateRender: PieChartCoordinateRender(
       margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 10),
       charts: [
         Pie(
