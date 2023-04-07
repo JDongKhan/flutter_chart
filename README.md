@@ -27,12 +27,14 @@
 ## 主要功能：
 
 ### 1、支持line、bar、pie、progress等常规图形
-    1）、支持line和bar多图形任意组合
+    1）、支持line和bar多图形任意组合，可参照LineChart部分demo
     2）、图形支持过渡色
     3）、bar支持多个一组，且可以横排或竖排
     4）、pie支持点击、空心等设置
     5）、progress支持各种自定义
     6）、支持多个y轴配置
+    7）、支持缩放范围设置
+    8）、轴支持分隔样式
 #### 2、支持各种annotation，如ImageAnnotation、LabelAnnotation
     1）、支持各种样式的标注
     2）、标注可自定义是否跟随滚动
