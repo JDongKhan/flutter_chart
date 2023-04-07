@@ -83,6 +83,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
       reverseX: false,
       reverseY: true,
     );
+    _drawBackgroundAnnotations(canvas, size);
     // canvas.save();
     // 如果按坐标系切，就会面临坐标轴和里面的内容重复循环的问题，该组件的本意是尽可能减少无畏的循环，提高性能，如果
     //给y轴切出来，超出这个范围就隐藏
@@ -94,7 +95,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     canvas.clipRect(Rect.fromLTWH(
         margin.left, 0, size.width - margin.horizontal, size.height));
     _drawXAxis(canvas, size);
-    _drawBackgroundAnnotations(canvas, size);
+
     //绘图
     for (var element in charts) {
       element.draw(controller.offset);
@@ -464,18 +465,16 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
       x = 0;
     }
     double zoom = controller.zoom;
-    if (zoom >= 1) {
-      //放大的场景  offset会受到zoom的影响，所以这里的宽度要先剔除zoom的影响再比较
-      double chartContentWidth = xAxis.density * (xAxis.max ?? xAxis.count);
-      double chartViewPortWidth = size.width - contentMargin.horizontal;
-      //处理成跟缩放无关的偏移
-      double maxOffset = (chartContentWidth - chartViewPortWidth) / zoom;
-      if (maxOffset < 0) {
-        //内容小于0
-        x = 0;
-      } else if (x > maxOffset) {
-        x = maxOffset;
-      }
+    //放大的场景  offset会受到zoom的影响，所以这里的宽度要先剔除zoom的影响再比较
+    double chartContentWidth = xAxis.density * (xAxis.max ?? xAxis.count);
+    double chartViewPortWidth = size.width - contentMargin.horizontal;
+    //处理成跟缩放无关的偏移
+    double maxOffset = (chartContentWidth - chartViewPortWidth) / zoom;
+    if (maxOffset < 0) {
+      //内容小于0
+      x = 0;
+    } else if (x > maxOffset) {
+      x = maxOffset;
     }
     // // zoom = zoom < 1 ? 1 : zoom;
     // double minXOffsetValue = (1 - zoom) * size.width / 2;

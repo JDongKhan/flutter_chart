@@ -80,11 +80,15 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                   );
                 },
                 yAxis: [
-                  YAxis(min: 0, max: 500),
+                  YAxis(
+                    min: 0,
+                    max: 500,
+                    drawGrid: true,
+                  ),
                 ],
                 xAxis: XAxis(
                   count: 7,
-                  max: 7,
+                  max: 9,
                   divideCount: (zoom) => zoom.toInt(),
                   formatter: (index) {
                     double hours = (index % 1.0) * 24;
@@ -103,6 +107,33 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                     }
                   },
                 ),
+                backgroundAnnotations: [
+                  RegionAnnotation(positions: [2.4, 3.3]),
+                  RegionAnnotation(positions: [4.4, 5.3]),
+                  LabelAnnotation(
+                    positions: [3.3, 0],
+                    text: '夜晚',
+                    textAlign: TextAlign.end,
+                    minZoomVisible: 1,
+                    maxZoomVisible: 4,
+                    textStyle: const TextStyle(
+                      fontSize: 11,
+                      color: Colors.black,
+                    ),
+                    offset: const Offset(-10, -20),
+                  ),
+                  LabelAnnotation(
+                    positions: [3.3, 0],
+                    text: '白天',
+                    minZoomVisible: 1,
+                    maxZoomVisible: 4,
+                    textStyle: const TextStyle(
+                      fontSize: 11,
+                      color: Colors.blue,
+                    ),
+                    offset: const Offset(10, -20),
+                  ),
+                ],
                 charts: [
                   Line(
                     data: dataList,
