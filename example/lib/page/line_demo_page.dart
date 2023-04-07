@@ -273,12 +273,23 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                             //提示的文案信息
                             crossHair: const CrossHairStyle(
                                 adjustHorizontal: true, adjustVertical: true),
-                            tooltipFormatter: (list) => TextSpan(
-                              text: list.map((e) => e.selectedIndex).toString(),
-                              style: const TextStyle(
-                                color: Colors.black,
-                              ),
-                            ),
+                            tooltipFormatter: (list) {
+                              int? selectIndex1 = list[0].selectedIndex;
+                              int? selectIndex2 = list[0].selectedIndex;
+                              int? selectIndex3 = list[0].selectedIndex;
+                              if (selectIndex1 == null &&
+                                  selectIndex2 == null &&
+                                  selectIndex3 == null) {
+                                return null;
+                              }
+                              return TextSpan(
+                                text:
+                                    list.map((e) => e.selectedIndex).toString(),
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                ),
+                              );
+                            },
                             yAxis: [
                               YAxis(min: 0, max: 500, drawGrid: true),
                               YAxis(
