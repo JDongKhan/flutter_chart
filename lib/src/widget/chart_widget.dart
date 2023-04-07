@@ -1,3 +1,6 @@
+import 'dart:ui' as ui;
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../base/chart_body_render.dart';
@@ -125,9 +128,11 @@ class _ChartWidgetState extends State<ChartWidget> {
 
         //边界处理
         Rect rect = _adjustRect(
-            Rect.fromLTWH(offset.dx, offset.dy, widget.preferredSize.width,
-                widget.preferredSize.height),
-            size);
+          baseChart,
+          Rect.fromLTWH(offset.dx, offset.dy, widget.preferredSize.width,
+              widget.preferredSize.height),
+          size,
+        );
 
         return Positioned(
           left: rect.left,
@@ -152,10 +157,20 @@ class _ChartWidgetState extends State<ChartWidget> {
   }
 
   Rect _adjustRect(
+    ChartCoordinateRender baseChart,
     Rect windowRect,
     Size size,
   ) {
-    Rect kSafeArea = Rect.fromLTRB(0, 0, size.width, size.height);
+    Rect kSafeArea;
+    if (baseChart.safeArea != null) {
+      kSafeArea = Rect.fromLTRB(
+          baseChart.safeArea!.left,
+          baseChart.safeArea!.top,
+          size.width - baseChart.safeArea!.right,
+          size.height - baseChart.safeArea!.bottom);
+    } else {
+      kSafeArea = Rect.fromLTRB(0, 0, size.width, size.height);
+    }
     final horizontalAdjust = windowRect.left < kSafeArea.left
         ? (kSafeArea.left - windowRect.left)
         : (windowRect.right > kSafeArea.right
@@ -194,7 +209,31 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
   double zoom = 1.0;
   double _beforeZoom = 1.0;
 
+  final FocusNode _focusNode = FocusNode();
   bool needRepaint = false;
+
+  @override
+  void initState() {
+    //处理点击外部消失焦点的=
+    _focusNode.addListener(_requestFocus);
+    super.initState();
+  }
+
+  void _requestFocus() {
+    if (!_focusNode.hasFocus) {
+      setState(() {
+        widget.controller.localPosition = null;
+        needRepaint = true;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _focusNode.removeListener(_requestFocus);
+    _focusNode.unfocus();
+    super.dispose();
+  }
 
   @override
   void didChangeDependencies() {
@@ -210,7 +249,41 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
   void _reset() {
     zoom = 1.0;
     widget.controller.zoom = 1.0;
+    widget.controller.offset = Offset.zero;
     widget.controller.localPosition = null;
+    needRepaint = true;
+  }
+
+  void _defaultOnTapOutside(PointerDownEvent event) {
+    /// The focus dropping behavior is only present on desktop platforms
+    /// and mobile browsers.
+    switch (defaultTargetPlatform) {
+      case TargetPlatform.android:
+      case TargetPlatform.iOS:
+      case TargetPlatform.fuchsia:
+        // On mobile platforms, we don't unfocus on touch events unless they're
+        // in the web browser, but we do unfocus for all other kinds of events.
+        switch (event.kind) {
+          case ui.PointerDeviceKind.touch:
+            _focusNode.unfocus();
+            break;
+          case ui.PointerDeviceKind.mouse:
+          case ui.PointerDeviceKind.stylus:
+          case ui.PointerDeviceKind.invertedStylus:
+          case ui.PointerDeviceKind.unknown:
+            _focusNode.unfocus();
+            break;
+          case ui.PointerDeviceKind.trackpad:
+            throw UnimplementedError(
+                'Unexpected pointer down event for trackpad');
+        }
+        break;
+      case TargetPlatform.linux:
+      case TargetPlatform.macOS:
+      case TargetPlatform.windows:
+        _focusNode.unfocus();
+        break;
+    }
   }
 
   @override
@@ -219,60 +292,65 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
     for (var element in widget.controller.childrenState) {
       element.selectedIndex = null;
     }
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTapUp: (TapUpDetails details) {
-        widget.controller.localPosition = details.localPosition;
-        needRepaint = true;
-        setState(() {});
-      },
-      onScaleStart: (ScaleStartDetails details) {
-        _beforeZoom = zoom;
-      },
-      onScaleUpdate: (ScaleUpdateDetails details) {
-        //缩放
-        if (details.scale != 1) {
-          //先清除手势
-          widget.controller.clearPosition();
-          if (widget.chartCoordinateRender.zoomHorizontal ||
-              widget.chartCoordinateRender.zoomVertical) {
+    return TapRegion(
+      onTapOutside: _defaultOnTapOutside,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTapUp: (TapUpDetails details) {
+          widget.controller.localPosition = details.localPosition;
+          needRepaint = true;
+
+          FocusScope.of(context).requestFocus(_focusNode); // 自动聚焦
+          setState(() {});
+        },
+        onScaleStart: (ScaleStartDetails details) {
+          _beforeZoom = zoom;
+        },
+        onScaleUpdate: (ScaleUpdateDetails details) {
+          //缩放
+          if (details.scale != 1) {
+            //先清除手势
+            widget.controller.clearPosition();
+            if (widget.chartCoordinateRender.zoomHorizontal ||
+                widget.chartCoordinateRender.zoomVertical) {
+              setState(() {
+                needRepaint = true;
+                zoom = _beforeZoom * details.scale;
+                double minZoom = widget.chartCoordinateRender.minZoom ?? 0;
+                double maxZoom =
+                    widget.chartCoordinateRender.maxZoom ?? double.infinity;
+                if (zoom < minZoom) {
+                  zoom = minZoom;
+                } else if (zoom > maxZoom) {
+                  zoom = maxZoom;
+                }
+                widget.controller.zoom = zoom;
+              });
+            }
+          } else if (details.pointerCount == 1 && details.scale == 1) {
+            //移动
+            widget.chartCoordinateRender
+                .scroll(details.focalPointDelta / widget.controller.zoom);
+            // widget.controller.localPosition = details.localFocalPoint;
             setState(() {
               needRepaint = true;
-              zoom = _beforeZoom * details.scale;
-              double minZoom = widget.chartCoordinateRender.minZoom ?? 0;
-              double maxZoom =
-                  widget.chartCoordinateRender.maxZoom ?? double.infinity;
-              if (zoom < minZoom) {
-                zoom = minZoom;
-              } else if (zoom > maxZoom) {
-                zoom = maxZoom;
-              }
-              widget.controller.zoom = zoom;
             });
           }
-        } else if (details.pointerCount == 1 && details.scale == 1) {
-          //移动
-          widget.chartCoordinateRender
-              .scroll(details.focalPointDelta / widget.controller.zoom);
-          // widget.controller.localPosition = details.localFocalPoint;
-          setState(() {
-            needRepaint = true;
-          });
-        }
-      },
-      onScaleEnd: (ScaleEndDetails details) {
-        //这里可以处理减速的操作
-        needRepaint = false;
-        // print(details.velocity);
-      },
-      child: SizedBox(
-        width: widget.size.width,
-        height: widget.size.height,
-        child: RepaintBoundary(
-          child: CustomPaint(
-            painter: _ChartPainter(
-              repaint: repaint(),
-              chart: widget.chartCoordinateRender,
+        },
+        onScaleEnd: (ScaleEndDetails details) {
+          //这里可以处理减速的操作
+          needRepaint = false;
+          // print(details.velocity);
+        },
+        child: SizedBox(
+          width: widget.size.width,
+          height: widget.size.height,
+          child: RepaintBoundary(
+            child: CustomPaint(
+              painter: _ChartPainter(
+                repaint: repaint(),
+                chart: widget.chartCoordinateRender,
+              ),
             ),
           ),
         ),

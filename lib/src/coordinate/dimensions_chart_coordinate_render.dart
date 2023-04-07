@@ -201,7 +201,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
       // int xCount = interval ~/ xAmplifyInterval;
     }
 
-    for (int i = 0; i < count; i++) {
+    for (int i = 0; i <= count; i++) {
       //处理缩小导致的x轴文字拥挤的问题
       if (i % xReduceInterval != 0) {
         continue;
@@ -463,8 +463,20 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     if (x < 0) {
       x = 0;
     }
-    // //因为缩放最小值可能为负的了
-    // double zoom = controller.zoom;
+    double zoom = controller.zoom;
+    if (zoom >= 1) {
+      //放大的场景  offset会受到zoom的影响，所以这里的宽度要先剔除zoom的影响再比较
+      double chartContentWidth = xAxis.density * (xAxis.max ?? xAxis.count);
+      double chartViewPortWidth = size.width - contentMargin.horizontal;
+      //处理成跟缩放无关的偏移
+      double maxOffset = (chartContentWidth - chartViewPortWidth) / zoom;
+      if (maxOffset < 0) {
+        //内容小于0
+        x = 0;
+      } else if (x > maxOffset) {
+        x = maxOffset;
+      }
+    }
     // // zoom = zoom < 1 ? 1 : zoom;
     // double minXOffsetValue = (1 - zoom) * size.width / 2;
     // // print('$x -- $minXOffsetValue');
@@ -513,7 +525,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     // }
 
     controller.offset = Offset(x, 0);
-    // print(state.offset);
+    print(controller.offset);
   }
 
   //背景
