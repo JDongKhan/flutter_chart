@@ -5,7 +5,15 @@ import '../base/chart_body_render.dart';
 import '../utils/transform_utils.dart';
 
 class WaveProgress<T> extends ChartBodyRender<T> {
-  WaveProgress({required super.data, required super.position});
+  //从0 到 1
+  final double controlPoint;
+  final double controlOffset;
+  WaveProgress({
+    required super.data,
+    required super.position,
+    this.controlOffset = 0.5,
+    this.controlPoint = 10,
+  });
 
   @override
   void draw(Offset offset) {
@@ -59,24 +67,27 @@ class WaveProgress<T> extends ChartBodyRender<T> {
     double radius,
     double waterHeight,
   ) {
+    double ofst = radius * controlOffset;
+
     Path path = Path();
-    Offset first = transformUtils.transformOffset(Offset(-radius, waterHeight));
-    Offset last = transformUtils.transformOffset(Offset(radius, waterHeight));
+    Offset first =
+        transformUtils.transformOffset(Offset(-radius * 2 + ofst, waterHeight));
+    Offset last =
+        transformUtils.transformOffset(Offset(radius + ofst, waterHeight));
     path.moveTo(first.dx, first.dy);
 
     Offset start = first;
     //分段
     int count = 4;
-    double controlOffset = 10;
-    double itemWidth = radius * 2 / count;
+    double itemWidth = (last.dx - first.dx) / count;
     for (int i = 0; i < count; i++) {
       Offset end = start.translate(itemWidth, 0);
       double diffX = end.dx - start.dx;
       double po1x = start.dx + diffX / 4;
-      double po1Y = start.dy + controlOffset;
+      double po1Y = start.dy + controlPoint;
 
       double po2x = end.dx - diffX / 4;
-      double po2y = end.dy - controlOffset;
+      double po2y = end.dy - controlPoint;
       path.cubicTo(po1x, po1Y, po2x, po2y, end.dx, end.dy);
       start = end;
     }

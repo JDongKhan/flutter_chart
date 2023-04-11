@@ -3,10 +3,42 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chart/flutter_chart.dart';
 
 /// @author JD
-class PieChartDemoPage extends StatelessWidget {
+class PieChartDemoPage extends StatefulWidget {
   PieChartDemoPage({Key? key}) : super(key: key);
 
+  @override
+  State<PieChartDemoPage> createState() => _PieChartDemoPageState();
+}
+
+class _PieChartDemoPageState extends State<PieChartDemoPage>
+    with SingleTickerProviderStateMixin {
   final DateTime startTime = DateTime(2023, 1, 1);
+  late AnimationController _animationController;
+
+  @override
+  void initState() {
+    _animationController =
+        AnimationController(vsync: this, duration: const Duration(seconds: 10));
+    _animationController.addStatusListener((status) {
+      if (_animationController.status == AnimationStatus.completed) {
+        _animationController.reverse();
+      } else if (status == AnimationStatus.dismissed) {
+        //动画在开始时就停止的状态
+        _animationController.forward(); //向前
+      }
+    });
+    _animationController.addListener(() {
+      setState(() {});
+    });
+    _animationController.forward();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -152,6 +184,8 @@ class PieChartDemoPage extends StatelessWidget {
                   charts: [
                     WaveProgress(
                       data: [0.5],
+                      controlPoint: _animationController.value * 20 + 5,
+                      controlOffset: _animationController.value,
                       position: (item) => item,
                     ),
                   ],
