@@ -27,9 +27,6 @@ class _PieChartDemoPageState extends State<PieChartDemoPage>
         _animationController.forward(); //向前
       }
     });
-    _animationController.addListener(() {
-      setState(() {});
-    });
     _animationController.forward();
     super.initState();
   }
@@ -178,17 +175,20 @@ class _PieChartDemoPageState extends State<PieChartDemoPage>
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 40),
               height: 200,
-              child: ChartWidget(
-                coordinateRender: CircularChartCoordinateRender(
-                  borderColor: Colors.grey,
-                  charts: [
-                    WaveProgress(
-                      data: [0.5],
-                      controlPoint: _animationController.value * 20 + 5,
-                      controlOffset: _animationController.value,
-                      position: (item) => item,
-                    ),
-                  ],
+              child: AnimatedBuilder(
+                animation: _animationController,
+                builder: (c, child) => ChartWidget(
+                  coordinateRender: CircularChartCoordinateRender(
+                    borderColor: Colors.grey,
+                    charts: [
+                      WaveProgress(
+                        data: [0.5, 0.48, 0.47, 0.46],
+                        controlPoint: _animationController.value * 20 + 5,
+                        controlOffset: _animationController.value,
+                        position: (item) => item,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

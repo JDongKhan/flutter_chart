@@ -5,14 +5,19 @@ import '../base/chart_body_render.dart';
 import '../utils/transform_utils.dart';
 
 class WaveProgress<T> extends ChartBodyRender<T> {
-  //从0 到 1
+  //波纹峰值
   final double controlPoint;
+  //从0 到 1
   final double controlOffset;
+  //颜色
+  final List<Color> colors;
+
   WaveProgress({
     required super.data,
     required super.position,
     this.controlOffset = 0.5,
     this.controlPoint = 10,
+    this.colors = colors10,
   });
 
   @override
@@ -44,7 +49,7 @@ class WaveProgress<T> extends ChartBodyRender<T> {
       //半圆就不用特别处理了
       transformUtils = chart.transformUtils;
     }
-
+    var index = 0;
     for (T item in data) {
       num po = position.call(item);
       double height = radius * 2;
@@ -55,10 +60,11 @@ class WaveProgress<T> extends ChartBodyRender<T> {
       }
       double waterHeight = height * po;
       Paint paint = Paint()
-        ..color = Colors.red
+        ..color = colors[index]
         ..style = PaintingStyle.fill;
       Path path = _createBezierPath(transformUtils, radius, waterHeight);
       canvas.drawPath(path, paint);
+      index++;
     }
   }
 
