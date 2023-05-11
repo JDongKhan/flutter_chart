@@ -210,7 +210,6 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
   double _beforeZoom = 1.0;
 
   final FocusNode _focusNode = FocusNode();
-  bool needRepaint = false;
 
   @override
   void initState() {
@@ -221,10 +220,7 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
 
   void _requestFocus() {
     if (!_focusNode.hasFocus) {
-      setState(() {
-        widget.controller.localPosition = null;
-        needRepaint = true;
-      });
+      widget.controller.localPosition = null;
     }
   }
 
@@ -251,7 +247,6 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
     widget.controller.zoom = 1.0;
     widget.controller.offset = Offset.zero;
     widget.controller.localPosition = null;
-    needRepaint = true;
   }
 
   void _defaultOnTapOutside(PointerDownEvent event) {
@@ -298,10 +293,7 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
         behavior: HitTestBehavior.opaque,
         onTapUp: (TapUpDetails details) {
           widget.controller.localPosition = details.localPosition;
-          needRepaint = true;
-
           FocusScope.of(context).requestFocus(_focusNode); // 自动聚焦
-          setState(() {});
         },
         onScaleStart: (ScaleStartDetails details) {
           _beforeZoom = zoom;
@@ -313,33 +305,26 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
             widget.controller.clearPosition();
             if (widget.chartCoordinateRender.zoomHorizontal ||
                 widget.chartCoordinateRender.zoomVertical) {
-              setState(() {
-                needRepaint = true;
-                zoom = _beforeZoom * details.scale;
-                double minZoom = widget.chartCoordinateRender.minZoom ?? 0;
-                double maxZoom =
-                    widget.chartCoordinateRender.maxZoom ?? double.infinity;
-                if (zoom < minZoom) {
-                  zoom = minZoom;
-                } else if (zoom > maxZoom) {
-                  zoom = maxZoom;
-                }
-                widget.controller.zoom = zoom;
-              });
+              zoom = _beforeZoom * details.scale;
+              double minZoom = widget.chartCoordinateRender.minZoom ?? 0;
+              double maxZoom =
+                  widget.chartCoordinateRender.maxZoom ?? double.infinity;
+              if (zoom < minZoom) {
+                zoom = minZoom;
+              } else if (zoom > maxZoom) {
+                zoom = maxZoom;
+              }
+              widget.controller.zoom = zoom;
             }
           } else if (details.pointerCount == 1 && details.scale == 1) {
             //移动
             widget.chartCoordinateRender
                 .scroll(details.focalPointDelta / widget.controller.zoom);
             // widget.controller.localPosition = details.localFocalPoint;
-            setState(() {
-              needRepaint = true;
-            });
           }
         },
         onScaleEnd: (ScaleEndDetails details) {
           //这里可以处理减速的操作
-          needRepaint = false;
           // print(details.velocity);
         },
         child: SizedBox(
@@ -348,7 +333,7 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
           child: RepaintBoundary(
             child: CustomPaint(
               painter: _ChartPainter(
-                repaint: repaint(),
+                repaint: false,
                 chart: widget.chartCoordinateRender,
               ),
             ),
@@ -356,13 +341,6 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
         ),
       ),
     );
-  }
-
-  //是否重绘
-  bool repaint() {
-    bool localRepaint = needRepaint;
-    needRepaint = false;
-    return localRepaint;
   }
 }
 
@@ -373,7 +351,7 @@ class _ChartPainter extends CustomPainter {
   _ChartPainter({
     required this.chart,
     this.repaint = false,
-  });
+  }) : super(repaint: chart.controller);
 
   @override
   void paint(Canvas canvas, Size size) {

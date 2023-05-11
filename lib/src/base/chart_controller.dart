@@ -9,6 +9,7 @@ class ChartController extends ChangeNotifier {
   set localPosition(value) {
     if (value != _localPosition) {
       _localPosition = value;
+      notifyListeners();
     }
   }
 
@@ -18,19 +19,23 @@ class ChartController extends ChangeNotifier {
   //缩放
   double get zoom => _zoom;
   set zoom(v) {
-    _zoom = v;
+    if (_zoom != v) {
+      _zoom = v;
+      notifyListeners();
+    }
   }
 
   //偏移
   Offset _offset = Offset.zero;
   Offset get offset => _offset;
   set offset(v) {
-    _offset = v;
+    if (v != _offset) {
+      _offset = v;
+      notifyListeners();
+    }
   }
 
-  void refresh() {
-    notifyListeners();
-  }
+  void refresh() {}
 
   void clearPosition() {
     if (localPosition != null) {
@@ -60,7 +65,7 @@ class CharBodyState {
   int? get selectedIndex => _selectedIndex;
   set selectedIndex(v) {
     _selectedIndex = v;
-    parentController.refresh();
+    // parentController.refresh();
   }
 
   List<ChartShapeState>? shapeList;

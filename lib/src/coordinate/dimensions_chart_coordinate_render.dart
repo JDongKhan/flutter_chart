@@ -83,7 +83,6 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
       reverseX: false,
       reverseY: true,
     );
-    _drawBackgroundAnnotations(canvas, size);
     // canvas.save();
     // 如果按坐标系切，就会面临坐标轴和里面的内容重复循环的问题，该组件的本意是尽可能减少无畏的循环，提高性能，如果
     //给y轴切出来，超出这个范围就隐藏
@@ -95,7 +94,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     canvas.clipRect(Rect.fromLTWH(
         margin.left, 0, size.width - margin.horizontal, size.height));
     _drawXAxis(canvas, size);
-
+    _drawBackgroundAnnotations(canvas, size);
     //绘图
     for (var element in charts) {
       element.draw(controller.offset);
@@ -113,17 +112,22 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
       num min = yA.min;
       int count = yA.count;
       double itemValue = (max - min) / count;
-      double itemHeight = itemValue * yA.density;
       Paint paint = Paint()
         ..color = yA.lineColor
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1;
 
+      bool isInt = max is int;
+
       double left = margin.left + offset.dx;
       //先画文字和虚线
       for (int i = 0; i <= count; i++) {
-        String text = yA.formatter?.call(i) ?? '${min + itemValue * i}';
-        double top = size.height - contentMargin.bottom - itemHeight * i;
+        num vv = itemValue * i;
+        if (isInt) {
+          vv = vv.toInt();
+        }
+        String text = yA.formatter?.call(i) ?? '${min + vv}';
+        double top = size.height - contentMargin.bottom - vv * yA.density;
         top = transformUtils.withYOffset(top);
         if (i == count) {
           _drawYTextPaint(
@@ -272,7 +276,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
       canvas,
       Offset(
         left - textPainter.width / 2,
-        size.height - margin.bottom + 5,
+        size.height - margin.bottom + 8,
       ),
     ); // 进行绘制
   }
@@ -465,16 +469,18 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
       x = 0;
     }
     double zoom = controller.zoom;
-    //放大的场景  offset会受到zoom的影响，所以这里的宽度要先剔除zoom的影响再比较
-    double chartContentWidth = xAxis.density * (xAxis.max ?? xAxis.count);
-    double chartViewPortWidth = size.width - contentMargin.horizontal;
-    //处理成跟缩放无关的偏移
-    double maxOffset = (chartContentWidth - chartViewPortWidth) / zoom;
-    if (maxOffset < 0) {
-      //内容小于0
-      x = 0;
-    } else if (x > maxOffset) {
-      x = maxOffset;
+    if (zoom >= 1) {
+      //放大的场景  offset会受到zoom的影响，所以这里的宽度要先剔除zoom的影响再比较
+      double chartContentWidth = xAxis.density * (xAxis.max ?? xAxis.count);
+      double chartViewPortWidth = size.width - contentMargin.horizontal;
+      //处理成跟缩放无关的偏移
+      double maxOffset = (chartContentWidth - chartViewPortWidth) / zoom;
+      if (maxOffset < 0) {
+        //内容小于0
+        x = 0;
+      } else if (x > maxOffset) {
+        x = maxOffset;
+      }
     }
     // // zoom = zoom < 1 ? 1 : zoom;
     // double minXOffsetValue = (1 - zoom) * size.width / 2;
@@ -524,7 +530,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     // }
 
     controller.offset = Offset(x, 0);
-    print(controller.offset);
+    // print(controller.offset);
   }
 
   //背景
