@@ -37,6 +37,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
 
   @override
   void paint(Canvas canvas, Size size) {
+    //初始化配置
     double width = size.width;
     double height = size.height;
     int count = xAxis.count;
@@ -63,6 +64,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
       }
     }
 
+    //开始渲染
     Rect rect = Rect.fromLTWH(0, 0, size.width, size.height);
     canvas.clipRect(rect);
 
@@ -150,6 +152,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     }
   }
 
+  ///该方法太耗性能，建议少用
   Path _dashPath(Offset p1, Offset p2) {
     Path path = Path()
       ..moveTo(p1.dx, p1.dy)
@@ -265,6 +268,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
       Canvas canvas, String text, TextStyle textStyle, Size size, double left) {
     var textPainter = xAxis._textPainter[text];
     if (textPainter == null) {
+      //layout耗性能，只做一次即可
       textPainter = TextPainter(
         text: TextSpan(
           text: text,
