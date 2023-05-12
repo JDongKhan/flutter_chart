@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:path_drawing/path_drawing.dart';
 
 import '../../flutter_chart.dart';
 import '../base/chart_shape_state.dart';
 import '../utils/transform_utils.dart';
-import '../widget/dash_painter.dart';
 
 /// @author JD
 
@@ -34,6 +34,9 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
   })  : assert(yAxis.isNotEmpty),
         assert(zoomVertical == false, '暂不支持垂直方向缩放'),
         xAxis = xAxis ?? XAxis(max: 7);
+
+  final Map<int, Path> _xGridLine = {};
+  final Map<int, Path> _yGridLine = {};
 
   @override
   void init(Size size) {
@@ -138,8 +141,13 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
         }
         //绘制格子线  先放一起，以免再次遍历
         if (yA.drawGrid) {
-          _drawGridLine(canvas, Offset(left, top),
-              Offset(size.width - margin.right, top), paint, yA.dashPainter);
+          Path? kDashPath = _yGridLine[i];
+          if (kDashPath == null) {
+            kDashPath = _dashPath(
+                Offset(left, top), Offset(size.width - margin.right, top));
+            _yGridLine[i] = kDashPath;
+          }
+          canvas.drawPath(kDashPath, paint);
         }
         if (yA.drawLine && yA.drawDivider) {
           canvas.drawLine(Offset(left, top), Offset(left + 3, top), paint);
@@ -155,13 +163,12 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     }
   }
 
-  void _drawGridLine(Canvas canvas, Offset p1, Offset p2, Paint paint,
-      DashPainter? dashPainter) {
+  Path _dashPath(Offset p1, Offset p2) {
     Path path = Path()
       ..moveTo(p1.dx, p1.dy)
       ..lineTo(p2.dx, p2.dy);
-    DashPainter painter = dashPainter ?? const DashPainter(span: 6, step: 3);
-    painter.paint(canvas, path, paint);
+    return dashPath(path,
+        dashArray: CircularIntervalList([3, 3]), dashOffset: null);
   }
 
   void _drawYTextPaint(Canvas canvas, String text, TextStyle textStyle,
@@ -238,12 +245,13 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
       // }
       //先放一起，以免再次遍历
       if (xAxis.drawGrid) {
-        _drawGridLine(
-            canvas,
-            Offset(left, margin.top),
-            Offset(left, size.height - margin.bottom),
-            paint,
-            xAxis.dashPainter);
+        Path? kDashPath = _xGridLine[i];
+        if (kDashPath == null) {
+          kDashPath = _dashPath(Offset(left, margin.top),
+              Offset(left, size.height - margin.bottom));
+          _xGridLine[i] = kDashPath;
+        }
+        canvas.drawPath(kDashPath, paint);
       }
 
       if (xAxis.drawLine && xAxis.drawDivider) {
@@ -341,7 +349,9 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
       Path path = Path()
         ..moveTo(p1.dx, p1.dy)
         ..lineTo(p2.dx, p2.dy);
-      const DashPainter(span: 5, step: 5).paint(canvas, path, paint);
+      Path kDashPath = dashPath(path,
+          dashArray: CircularIntervalList([3, 3]), dashOffset: null);
+      canvas.drawPath(kDashPath, paint);
     }
     //水平
     if (crossHair.horizontalShow) {
@@ -350,7 +360,9 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
       Path path1 = Path()
         ..moveTo(p11.dx, p11.dy)
         ..lineTo(p21.dx, p21.dy);
-      const DashPainter(span: 5, step: 5).paint(canvas, path1, paint);
+      Path kDashPath = dashPath(path1,
+          dashArray: CircularIntervalList([3, 3]), dashOffset: null);
+      canvas.drawPath(kDashPath, paint);
     }
   }
 
@@ -596,8 +608,6 @@ class XAxis {
   final bool drawDivider;
   //是否绘制最下面一行的线
   bool drawLine;
-  //虚线
-  final DashPainter? dashPainter;
   //文字颜色
   final TextStyle textStyle;
   //最边上的线的颜色
@@ -612,7 +622,6 @@ class XAxis {
     this.drawGrid = false,
     this.lineColor = const Color(0x99cccccc),
     this.textStyle = const TextStyle(fontSize: 12, color: Colors.grey),
-    this.dashPainter,
     this.drawDivider = true,
     this.divideCount,
     this.max,
@@ -641,8 +650,6 @@ class YAxis {
   final bool drawDivider;
   //密度
   late double density;
-  //虚线
-  final DashPainter? dashPainter;
   //轴的偏移
   final AxisOffset? offset;
   //文字风格
@@ -660,7 +667,6 @@ class YAxis {
     this.drawGrid = false,
     this.lineColor = const Color(0x99cccccc),
     this.textStyle = const TextStyle(fontSize: 12, color: Colors.grey),
-    this.dashPainter,
     this.drawDivider = true,
     this.offset,
   });

@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:path_drawing/path_drawing.dart';
 
 import '../../flutter_chart.dart';
-import '../widget/dash_painter.dart';
 
 typedef AnnotationPosition<T> = num Function(T);
 
 class LimitAnnotation extends Annotation {
   final num limit;
-  final DashPainter? dashPainter;
   final Color color;
   final double strokeWidth;
   LimitAnnotation({
@@ -16,7 +15,6 @@ class LimitAnnotation extends Annotation {
     super.minZoomVisible,
     super.maxZoomVisible,
     required this.limit,
-    this.dashPainter,
     this.color = Colors.red,
     this.strokeWidth = 1,
   });
@@ -60,9 +58,10 @@ class LimitAnnotation extends Annotation {
       Path path = Path()
         ..moveTo(start.dx, start.dy)
         ..lineTo(end.dx, end.dy);
-      DashPainter painter =
-          dashPainter ?? const DashPainter(span: 3, step: 5, pointCount: 0);
-      painter.paint(canvas, path, paint);
+
+      Path kDashPath = dashPath(path,
+          dashArray: CircularIntervalList([3, 3]), dashOffset: null);
+      canvas.drawPath(kDashPath, paint);
     }
   }
 }

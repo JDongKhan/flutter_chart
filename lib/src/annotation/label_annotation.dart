@@ -72,7 +72,7 @@ class LabelAnnotation extends Annotation {
             );
           }
         }
-        ost = Offset(left, top).translate(this.offset.dx, this.offset.dy);
+        ost = Offset(left, top).translate(offset.dx, offset.dy);
       } else {
         ost = anchor!(chart.size);
       }
