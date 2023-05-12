@@ -24,6 +24,24 @@ class LabelAnnotation extends Annotation {
     this.textAlign = TextAlign.start,
     this.textStyle = const TextStyle(color: Colors.red),
   }) : assert(positions != null || anchor != null);
+
+  TextPainter? _textPainter;
+
+  @override
+  void init(ChartCoordinateRender coordinateChart) {
+    super.init(coordinateChart);
+    _textPainter = TextPainter(
+      text: TextSpan(
+        text: text,
+        style: textStyle,
+      ),
+      textDirection: TextDirection.ltr,
+    )..layout(
+        minWidth: 0,
+        maxWidth: coordinateChart.size.width,
+      );
+  }
+
   @override
   void draw(Canvas canvas, Size size) {
     if (minZoomVisible != null) {
@@ -77,23 +95,12 @@ class LabelAnnotation extends Annotation {
         ost = anchor!(chart.size);
       }
 
-      TextPainter textPainter = TextPainter(
-        text: TextSpan(
-          text: text,
-          style: textStyle,
-        ),
-        textDirection: TextDirection.ltr,
-      )..layout(
-          minWidth: 0,
-          maxWidth: chart.size.width,
-        );
-
       if (textAlign == TextAlign.end) {
-        ost = ost.translate(-textPainter.width, 0);
+        ost = ost.translate(-_textPainter!.width, 0);
       } else if (textAlign == TextAlign.center) {
-        ost = ost.translate(-textPainter.width / 2, 0);
+        ost = ost.translate(-_textPainter!.width / 2, 0);
       }
-      textPainter.paint(canvas, ost);
+      _textPainter!.paint(canvas, ost);
     }
   }
 }

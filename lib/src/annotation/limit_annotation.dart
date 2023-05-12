@@ -18,21 +18,13 @@ class LimitAnnotation extends Annotation {
     this.color = Colors.red,
     this.strokeWidth = 1,
   });
+  Paint? _paint;
+  Path? _path;
   @override
-  void draw(Canvas canvas, Size size) {
-    if (minZoomVisible != null) {
-      if (coordinateChart.controller.zoom < minZoomVisible!) {
-        return;
-      }
-    }
-    if (maxZoomVisible != null) {
-      if (coordinateChart.controller.zoom > maxZoomVisible!) {
-        return;
-      }
-    }
+  void init(ChartCoordinateRender coordinateChart) {
+    super.init(coordinateChart);
     if (coordinateChart is DimensionsChartCoordinateRender) {
-      DimensionsChartCoordinateRender chart =
-          coordinateChart as DimensionsChartCoordinateRender;
+      DimensionsChartCoordinateRender chart = coordinateChart;
       num po = limit;
       double itemHeight = po * chart.yAxis[0].density;
       Offset start = Offset(
@@ -50,7 +42,7 @@ class LimitAnnotation extends Annotation {
         ),
       );
 
-      Paint paint = Paint()
+      _paint = Paint()
         ..color = color
         ..style = PaintingStyle.stroke
         ..strokeWidth = strokeWidth;
@@ -61,7 +53,24 @@ class LimitAnnotation extends Annotation {
 
       Path kDashPath = dashPath(path,
           dashArray: CircularIntervalList([3, 3]), dashOffset: null);
-      canvas.drawPath(kDashPath, paint);
+      _path = kDashPath;
+    }
+  }
+
+  @override
+  void draw(Canvas canvas, Size size) {
+    if (minZoomVisible != null) {
+      if (coordinateChart.controller.zoom < minZoomVisible!) {
+        return;
+      }
+    }
+    if (maxZoomVisible != null) {
+      if (coordinateChart.controller.zoom > maxZoomVisible!) {
+        return;
+      }
+    }
+    if (_path != null && _paint != null) {
+      canvas.drawPath(_path!, _paint!);
     }
   }
 }

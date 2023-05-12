@@ -299,6 +299,7 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
           _beforeZoom = zoom;
         },
         onScaleUpdate: (ScaleUpdateDetails details) {
+          widget.controller.localPosition = null;
           //缩放
           if (details.scale != 1) {
             //先清除手势
@@ -353,10 +354,14 @@ class _ChartPainter extends CustomPainter {
     this.repaint = false,
   }) : super(repaint: chart.controller);
 
+  bool _init = false;
   @override
   void paint(Canvas canvas, Size size) {
     //初始化
-    chart.init(size);
+    if (_init == false) {
+      chart.init(size);
+      _init = true;
+    }
     chart.paint(canvas, size);
   }
 

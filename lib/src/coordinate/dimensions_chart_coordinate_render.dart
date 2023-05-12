@@ -35,13 +35,8 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
         assert(zoomVertical == false, '暂不支持垂直方向缩放'),
         xAxis = xAxis ?? XAxis(max: 7);
 
-  final Map<int, Path> _xGridLine = {};
-  final Map<int, Path> _yGridLine = {};
-
   @override
-  void init(Size size) {
-    super.init(size);
-
+  void paint(Canvas canvas, Size size) {
     double width = size.width;
     double height = size.height;
     int count = xAxis.count;
@@ -67,10 +62,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
         yA.density = itemHeight / itemValue;
       }
     }
-  }
 
-  @override
-  void paint(Canvas canvas, Size size) {
     Rect rect = Rect.fromLTWH(0, 0, size.width, size.height);
     canvas.clipRect(rect);
 
@@ -93,7 +85,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     _drawYAxis(canvas, size);
     // canvas.restore();
 
-    //防止超过y轴
+    // //防止超过y轴
     canvas.clipRect(Rect.fromLTWH(
         margin.left, 0, size.width - margin.horizontal, size.height));
     _drawXAxis(canvas, size);
@@ -115,13 +107,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
       num min = yA.min;
       int count = yA.count;
       double itemValue = (max - min) / count;
-      Paint paint = Paint()
-        ..color = yA.lineColor
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1;
-
       bool isInt = max is int;
-
       double left = margin.left + offset.dx;
       //先画文字和虚线
       for (int i = 0; i <= count; i++) {
@@ -132,31 +118,32 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
         String text = yA.formatter?.call(i) ?? '${min + vv}';
         double top = size.height - contentMargin.bottom - vv * yA.density;
         top = transformUtils.withYOffset(top);
+        //绘制文本
         if (i == count) {
           _drawYTextPaint(
-              canvas, text, yA.textStyle, yAxisIndex > 0, left, top, false);
+              yA, canvas, text, yA.textStyle, yAxisIndex > 0, left, top, false);
         } else {
           _drawYTextPaint(
-              canvas, text, yA.textStyle, yAxisIndex > 0, left, top, true);
+              yA, canvas, text, yA.textStyle, yAxisIndex > 0, left, top, true);
         }
         //绘制格子线  先放一起，以免再次遍历
         if (yA.drawGrid) {
-          Path? kDashPath = _yGridLine[i];
+          Path? kDashPath = yA._gridLine[i];
           if (kDashPath == null) {
             kDashPath = _dashPath(
                 Offset(left, top), Offset(size.width - margin.right, top));
-            _yGridLine[i] = kDashPath;
+            yA._gridLine[i] = kDashPath;
           }
-          canvas.drawPath(kDashPath, paint);
+          canvas.drawPath(kDashPath, yA.paint);
         }
         if (yA.drawLine && yA.drawDivider) {
-          canvas.drawLine(Offset(left, top), Offset(left + 3, top), paint);
+          canvas.drawLine(Offset(left, top), Offset(left + 3, top), yA.paint);
         }
       }
       //再画实线
       if (yA.drawLine) {
         canvas.drawLine(Offset(left, margin.top),
-            Offset(left, size.height - margin.bottom), paint);
+            Offset(left, size.height - margin.bottom), yA.paint);
       }
 
       yAxisIndex++;
@@ -171,17 +158,21 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
         dashArray: CircularIntervalList([3, 3]), dashOffset: null);
   }
 
-  void _drawYTextPaint(Canvas canvas, String text, TextStyle textStyle,
-      bool right, double left, double top, bool middle) {
-    var textPainter = TextPainter(
-      text: TextSpan(
-        text: text,
-        style: textStyle,
-      ),
-      textAlign: TextAlign.center,
-      textDirection: TextDirection.ltr,
-    );
-    textPainter.layout(); // 进行布局
+  void _drawYTextPaint(YAxis yAxis, Canvas canvas, String text,
+      TextStyle textStyle, bool right, double left, double top, bool middle) {
+    var textPainter = yAxis._textPainter[text];
+    if (textPainter == null) {
+      textPainter = TextPainter(
+        text: TextSpan(
+          text: text,
+          style: textStyle,
+        ),
+        textAlign: TextAlign.center,
+        textDirection: TextDirection.ltr,
+      );
+      textPainter.layout(); // 进行布局
+      yAxis._textPainter[text] = textPainter;
+    }
     textPainter.paint(
       canvas,
       Offset(
@@ -196,6 +187,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     num interval = xAxis.interval;
     Paint paint = Paint()
       ..color = xAxis.lineColor
+      ..style = PaintingStyle.stroke
       ..strokeWidth = 1;
 
     //实际要显示的数量
@@ -245,11 +237,11 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
       // }
       //先放一起，以免再次遍历
       if (xAxis.drawGrid) {
-        Path? kDashPath = _xGridLine[i];
+        Path? kDashPath = xAxis._gridLine[i];
         if (kDashPath == null) {
           kDashPath = _dashPath(Offset(left, margin.top),
               Offset(left, size.height - margin.bottom));
-          _xGridLine[i] = kDashPath;
+          xAxis._gridLine[i] = kDashPath;
         }
         canvas.drawPath(kDashPath, paint);
       }
@@ -271,15 +263,19 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
 
   void _drawXTextPaint(
       Canvas canvas, String text, TextStyle textStyle, Size size, double left) {
-    var textPainter = TextPainter(
-      text: TextSpan(
-        text: text,
-        style: textStyle,
-      ),
-      textAlign: TextAlign.center,
-      textDirection: TextDirection.ltr,
-    );
-    textPainter.layout(); // 进行布局
+    var textPainter = xAxis._textPainter[text];
+    if (textPainter == null) {
+      textPainter = TextPainter(
+        text: TextSpan(
+          text: text,
+          style: textStyle,
+        ),
+        textAlign: TextAlign.center,
+        textDirection: TextDirection.ltr,
+      );
+      textPainter.layout(); // 进行布局
+      xAxis._textPainter[text] = textPainter;
+    }
     textPainter.paint(
       canvas,
       Offset(
@@ -630,6 +626,9 @@ class XAxis {
   num widthOf(num value) {
     return density * value;
   }
+
+  final Map<int, Path> _gridLine = {};
+  final Map<String, TextPainter> _textPainter = {};
 }
 
 //y轴配置
@@ -671,7 +670,27 @@ class YAxis {
     this.offset,
   });
 
+  final Map<int, Path> _gridLine = {};
+  final Map<String, TextPainter> _textPainter = {};
+
+  Paint? _paint;
+  Paint get paint {
+    _paint ??= Paint()
+      ..color = lineColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1;
+    return _paint!;
+  }
+
+  void _init(Size size) {}
+
   num heightOf(num value) {
     return density * value;
   }
+}
+
+class AxisDividerLine {
+  final String text;
+  final Path path;
+  AxisDividerLine({required this.text, required this.path});
 }

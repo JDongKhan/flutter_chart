@@ -238,12 +238,17 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                               ),
                             ),
                             yAxis: [
-                              YAxis(min: 0, max: 500),
+                              YAxis(
+                                min: 0,
+                                max: 500,
+                                drawGrid: true,
+                              ),
                             ],
                             xAxis: XAxis(
                               count: 7,
                               max: 20,
-                              drawLine: false,
+                              drawGrid: true,
+                              drawLine: true,
                               formatter: (index) => startTime
                                   .add(Duration(days: index.toInt()))
                                   .toStringWithFormat(format: 'dd'),

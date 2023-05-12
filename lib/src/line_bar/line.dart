@@ -27,6 +27,8 @@ class Line<T> extends ChartBodyRender<T> {
   final bool? filled;
   //曲线
   final bool isCurve;
+  //线 画笔
+  final Paint paint;
   Line({
     required super.data,
     required super.position,
@@ -40,7 +42,9 @@ class Line<T> extends ChartBodyRender<T> {
     this.isHollow = false,
     this.filled = false,
     this.isCurve = false,
-  });
+  }) : paint = Paint()
+          ..strokeWidth = strokeWidth
+          ..style = PaintingStyle.stroke;
 
   @override
   void draw(Canvas canvas, Size size) {
@@ -170,10 +174,6 @@ class Line<T> extends ChartBodyRender<T> {
   void drawLine(Canvas canvas, Map<int, LineInfo> pathMap) {
     DimensionsChartCoordinateRender chart =
         coordinateChart as DimensionsChartCoordinateRender;
-    //线
-    Paint paint = Paint()
-      ..strokeWidth = strokeWidth
-      ..style = PaintingStyle.stroke;
     //点
     Paint dotPaint = Paint()..strokeWidth = strokeWidth;
 

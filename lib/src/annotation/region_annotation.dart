@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../base/chart_coordinate_render.dart';
 import '../coordinate/dimensions_chart_coordinate_render.dart';
 import 'annotation.dart';
 
@@ -14,6 +15,17 @@ class RegionAnnotation extends Annotation {
     required this.positions,
     this.color = const Color(0xFFF5F5F5),
   });
+
+  Paint? _paint;
+  @override
+  void init(ChartCoordinateRender coordinateChart) {
+    super.init(coordinateChart);
+    _paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.fill
+      ..strokeWidth = 1;
+  }
+
   @override
   void draw(Canvas canvas, Size size) {
     if (minZoomVisible != null) {
@@ -39,12 +51,9 @@ class RegionAnnotation extends Annotation {
 
       double top = chart.contentMargin.top;
       double bottom = chart.size.height - chart.contentMargin.bottom;
-
-      Paint paint = Paint()
-        ..color = color
-        ..style = PaintingStyle.fill
-        ..strokeWidth = 1;
-      canvas.drawRect(Rect.fromLTRB(start, top, end, bottom), paint);
+      if (_paint != null) {
+        canvas.drawRect(Rect.fromLTRB(start, top, end, bottom), _paint!);
+      }
     }
   }
 }
