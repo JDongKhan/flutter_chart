@@ -357,6 +357,8 @@ class _ChartPainter extends CustomPainter {
   bool _init = false;
   @override
   void paint(Canvas canvas, Size size) {
+    Rect clipRect = Offset.zero & size;
+    canvas.clipRect(clipRect);
     //初始化
     if (_init == false) {
       chart.init(size);
