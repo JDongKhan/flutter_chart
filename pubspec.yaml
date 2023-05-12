@@ -11,6 +11,8 @@ dependencies:
   flutter:
     sdk: flutter
 
+  path_drawing: ^1.0.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

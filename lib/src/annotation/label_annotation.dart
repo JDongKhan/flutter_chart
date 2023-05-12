@@ -25,7 +25,7 @@ class LabelAnnotation extends Annotation {
     this.textStyle = const TextStyle(color: Colors.red),
   }) : assert(positions != null || anchor != null);
   @override
-  void draw(final Offset offset) {
+  void draw(Canvas canvas, Size size) {
     if (minZoomVisible != null) {
       if (coordinateChart.controller.zoom < minZoomVisible!) {
         return;
@@ -93,7 +93,7 @@ class LabelAnnotation extends Annotation {
       } else if (textAlign == TextAlign.center) {
         ost = ost.translate(-textPainter.width / 2, 0);
       }
-      textPainter.paint(chart.canvas, ost);
+      textPainter.paint(canvas, ost);
     }
   }
 }

@@ -18,7 +18,7 @@ class PathAnnotation extends Annotation {
     this.anchor,
   });
   @override
-  void draw(final Offset offset) {
+  void draw(Canvas canvas, Size size) {
     if (minZoomVisible != null) {
       if (coordinateChart.controller.zoom < minZoomVisible!) {
         return;
@@ -43,7 +43,7 @@ class PathAnnotation extends Annotation {
         final matrix = Matrix4.identity()..leftTranslate(ost.dx, ost.dy);
         newPath = path.transform(matrix.storage);
       }
-      chart.canvas.drawPath(newPath, paint);
+      canvas.drawPath(newPath, paint);
     }
   }
 }

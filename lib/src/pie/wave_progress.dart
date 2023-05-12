@@ -21,12 +21,11 @@ class WaveProgress<T> extends ChartBodyRender<T> {
   });
 
   @override
-  void draw(Offset offset) {
+  void draw(Canvas canvas, Size size) {
     CircularChartCoordinateRender chart =
         coordinateChart as CircularChartCoordinateRender;
     Offset center = chart.center;
     double radius = chart.radius;
-    Canvas canvas = chart.canvas;
     canvas.clipPath(
         Path()..addOval(Rect.fromCircle(center: center, radius: radius)));
 
@@ -37,7 +36,7 @@ class WaveProgress<T> extends ChartBodyRender<T> {
       transformUtils = TransformUtils(
         anchor: progressCenter,
         size: chart.size,
-        offset: offset,
+        offset: chart.controller.offset,
         zoomVertical: chart.zoomVertical,
         zoomHorizontal: chart.zoomHorizontal,
         zoom: chart.controller.zoom,

@@ -97,8 +97,6 @@ abstract class ChartCoordinateRender {
 
   //共享数据
   late ChartController controller;
-  //画布
-  late Canvas canvas;
   //画布尺寸
   late Size size;
 
@@ -108,8 +106,7 @@ abstract class ChartCoordinateRender {
   Rect get contentRect => Rect.fromLTRB(contentMargin.left, contentMargin.top,
       size.width - contentMargin.left, size.height - contentMargin.bottom);
 
-  void init(Canvas canvas, Size size) {
-    this.canvas = canvas;
+  void init(Size size) {
     this.size = size;
     for (var element in charts) {
       element.init(this);

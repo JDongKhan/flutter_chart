@@ -43,7 +43,7 @@ class Line<T> extends ChartBodyRender<T> {
   });
 
   @override
-  void draw(final Offset offset) {
+  void draw(Canvas canvas, Size size) {
     DimensionsChartCoordinateRender chart =
         coordinateChart as DimensionsChartCoordinateRender;
     List<ChartShapeState> shapeList = [];
@@ -163,11 +163,11 @@ class Line<T> extends ChartBodyRender<T> {
     //   i++;
     // }
     //开始绘制了
-    drawLine(pathMap);
+    drawLine(canvas, pathMap);
     bodyState.shapeList = shapeList;
   }
 
-  void drawLine(Map<int, LineInfo> pathMap) {
+  void drawLine(Canvas canvas, Map<int, LineInfo> pathMap) {
     DimensionsChartCoordinateRender chart =
         coordinateChart as DimensionsChartCoordinateRender;
     //线
@@ -187,7 +187,7 @@ class Line<T> extends ChartBodyRender<T> {
     List<Color> dotColorList = dotColors ?? colors;
     pathMap.forEach((index, lineInfo) {
       //先画线
-      chart.canvas.drawPath(lineInfo.path, paint..color = colors[index]);
+      canvas.drawPath(lineInfo.path, paint..color = colors[index]);
       //然后填充颜色
       if (filled == true) {
         Offset last = lineInfo.pointList.last;
@@ -201,14 +201,14 @@ class Line<T> extends ChartBodyRender<T> {
         } else {
           fullPaint!.color = colors[index];
         }
-        chart.canvas.drawPath(lineInfo.path, fullPaint);
+        canvas.drawPath(lineInfo.path, fullPaint);
       }
       //先画点
       if (dotRadius > 0) {
         for (Offset point in lineInfo.pointList) {
           //先用白色覆盖
           dotPaint.style = PaintingStyle.fill;
-          chart.canvas.drawCircle(Offset(point.dx, point.dy), dotRadius,
+          canvas.drawCircle(Offset(point.dx, point.dy), dotRadius,
               dotPaint..color = Colors.white);
           //再画空心
           if (isHollow) {
@@ -216,7 +216,7 @@ class Line<T> extends ChartBodyRender<T> {
           } else {
             dotPaint.style = PaintingStyle.fill;
           }
-          chart.canvas.drawCircle(Offset(point.dx, point.dy), dotRadius,
+          canvas.drawCircle(Offset(point.dx, point.dy), dotRadius,
               dotPaint..color = dotColorList[index]);
         }
       }

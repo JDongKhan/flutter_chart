@@ -39,7 +39,7 @@ class CircularChartCoordinateRender extends ChartCoordinateRender {
     _drawCircle(canvas, size);
     _drawBackgroundAnnotations(canvas, size);
     for (var element in charts) {
-      element.draw(controller.offset);
+      element.draw(canvas, size);
     }
     _drawForegroundAnnotations(canvas, size);
   }
@@ -132,7 +132,7 @@ class CircularChartCoordinateRender extends ChartCoordinateRender {
   void _drawBackgroundAnnotations(Canvas canvas, Size size) {
     backgroundAnnotations?.forEach((element) {
       element.init(this);
-      element.draw(controller.offset);
+      element.draw(canvas, size);
     });
   }
 
@@ -140,7 +140,7 @@ class CircularChartCoordinateRender extends ChartCoordinateRender {
   void _drawForegroundAnnotations(Canvas canvas, Size size) {
     foregroundAnnotations?.forEach((element) {
       element.init(this);
-      element.draw(controller.offset);
+      element.draw(canvas, size);
     });
   }
 

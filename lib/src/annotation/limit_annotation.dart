@@ -21,7 +21,7 @@ class LimitAnnotation extends Annotation {
     this.strokeWidth = 1,
   });
   @override
-  void draw(final Offset offset) {
+  void draw(Canvas canvas, Size size) {
     if (minZoomVisible != null) {
       if (coordinateChart.controller.zoom < minZoomVisible!) {
         return;
@@ -62,7 +62,7 @@ class LimitAnnotation extends Annotation {
         ..lineTo(end.dx, end.dy);
       DashPainter painter =
           dashPainter ?? const DashPainter(span: 3, step: 5, pointCount: 0);
-      painter.paint(chart.canvas, path, paint);
+      painter.paint(canvas, path, paint);
     }
   }
 }

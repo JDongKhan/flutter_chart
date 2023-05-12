@@ -28,12 +28,11 @@ class Progress<T> extends ChartBodyRender<T> {
   });
 
   @override
-  void draw(Offset offset) {
+  void draw(Canvas canvas, Size size) {
     CircularChartCoordinateRender chart =
         coordinateChart as CircularChartCoordinateRender;
     Offset center = chart.center;
     double radius = chart.radius;
-    Canvas canvas = chart.canvas;
 
     // 定义圆形的绘制属性
     final paint = Paint()

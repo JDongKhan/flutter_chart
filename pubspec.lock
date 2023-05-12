@@ -115,6 +115,22 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.8.2"
+  path_drawing:
+    dependency: "direct main"
+    description:
+      name: path_drawing
+      sha256: bbb1934c0cbb03091af082a6389ca2080345291ef07a5fa6d6e078ba8682f977
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.1"
+  path_parsing:
+    dependency: transitive
+    description:
+      name: path_parsing
+      sha256: e3e67b1629e6f7e8100b367d3db6ba6af4b1f0bb80f64db18ef1fbabd2fa9ccf
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.1"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -178,4 +194,4 @@ packages:
     version: "2.1.4"
 sdks:
   dart: ">=2.19.3 <3.0.0"
-  flutter: ">=1.17.0"
+  flutter: ">=1.24.0-7.0"

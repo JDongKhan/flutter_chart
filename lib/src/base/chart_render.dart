@@ -15,5 +15,5 @@ abstract class ChartRender {
     this.coordinateChart = coordinateChart;
   }
 
-  void draw(final Offset offset);
+  void draw(Canvas canvas, Size size);
 }

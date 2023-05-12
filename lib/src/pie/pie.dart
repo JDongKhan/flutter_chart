@@ -74,10 +74,9 @@ class Pie<T> extends ChartBodyRender<T> {
     required super.position,
   });
   @override
-  void draw(final Offset offset) {
+  void draw(Canvas canvas, Size size) {
     CircularChartCoordinateRender chart =
         coordinateChart as CircularChartCoordinateRender;
-    Canvas canvas = chart.canvas;
     Offset center = chart.center;
     double radius = chart.radius;
 
@@ -148,25 +147,26 @@ class Pie<T> extends ChartBodyRender<T> {
       }
       drawPie(canvas, tapShape.path!, paint);
       //绘制间隙
-      _drawSpaceLine(rd, startAngle, sweepAngle);
+      _drawSpaceLine(canvas, rd, startAngle, sweepAngle);
 
       String? valueText = valueFormatter?.call(item);
       String? legend = legendFormatter?.call(item);
 
       //绘制引导线
       if (guideLine) {
-        _drawLineAndText(valueText, legend, index, rd, startAngle, sweepAngle);
+        _drawLineAndText(
+            canvas, valueText, legend, index, rd, startAngle, sweepAngle);
       }
       //选中就绘制
       if (selected) {
-        _drawCenterValue(valueText);
+        _drawCenterValue(canvas, valueText);
       }
       //画圆弧
       // baseChart.canvas.drawArc(
       //     newRect, startAngle, sweepAngle, true, paint..color = colors[i]);
       // _drawLegend(item, radius, startAngle, sweepAngle);
       if (showValue) {
-        _drawValue(valueText, radius, startAngle, sweepAngle);
+        _drawValue(canvas, valueText, radius, startAngle, sweepAngle);
       }
       //继续下一个
       startAngle = startAngle + sweepAngle;
@@ -176,14 +176,14 @@ class Pie<T> extends ChartBodyRender<T> {
   }
 
   //画空隙线
-  void _drawSpaceLine(double radius, double startAngle, double sweepAngle) {
+  void _drawSpaceLine(
+      Canvas canvas, double radius, double startAngle, double sweepAngle) {
     if (spaceWidth == null) {
       return;
     }
     CircularChartCoordinateRender chart =
         coordinateChart as CircularChartCoordinateRender;
     Offset center = chart.center;
-    Canvas canvas = chart.canvas;
     //开始线
     var start1X = cos(startAngle) * holeRadius + center.dx;
     var start1Y = sin(startAngle) * holeRadius + center.dy;
@@ -206,15 +206,14 @@ class Pie<T> extends ChartBodyRender<T> {
     canvas.drawLine(start2Offset, end2Offset, paint);
   }
 
-  void _drawLineAndText(String? valueText, String? legend, int index,
-      double radius, double startAngle, double sweepAngle) {
+  void _drawLineAndText(Canvas canvas, String? valueText, String? legend,
+      int index, double radius, double startAngle, double sweepAngle) {
     if (valueText == null && legend == null) {
       return;
     }
     CircularChartCoordinateRender chart =
         coordinateChart as CircularChartCoordinateRender;
     Offset center = chart.center;
-    Canvas canvas = chart.canvas;
     //中心弧度
     final double radians = startAngle + sweepAngle / 2;
     double line1 = 10;
@@ -318,8 +317,8 @@ class Pie<T> extends ChartBodyRender<T> {
   //   }
   // }
   //
-  void _drawValue(
-      String? valueText, double radius, double startAngle, double sweepAngle) {
+  void _drawValue(Canvas canvas, String? valueText, double radius,
+      double startAngle, double sweepAngle) {
     CircularChartCoordinateRender chart =
         coordinateChart as CircularChartCoordinateRender;
     //中心弧度
@@ -345,12 +344,12 @@ class Pie<T> extends ChartBodyRender<T> {
       double y = sin(radians) * (radius / 2 + valueTextOffset) +
           chart.size.height / 2 -
           valueTextPainter.height / 2;
-      valueTextPainter.paint(chart.canvas, Offset(x, y));
+      valueTextPainter.paint(canvas, Offset(x, y));
     }
   }
 
   //绘制中间文案
-  void _drawCenterValue(String? valueText) {
+  void _drawCenterValue(Canvas canvas, String? valueText) {
     CircularChartCoordinateRender chart =
         coordinateChart as CircularChartCoordinateRender;
     //中心点文案
@@ -367,7 +366,7 @@ class Pie<T> extends ChartBodyRender<T> {
           maxWidth: chart.size.width,
         );
       valueTextPainter.paint(
-          chart.canvas,
+          canvas,
           chart.center.translate(
               -valueTextPainter.width / 2, -valueTextPainter.height / 2));
     }

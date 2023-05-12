@@ -114,6 +114,20 @@
             </list>
           </value>
         </entry>
+        <entry key="path_drawing">
+          <value>
+            <list>
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.flutter-io.cn/path_drawing-1.0.1/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="path_parsing">
+          <value>
+            <list>
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.flutter-io.cn/path_parsing-1.0.1/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="sky_engine">
           <value>
             <list>
@@ -187,6 +201,8 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.flutter-io.cn/material_color_utilities-0.2.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.flutter-io.cn/meta-1.8.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.flutter-io.cn/path-1.8.2/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.flutter-io.cn/path_drawing-1.0.1/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.flutter-io.cn/path_parsing-1.0.1/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.flutter-io.cn/source_span-1.9.1/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.flutter-io.cn/stack_trace-1.11.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.flutter-io.cn/stream_channel-2.1.1/lib" />

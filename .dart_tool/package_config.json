@@ -92,6 +92,18 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "path_drawing",
+      "rootUri": "file:///Users/sn/.pub-cache/hosted/pub.flutter-io.cn/path_drawing-1.0.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "path_parsing",
+      "rootUri": "file:///Users/sn/.pub-cache/hosted/pub.flutter-io.cn/path_parsing-1.0.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "sky_engine",
       "rootUri": "file:///Users/sn/fvm/versions/3.7.6/bin/cache/pkg/sky_engine",
       "packageUri": "lib/",
@@ -146,7 +158,7 @@
       "languageVersion": "2.19"
     }
   ],
-  "generated": "2023-03-28T10:53:08.854864Z",
+  "generated": "2023-05-11T11:34:20.980067Z",
   "generator": "pub",
   "generatorVersion": "2.19.3"
 }

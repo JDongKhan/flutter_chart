@@ -15,7 +15,7 @@ class RegionAnnotation extends Annotation {
     this.color = const Color(0xFFF5F5F5),
   });
   @override
-  void draw(final Offset offset) {
+  void draw(Canvas canvas, Size size) {
     if (minZoomVisible != null) {
       if (coordinateChart.controller.zoom < minZoomVisible!) {
         return;
@@ -44,7 +44,7 @@ class RegionAnnotation extends Annotation {
         ..color = color
         ..style = PaintingStyle.fill
         ..strokeWidth = 1;
-      chart.canvas.drawRect(Rect.fromLTRB(start, top, end, bottom), paint);
+      canvas.drawRect(Rect.fromLTRB(start, top, end, bottom), paint);
     }
   }
 }

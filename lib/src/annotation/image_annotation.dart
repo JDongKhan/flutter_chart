@@ -43,7 +43,7 @@ class ImageAnnotation extends Annotation {
   }
 
   @override
-  void draw(final Offset offset) {
+  void draw(Canvas canvas, final Size size) {
     if (minZoomVisible != null) {
       if (coordinateChart.controller.zoom < minZoomVisible!) {
         return;
@@ -75,7 +75,7 @@ class ImageAnnotation extends Annotation {
         ost = anchor!(chart.size);
       }
       Paint paint = Paint()..isAntiAlias = true;
-      coordinateChart.canvas.drawImage(
+      canvas.drawImage(
           image,
           ost.translate(
             this.offset.dx - image.width / 2,

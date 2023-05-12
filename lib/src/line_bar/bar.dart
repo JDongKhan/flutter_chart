@@ -31,7 +31,7 @@ class Bar<T> extends ChartBodyRender<T> {
     this.highlightColor = Colors.yellow,
   });
   @override
-  void draw(final Offset offset) {
+  void draw(Canvas canvas, Size size) {
     DimensionsChartCoordinateRender chart =
         coordinateChart as DimensionsChartCoordinateRender;
     List<ChartShapeState> shapeList = [];
@@ -40,14 +40,14 @@ class Bar<T> extends ChartBodyRender<T> {
       ..style = PaintingStyle.fill;
     for (int index = 0; index < data.length; index++) {
       T value = data[index];
-      shapeList.add(drawBar(chart, paint, index, value));
+      shapeList.add(drawBar(canvas, chart, paint, index, value));
     }
     bodyState.shapeList = shapeList;
   }
 
   //可以重写 自定义特殊的图形
-  ChartShapeState drawBar(
-      DimensionsChartCoordinateRender chart, Paint paint, int index, T data) {
+  ChartShapeState drawBar(Canvas canvas, DimensionsChartCoordinateRender chart,
+      Paint paint, int index, T data) {
     num po = position.call(data);
     num v = value.call(data);
     if (v == 0) {
@@ -79,7 +79,7 @@ class Bar<T> extends ChartBodyRender<T> {
       }
     }
     //开始绘制，bar不同于line，在循环中就可以绘制
-    chart.canvas.drawRect(rect, paint);
+    canvas.drawRect(rect, paint);
     return shape;
   }
 }
@@ -119,16 +119,16 @@ class StackBar<T> extends ChartBodyRender<T> {
     this.padding = 5,
   });
   @override
-  void draw(final Offset offset) {
+  void draw(Canvas canvas, Size size) {
     DimensionsChartCoordinateRender chart =
         coordinateChart as DimensionsChartCoordinateRender;
     List<ChartShapeState> shapeList = [];
     for (int index = 0; index < data.length; index++) {
       T value = data[index];
       if (direction == Axis.horizontal) {
-        shapeList.add(drawHorizontalBar(chart, index, value));
+        shapeList.add(drawHorizontalBar(canvas, chart, index, value));
       } else {
-        shapeList.add(drawVerticalBar(chart, index, value));
+        shapeList.add(drawVerticalBar(canvas, chart, index, value));
       }
     }
     bodyState.shapeList = shapeList;
@@ -136,7 +136,7 @@ class StackBar<T> extends ChartBodyRender<T> {
 
   //水平排列图形
   ChartShapeState drawHorizontalBar(
-      DimensionsChartCoordinateRender chart, int index, T data) {
+      Canvas canvas, DimensionsChartCoordinateRender chart, int index, T data) {
     num po = position.call(data);
     List<num> vas = values.call(data);
     assert(colors.length >= vas.length);
@@ -185,7 +185,7 @@ class StackBar<T> extends ChartBodyRender<T> {
         paint.color = highlightColor;
       }
       //画图
-      chart.canvas.drawRect(rect, paint);
+      canvas.drawRect(rect, paint);
       left = left + itemWidth + padding;
       shape.children.add(stackShape);
       stackIndex++;
@@ -194,7 +194,7 @@ class StackBar<T> extends ChartBodyRender<T> {
   }
 
   ChartShapeState drawVerticalBar(
-      DimensionsChartCoordinateRender chart, int index, T data) {
+      Canvas canvas, DimensionsChartCoordinateRender chart, int index, T data) {
     num po = position.call(data);
     List<num> vas = values.call(data);
     assert(colors.length >= vas.length);
@@ -240,7 +240,7 @@ class StackBar<T> extends ChartBodyRender<T> {
         paint.color = highlightColor;
         shape.children.add(stackShape);
       }
-      chart.canvas.drawRect(rect, paint);
+      canvas.drawRect(rect, paint);
       stackIndex++;
       bottom = top;
     }

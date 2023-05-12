@@ -356,7 +356,7 @@ class _ChartPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     //初始化
-    chart.init(canvas, size);
+    chart.init(size);
     chart.paint(canvas, size);
   }
 

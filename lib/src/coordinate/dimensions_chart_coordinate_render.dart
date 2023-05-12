@@ -36,8 +36,8 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
         xAxis = xAxis ?? XAxis(max: 7);
 
   @override
-  void init(Canvas canvas, Size size) {
-    super.init(canvas, size);
+  void init(Size size) {
+    super.init(size);
 
     double width = size.width;
     double height = size.height;
@@ -97,7 +97,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     _drawBackgroundAnnotations(canvas, size);
     //绘图
     for (var element in charts) {
-      element.draw(controller.offset);
+      element.draw(canvas, size);
     }
     _drawForegroundAnnotations(canvas, size);
     _drawCrosshair(canvas, size);
@@ -538,7 +538,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     if (backgroundAnnotations != null) {
       for (Annotation annotation in backgroundAnnotations!) {
         annotation.init(this);
-        annotation.draw(controller.offset);
+        annotation.draw(canvas, size);
       }
     }
   }
@@ -548,7 +548,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     if (foregroundAnnotations != null) {
       for (Annotation annotation in foregroundAnnotations!) {
         annotation.init(this);
-        annotation.draw(controller.offset);
+        annotation.draw(canvas, size);
       }
     }
   }
