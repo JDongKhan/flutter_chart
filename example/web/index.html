@@ -40,15 +40,24 @@
   <script src="flutter.js" defer></script>
 </head>
 <body>
+  <div id="loading"></div>
   <script>
     window.addEventListener('load', function(ev) {
+      var loadingDiv = document.querySelector('#loading');
+      loadingDiv.textContent = "Loading entrypoint...";
       // Download main.dart.js
       _flutter.loader.loadEntrypoint({
         serviceWorker: {
           serviceWorkerVersion: serviceWorkerVersion,
         },
+        //https://docs.flutter.dev/platform-integration/web/initialization
         onEntrypointLoaded: function(engineInitializer) {
-          engineInitializer.initializeEngine().then(function(appRunner) {
+         loadingDiv.textContent = "Initializing engine...";
+          engineInitializer.initializeEngine({
+            renderer: 'canvaskit',
+            canvasKitBaseUrl: './canvaskit/'
+          }).then(function(appRunner) {
+            loadingDiv.textContent = "Running app...";
             appRunner.runApp();
           });
         }
