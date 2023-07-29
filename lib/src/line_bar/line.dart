@@ -29,6 +29,8 @@ class Line<T> extends ChartBodyRender<T> {
   final bool isCurve;
   //线 画笔
   final Paint paint;
+  //路径之间的的处理规则
+  final PathOperation? operation;
   Line({
     required super.data,
     required super.position,
@@ -42,14 +44,14 @@ class Line<T> extends ChartBodyRender<T> {
     this.isHollow = false,
     this.filled = false,
     this.isCurve = false,
+    this.operation,
   }) : paint = Paint()
           ..strokeWidth = strokeWidth
           ..style = PaintingStyle.stroke;
 
   @override
   void draw(Canvas canvas, Size size) {
-    DimensionsChartCoordinateRender chart =
-        coordinateChart as DimensionsChartCoordinateRender;
+    DimensionsChartCoordinateRender chart = coordinateChart as DimensionsChartCoordinateRender;
     List<ChartShapeState> shapeList = [];
 
     int index = 0;
@@ -77,9 +79,7 @@ class Line<T> extends ChartBodyRender<T> {
 
       //先判断是否选中，此场景是第一次渲染之后点击才有，所以用老数据即可
       List<ChartShapeState>? currentShapeList = bodyState.shapeList;
-      if (chart.controller.localPosition != null &&
-          (currentShapeList?[index].hitTest(chart.controller.localPosition!) ==
-              true)) {
+      if (chart.controller.localPosition != null && (currentShapeList?[index].hitTest(chart.controller.localPosition!) == true)) {
         bodyState.selectedIndex = index;
       }
       //一条数据下可能多条线
@@ -129,9 +129,7 @@ class Line<T> extends ChartBodyRender<T> {
         }
         lineInfo.pointList.add(Offset(xPo, yPo));
         //存放点的位置
-        ChartShapeState shape = ChartShapeState.rect(
-            rect: Rect.fromCenter(
-                center: Offset(xPo, yPo), width: dotRadius, height: dotRadius));
+        ChartShapeState shape = ChartShapeState.rect(rect: Rect.fromCenter(center: Offset(xPo, yPo), width: dotRadius, height: dotRadius));
         shapes.add(shape);
       }
 
@@ -172,8 +170,7 @@ class Line<T> extends ChartBodyRender<T> {
   }
 
   void drawLine(Canvas canvas, Map<int, LineInfo> pathMap) {
-    DimensionsChartCoordinateRender chart =
-        coordinateChart as DimensionsChartCoordinateRender;
+    DimensionsChartCoordinateRender chart = coordinateChart as DimensionsChartCoordinateRender;
     //点
     Paint dotPaint = Paint()..strokeWidth = strokeWidth;
 
@@ -185,6 +182,7 @@ class Line<T> extends ChartBodyRender<T> {
     }
 
     List<Color> dotColorList = dotColors ?? colors;
+    Path? lastPath;
     pathMap.forEach((index, lineInfo) {
       //先画线
       canvas.drawPath(lineInfo.path, paint..color = colors[index]);
@@ -201,23 +199,28 @@ class Line<T> extends ChartBodyRender<T> {
         } else {
           fullPaint!.color = colors[index];
         }
-        canvas.drawPath(lineInfo.path, fullPaint);
+        Path newPath = lineInfo.path;
+        if (operation != null) {
+          if (lastPath != null) {
+            newPath = Path.combine(operation!, newPath, lastPath!);
+          }
+          lastPath = lineInfo.path;
+        }
+        canvas.drawPath(newPath, fullPaint);
       }
-      //先画点
+      //最后画点
       if (dotRadius > 0) {
         for (Offset point in lineInfo.pointList) {
           //先用白色覆盖
           dotPaint.style = PaintingStyle.fill;
-          canvas.drawCircle(Offset(point.dx, point.dy), dotRadius,
-              dotPaint..color = Colors.white);
+          canvas.drawCircle(Offset(point.dx, point.dy), dotRadius, dotPaint..color = Colors.white);
           //再画空心
           if (isHollow) {
             dotPaint.style = PaintingStyle.stroke;
           } else {
             dotPaint.style = PaintingStyle.fill;
           }
-          canvas.drawCircle(Offset(point.dx, point.dy), dotRadius,
-              dotPaint..color = dotColorList[index]);
+          canvas.drawCircle(Offset(point.dx, point.dy), dotRadius, dotPaint..color = dotColorList[index]);
         }
       }
     });

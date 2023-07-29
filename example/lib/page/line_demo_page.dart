@@ -18,8 +18,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
 
   @override
   void initState() {
-    ImageAnnotation.getAssetImage('images/location.png', width: 10, height: 10)
-        .then((value) {
+    ImageAnnotation.getAssetImage('images/location.png', width: 10, height: 10).then((value) {
       setState(() {
         logoImage = value;
       });
@@ -38,21 +37,21 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
       },
       {
         'time': startTime.add(const Duration(days: 3)),
-        'value1': 200,
-        'value2': 400,
+        'value1': 150,
+        'value2': 250,
         'value3': 300,
       },
       {
         'time': startTime.add(const Duration(days: 5)),
-        'value1': 400,
-        'value2': 200,
-        'value3': 100,
+        'value1': 200,
+        'value2': 280,
+        'value3': 300,
       },
       {
         'time': startTime.add(const Duration(days: 8)),
-        'value1': 100,
-        'value2': 300,
-        'value3': 200,
+        'value1': 300,
+        'value2': 450,
+        'value3': 300,
       },
     ];
 
@@ -68,8 +67,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
               coordinateRender: DimensionsChartCoordinateRender(
                 zoomHorizontal: true,
                 // zoomVertical: true,
-                crossHair: const CrossHairStyle(
-                    adjustHorizontal: true, adjustVertical: true),
+                crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
                 //提示的文案信息
                 tooltipFormatter: (list) {
                   return TextSpan(
@@ -94,16 +92,9 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                     double hours = (index % 1.0) * 24;
                     double minutes = (hours % 1.0) * 60;
                     if (hours == 0) {
-                      return startTime
-                          .add(Duration(days: index.toInt()))
-                          .toStringWithFormat(format: 'MM-dd');
+                      return startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'MM-dd');
                     } else {
-                      return startTime
-                          .add(Duration(
-                              days: index.toInt(),
-                              hours: hours.toInt(),
-                              minutes: minutes.toInt()))
-                          .toStringWithFormat(format: 'HH:mm');
+                      return startTime.add(Duration(days: index.toInt(), hours: hours.toInt(), minutes: minutes.toInt())).toStringWithFormat(format: 'HH:mm');
                     }
                   },
                 ),
@@ -137,8 +128,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                 charts: [
                   Line(
                     data: dataList,
-                    position: (item) => parserDateTimeToDayValue(
-                        item['time'] as DateTime, startTime),
+                    position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
                     values: (item) => [
                       item['value1'] as num,
                     ],
@@ -159,15 +149,12 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                         height: 200,
                         child: ChartWidget(
                           coordinateRender: DimensionsChartCoordinateRender(
-                            crossHair: const CrossHairStyle(
-                                adjustHorizontal: true, adjustVertical: true),
-                            margin: const EdgeInsets.only(
-                                left: 40, top: 0, right: 0, bottom: 30),
+                            crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
+                            margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
                             //提示的文案信息
                             tooltipFormatter: (list) {
                               return TextSpan(
-                                text:
-                                    list.map((e) => e.selectedIndex).toString(),
+                                text: list.map((e) => e.selectedIndex).toString(),
                                 style: const TextStyle(
                                   color: Colors.black,
                                 ),
@@ -182,15 +169,12 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                             xAxis: XAxis(
                               count: 7,
                               max: 7,
-                              formatter: (index) => startTime
-                                  .add(Duration(days: index.toInt()))
-                                  .toStringWithFormat(format: 'dd'),
+                              formatter: (index) => startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd'),
                             ),
                             charts: [
                               Line(
                                 data: dataList,
-                                position: (item) => parserDateTimeToDayValue(
-                                    item['time'] as DateTime, startTime),
+                                position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
                                 values: (item) => [
                                   item['value1'] as num,
                                 ],
@@ -217,20 +201,15 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                                   },
                                   positions: [1, 200],
                                 ),
-                              LabelAnnotation(
-                                  positions: [6, 380],
-                                  text: '380',
-                                  scroll: false),
+                              LabelAnnotation(positions: [6, 380], text: '380', scroll: false),
                             ],
                             backgroundAnnotations: [
                               RegionAnnotation(positions: [2.4, 3.3]),
                               RegionAnnotation(positions: [4.4, 5.3]),
                             ],
-                            margin: const EdgeInsets.only(
-                                left: 40, top: 5, right: 0, bottom: 30),
+                            margin: const EdgeInsets.only(left: 40, top: 5, right: 0, bottom: 30),
                             //提示的文案信息
-                            crossHair: const CrossHairStyle(
-                                adjustHorizontal: true, adjustVertical: true),
+                            crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
                             tooltipFormatter: (list) => TextSpan(
                               text: list.map((e) => e.selectedIndex).toString(),
                               style: const TextStyle(
@@ -249,15 +228,76 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                               max: 20,
                               drawGrid: true,
                               drawLine: true,
-                              formatter: (index) => startTime
-                                  .add(Duration(days: index.toInt()))
-                                  .toStringWithFormat(format: 'dd'),
+                              formatter: (index) => startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd'),
                             ),
                             charts: [
                               Line(
                                 data: dataList,
-                                position: (item) => parserDateTimeToDayValue(
-                                    item['time'] as DateTime, startTime),
+                                position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
+                                values: (item) => [
+                                  item['value1'] as num,
+                                  item['value2'] as num,
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const Text('Shaders'),
+                      SizedBox(
+                        // color: Colors.yellow,
+                        height: 200,
+                        child: ChartWidget(
+                          coordinateRender: DimensionsChartCoordinateRender(
+                            zoomHorizontal: true,
+                            margin: const EdgeInsets.only(left: 40, top: 5, right: 0, bottom: 30),
+                            //提示的文案信息
+                            crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
+                            tooltipFormatter: (list) => TextSpan(
+                              text: list.map((e) => e.selectedIndex).toString(),
+                              style: const TextStyle(
+                                color: Colors.black,
+                              ),
+                            ),
+                            yAxis: [
+                              YAxis(
+                                min: 0,
+                                max: 500,
+                                drawGrid: true,
+                              ),
+                            ],
+                            xAxis: XAxis(
+                              count: 7,
+                              max: 20,
+                              drawGrid: true,
+                              drawLine: true,
+                              formatter: (index) => startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd'),
+                            ),
+                            charts: [
+                              Line(
+                                data: dataList,
+                                //需要开启这个属性
+                                filled: true,
+                                operation: PathOperation.xor,
+                                position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
+                                colors: [
+                                  Colors.transparent,
+                                  Colors.blue,
+                                ],
+                                dotColors: [
+                                  Colors.black,
+                                  Colors.black,
+                                ],
+                                // shaders: [
+                                //   ui.Gradient.linear(Offset.zero, Offset(1000, 1000), [
+                                //     Colors.red,
+                                //     Colors.red,
+                                //   ]),
+                                //   ui.Gradient.linear(Offset.zero, Offset(1000, 1000), [
+                                //     Colors.blue,
+                                //     Colors.blue,
+                                //   ]),
+                                // ],
                                 values: (item) => [
                                   item['value1'] as num,
                                   item['value2'] as num,
@@ -273,23 +313,18 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                         height: 200,
                         child: ChartWidget(
                           coordinateRender: DimensionsChartCoordinateRender(
-                            margin: const EdgeInsets.only(
-                                left: 40, top: 5, right: 30, bottom: 30),
+                            margin: const EdgeInsets.only(left: 40, top: 5, right: 30, bottom: 30),
                             //提示的文案信息
-                            crossHair: const CrossHairStyle(
-                                adjustHorizontal: true, adjustVertical: true),
+                            crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
                             tooltipFormatter: (list) {
                               int? selectIndex1 = list[0].selectedIndex;
                               int? selectIndex2 = list[0].selectedIndex;
                               int? selectIndex3 = list[0].selectedIndex;
-                              if (selectIndex1 == null &&
-                                  selectIndex2 == null &&
-                                  selectIndex3 == null) {
+                              if (selectIndex1 == null && selectIndex2 == null && selectIndex3 == null) {
                                 return null;
                               }
                               return TextSpan(
-                                text:
-                                    list.map((e) => e.selectedIndex).toString(),
+                                text: list.map((e) => e.selectedIndex).toString(),
                                 style: const TextStyle(
                                   color: Colors.black,
                                 ),
@@ -308,23 +343,19 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                               count: 7,
                               max: 20,
                               drawLine: false,
-                              formatter: (index) => startTime
-                                  .add(Duration(days: index.toInt()))
-                                  .toStringWithFormat(format: 'dd'),
+                              formatter: (index) => startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd'),
                             ),
                             charts: [
                               Bar(
                                 color: Colors.green,
                                 data: dataList,
                                 yAxisPosition: 1,
-                                position: (item) => parserDateTimeToDayValue(
-                                    item['time'] as DateTime, startTime),
+                                position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
                                 value: (item) => item['value1'],
                               ),
                               Line(
                                 data: dataList,
-                                position: (item) => parserDateTimeToDayValue(
-                                    item['time'] as DateTime, startTime),
+                                position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
                                 values: (item) => [
                                   item['value1'] as num,
                                 ],
@@ -332,8 +363,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                               Line(
                                 colors: [Colors.green],
                                 data: dataList,
-                                position: (item) => parserDateTimeToDayValue(
-                                    item['time'] as DateTime, startTime),
+                                position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
                                 values: (item) => [
                                   item['value2'] as num,
                                 ],
