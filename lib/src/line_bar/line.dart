@@ -185,7 +185,11 @@ class Line<T> extends ChartBodyRender<T> {
     Path? lastPath;
     pathMap.forEach((index, lineInfo) {
       //先画线
-      canvas.drawPath(lineInfo.path, paint..color = colors[index]);
+      if (shaders != null && filled == false) {
+        canvas.drawPath(lineInfo.path, paint..shader = shaders![index]);
+      } else {
+        canvas.drawPath(lineInfo.path, paint..color = colors[index]);
+      }
       //然后填充颜色
       if (filled == true) {
         Offset last = lineInfo.pointList.last;
