@@ -349,15 +349,15 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                                   ui.Gradient.linear(
                                     Offset.zero,
                                     const Offset(0.0, 10.0),
-                                    <Color>[Colors.black, Colors.yellow, Colors.yellow, Colors.black],
+                                    <Color>[Colors.black, Colors.yellow, Colors.yellow, Colors.yellow],
                                     <double>[0.25, 0.25, 0.75, 0.75],
                                     TileMode.repeated,
                                   ),
                                   ui.Gradient.linear(
                                     Offset.zero,
                                     const Offset(0, 200),
-                                    <Color>[Colors.blue, Colors.blue, Colors.yellow, Colors.yellow, Colors.yellow],
-                                    <double>[0.25, 0.25, 0.75, 0.75, 1],
+                                    <Color>[Colors.blue, Colors.yellow, Colors.yellow, Colors.yellow],
+                                    <double>[0.25, 0.25, 0.75, 0.75],
                                     TileMode.clamp,
                                   ),
                                 ],
