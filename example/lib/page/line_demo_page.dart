@@ -310,65 +310,68 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                       SizedBox(
                         // color: Colors.yellow,
                         height: 200,
-                        child: ChartWidget(
-                          coordinateRender: DimensionsChartCoordinateRender(
-                            zoomHorizontal: true,
-                            margin: const EdgeInsets.only(left: 40, top: 5, right: 0, bottom: 30),
-                            //提示的文案信息
-                            crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
-                            tooltipFormatter: (list) => TextSpan(
-                              text: list.map((e) => e.selectedIndex).toString(),
-                              style: const TextStyle(
-                                color: Colors.black,
+                        child: LayoutBuilder(builder: (context, cs) {
+                          return ChartWidget(
+                            coordinateRender: DimensionsChartCoordinateRender(
+                              zoomHorizontal: true,
+                              margin: const EdgeInsets.only(left: 40, top: 5, right: 0, bottom: 30),
+                              //提示的文案信息
+                              crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
+                              tooltipFormatter: (list) => TextSpan(
+                                text: list.map((e) => e.selectedIndex).toString(),
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                ),
                               ),
-                            ),
-                            yAxis: [
-                              YAxis(
-                                min: 0,
-                                max: 500,
+                              yAxis: [
+                                YAxis(
+                                  min: 0,
+                                  max: 500,
+                                  drawGrid: true,
+                                ),
+                              ],
+                              xAxis: XAxis(
+                                count: 7,
+                                max: 20,
                                 drawGrid: true,
+                                drawLine: true,
+                                formatter: (index) => startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd'),
                               ),
-                            ],
-                            xAxis: XAxis(
-                              count: 7,
-                              max: 20,
-                              drawGrid: true,
-                              drawLine: true,
-                              formatter: (index) => startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd'),
+                              charts: [
+                                Line(
+                                  data: dataList,
+                                  //需要开启这个属性
+                                  position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
+                                  dotColors: [
+                                    Colors.black,
+                                    Colors.black,
+                                  ],
+                                  shaders: [
+                                    //https://juejin.cn/post/6938371371760091150 具体如何使用可参考此文章
+                                    ui.Gradient.linear(
+                                      Offset.zero,
+                                      const Offset(0.0, 10.0),
+                                      <Color>[Colors.black, Colors.yellow, Colors.yellow, Colors.yellow],
+                                      <double>[0.25, 0.25, 0.75, 0.75],
+                                      TileMode.repeated,
+                                    ),
+                                    ui.Gradient.linear(
+                                      Alignment.topCenter.withinRect(Rect.fromLTWH(0, 0, cs.maxWidth, cs.maxHeight)),
+                                      Alignment.bottomCenter.withinRect(Rect.fromLTWH(0, 0, cs.maxWidth, cs.maxHeight)),
+                                      <Color>[Colors.blue, Colors.yellow, Colors.yellow, Colors.yellow],
+                                      <double>[0.25, 0.25, 0.75, 0.75],
+                                      TileMode.clamp,
+                                    ),
+                                  ],
+                                  values: (item) => [
+                                    item['value1'] as num,
+                                    item['value2'] as num,
+                                  ],
+                                ),
+                              ],
                             ),
-                            charts: [
-                              Line(
-                                data: dataList,
-                                //需要开启这个属性
-                                position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
-                                dotColors: [
-                                  Colors.black,
-                                  Colors.black,
-                                ],
-                                shaders: [
-                                  ui.Gradient.linear(
-                                    Offset.zero,
-                                    const Offset(0.0, 10.0),
-                                    <Color>[Colors.black, Colors.yellow, Colors.yellow, Colors.yellow],
-                                    <double>[0.25, 0.25, 0.75, 0.75],
-                                    TileMode.repeated,
-                                  ),
-                                  ui.Gradient.linear(
-                                    Offset.zero,
-                                    const Offset(0, 200),
-                                    <Color>[Colors.blue, Colors.yellow, Colors.yellow, Colors.yellow],
-                                    <double>[0.25, 0.25, 0.75, 0.75],
-                                    TileMode.clamp,
-                                  ),
-                                ],
-                                values: (item) => [
-                                  item['value1'] as num,
-                                  item['value2'] as num,
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
+                          );
+                        }),
                       ),
                       const Text('Multiple data,Multiple Line'),
                       SizedBox(
