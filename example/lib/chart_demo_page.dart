@@ -3,6 +3,8 @@ import 'package:example/page/line_demo_page.dart';
 import 'package:example/page/pie_demo_page.dart';
 import 'package:flutter/material.dart';
 
+import 'page/line_scale_demo_page.dart';
+
 /// @author JD
 class ChartDemoPage extends StatelessWidget {
   ChartDemoPage({Key? key}) : super(key: key);
@@ -44,6 +46,16 @@ class ChartDemoPage extends StatelessWidget {
               );
             },
             child: const Text('Pie'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => LineChartScaleDemoPage(),
+                ),
+              );
+            },
+            child: const Text('scale line'),
           ),
         ],
       ),
