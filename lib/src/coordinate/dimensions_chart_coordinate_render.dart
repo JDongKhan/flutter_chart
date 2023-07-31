@@ -13,10 +13,8 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
   final List<YAxis> yAxis;
   final XAxis xAxis;
   DimensionsChartCoordinateRender({
-    super.margin =
-        const EdgeInsets.only(left: 30, top: 0, right: 0, bottom: 25),
-    super.padding =
-        const EdgeInsets.only(left: 30, top: 0, right: 0, bottom: 0),
+    super.margin = const EdgeInsets.only(left: 30, top: 0, right: 0, bottom: 25),
+    super.padding = const EdgeInsets.only(left: 30, top: 0, right: 0, bottom: 0),
     required super.charts,
     super.backgroundAnnotations,
     super.foregroundAnnotations,
@@ -42,8 +40,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     double height = size.height;
     int count = xAxis.count;
     //每格的宽度，用于控制一屏最多显示个数
-    double density =
-        (width - contentMargin.horizontal) / count / xAxis.interval;
+    double density = (width - contentMargin.horizontal) / count / xAxis.interval;
     //x轴密度 即1 value 等于多少尺寸
     if (zoomHorizontal) {
       xAxis.density = density * controller.zoom;
@@ -88,8 +85,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     // canvas.restore();
 
     // //防止超过y轴
-    canvas.clipRect(Rect.fromLTWH(
-        margin.left, 0, size.width - margin.horizontal, size.height));
+    canvas.clipRect(Rect.fromLTWH(margin.left, 0, size.width - margin.horizontal, size.height));
     _drawXAxis(canvas, size);
     _drawBackgroundAnnotations(canvas, size);
     //绘图
@@ -122,18 +118,15 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
         top = transformUtils.withYOffset(top);
         //绘制文本
         if (i == count) {
-          _drawYTextPaint(
-              yA, canvas, text, yA.textStyle, yAxisIndex > 0, left, top, false);
+          _drawYTextPaint(yA, canvas, text, yA.textStyle, yAxisIndex > 0, left, top, false);
         } else {
-          _drawYTextPaint(
-              yA, canvas, text, yA.textStyle, yAxisIndex > 0, left, top, true);
+          _drawYTextPaint(yA, canvas, text, yA.textStyle, yAxisIndex > 0, left, top, true);
         }
         //绘制格子线  先放一起，以免再次遍历
         if (yA.drawGrid) {
           Path? kDashPath = yA._gridLine[i];
           if (kDashPath == null) {
-            kDashPath = _dashPath(
-                Offset(left, top), Offset(size.width - margin.right, top));
+            kDashPath = _dashPath(Offset(left, top), Offset(size.width - margin.right, top));
             yA._gridLine[i] = kDashPath;
           }
           canvas.drawPath(kDashPath, yA.paint);
@@ -144,8 +137,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
       }
       //再画实线
       if (yA.drawLine) {
-        canvas.drawLine(Offset(left, margin.top),
-            Offset(left, size.height - margin.bottom), yA.paint);
+        canvas.drawLine(Offset(left, margin.top), Offset(left, size.height - margin.bottom), yA.paint);
       }
 
       yAxisIndex++;
@@ -157,12 +149,10 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     Path path = Path()
       ..moveTo(p1.dx, p1.dy)
       ..lineTo(p2.dx, p2.dy);
-    return dashPath(path,
-        dashArray: CircularIntervalList([3, 3]), dashOffset: null);
+    return dashPath(path, dashArray: CircularIntervalList([3, 3]), dashOffset: null);
   }
 
-  void _drawYTextPaint(YAxis yAxis, Canvas canvas, String text,
-      TextStyle textStyle, bool right, double left, double top, bool middle) {
+  void _drawYTextPaint(YAxis yAxis, Canvas canvas, String text, TextStyle textStyle, bool right, double left, double top, bool middle) {
     var textPainter = yAxis._textPainter[text];
     if (textPainter == null) {
       textPainter = TextPainter(
@@ -242,30 +232,24 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
       if (xAxis.drawGrid) {
         Path? kDashPath = xAxis._gridLine[i];
         if (kDashPath == null) {
-          kDashPath = _dashPath(Offset(left, margin.top),
-              Offset(left, size.height - margin.bottom));
+          kDashPath = _dashPath(Offset(left, margin.top), Offset(left, size.height - margin.bottom));
           xAxis._gridLine[i] = kDashPath;
         }
         canvas.drawPath(kDashPath, paint);
       }
 
       if (xAxis.drawLine && xAxis.drawDivider) {
-        canvas.drawLine(Offset(left, size.height - margin.bottom),
-            Offset(left, size.height - margin.bottom - 3), paint);
+        canvas.drawLine(Offset(left, size.height - margin.bottom), Offset(left, size.height - margin.bottom - 3), paint);
       }
     }
 
     //划线
     if (xAxis.drawLine) {
-      canvas.drawLine(
-          Offset(margin.left, size.height - margin.bottom),
-          Offset(size.width - margin.right, size.height - margin.bottom),
-          paint);
+      canvas.drawLine(Offset(margin.left, size.height - margin.bottom), Offset(size.width - margin.right, size.height - margin.bottom), paint);
     }
   }
 
-  void _drawXTextPaint(
-      Canvas canvas, String text, TextStyle textStyle, Size size, double left) {
+  void _drawXTextPaint(Canvas canvas, String text, TextStyle textStyle, Size size, double left) {
     var textPainter = xAxis._textPainter[text];
     if (textPainter == null) {
       //layout耗性能，只做一次即可
@@ -349,8 +333,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
       Path path = Path()
         ..moveTo(p1.dx, p1.dy)
         ..lineTo(p2.dx, p2.dy);
-      Path kDashPath = dashPath(path,
-          dashArray: CircularIntervalList([3, 3]), dashOffset: null);
+      Path kDashPath = dashPath(path, dashArray: CircularIntervalList([3, 3]), dashOffset: null);
       canvas.drawPath(kDashPath, paint);
     }
     //水平
@@ -360,8 +343,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
       Path path1 = Path()
         ..moveTo(p11.dx, p11.dy)
         ..lineTo(p21.dx, p21.dy);
-      Path kDashPath = dashPath(path1,
-          dashArray: CircularIntervalList([3, 3]), dashOffset: null);
+      Path kDashPath = dashPath(path1, dashArray: CircularIntervalList([3, 3]), dashOffset: null);
       canvas.drawPath(kDashPath, paint);
     }
   }
@@ -413,33 +395,23 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     const bool constrained = true;
     Rect kSafeArea;
     if (safeArea != null) {
-      kSafeArea = Rect.fromLTRB(safeArea!.left, safeArea!.top,
-          size.width - safeArea!.right, size.height - safeArea!.bottom);
+      kSafeArea = Rect.fromLTRB(safeArea!.left, safeArea!.top, size.width - safeArea!.right, size.height - safeArea!.bottom);
     } else {
-      kSafeArea = Rect.fromLTRB(margin.left, margin.top,
-          size.width - margin.right, size.height - margin.bottom);
+      kSafeArea = Rect.fromLTRB(margin.left, margin.top, size.width - margin.right, size.height - margin.bottom);
     }
     if (constrained) {
-      final horizontalAdjust = windowRect.left < kSafeArea.left
-          ? (kSafeArea.left - windowRect.left)
-          : (windowRect.right > kSafeArea.right
-              ? (kSafeArea.right - windowRect.right)
-              : 0.0);
-      final verticalAdjust = windowRect.top < kSafeArea.top
-          ? (kSafeArea.top - windowRect.top)
-          : (windowRect.bottom > kSafeArea.bottom
-              ? (kSafeArea.bottom - windowRect.bottom)
-              : 0.0);
+      final horizontalAdjust =
+          windowRect.left < kSafeArea.left ? (kSafeArea.left - windowRect.left) : (windowRect.right > kSafeArea.right ? (kSafeArea.right - windowRect.right) : 0.0);
+      final verticalAdjust =
+          windowRect.top < kSafeArea.top ? (kSafeArea.top - windowRect.top) : (windowRect.bottom > kSafeArea.bottom ? (kSafeArea.bottom - windowRect.bottom) : 0.0);
       if (horizontalAdjust != 0 || verticalAdjust != 0) {
         windowRect = windowRect.translate(horizontalAdjust, verticalAdjust);
-        textPaintPoint =
-            textPaintPoint.translate(horizontalAdjust, verticalAdjust);
+        textPaintPoint = textPaintPoint.translate(horizontalAdjust, verticalAdjust);
       }
     }
 
     const Radius radius = Radius.circular(3.0);
-    Path windowPath = Path()
-      ..addRRect(RRect.fromRectAndRadius(windowRect, radius));
+    Path windowPath = Path()..addRRect(RRect.fromRectAndRadius(windowRect, radius));
 
     Paint paint = Paint()
       ..color = Colors.white
@@ -597,8 +569,11 @@ typedef AxisDivideCountAtAmplify = int? Function(double);
 class XAxis {
   //方便计算，count代表一屏显示的格子数
   final int count;
+  //每个格子代表的值
   final num interval;
+  //x轴最大值， 最大格子数 = max / interval, 如果最大格子数 == count,则不会滚动
   final num? max;
+  //x轴文案格式化
   final AxisFormatter? formatter;
   //每1个逻辑value代表多宽
   late double density;
