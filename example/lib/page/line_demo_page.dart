@@ -318,10 +318,15 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                         );
                       },
                       yAxis: [
-                        YAxis(min: 0, max: 500, drawGrid: true),
+                        YAxis(
+                          min: 0,
+                          max: 500,
+                          drawGrid: true,
+                        ),
                         YAxis(
                           min: 0,
                           max: 400,
+                          left: 2,
                           drawDivider: false,
                           offset: (size) => Offset(size.width - 70, 0),
                         ),

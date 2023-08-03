@@ -118,9 +118,9 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
         top = transformUtils.withYOffset(top);
         //绘制文本
         if (i == count) {
-          _drawYTextPaint(yA, canvas, text, yA.textStyle, yAxisIndex > 0, left, top, false);
+          _drawYTextPaint(yA, canvas, text, yA.textStyle, yAxisIndex > 0, left + yA.left, top, false);
         } else {
-          _drawYTextPaint(yA, canvas, text, yA.textStyle, yAxisIndex > 0, left, top, true);
+          _drawYTextPaint(yA, canvas, text, yA.textStyle, yAxisIndex > 0, left + yA.left, top, true);
         }
         //绘制格子线  先放一起，以免再次遍历
         if (yA.drawGrid) {
@@ -634,6 +634,8 @@ class YAxis {
   final TextStyle textStyle;
   //最边上线的颜色
   final Color lineColor;
+  //文字距左边的间隙
+  final double left;
 
   YAxis({
     this.enable = true,
@@ -647,6 +649,7 @@ class YAxis {
     this.textStyle = const TextStyle(fontSize: 12, color: Colors.grey),
     this.drawDivider = true,
     this.offset,
+    this.left = 0,
   });
 
   final Map<int, Path> _gridLine = {};
