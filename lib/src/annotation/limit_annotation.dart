@@ -26,7 +26,7 @@ class LimitAnnotation extends Annotation {
     if (coordinateChart is DimensionsChartCoordinateRender) {
       DimensionsChartCoordinateRender chart = coordinateChart;
       num po = limit;
-      double itemHeight = po * chart.yAxis[0].density;
+      double itemHeight = chart.yAxis[yAxisPosition].relativeHeight(po);
       Offset start = Offset(
         chart.padding.left,
         chart.transformUtils.transformY(
@@ -51,8 +51,7 @@ class LimitAnnotation extends Annotation {
         ..moveTo(start.dx, start.dy)
         ..lineTo(end.dx, end.dy);
 
-      Path kDashPath = dashPath(path,
-          dashArray: CircularIntervalList([3, 3]), dashOffset: null);
+      Path kDashPath = dashPath(path, dashArray: CircularIntervalList([3, 3]), dashOffset: null);
       _path = kDashPath;
     }
   }

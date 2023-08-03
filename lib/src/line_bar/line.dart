@@ -92,7 +92,7 @@ class Line<T> extends ChartBodyRender<T> {
         }
         //计算点的位置
         num value = yvs[valueIndex];
-        double yPo = bottom - (value * chart.yAxis[yAxisPosition].density);
+        double yPo = bottom - chart.yAxis[yAxisPosition].relativeHeight(value);
         yPo = chart.transformUtils.withYOffset(yPo);
         if (index == 0) {
           lineInfo.path.moveTo(xPo, yPo);

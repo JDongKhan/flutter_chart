@@ -27,8 +27,7 @@ class ImageAnnotation extends Annotation {
   //获取网络图片 返回ui.Image
   static Future<ui.Image> getNetImage(String url, {width, height}) async {
     ByteData data = await NetworkAssetBundle(Uri.parse(url)).load(url);
-    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
-        targetWidth: width, targetHeight: height);
+    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(), targetWidth: width, targetHeight: height);
     ui.FrameInfo fi = await codec.getNextFrame();
     return fi.image;
   }
@@ -36,8 +35,7 @@ class ImageAnnotation extends Annotation {
   //获取本地图片 返回ui.Image
   static Future<ui.Image> getAssetImage(String asset, {width, height}) async {
     ByteData data = await rootBundle.load(asset);
-    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
-        targetWidth: width, targetHeight: height);
+    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(), targetWidth: width, targetHeight: height);
     ui.FrameInfo fi = await codec.getNextFrame();
     return fi.image;
   }
@@ -56,14 +54,13 @@ class ImageAnnotation extends Annotation {
     }
 
     if (coordinateChart is DimensionsChartCoordinateRender) {
-      DimensionsChartCoordinateRender chart =
-          coordinateChart as DimensionsChartCoordinateRender;
+      DimensionsChartCoordinateRender chart = coordinateChart as DimensionsChartCoordinateRender;
       Offset ost;
       if (positions != null) {
         num xPo = positions![0];
         num yPo = positions![1];
         double itemWidth = xPo * chart.xAxis.density;
-        double itemHeight = yPo * chart.yAxis[yAxisPosition].density;
+        double itemHeight = chart.yAxis[yAxisPosition].relativeHeight(yPo);
         ost = chart.transformUtils.withZoomOffset(
           Offset(
             chart.transformUtils.transformX(itemWidth, containPadding: true),
@@ -87,8 +84,7 @@ class ImageAnnotation extends Annotation {
         width: image.width.toDouble(),
         height: image.height.toDouble(),
       );
-      if (chart.controller.localPosition != null &&
-          rect.contains(chart.controller.localPosition!)) {
+      if (chart.controller.localPosition != null && rect.contains(chart.controller.localPosition!)) {
         Future.microtask(() => onTap?.call(this));
       }
     }

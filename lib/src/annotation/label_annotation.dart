@@ -56,14 +56,13 @@ class LabelAnnotation extends Annotation {
     }
 
     if (coordinateChart is DimensionsChartCoordinateRender) {
-      DimensionsChartCoordinateRender chart =
-          coordinateChart as DimensionsChartCoordinateRender;
+      DimensionsChartCoordinateRender chart = coordinateChart as DimensionsChartCoordinateRender;
       Offset ost;
       if (positions != null) {
         num xPo = positions![0];
         num yPo = positions![1];
         double itemWidth = xPo * chart.xAxis.density;
-        double itemHeight = yPo * chart.yAxis[yAxisPosition].density;
+        double itemHeight = chart.yAxis[yAxisPosition].relativeHeight(yPo);
         double left = chart.transformUtils.transformX(
           itemWidth,
           containPadding: true,

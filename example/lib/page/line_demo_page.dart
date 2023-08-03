@@ -140,7 +140,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                       ),
                       yAxis: [
                         YAxis(
-                          min: 0,
+                          min: 100,
                           max: 500,
                           drawGrid: true,
                         ),

@@ -663,8 +663,12 @@ class YAxis {
 
   void _init(Size size) {}
 
-  num heightOf(num value) {
-    return density * value;
+  num relativeValue(num value) {
+    return value - min;
+  }
+
+  double relativeHeight(num value) {
+    return (value - min) * density;
   }
 }
 
