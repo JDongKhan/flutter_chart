@@ -104,7 +104,6 @@ LineChart
 ```dart
        
  SizedBox(
-// color: Colors.yellow,
 height: 200,
 child: ChartWidget(
     coordinateRender: LineBarChartCoordinateRender(
