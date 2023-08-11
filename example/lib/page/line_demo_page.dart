@@ -128,7 +128,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                                   return PreferredSize(
                                     preferredSize: const Size(60, 60),
                                     child: Container(
-                                      color: Colors.red,
+                                      padding: const EdgeInsets.all(8),
                                       child: Text('1111'),
                                     ),
                                   );
@@ -151,7 +151,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                         return PreferredSize(
                           preferredSize: const Size(60, 60),
                           child: Container(
-                            color: Colors.red,
+                            padding: const EdgeInsets.all(8),
                             child: Text(body.map((e) => e.selectedIndex).toString()),
                           ),
                         );
