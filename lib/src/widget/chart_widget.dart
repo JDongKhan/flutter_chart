@@ -117,7 +117,8 @@ class _ChartWidgetState extends State<ChartWidget> {
         }
         Offset offset = Offset(_controller.localPosition?.dx ?? 0, _controller.localPosition?.dy ?? 0);
 
-        PreferredSizeWidget? widget = baseChart.tooltipWidgetRenderer!.call(context, _controller.childrenState);
+        PreferredSizeWidget? widget = _controller.tooltipWidgetBuilder?.call(context);
+        widget ??= baseChart.tooltipWidgetRenderer!.call(context, _controller.childrenState);
 
         if (widget == null) {
           return const SizedBox.shrink();
@@ -268,19 +269,14 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
 
   @override
   Widget build(BuildContext context) {
-    //重置
-    for (var element in widget.controller.childrenState) {
-      element.selectedIndex = null;
-    }
     return TapRegion(
       onTapOutside: _defaultOnTapOutside,
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTapUp: (TapUpDetails details) {
+          widget.controller.clear();
           if (!_checkForegroundAnnotationsEvent(details.localPosition)) {
             widget.controller.localPosition = details.localPosition;
-          } else {
-            widget.controller.localPosition = null;
           }
           FocusScope.of(context).requestFocus(_focusNode); // 自动聚焦
         },
@@ -288,11 +284,9 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
           _beforeZoom = zoom;
         },
         onScaleUpdate: (ScaleUpdateDetails details) {
-          widget.controller.localPosition = null;
+          widget.controller.clear();
           //缩放
           if (details.scale != 1) {
-            //先清除手势
-            widget.controller.clearPosition();
             if (widget.chartCoordinateRender.zoomHorizontal || widget.chartCoordinateRender.zoomVertical) {
               zoom = _beforeZoom * details.scale;
               double minZoom = widget.chartCoordinateRender.minZoom ?? 0;
@@ -358,6 +352,10 @@ class _ChartPainter extends CustomPainter {
   bool _init = false;
   @override
   void paint(Canvas canvas, Size size) {
+    //重置
+    for (var element in chart.controller.childrenState) {
+      element.selectedIndex = null;
+    }
     Rect clipRect = Offset.zero & size;
     canvas.clipRect(clipRect);
     //初始化

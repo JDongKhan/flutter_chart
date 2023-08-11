@@ -152,16 +152,12 @@ class Line<T> extends ChartBodyRender<T> {
     //开启后可查看热区是否正确
     // int i = 0;
     // for (var element in shapeList) {
-    //   Rect newRect = Rect.fromLTRB(
-    //       element.getHotRect()!.left + 1,
-    //       element.getHotRect()!.top + 1,
-    //       element.getHotRect()!.right - 1,
-    //       element.getHotRect()!.bottom);
+    //   Rect newRect = Rect.fromLTRB(element.getHotRect()!.left + 1, element.getHotRect()!.top + 1, element.getHotRect()!.right - 1, element.getHotRect()!.bottom);
     //   Paint newPaint = Paint()
     //     ..color = colors10[i % colors10.length]
     //     ..strokeWidth = strokeWidth
     //     ..style = PaintingStyle.stroke;
-    //   chart.canvas.drawRect(newRect, newPaint);
+    //   canvas.drawRect(newRect, newPaint);
     //   i++;
     // }
     //开始绘制了

@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 
 import 'chart_shape_state.dart';
 
+typedef AnnotationTooltipWidgetRenderer = PreferredSizeWidget? Function(BuildContext context);
+
 //数据共享，便于各个节点使用
 class ChartController extends ChangeNotifier {
   Offset? _localPosition;
 
+  //点击的位置信息
   set localPosition(value) {
     if (value != _localPosition) {
       _localPosition = value;
@@ -37,11 +40,38 @@ class ChartController extends ChangeNotifier {
 
   void refresh() {}
 
-  void clearPosition() {
+  void clear() {
+    bool needNotify = false;
+    if (tooltipContent != null) {
+      tooltipContent = null;
+      needNotify = true;
+    }
+    if (tooltipWidgetBuilder != null) {
+      tooltipWidgetBuilder = null;
+      needNotify = true;
+    }
     if (localPosition != null) {
       localPosition = null;
+      needNotify = true;
+    }
+    if (needNotify) {
       notifyTooltip();
     }
+  }
+
+  //自定义的内容 使用canvas渲染tooltip
+  InlineSpan? tooltipContent;
+  void showTooltip({required InlineSpan content, required Offset position}) {
+    tooltipContent = content;
+    localPosition = position;
+  }
+
+  //使用widget渲染tooltip
+  AnnotationTooltipWidgetRenderer? tooltipWidgetBuilder;
+  void showTooltipBuilder({required AnnotationTooltipWidgetRenderer builder, required Offset position}) {
+    tooltipWidgetBuilder = builder;
+    localPosition = position;
+    notifyTooltip();
   }
 
   void notifyTooltip() {

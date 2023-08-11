@@ -18,7 +18,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
 
   @override
   void initState() {
-    ImageAnnotation.getAssetImage('images/location.png', width: 10, height: 10).then((value) {
+    ImageAnnotation.getAssetImage('images/location.png', width: 20, height: 20).then((value) {
       setState(() {
         logoImage = value;
       });
@@ -54,6 +54,8 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
         'value3': 300,
       },
     ];
+
+    final ChartController controller = ChartController();
 
     return Scaffold(
       appBar: AppBar(
@@ -110,6 +112,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                   // color: Colors.yellow,
                   height: 200,
                   child: ChartWidget(
+                    controller: controller,
                     coordinateRender: DimensionsChartCoordinateRender(
                       zoomHorizontal: true,
                       foregroundAnnotations: [
@@ -120,6 +123,18 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                             image: logoImage!,
                             onTap: (ann) {
                               print('点击事件');
+                              controller.showTooltipBuilder(
+                                builder: (c) {
+                                  return PreferredSize(
+                                    preferredSize: const Size(60, 60),
+                                    child: Container(
+                                      color: Colors.red,
+                                      child: Text('1111'),
+                                    ),
+                                  );
+                                },
+                                position: ann.location!,
+                              );
                             },
                             positions: [1, 200],
                           ),
@@ -132,12 +147,15 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                       margin: const EdgeInsets.only(left: 40, top: 5, right: 0, bottom: 30),
                       //提示的文案信息
                       crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
-                      tooltipFormatter: (list) => TextSpan(
-                        text: list.map((e) => e.selectedIndex).toString(),
-                        style: const TextStyle(
-                          color: Colors.black,
-                        ),
-                      ),
+                      tooltipWidgetRenderer: (BuildContext context, List<CharBodyState> body) {
+                        return PreferredSize(
+                          preferredSize: const Size(60, 60),
+                          child: Container(
+                            color: Colors.red,
+                            child: Text(body.map((e) => e.selectedIndex).toString()),
+                          ),
+                        );
+                      },
                       yAxis: [
                         YAxis(
                           min: 100,

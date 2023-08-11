@@ -369,11 +369,16 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
       return;
     }
 
-    InlineSpan? textSpan = tooltipFormatter?.call(controller.childrenState);
+    InlineSpan? textSpan = controller.tooltipContent;
+    textSpan ??= tooltipFormatter?.call(controller.childrenState);
+    _drawTooltipWithTextSpan(canvas, anchor, textSpan);
+  }
+
+  //提示文案
+  void _drawTooltipWithTextSpan(Canvas canvas, Offset anchor, InlineSpan? textSpan) {
     if (textSpan == null) {
       return;
     }
-
     final textPainter = TextPainter(
       text: textSpan,
       textDirection: TextDirection.ltr,
