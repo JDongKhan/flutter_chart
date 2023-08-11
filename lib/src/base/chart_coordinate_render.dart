@@ -64,6 +64,8 @@ abstract class ChartCoordinateRender {
   //用widget弹框来处理点击
   final TooltipWidgetRenderer? tooltipWidgetRenderer;
   //自定义提示文案
+  //目前即支持canvas画tooltip，也支持widget画，而canvas画自定义内容受限，所以后面不再使用该方法
+  @Deprecated('即将废弃')
   final ChartTooltipFormatter? tooltipFormatter;
   //十字准星样式
   final CrossHairStyle crossHair;
@@ -89,11 +91,7 @@ abstract class ChartCoordinateRender {
     this.foregroundAnnotations,
     this.safeArea,
     this.crossHair = const CrossHairStyle(),
-  }) : contentMargin = EdgeInsets.fromLTRB(
-            margin.left + padding.left,
-            margin.top + padding.top,
-            margin.right + padding.right,
-            margin.bottom + padding.bottom);
+  }) : contentMargin = EdgeInsets.fromLTRB(margin.left + padding.left, margin.top + padding.top, margin.right + padding.right, margin.bottom + padding.bottom);
 
   //共享数据
   late ChartController controller;
@@ -103,8 +101,7 @@ abstract class ChartCoordinateRender {
   //图形内容的外边距信息
   EdgeInsets contentMargin;
   //未处理的坐标  原点在左上角
-  Rect get contentRect => Rect.fromLTRB(contentMargin.left, contentMargin.top,
-      size.width - contentMargin.left, size.height - contentMargin.bottom);
+  Rect get contentRect => Rect.fromLTRB(contentMargin.left, contentMargin.top, size.width - contentMargin.left, size.height - contentMargin.bottom);
 
   void init(Size size) {
     this.size = size;

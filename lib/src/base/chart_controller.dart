@@ -61,6 +61,8 @@ class ChartController extends ChangeNotifier {
 
   //自定义的内容 使用canvas渲染tooltip
   InlineSpan? tooltipContent;
+  //目前即支持canvas画tooltip，也支持widget画，而canvas画自定义内容受限，所以后面不再使用该方法
+  @Deprecated('即将废弃')
   void showTooltip({required InlineSpan content, required Offset position}) {
     tooltipContent = content;
     localPosition = position;
