@@ -2,6 +2,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_chart/src/annotation/annotation.dart';
 
 import '../base/chart_body_render.dart';
 import '../base/chart_controller.dart';
@@ -9,10 +10,8 @@ import '../base/chart_coordinate_render.dart';
 
 /// @author JD
 ///
-typedef TooltipRenderer = void Function(
-    Canvas, Size size, Offset anchor, List<CharBodyState> indexs);
-typedef TooltipWidgetRenderer = PreferredSizeWidget? Function(
-    BuildContext context, List<CharBodyState>);
+typedef TooltipRenderer = void Function(Canvas, Size size, Offset anchor, List<CharBodyState> indexs);
+typedef TooltipWidgetRenderer = PreferredSizeWidget? Function(BuildContext context, List<CharBodyState>);
 // typedef ChartCoordinateRenderBuilder = ChartCoordinateRender Function();
 
 //本widget只是起到提供Canvas的功能，不支持任何传参，避免参数来回传递导致难以维护以及混乱，需要自定义可自行去对应渲染器
@@ -116,11 +115,9 @@ class _ChartWidgetState extends State<ChartWidget> {
         if (_controller.localPosition == null) {
           return const SizedBox.shrink();
         }
-        Offset offset = Offset(_controller.localPosition?.dx ?? 0,
-            _controller.localPosition?.dy ?? 0);
+        Offset offset = Offset(_controller.localPosition?.dx ?? 0, _controller.localPosition?.dy ?? 0);
 
-        PreferredSizeWidget? widget = baseChart.tooltipWidgetRenderer!
-            .call(context, _controller.childrenState);
+        PreferredSizeWidget? widget = baseChart.tooltipWidgetRenderer!.call(context, _controller.childrenState);
 
         if (widget == null) {
           return const SizedBox.shrink();
@@ -129,8 +126,7 @@ class _ChartWidgetState extends State<ChartWidget> {
         //边界处理
         Rect rect = _adjustRect(
           baseChart,
-          Rect.fromLTWH(offset.dx, offset.dy, widget.preferredSize.width,
-              widget.preferredSize.height),
+          Rect.fromLTWH(offset.dx, offset.dy, widget.preferredSize.width, widget.preferredSize.height),
           size,
         );
 
@@ -163,24 +159,14 @@ class _ChartWidgetState extends State<ChartWidget> {
   ) {
     Rect kSafeArea;
     if (baseChart.safeArea != null) {
-      kSafeArea = Rect.fromLTRB(
-          baseChart.safeArea!.left,
-          baseChart.safeArea!.top,
-          size.width - baseChart.safeArea!.right,
-          size.height - baseChart.safeArea!.bottom);
+      kSafeArea = Rect.fromLTRB(baseChart.safeArea!.left, baseChart.safeArea!.top, size.width - baseChart.safeArea!.right, size.height - baseChart.safeArea!.bottom);
     } else {
       kSafeArea = Rect.fromLTRB(0, 0, size.width, size.height);
     }
-    final horizontalAdjust = windowRect.left < kSafeArea.left
-        ? (kSafeArea.left - windowRect.left)
-        : (windowRect.right > kSafeArea.right
-            ? (kSafeArea.right - windowRect.right)
-            : 0.0);
-    final verticalAdjust = windowRect.top < kSafeArea.top
-        ? (kSafeArea.top - windowRect.top)
-        : (windowRect.bottom > kSafeArea.bottom
-            ? (kSafeArea.bottom - windowRect.bottom)
-            : 0.0);
+    final horizontalAdjust =
+        windowRect.left < kSafeArea.left ? (kSafeArea.left - windowRect.left) : (windowRect.right > kSafeArea.right ? (kSafeArea.right - windowRect.right) : 0.0);
+    final verticalAdjust =
+        windowRect.top < kSafeArea.top ? (kSafeArea.top - windowRect.top) : (windowRect.bottom > kSafeArea.bottom ? (kSafeArea.bottom - windowRect.bottom) : 0.0);
     if (horizontalAdjust != 0 || verticalAdjust != 0) {
       windowRect = windowRect.translate(horizontalAdjust, verticalAdjust);
     }
@@ -269,8 +255,7 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
             _focusNode.unfocus();
             break;
           case ui.PointerDeviceKind.trackpad:
-            throw UnimplementedError(
-                'Unexpected pointer down event for trackpad');
+            throw UnimplementedError('Unexpected pointer down event for trackpad');
         }
         break;
       case TargetPlatform.linux:
@@ -292,7 +277,11 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTapUp: (TapUpDetails details) {
-          widget.controller.localPosition = details.localPosition;
+          if (!_checkForegroundAnnotationsEvent(details.localPosition)) {
+            widget.controller.localPosition = details.localPosition;
+          } else {
+            widget.controller.localPosition = null;
+          }
           FocusScope.of(context).requestFocus(_focusNode); // 自动聚焦
         },
         onScaleStart: (ScaleStartDetails details) {
@@ -304,12 +293,10 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
           if (details.scale != 1) {
             //先清除手势
             widget.controller.clearPosition();
-            if (widget.chartCoordinateRender.zoomHorizontal ||
-                widget.chartCoordinateRender.zoomVertical) {
+            if (widget.chartCoordinateRender.zoomHorizontal || widget.chartCoordinateRender.zoomVertical) {
               zoom = _beforeZoom * details.scale;
               double minZoom = widget.chartCoordinateRender.minZoom ?? 0;
-              double maxZoom =
-                  widget.chartCoordinateRender.maxZoom ?? double.infinity;
+              double maxZoom = widget.chartCoordinateRender.maxZoom ?? double.infinity;
               if (zoom < minZoom) {
                 zoom = minZoom;
               } else if (zoom > maxZoom) {
@@ -319,8 +306,7 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
             }
           } else if (details.pointerCount == 1 && details.scale == 1) {
             //移动
-            widget.chartCoordinateRender
-                .scroll(details.focalPointDelta / widget.controller.zoom);
+            widget.chartCoordinateRender.scroll(details.focalPointDelta / widget.controller.zoom);
             // widget.controller.localPosition = details.localFocalPoint;
           }
         },
@@ -342,6 +328,21 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
         ),
       ),
     );
+  }
+
+  //判断是否先处理Annotations
+  bool _checkForegroundAnnotationsEvent(Offset point) {
+    List<Annotation>? foregroundAnnotations = widget.chartCoordinateRender.foregroundAnnotations;
+    if (foregroundAnnotations == null) {
+      return false;
+    }
+    for (Annotation annotation in foregroundAnnotations) {
+      if (annotation.isRange(point)) {
+        annotation.onTap?.call(annotation);
+        return true;
+      }
+    }
+    return false;
   }
 }
 

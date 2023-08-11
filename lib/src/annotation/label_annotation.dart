@@ -99,6 +99,8 @@ class LabelAnnotation extends Annotation {
       } else if (textAlign == TextAlign.center) {
         ost = ost.translate(-_textPainter!.width / 2, 0);
       }
+      super.location = ost;
+      super.size = _textPainter!.size;
       _textPainter!.paint(canvas, ost);
     }
   }

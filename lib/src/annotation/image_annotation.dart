@@ -84,9 +84,8 @@ class ImageAnnotation extends Annotation {
         width: image.width.toDouble(),
         height: image.height.toDouble(),
       );
-      if (chart.controller.localPosition != null && rect.contains(chart.controller.localPosition!)) {
-        Future.microtask(() => onTap?.call(this));
-      }
+      super.location = rect.topLeft;
+      super.size = rect.size;
     }
   }
 }
