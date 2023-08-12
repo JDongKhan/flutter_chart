@@ -1,10 +1,10 @@
-name: flutter_chart
+name: flutter_chart_plus
 description: A new Flutter package project.
 version: 0.0.1
 homepage: https://github.com/JDongKhan/flutter_chart.git
 
 environment:
-  sdk: '>=2.19.3 <3.0.0'
+  sdk: '>=2.19.3 <4.0.0'
   flutter: ">=1.17.0"
 
 dependencies:

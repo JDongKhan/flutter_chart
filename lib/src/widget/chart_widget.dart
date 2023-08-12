@@ -2,8 +2,8 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_chart/src/annotation/annotation.dart';
 
+import '../../flutter_chart.dart';
 import '../base/chart_body_render.dart';
 import '../base/chart_controller.dart';
 import '../base/chart_coordinate_render.dart';

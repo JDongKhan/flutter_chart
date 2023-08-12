@@ -453,7 +453,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     Offset newOffset = controller.offset.translate(-delta.dx, -delta.dy);
     //校准偏移，不然缩小后可能起点都在中间了，或者无限滚动
     double x = newOffset.dx;
-    double y = newOffset.dy;
+    // double y = newOffset.dy;
     if (x < 0) {
       x = 0;
     }
