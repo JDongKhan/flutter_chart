@@ -55,7 +55,34 @@
 ### 6、支持从右侧不断添加数据，用于支撑血氧数据添加
 
 
-## 使用方式 
+## Getting Started
+
+1、pubspec.yaml
+
+```dart
+flutter_chart_plus: any
+```
+
+
+
+2、install
+
+```
+flutter pub get
+```
+
+
+
+3、import
+
+```dart
+import 'package:flutter_chart_plus/flutter_chart.dart'
+```
+
+
+
+4、usage
+
 BarChart:
 ```dart
 
@@ -103,7 +130,7 @@ LineChart
 
 ```dart
        
- SizedBox(
+SizedBox(
 height: 200,
 child: ChartWidget(
     coordinateRender: LineBarChartCoordinateRender(
