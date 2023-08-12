@@ -135,7 +135,6 @@ height: 200,
 child: ChartWidget(
     coordinateRender: LineBarChartCoordinateRender(
         margin: const EdgeInsets.only(left: 40, top: 5, right: 30, bottom: 30),
-        //提示的文案信息
         crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
         tooltipFormatter: (list) => TextSpan(
           text: list.map((e) => e['value1']).toString(),
