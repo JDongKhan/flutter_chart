@@ -66,9 +66,9 @@ or
 
 ```dart
 flutter_chart_plus:
-   git:
-    url: https://github.com/JDongKhan/flutter_chart
-    ref: main
+ git:
+  url: https://github.com/JDongKhan/flutter_chart
+  ref: main
 ```
 
 
