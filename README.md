@@ -62,6 +62,14 @@
 ```dart
 flutter_chart_plus: any
 ```
+or
+
+```dart
+flutter_chart_plus:
+   git:
+    url: https://github.com/JDongKhan/flutter_chart
+    ref: main
+```
 
 
 
