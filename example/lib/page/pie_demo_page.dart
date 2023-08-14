@@ -4,21 +4,19 @@ import 'package:flutter_chart/flutter_chart.dart';
 
 /// @author JD
 class PieChartDemoPage extends StatefulWidget {
-  PieChartDemoPage({Key? key}) : super(key: key);
+  const PieChartDemoPage({Key? key}) : super(key: key);
 
   @override
   State<PieChartDemoPage> createState() => _PieChartDemoPageState();
 }
 
-class _PieChartDemoPageState extends State<PieChartDemoPage>
-    with SingleTickerProviderStateMixin {
+class _PieChartDemoPageState extends State<PieChartDemoPage> with SingleTickerProviderStateMixin {
   final DateTime startTime = DateTime(2023, 1, 1);
   late AnimationController _animationController;
 
   @override
   void initState() {
-    _animationController =
-        AnimationController(vsync: this, duration: const Duration(seconds: 10));
+    _animationController = AnimationController(vsync: this, duration: const Duration(seconds: 10));
     _animationController.addStatusListener((status) {
       if (_animationController.status == AnimationStatus.completed) {
         _animationController.reverse();
@@ -83,8 +81,7 @@ class _PieChartDemoPageState extends State<PieChartDemoPage>
                     Pie(
                       data: dataList,
                       showValue: true,
-                      position: (item) =>
-                          (double.parse(item['value1'].toString())),
+                      position: (item) => (double.parse(item['value1'].toString())),
                       valueFormatter: (item) => item['value1'].toString(),
                     ),
                   ],
@@ -101,13 +98,11 @@ class _PieChartDemoPageState extends State<PieChartDemoPage>
                     Pie(
                       guideLine: true,
                       data: dataList,
-                      position: (item) =>
-                          (double.parse(item['value1'].toString())),
+                      position: (item) => (double.parse(item['value1'].toString())),
                       holeRadius: 40,
                       valueTextOffset: 20,
                       legendFormatter: (item) {
-                        return (item['time'] as DateTime)
-                            .toStringWithFormat(format: 'MM-dd');
+                        return (item['time'] as DateTime).toStringWithFormat(format: 'MM-dd');
                       },
                       centerTextStyle: const TextStyle(
                         color: Colors.black,

@@ -3,6 +3,7 @@ import 'package:example/page/line_demo_page.dart';
 import 'package:example/page/pie_demo_page.dart';
 import 'package:flutter/material.dart';
 
+import 'page/line_right_demo_page.dart';
 import 'page/line_scale_demo_page.dart';
 
 /// @author JD
@@ -56,6 +57,16 @@ class ChartDemoPage extends StatelessWidget {
               );
             },
             child: const Text('scale line'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => LineChartRightDemoPage(),
+                ),
+              );
+            },
+            child: const Text('line right align'),
           ),
         ],
       ),

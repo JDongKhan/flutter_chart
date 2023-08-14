@@ -6,7 +6,7 @@ import 'package:flutter_chart/flutter_chart.dart';
 
 /// @author JD
 class LineChartDemoPage extends StatefulWidget {
-  LineChartDemoPage({Key? key}) : super(key: key);
+  const LineChartDemoPage({Key? key}) : super(key: key);
 
   @override
   State<LineChartDemoPage> createState() => _LineChartDemoPageState();

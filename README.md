@@ -7,6 +7,7 @@
 ![demo png](2.gif "demo")
 ![demo png](3.gif "demo")
 ![demo png](4.gif "demo")
+![demo png](5.gif "demo")
 ![demo png](5.png "demo")
 
 ### 为何自己造轮子？
@@ -50,9 +51,6 @@
     2）、前景层可以放任何的widget，便于在chart添加一些说明而不被弹框挡住
     3）、支持设置安全区域让弹框更容易定制范围
 ### 5、图形支持逆序渲染
-
-### TODO
- 支持从右侧不断添加数据，用于支撑血氧数据添加
 
 
 ## Getting Started

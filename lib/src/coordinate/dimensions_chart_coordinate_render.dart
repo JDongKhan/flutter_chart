@@ -602,7 +602,7 @@ class XAxis {
     this.drawGrid = false,
     this.lineColor = const Color(0x99cccccc),
     this.textStyle = const TextStyle(fontSize: 12, color: Colors.grey),
-    this.drawDivider = true,
+    this.drawDivider = false,
     this.divideCount,
     this.max,
   });

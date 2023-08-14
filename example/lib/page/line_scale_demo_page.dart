@@ -6,7 +6,7 @@ import 'package:flutter_chart/flutter_chart.dart';
 
 /// @author JD
 class LineChartScaleDemoPage extends StatefulWidget {
-  LineChartScaleDemoPage({Key? key}) : super(key: key);
+  const LineChartScaleDemoPage({Key? key}) : super(key: key);
 
   @override
   State<LineChartScaleDemoPage> createState() => _LineChartScaleDemoPageState();
@@ -14,15 +14,9 @@ class LineChartScaleDemoPage extends StatefulWidget {
 
 class _LineChartScaleDemoPageState extends State<LineChartScaleDemoPage> {
   final DateTime startTime = DateTime(2023, 1, 1);
-  ui.Image? logoImage;
 
   @override
   void initState() {
-    ImageAnnotation.getAssetImage('images/location.png', width: 10, height: 10).then((value) {
-      setState(() {
-        logoImage = value;
-      });
-    });
     super.initState();
   }
 
@@ -87,6 +81,7 @@ class _LineChartScaleDemoPageState extends State<LineChartScaleDemoPage> {
                 xAxis: XAxis(
                   count: 7,
                   max: 9,
+                  drawDivider: true,
                   divideCount: (zoom) => zoom.toInt(),
                   formatter: (index) {
                     double hours = (index % 1.0) * 24;
