@@ -79,9 +79,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                       tooltipFormatter: (list) {
                         return TextSpan(
                           text: list.map((e) => e.selectedIndex).toString(),
-                          style: const TextStyle(
-                            color: Colors.black,
-                          ),
+                          style: const TextStyle(color: Colors.black),
                         );
                       },
                       yAxis: [
@@ -129,7 +127,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                                     preferredSize: const Size(60, 60),
                                     child: Container(
                                       padding: const EdgeInsets.all(8),
-                                      child: Text('1111'),
+                                      child: const Text('1111'),
                                     ),
                                   );
                                 },
@@ -157,11 +155,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                         );
                       },
                       yAxis: [
-                        YAxis(
-                          min: 100,
-                          max: 500,
-                          drawGrid: true,
-                        ),
+                        YAxis(min: 100, max: 500, drawGrid: true),
                       ],
                       xAxis: XAxis(
                         count: 7,
@@ -220,14 +214,8 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                           filled: true,
                           operation: PathOperation.xor,
                           position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
-                          colors: [
-                            Colors.transparent,
-                            Colors.blue,
-                          ],
-                          dotColors: [
-                            Colors.black,
-                            Colors.black,
-                          ],
+                          colors: [Colors.transparent, Colors.blue],
+                          dotColors: [Colors.black, Colors.black],
                           // shaders: [
                           //   ui.Gradient.linear(Offset.zero, Offset(1000, 1000), [
                           //     Colors.red,
@@ -330,9 +318,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                         }
                         return TextSpan(
                           text: list.map((e) => e.selectedIndex).toString(),
-                          style: const TextStyle(
-                            color: Colors.black,
-                          ),
+                          style: const TextStyle(color: Colors.black),
                         );
                       },
                       yAxis: [

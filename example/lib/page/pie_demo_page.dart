@@ -104,11 +104,7 @@ class _PieChartDemoPageState extends State<PieChartDemoPage> with SingleTickerPr
                       legendFormatter: (item) {
                         return (item['time'] as DateTime).toStringWithFormat(format: 'MM-dd');
                       },
-                      centerTextStyle: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      centerTextStyle: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
                       valueFormatter: (item) => item['value1'].toString(),
                     ),
                   ],
@@ -129,17 +125,11 @@ class _PieChartDemoPageState extends State<PieChartDemoPage> with SingleTickerPr
                         children: const [
                           Text(
                             '5%',
-                            style: TextStyle(
-                              fontSize: 24,
-                              color: Colors.black,
-                            ),
+                            style: TextStyle(fontSize: 24, color: Colors.black),
                           ),
                           Text(
                             '完成度',
-                            style: TextStyle(
-                              fontSize: 30,
-                              color: Colors.black,
-                            ),
+                            style: TextStyle(fontSize: 30, color: Colors.black),
                           ),
                         ],
                       ),
