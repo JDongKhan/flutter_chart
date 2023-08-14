@@ -87,6 +87,7 @@ class _LineChartScaleDemoPageState extends State<LineChartScaleDemoPage> {
                     double hours = (index % 1.0) * 24;
                     double minutes = (hours % 1.0) * 60;
                     if (hours == 0) {
+                      //是否是0点
                       return startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'MM-dd');
                     } else {
                       return startTime.add(Duration(days: index.toInt(), hours: hours.toInt(), minutes: minutes.toInt())).toStringWithFormat(format: 'HH:mm');
