@@ -323,8 +323,8 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                       crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
                       tooltipFormatter: (list) {
                         int? selectIndex1 = list[0].selectedIndex;
-                        int? selectIndex2 = list[0].selectedIndex;
-                        int? selectIndex3 = list[0].selectedIndex;
+                        int? selectIndex2 = list[1].selectedIndex;
+                        int? selectIndex3 = list[2].selectedIndex;
                         if (selectIndex1 == null && selectIndex2 == null && selectIndex3 == null) {
                           return null;
                         }
