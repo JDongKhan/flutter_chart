@@ -47,6 +47,33 @@ class BarChartDemoPage extends StatelessWidget {
             width: 300,
             child: Column(
               children: [
+                const Text('普通Bar'),
+                SizedBox(
+                  height: 200,
+                  child: ChartWidget(
+                    coordinateRender: DimensionsChartCoordinateRender(
+                      margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
+                      yAxis: [
+                        YAxis(
+                          min: 0,
+                          max: 300,
+                        ),
+                      ],
+                      xAxis: XAxis(
+                        count: 7,
+                        max: 10,
+                        formatter: (index) => startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd'),
+                      ),
+                      charts: [
+                        Bar(
+                          data: dataList,
+                          position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
+                          value: (item) => item['value1'],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
                 const Text('垂直StackBar'),
                 SizedBox(
                   height: 200,
@@ -156,33 +183,6 @@ class BarChartDemoPage extends StatelessWidget {
                             double.parse(item['value2'].toString()),
                             double.parse(item['value3'].toString()),
                           ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const Text('普通Bar'),
-                SizedBox(
-                  height: 200,
-                  child: ChartWidget(
-                    coordinateRender: DimensionsChartCoordinateRender(
-                      margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
-                      yAxis: [
-                        YAxis(
-                          min: 0,
-                          max: 300,
-                        ),
-                      ],
-                      xAxis: XAxis(
-                        count: 7,
-                        max: 10,
-                        formatter: (index) => startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd'),
-                      ),
-                      charts: [
-                        Bar(
-                          data: dataList,
-                          position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
-                          value: (item) => item['value1'],
                         ),
                       ],
                     ),

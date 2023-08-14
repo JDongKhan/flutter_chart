@@ -68,13 +68,14 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Text('Single data source,Single Line'),
+                const Text('single data source,single Line'),
                 SizedBox(
                   height: 200,
                   child: ChartWidget(
                     coordinateRender: DimensionsChartCoordinateRender(
                       crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
                       margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
+                      padding: const EdgeInsets.only(left: 10, right: 10),
                       //提示的文案信息
                       tooltipFormatter: (list) {
                         return TextSpan(
@@ -90,7 +91,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                       ],
                       xAxis: XAxis(
                         count: 7,
-                        max: 7,
+                        max: 20,
                         formatter: (index) => startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd'),
                       ),
                       charts: [
@@ -105,7 +106,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                     ),
                   ),
                 ),
-                const Text('Single data source,Multiple Line'),
+                const Text('single data source,multiple Line'),
                 SizedBox(
                   // color: Colors.yellow,
                   height: 200,
@@ -177,7 +178,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                     ),
                   ),
                 ),
-                const Text('Shaders'),
+                const Text('shaders'),
                 SizedBox(
                   // color: Colors.yellow,
                   height: 200,
@@ -300,7 +301,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                     );
                   }),
                 ),
-                const Text('Multiple data,Multiple Line'),
+                const Text('multiple data source,multiple line/bar'),
                 SizedBox(
                   // color: Colors.yellow,
                   height: 200,
