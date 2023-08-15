@@ -12,22 +12,31 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
   //坐标系颜色
   final List<YAxis> yAxis;
   final XAxis xAxis;
+  //自定义提示框的样式
+  final TooltipRenderer? tooltipRenderer;
+  //自定义提示文案
+  //目前即支持canvas画tooltip，也支持widget画，而canvas画自定义内容受限，所以后面不再使用该方法
+  @Deprecated('废弃，即将删除')
+  final ChartTooltipFormatter? tooltipFormatter;
+  //十字准星样式
+  final CrossHairStyle crossHair;
+
   DimensionsChartCoordinateRender({
     super.margin = const EdgeInsets.only(left: 30, top: 0, right: 0, bottom: 25),
     super.padding = const EdgeInsets.only(left: 30, top: 0, right: 0, bottom: 0),
     required super.charts,
+    required this.yAxis,
     super.backgroundAnnotations,
     super.foregroundAnnotations,
-    super.tooltipRenderer,
-    super.tooltipFormatter,
-    super.tooltipWidgetRenderer,
     super.zoomHorizontal,
     super.zoomVertical = false,
     super.minZoom,
     super.maxZoom,
-    super.crossHair = const CrossHairStyle(),
     super.safeArea,
-    required this.yAxis,
+    super.tooltipWidgetRenderer,
+    this.tooltipRenderer,
+    this.tooltipFormatter,
+    this.crossHair = const CrossHairStyle(),
     XAxis? xAxis,
   })  : assert(yAxis.isNotEmpty),
         assert(zoomVertical == false, '暂不支持垂直方向缩放'),
@@ -578,7 +587,7 @@ class XAxis {
   final num interval;
   //x轴最大值， 最大格子数 = max / interval, 如果最大格子数 == count,则不会滚动
   final num? max;
-  //x轴文案格式化
+  //x轴文案格式化  不要使用过于耗时的方法
   final AxisFormatter? formatter;
   //每1个逻辑value代表多宽
   late double density;
@@ -623,7 +632,7 @@ class YAxis {
   final num max;
   //一屏显示的数量
   final int count;
-  //文案格式化
+  //文案格式化 不要使用过于耗时的方法
   final AxisFormatter? formatter;
   //是否画轴线
   final bool drawLine;

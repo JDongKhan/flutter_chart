@@ -4,7 +4,7 @@ import 'dart:ui';
 
 const double _maxWidth = 20;
 
-//每个图形的状态
+//每个图形(点/柱状图/扇形)的状态
 class ChartShapeState {
   Rect? rect;
   Path? path;
@@ -52,11 +52,9 @@ class ChartShapeState {
     Path localPath = Path()
       ..moveTo(p0.dx, p0.dy)
       ..lineTo(p1.dx, p1.dy)
-      ..arcToPoint(q1,
-          radius: Radius.circular(r1), clockwise: clockwise, largeArc: large)
+      ..arcToPoint(q1, radius: Radius.circular(r1), clockwise: clockwise, largeArc: large)
       ..lineTo(q0.dx, q0.dy)
-      ..arcToPoint(p0,
-          radius: Radius.circular(r0), clockwise: !clockwise, largeArc: large);
+      ..arcToPoint(p0, radius: Radius.circular(r0), clockwise: !clockwise, largeArc: large);
     path = localPath.shift(center);
   }
 
@@ -69,8 +67,7 @@ class ChartShapeState {
       //2、该图不需要处理热区
       if (left != null && right != null) {
         //说明是第一种情况
-        return Rect.fromLTRB(rect!.left - _maxWidth, rect!.top,
-            rect!.right + _maxWidth, rect!.bottom);
+        return Rect.fromLTRB(rect!.left - _maxWidth, rect!.top, rect!.right + _maxWidth, rect!.bottom);
       }
       return null;
     } else if (preShapeState == null && nextShapeState != null) {

@@ -42,7 +42,7 @@ class ChartDemoPage extends StatelessWidget {
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (_) => PieChartDemoPage(),
+                  builder: (_) => const PieChartDemoPage(),
                 ),
               );
             },
@@ -52,7 +52,7 @@ class ChartDemoPage extends StatelessWidget {
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (_) => LineChartScaleDemoPage(),
+                  builder: (_) => const LineChartScaleDemoPage(),
                 ),
               );
             },
@@ -62,11 +62,11 @@ class ChartDemoPage extends StatelessWidget {
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (_) => LineChartRightDemoPage(),
+                  builder: (_) => const LineChartRightDemoPage(),
                 ),
               );
             },
-            child: const Text('line right align'),
+            child: const Text('ecg or oxy'),
           ),
         ],
       ),

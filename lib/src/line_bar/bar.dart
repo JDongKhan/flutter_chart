@@ -12,7 +12,7 @@ typedef BarPosition<T> = num Function(T);
 class Bar<T> extends ChartBodyRender<T> {
   //bar的宽度
   final double itemWidth;
-  //值格式化
+  //值格式化 不要使用过于耗时的方法
   final BarPosition value;
   //颜色
   final Color color;
@@ -32,8 +32,7 @@ class Bar<T> extends ChartBodyRender<T> {
   });
   @override
   void draw(Canvas canvas, Size size) {
-    DimensionsChartCoordinateRender chart =
-        coordinateChart as DimensionsChartCoordinateRender;
+    DimensionsChartCoordinateRender chart = coordinateChart as DimensionsChartCoordinateRender;
     List<ChartShapeState> shapeList = [];
     Paint paint = Paint()
       ..strokeWidth = 1
@@ -46,8 +45,7 @@ class Bar<T> extends ChartBodyRender<T> {
   }
 
   //可以重写 自定义特殊的图形
-  ChartShapeState drawBar(Canvas canvas, DimensionsChartCoordinateRender chart,
-      Paint paint, int index, T data) {
+  ChartShapeState drawBar(Canvas canvas, DimensionsChartCoordinateRender chart, Paint paint, int index, T data) {
     num po = position.call(data);
     num v = value.call(data);
     if (v == 0) {
@@ -56,8 +54,7 @@ class Bar<T> extends ChartBodyRender<T> {
     double bottom = chart.size.height - chart.contentMargin.bottom;
     double contentHeight = chart.size.height - chart.contentMargin.vertical;
 
-    double left =
-        chart.contentMargin.left + chart.xAxis.density * po - itemWidth / 2;
+    double left = chart.contentMargin.left + chart.xAxis.density * po - itemWidth / 2;
     left = chart.transformUtils.withXZoomOffset(left);
 
     double present = v / chart.yAxis[yAxisPosition].max;
@@ -120,8 +117,7 @@ class StackBar<T> extends ChartBodyRender<T> {
   });
   @override
   void draw(Canvas canvas, Size size) {
-    DimensionsChartCoordinateRender chart =
-        coordinateChart as DimensionsChartCoordinateRender;
+    DimensionsChartCoordinateRender chart = coordinateChart as DimensionsChartCoordinateRender;
     List<ChartShapeState> shapeList = [];
     for (int index = 0; index < data.length; index++) {
       T value = data[index];
@@ -135,8 +131,7 @@ class StackBar<T> extends ChartBodyRender<T> {
   }
 
   //水平排列图形
-  ChartShapeState drawHorizontalBar(
-      Canvas canvas, DimensionsChartCoordinateRender chart, int index, T data) {
+  ChartShapeState drawHorizontalBar(Canvas canvas, DimensionsChartCoordinateRender chart, int index, T data) {
     num po = position.call(data);
     List<num> vas = values.call(data);
     assert(colors.length >= vas.length);
@@ -151,10 +146,7 @@ class StackBar<T> extends ChartBodyRender<T> {
 
     double center = vas.length * itemWidth / 2;
 
-    double left = chart.contentMargin.left +
-        chart.xAxis.density * po -
-        itemWidth / 2 -
-        center;
+    double left = chart.contentMargin.left + chart.xAxis.density * po - itemWidth / 2 - center;
     left = chart.transformUtils.withXZoomOffset(left);
 
     ChartShapeState shape = ChartShapeState.rect(
@@ -193,8 +185,7 @@ class StackBar<T> extends ChartBodyRender<T> {
     return shape;
   }
 
-  ChartShapeState drawVerticalBar(
-      Canvas canvas, DimensionsChartCoordinateRender chart, int index, T data) {
+  ChartShapeState drawVerticalBar(Canvas canvas, DimensionsChartCoordinateRender chart, int index, T data) {
     num po = position.call(data);
     List<num> vas = values.call(data);
     assert(colors.length >= vas.length);
@@ -209,8 +200,7 @@ class StackBar<T> extends ChartBodyRender<T> {
     double bottom = chart.size.height - chart.contentMargin.bottom;
     double contentHeight = chart.size.height - chart.contentMargin.vertical;
     int stackIndex = 0;
-    double left =
-        chart.contentMargin.left + chart.xAxis.density * po - itemWidth / 2;
+    double left = chart.contentMargin.left + chart.xAxis.density * po - itemWidth / 2;
     left = chart.transformUtils.withXZoomOffset(left);
     ChartShapeState shape = ChartShapeState.rect(
       rect: Rect.fromLTWH(

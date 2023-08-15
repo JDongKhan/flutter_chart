@@ -9,7 +9,7 @@ typedef LinePosition<T> = List<num> Function(T);
 
 /// @author JD
 class Line<T> extends ChartBodyRender<T> {
-  //每个点对应的值
+  //每个点对应的值 不要使用过于耗时的方法
   final LinePosition values;
   //线颜色
   final List<Color> colors;
@@ -29,7 +29,7 @@ class Line<T> extends ChartBodyRender<T> {
   final bool isCurve;
   //线 画笔
   final Paint paint;
-  //路径之间的的处理规则
+  //路径之间的处理规则
   final PathOperation? operation;
   Line({
     required super.data,

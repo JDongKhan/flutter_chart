@@ -21,8 +21,10 @@ class CircularChartCoordinateRender extends ChartCoordinateRender {
   CircularChartCoordinateRender({
     super.margin = EdgeInsets.zero,
     super.padding = EdgeInsets.zero,
-    super.safeArea,
     required super.charts,
+    super.safeArea,
+    super.backgroundAnnotations,
+    super.foregroundAnnotations,
     this.arcPosition = ArcPosition.none,
     this.borderWidth = 1,
     this.strokeCap,

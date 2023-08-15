@@ -90,6 +90,7 @@ class ChartController extends ChangeNotifier {
   List<CharBodyState> childrenState = [];
 }
 
+//每块图表存放的状态
 class CharBodyState {
   final ChartController parentController;
   CharBodyState(this.parentController);

@@ -26,9 +26,9 @@ class Pie<T> extends ChartBodyRender<T> {
   final double holeRadius;
   //值的位置偏移
   final double valueTextOffset;
-  //值文案格式化
+  //值文案格式化 不要使用过于耗时的方法
   final ValueFormatter? valueFormatter;
-  //图例文案格式化
+  //图例文案格式化 不要使用过于耗时的方法
   final ValueFormatter? legendFormatter;
   //值文字样式
   final TextStyle textStyle;
@@ -48,6 +48,8 @@ class Pie<T> extends ChartBodyRender<T> {
   final bool showValue;
 
   Pie({
+    required super.data,
+    required super.position,
     this.colors = colors10,
     this.shaders,
     this.holeRadius = 0,
@@ -70,13 +72,10 @@ class Pie<T> extends ChartBodyRender<T> {
     this.guideLine = false,
     this.showValue = false,
     this.enableTap = true,
-    required super.data,
-    required super.position,
   });
   @override
   void draw(Canvas canvas, Size size) {
-    CircularChartCoordinateRender chart =
-        coordinateChart as CircularChartCoordinateRender;
+    CircularChartCoordinateRender chart = coordinateChart as CircularChartCoordinateRender;
     Offset center = chart.center;
     double radius = chart.radius;
 
@@ -111,8 +110,7 @@ class Pie<T> extends ChartBodyRender<T> {
       //直接读取
       num percent = values[i] / total;
       // 计算出每个数据所占的弧度值
-      final sweepAngle =
-          percent * pi * 2 * (direction == RotateDirection.forward ? 1 : -1);
+      final sweepAngle = percent * pi * 2 * (direction == RotateDirection.forward ? 1 : -1);
       double rd = radius;
       //图形区域
       ChartShapeState shape = ChartShapeState.arc(
@@ -127,8 +125,7 @@ class Pie<T> extends ChartBodyRender<T> {
       //放大区域
       ChartShapeState tapShape = shape;
       //判断是否选中
-      bool selected =
-          enableTap && shape.hitTest(chart.controller.localPosition);
+      bool selected = enableTap && shape.hitTest(chart.controller.localPosition);
       if (selected) {
         rd = radius + 2;
         bodyState.selectedIndex = i;
@@ -154,8 +151,7 @@ class Pie<T> extends ChartBodyRender<T> {
 
       //绘制引导线
       if (guideLine) {
-        _drawLineAndText(
-            canvas, valueText, legend, index, rd, startAngle, sweepAngle);
+        _drawLineAndText(canvas, valueText, legend, index, rd, startAngle, sweepAngle);
       }
       //选中就绘制
       if (selected) {
@@ -176,13 +172,11 @@ class Pie<T> extends ChartBodyRender<T> {
   }
 
   //画空隙线
-  void _drawSpaceLine(
-      Canvas canvas, double radius, double startAngle, double sweepAngle) {
+  void _drawSpaceLine(Canvas canvas, double radius, double startAngle, double sweepAngle) {
     if (spaceWidth == null) {
       return;
     }
-    CircularChartCoordinateRender chart =
-        coordinateChart as CircularChartCoordinateRender;
+    CircularChartCoordinateRender chart = coordinateChart as CircularChartCoordinateRender;
     Offset center = chart.center;
     //开始线
     var start1X = cos(startAngle) * holeRadius + center.dx;
@@ -206,23 +200,18 @@ class Pie<T> extends ChartBodyRender<T> {
     canvas.drawLine(start2Offset, end2Offset, paint);
   }
 
-  void _drawLineAndText(Canvas canvas, String? valueText, String? legend,
-      int index, double radius, double startAngle, double sweepAngle) {
+  void _drawLineAndText(Canvas canvas, String? valueText, String? legend, int index, double radius, double startAngle, double sweepAngle) {
     if (valueText == null && legend == null) {
       return;
     }
-    CircularChartCoordinateRender chart =
-        coordinateChart as CircularChartCoordinateRender;
+    CircularChartCoordinateRender chart = coordinateChart as CircularChartCoordinateRender;
     Offset center = chart.center;
     //中心弧度
     final double radians = startAngle + sweepAngle / 2;
     double line1 = 10;
     double line2 = 40;
-    Offset point1 = Offset(cos(radians) * (radius), sin(radians) * (radius))
-        .translate(center.dx, center.dy);
-    Offset point2 =
-        Offset(cos(radians) * (radius + line1), sin(radians) * (radius + line1))
-            .translate(center.dx, center.dy);
+    Offset point1 = Offset(cos(radians) * (radius), sin(radians) * (radius)).translate(center.dx, center.dy);
+    Offset point2 = Offset(cos(radians) * (radius + line1), sin(radians) * (radius + line1)).translate(center.dx, center.dy);
     Paint paint = Paint()
       ..style = PaintingStyle.fill
       ..color = lineColor
@@ -255,18 +244,12 @@ class Pie<T> extends ChartBodyRender<T> {
           maxWidth: chart.size.width,
         );
       // 使用三角函数计算文字位置 并根据文字大小适配
-      Offset textOffset = Offset(
-          isLeft ? point3.dx : point3.dx - legendTextPainter.width,
-          point3.dy - legendTextPainter.height);
+      Offset textOffset = Offset(isLeft ? point3.dx : point3.dx - legendTextPainter.width, point3.dy - legendTextPainter.height);
       Paint dotPaint = Paint()
         ..style = PaintingStyle.fill
         ..color = colors[index]
         ..strokeWidth = 1;
-      canvas.drawCircle(
-          Offset(
-              textOffset.dx - 6, textOffset.dy + legendTextPainter.height / 2),
-          4,
-          dotPaint);
+      canvas.drawCircle(Offset(textOffset.dx - 6, textOffset.dy + legendTextPainter.height / 2), 4, dotPaint);
       legendTextPainter.paint(canvas, textOffset);
     }
 
@@ -284,8 +267,7 @@ class Pie<T> extends ChartBodyRender<T> {
           maxWidth: chart.size.width,
         );
       // 使用三角函数计算文字位置 并根据文字大小适配
-      Offset textOffset = Offset(
-          isLeft ? point3.dx : point3.dx - valueTextPainter.width, point3.dy);
+      Offset textOffset = Offset(isLeft ? point3.dx : point3.dx - valueTextPainter.width, point3.dy);
       valueTextPainter.paint(canvas, textOffset);
     }
   }
@@ -317,10 +299,8 @@ class Pie<T> extends ChartBodyRender<T> {
   //   }
   // }
   //
-  void _drawValue(Canvas canvas, String? valueText, double radius,
-      double startAngle, double sweepAngle) {
-    CircularChartCoordinateRender chart =
-        coordinateChart as CircularChartCoordinateRender;
+  void _drawValue(Canvas canvas, String? valueText, double radius, double startAngle, double sweepAngle) {
+    CircularChartCoordinateRender chart = coordinateChart as CircularChartCoordinateRender;
     //中心弧度
     final double radians = startAngle + sweepAngle / 2;
     //画value
@@ -338,20 +318,15 @@ class Pie<T> extends ChartBodyRender<T> {
           maxWidth: chart.size.width,
         );
       // 使用三角函数计算文字位置 并根据文字大小适配
-      double x = cos(radians) * (radius / 2 + valueTextOffset) +
-          chart.size.width / 2 -
-          valueTextPainter.width / 2;
-      double y = sin(radians) * (radius / 2 + valueTextOffset) +
-          chart.size.height / 2 -
-          valueTextPainter.height / 2;
+      double x = cos(radians) * (radius / 2 + valueTextOffset) + chart.size.width / 2 - valueTextPainter.width / 2;
+      double y = sin(radians) * (radius / 2 + valueTextOffset) + chart.size.height / 2 - valueTextPainter.height / 2;
       valueTextPainter.paint(canvas, Offset(x, y));
     }
   }
 
   //绘制中间文案
   void _drawCenterValue(Canvas canvas, String? valueText) {
-    CircularChartCoordinateRender chart =
-        coordinateChart as CircularChartCoordinateRender;
+    CircularChartCoordinateRender chart = coordinateChart as CircularChartCoordinateRender;
     //中心点文案
     if (centerTextStyle != null && valueText != null) {
       TextPainter valueTextPainter = TextPainter(
@@ -365,10 +340,7 @@ class Pie<T> extends ChartBodyRender<T> {
           minWidth: 0,
           maxWidth: chart.size.width,
         );
-      valueTextPainter.paint(
-          canvas,
-          chart.center.translate(
-              -valueTextPainter.width / 2, -valueTextPainter.height / 2));
+      valueTextPainter.paint(canvas, chart.center.translate(-valueTextPainter.width / 2, -valueTextPainter.height / 2));
     }
   }
 

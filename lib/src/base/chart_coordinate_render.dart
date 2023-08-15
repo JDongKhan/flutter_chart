@@ -44,7 +44,7 @@ class CrossHairStyle {
 
 typedef ChartTooltipFormatter = InlineSpan? Function(List<CharBodyState>);
 
-//渲染器， 每次刷新会重新构造，切忌不要存放状态数据，数据都在state里面
+//坐标渲染器， 每次刷新会重新构造，切忌不要存放状态数据，数据都在state里面
 abstract class ChartCoordinateRender {
   //图形外边距，用于控制坐标轴的外边距
   final EdgeInsets margin;
@@ -59,29 +59,19 @@ abstract class ChartCoordinateRender {
   final double? maxZoom;
   //坐标系中间的绘图
   final List<ChartBodyRender> charts;
-  //自定义提示框的样式
-  final TooltipRenderer? tooltipRenderer;
+  //安全区域
+  final EdgeInsets? safeArea;
   //用widget弹框来处理点击
   final TooltipWidgetRenderer? tooltipWidgetRenderer;
-  //自定义提示文案
-  //目前即支持canvas画tooltip，也支持widget画，而canvas画自定义内容受限，所以后面不再使用该方法
-  @Deprecated('即将废弃')
-  final ChartTooltipFormatter? tooltipFormatter;
-  //十字准星样式
-  final CrossHairStyle crossHair;
-  final EdgeInsets? safeArea;
-  //坐标转换工具
-  late TransformUtils transformUtils;
-
+  //背景标注
   final List<Annotation>? backgroundAnnotations;
+  //前景标注
   final List<Annotation>? foregroundAnnotations;
 
   ChartCoordinateRender({
     required this.margin,
     required this.padding,
     required this.charts,
-    this.tooltipRenderer,
-    this.tooltipFormatter,
     this.tooltipWidgetRenderer,
     this.zoomHorizontal = false,
     this.zoomVertical = false,
@@ -90,9 +80,10 @@ abstract class ChartCoordinateRender {
     this.backgroundAnnotations,
     this.foregroundAnnotations,
     this.safeArea,
-    this.crossHair = const CrossHairStyle(),
   }) : contentMargin = EdgeInsets.fromLTRB(margin.left + padding.left, margin.top + padding.top, margin.right + padding.right, margin.bottom + padding.bottom);
 
+  //坐标转换工具
+  late TransformUtils transformUtils;
   //共享数据
   late ChartController controller;
   //画布尺寸

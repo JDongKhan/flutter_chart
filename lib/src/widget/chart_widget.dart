@@ -2,11 +2,8 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
 import '../../flutter_chart.dart';
 import '../base/chart_body_render.dart';
-import '../base/chart_controller.dart';
-import '../base/chart_coordinate_render.dart';
 
 /// @author JD
 ///
@@ -108,6 +105,7 @@ class _ChartWidgetState extends State<ChartWidget> {
     );
   }
 
+  //提示弹框
   Widget _buildTooltipWidget(ChartCoordinateRender baseChart, Size size) {
     return StatefulBuilder(
       builder: (BuildContext context, StateSetter setState) {
