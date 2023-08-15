@@ -6,6 +6,7 @@ import '../base/chart_body_render.dart';
 import '../coordinate/chart_coordinate_render.dart';
 import '../coordinate/circular_chart_coordinate_render.dart';
 
+/// @author jd
 class Progress<T> extends ChartBodyRender<T> {
   //线宽
   final double strokeWidth;

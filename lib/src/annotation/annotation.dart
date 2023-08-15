@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 
 import '../base/chart_render.dart';
 
+/// @author jd
 abstract class Annotation extends ChartRender {
   final bool scroll;
   //跟哪个y轴关联

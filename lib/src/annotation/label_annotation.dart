@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../flutter_chart.dart';
 
+/// @author jd
 class LabelAnnotation extends Annotation {
   final List<num>? positions;
   final TextStyle textStyle;

@@ -1,6 +1,6 @@
 import 'package:example/page/extension_datetime.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_chart/flutter_chart.dart';
+import 'package:flutter_chart_plus/flutter_chart.dart';
 
 /// @author JD
 class PieChartDemoPage extends StatefulWidget {

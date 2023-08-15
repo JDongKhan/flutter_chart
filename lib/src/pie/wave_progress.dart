@@ -4,6 +4,7 @@ import '../../flutter_chart.dart';
 import '../base/chart_body_render.dart';
 import '../utils/transform_utils.dart';
 
+/// @author jd
 class WaveProgress<T> extends ChartBodyRender<T> {
   //波纹峰值
   final double controlPoint;
@@ -22,12 +23,10 @@ class WaveProgress<T> extends ChartBodyRender<T> {
 
   @override
   void draw(Canvas canvas, Size size) {
-    CircularChartCoordinateRender chart =
-        coordinateChart as CircularChartCoordinateRender;
+    CircularChartCoordinateRender chart = coordinateChart as CircularChartCoordinateRender;
     Offset center = chart.center;
     double radius = chart.radius;
-    canvas.clipPath(
-        Path()..addOval(Rect.fromCircle(center: center, radius: radius)));
+    canvas.clipPath(Path()..addOval(Rect.fromCircle(center: center, radius: radius)));
 
     TransformUtils transformUtils;
     //处理圆形场景
@@ -75,10 +74,8 @@ class WaveProgress<T> extends ChartBodyRender<T> {
     double ofst = radius * controlOffset;
 
     Path path = Path();
-    Offset first =
-        transformUtils.transformOffset(Offset(-radius * 2 + ofst, waterHeight));
-    Offset last =
-        transformUtils.transformOffset(Offset(radius + ofst, waterHeight));
+    Offset first = transformUtils.transformOffset(Offset(-radius * 2 + ofst, waterHeight));
+    Offset last = transformUtils.transformOffset(Offset(radius + ofst, waterHeight));
     path.moveTo(first.dx, first.dy);
 
     Offset start = first;

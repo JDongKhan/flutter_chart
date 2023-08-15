@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'chart_shape_state.dart';
 
+/// @author jd
+
 typedef AnnotationTooltipWidgetRenderer = PreferredSizeWidget? Function(BuildContext context);
 
 //数据共享，便于各个节点使用
@@ -75,17 +77,24 @@ class ChartController extends ChangeNotifier {
 
   //根据位置缓存配置信息
   List<CharBodyState> childrenState = [];
+
+  @override
+  void dispose() {
+    _localPosition = null;
+    tooltipStateSetter = null;
+    tooltipWidgetBuilder = null;
+    childrenState.clear();
+    super.dispose();
+  }
 }
 
 //每块图表存放的状态
 class CharBodyState {
-  final ChartController parentController;
-  CharBodyState(this.parentController);
+  CharBodyState();
   int? _selectedIndex;
   int? get selectedIndex => _selectedIndex;
   set selectedIndex(v) {
     _selectedIndex = v;
-    // parentController.refresh();
   }
 
   List<ChartShapeState>? shapeList;

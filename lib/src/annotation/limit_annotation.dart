@@ -5,6 +5,7 @@ import '../../flutter_chart.dart';
 
 typedef AnnotationPosition<T> = num Function(T);
 
+/// @author jd
 class LimitAnnotation extends Annotation {
   final num limit;
   final Color color;

@@ -1,4 +1,4 @@
-library flutter_chart;
+library flutter_chart_plus;
 
 export 'src/annotation/annotation.dart';
 export 'src/annotation/image_annotation.dart';

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter_chart/flutter_chart.dart';
+import 'package:flutter_chart_plus/flutter_chart.dart';
 
 /// @author JD
 class LineChartRightDemoPage extends StatefulWidget {

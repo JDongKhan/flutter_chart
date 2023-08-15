@@ -4,6 +4,7 @@ import '../coordinate/chart_coordinate_render.dart';
 import '../coordinate/dimensions_chart_coordinate_render.dart';
 import 'annotation.dart';
 
+/// @author jd
 //区间标注
 class RegionAnnotation extends Annotation {
   final List<num> positions;

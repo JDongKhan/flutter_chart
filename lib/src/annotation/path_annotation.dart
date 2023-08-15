@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../coordinate/chart_coordinate_render.dart';
 import 'annotation.dart';
 
+/// @author jd
 //路径
 class PathAnnotation extends Annotation {
   final Path path;

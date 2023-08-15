@@ -2,6 +2,7 @@
 import 'dart:math';
 import 'dart:ui';
 
+/// @author jd
 const double _maxWidth = 20;
 
 //每个图形(点/柱状图/扇形)的状态

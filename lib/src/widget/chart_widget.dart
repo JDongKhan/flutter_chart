@@ -46,6 +46,7 @@ class _ChartWidgetState extends State<ChartWidget> {
 
   @override
   void dispose() {
+    //谁创建谁管理
     if (widget.controller == null) {
       _controller.dispose();
     }
@@ -54,7 +55,6 @@ class _ChartWidgetState extends State<ChartWidget> {
 
   @override
   Widget build(BuildContext context) {
-    _controller.tooltipStateSetter = null;
     return _buildBody();
   }
 
@@ -65,18 +65,18 @@ class _ChartWidgetState extends State<ChartWidget> {
         builder: (context, cs) {
           ChartCoordinateRender baseChart = widget.coordinateRender;
           baseChart.controller = _controller;
-
+          //先清理状态
+          _controller.tooltipStateSetter = null;
           _controller.childrenState.clear();
           //关联子状态
           for (int i = 0; i < baseChart.charts.length; i++) {
             ChartBodyRender body = baseChart.charts[i];
-            CharBodyState c = CharBodyState(_controller);
+            CharBodyState c = CharBodyState();
             body.bodyState = c;
             _controller.childrenState.add(c);
           }
 
           Size size = Size(cs.maxWidth, cs.maxHeight);
-
           List<Widget> childrenWidget = [];
           //图表 chart
           Widget chartWidget = _ChartCoreWidget(
@@ -205,7 +205,7 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
 
   void _requestFocus() {
     if (!_focusNode.hasFocus) {
-      widget.controller.localPosition = null;
+      widget.controller.clear();
     }
   }
 
@@ -231,7 +231,7 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
     zoom = 1.0;
     widget.controller.zoom = 1.0;
     widget.controller.offset = Offset.zero;
-    widget.controller.localPosition = null;
+    widget.controller.clear();
   }
 
   void _defaultOnTapOutside(PointerDownEvent event) {
