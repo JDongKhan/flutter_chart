@@ -678,8 +678,6 @@ class YAxis {
     return _paint!;
   }
 
-  void _init(Size size) {}
-
   num relativeValue(num value) {
     return value - min;
   }
