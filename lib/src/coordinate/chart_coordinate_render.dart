@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import '../annotation/annotation.dart';
 import '../utils/transform_utils.dart';
 import '../widget/chart_widget.dart';
-import 'chart_body_render.dart';
-import 'chart_controller.dart';
+import '../base/chart_body_render.dart';
+import '../base/chart_controller.dart';
 
 ///
 /// @author JD

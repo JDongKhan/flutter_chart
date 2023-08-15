@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../base/chart_coordinate_render.dart';
+import '../coordinate/chart_coordinate_render.dart';
 import '../coordinate/dimensions_chart_coordinate_render.dart';
 import 'annotation.dart';
 
@@ -40,8 +40,7 @@ class RegionAnnotation extends Annotation {
     }
 
     if (coordinateChart is DimensionsChartCoordinateRender) {
-      DimensionsChartCoordinateRender chart =
-          coordinateChart as DimensionsChartCoordinateRender;
+      DimensionsChartCoordinateRender chart = coordinateChart as DimensionsChartCoordinateRender;
       num po1 = positions[0];
       num po2 = positions[1];
       double start = chart.transformUtils.transformX(po1 * chart.xAxis.density);

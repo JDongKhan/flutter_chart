@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import '../base/chart_body_render.dart';
-import '../base/chart_coordinate_render.dart';
+import '../coordinate/chart_coordinate_render.dart';
 import '../base/chart_shape_state.dart';
 import '../coordinate/circular_chart_coordinate_render.dart';
 

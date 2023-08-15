@@ -42,10 +42,6 @@ class ChartController extends ChangeNotifier {
 
   void clear() {
     bool needNotify = false;
-    if (tooltipContent != null) {
-      tooltipContent = null;
-      needNotify = true;
-    }
     if (tooltipWidgetBuilder != null) {
       tooltipWidgetBuilder = null;
       needNotify = true;
@@ -57,15 +53,6 @@ class ChartController extends ChangeNotifier {
     if (needNotify) {
       notifyTooltip();
     }
-  }
-
-  //自定义的内容 使用canvas渲染tooltip
-  InlineSpan? tooltipContent;
-  //目前即支持canvas画tooltip，也支持widget画，而canvas画自定义内容受限，所以后面不再使用该方法
-  @Deprecated('即将废弃')
-  void showTooltip({required InlineSpan content, required Offset position}) {
-    tooltipContent = content;
-    localPosition = position;
   }
 
   //使用widget渲染tooltip

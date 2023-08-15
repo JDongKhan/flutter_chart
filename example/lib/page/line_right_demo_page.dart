@@ -74,11 +74,12 @@ class _LineChartRightDemoPageState extends State<LineChartRightDemoPage> {
                 // zoomVertical: true,
                 crossHair: const CrossHairStyle(verticalShow: false, horizontalShow: false),
                 //提示的文案信息
-                tooltipFormatter: (list) {
-                  return TextSpan(
-                    text: list.map((e) => e.selectedIndex).toString(),
-                    style: const TextStyle(
-                      color: Colors.black,
+                tooltipWidgetRenderer: (BuildContext context, List<CharBodyState> body) {
+                  return PreferredSize(
+                    preferredSize: const Size(60, 60),
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      child: Text(body.map((e) => e.selectedIndex).toString()),
                     ),
                   );
                 },

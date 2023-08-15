@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../base/chart_coordinate_render.dart';
+import '../coordinate/chart_coordinate_render.dart';
 import 'annotation.dart';
 
 //路径

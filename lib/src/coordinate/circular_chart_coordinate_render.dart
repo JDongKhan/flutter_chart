@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-import '../base/chart_coordinate_render.dart';
+import 'chart_coordinate_render.dart';
 import '../utils/transform_utils.dart';
 
 enum ArcPosition {

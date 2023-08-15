@@ -12,12 +12,8 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
   //坐标系颜色
   final List<YAxis> yAxis;
   final XAxis xAxis;
-  //自定义提示框的样式
-  final TooltipRenderer? tooltipRenderer;
   //自定义提示文案
   //目前即支持canvas画tooltip，也支持widget画，而canvas画自定义内容受限，所以后面不再使用该方法
-  @Deprecated('废弃，即将删除')
-  final ChartTooltipFormatter? tooltipFormatter;
   //十字准星样式
   final CrossHairStyle crossHair;
 
@@ -34,8 +30,6 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     super.maxZoom,
     super.safeArea,
     super.tooltipWidgetRenderer,
-    this.tooltipRenderer,
-    this.tooltipFormatter,
     this.crossHair = const CrossHairStyle(),
     XAxis? xAxis,
   })  : assert(yAxis.isNotEmpty),
@@ -366,95 +360,11 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     if (anchor == null) {
       return;
     }
-
     //用widget实现
     if (tooltipWidgetRenderer != null) {
       controller.notifyTooltip();
       return;
     }
-
-    if (tooltipRenderer != null) {
-      tooltipRenderer?.call(canvas, size, anchor, controller.childrenState);
-      return;
-    }
-
-    InlineSpan? textSpan = controller.tooltipContent;
-    textSpan ??= tooltipFormatter?.call(controller.childrenState);
-    _drawTooltipWithTextSpan(canvas, anchor, textSpan);
-  }
-
-  //提示文案
-  void _drawTooltipWithTextSpan(Canvas canvas, Offset anchor, InlineSpan? textSpan) {
-    if (textSpan == null) {
-      return;
-    }
-    final textPainter = TextPainter(
-      text: textSpan,
-      textDirection: TextDirection.ltr,
-    );
-    textPainter.layout();
-
-    const EdgeInsets padding = EdgeInsets.all(10);
-    final width = padding.left + textPainter.width + padding.right;
-    final height = padding.top + textPainter.height + padding.bottom;
-
-    var windowRect = Rect.fromLTWH(
-      anchor.dx,
-      anchor.dy,
-      width,
-      height,
-    );
-
-    var textPaintPoint = anchor + padding.topLeft;
-    const bool constrained = true;
-    Rect kSafeArea;
-    if (safeArea != null) {
-      kSafeArea = Rect.fromLTRB(safeArea!.left, safeArea!.top, size.width - safeArea!.right, size.height - safeArea!.bottom);
-    } else {
-      kSafeArea = Rect.fromLTRB(margin.left, margin.top, size.width - margin.right, size.height - margin.bottom);
-    }
-    if (constrained) {
-      final horizontalAdjust =
-          windowRect.left < kSafeArea.left ? (kSafeArea.left - windowRect.left) : (windowRect.right > kSafeArea.right ? (kSafeArea.right - windowRect.right) : 0.0);
-      final verticalAdjust =
-          windowRect.top < kSafeArea.top ? (kSafeArea.top - windowRect.top) : (windowRect.bottom > kSafeArea.bottom ? (kSafeArea.bottom - windowRect.bottom) : 0.0);
-      if (horizontalAdjust != 0 || verticalAdjust != 0) {
-        windowRect = windowRect.translate(horizontalAdjust, verticalAdjust);
-        textPaintPoint = textPaintPoint.translate(horizontalAdjust, verticalAdjust);
-      }
-    }
-
-    const Radius radius = Radius.circular(3.0);
-    Path windowPath = Path()..addRRect(RRect.fromRectAndRadius(windowRect, radius));
-
-    Paint paint = Paint()
-      ..color = Colors.white
-      ..strokeWidth = 0.2;
-    const elevation = 3.0;
-    const Color backgroundColor = Colors.white;
-    canvas.drawShadow(windowPath, backgroundColor, elevation, false);
-    // drawShadows(canvas, windowPath, [
-    //   BoxShadow(
-    //     color: Colors.black.withOpacity(0.05),
-    //     offset: const Offset(0, 0),
-    //     blurRadius: 2,
-    //     spreadRadius: -3,
-    //   ),
-    //   BoxShadow(
-    //     color: Colors.black.withOpacity(0.05),
-    //     offset: const Offset(0, 0),
-    //     blurRadius: 2,
-    //     spreadRadius: 2,
-    //   )
-    // ]);
-
-    canvas.drawPath(windowPath, paint);
-
-    textPainter.paint(
-      canvas,
-      textPaintPoint,
-    );
-    // canvas.drawRect(Rect.fromLTWH(point.dx, point.dy, 100, 40), paint);
   }
 
   @override

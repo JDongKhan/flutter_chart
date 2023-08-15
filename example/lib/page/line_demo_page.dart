@@ -77,10 +77,13 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                       margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
                       padding: const EdgeInsets.only(left: 10, right: 10),
                       //提示的文案信息
-                      tooltipFormatter: (list) {
-                        return TextSpan(
-                          text: list.map((e) => e.selectedIndex).toString(),
-                          style: const TextStyle(color: Colors.black),
+                      tooltipWidgetRenderer: (BuildContext context, List<CharBodyState> body) {
+                        return PreferredSize(
+                          preferredSize: const Size(60, 60),
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            child: Text(body.map((e) => e.selectedIndex).toString()),
+                          ),
                         );
                       },
                       yAxis: [
@@ -188,12 +191,15 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                       margin: const EdgeInsets.only(left: 40, top: 5, right: 0, bottom: 30),
                       //提示的文案信息
                       crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
-                      tooltipFormatter: (list) => TextSpan(
-                        text: list.map((e) => e.selectedIndex).toString(),
-                        style: const TextStyle(
-                          color: Colors.black,
-                        ),
-                      ),
+                      tooltipWidgetRenderer: (BuildContext context, List<CharBodyState> body) {
+                        return PreferredSize(
+                          preferredSize: const Size(60, 60),
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            child: Text(body.map((e) => e.selectedIndex).toString()),
+                          ),
+                        );
+                      },
                       yAxis: [
                         YAxis(
                           min: 0,
@@ -246,12 +252,15 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                         margin: const EdgeInsets.only(left: 40, top: 5, right: 0, bottom: 30),
                         //提示的文案信息
                         crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
-                        tooltipFormatter: (list) => TextSpan(
-                          text: list.map((e) => e.selectedIndex).toString(),
-                          style: const TextStyle(
-                            color: Colors.black,
-                          ),
-                        ),
+                        tooltipWidgetRenderer: (BuildContext context, List<CharBodyState> body) {
+                          return PreferredSize(
+                            preferredSize: const Size(60, 60),
+                            child: Container(
+                              padding: const EdgeInsets.all(8),
+                              child: Text(body.map((e) => e.selectedIndex).toString()),
+                            ),
+                          );
+                        },
                         yAxis: [
                           YAxis(
                             min: 0,
@@ -310,16 +319,13 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                       margin: const EdgeInsets.only(left: 40, top: 5, right: 30, bottom: 30),
                       //提示的文案信息
                       crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
-                      tooltipFormatter: (list) {
-                        int? selectIndex1 = list[0].selectedIndex;
-                        int? selectIndex2 = list[1].selectedIndex;
-                        int? selectIndex3 = list[2].selectedIndex;
-                        if (selectIndex1 == null && selectIndex2 == null && selectIndex3 == null) {
-                          return null;
-                        }
-                        return TextSpan(
-                          text: list.map((e) => e.selectedIndex).toString(),
-                          style: const TextStyle(color: Colors.black),
+                      tooltipWidgetRenderer: (BuildContext context, List<CharBodyState> body) {
+                        return PreferredSize(
+                          preferredSize: const Size(60, 60),
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            child: Text(body.map((e) => e.selectedIndex).toString()),
+                          ),
                         );
                       },
                       yAxis: [

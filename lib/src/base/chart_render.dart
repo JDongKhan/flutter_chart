@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'chart_coordinate_render.dart';
+import '../coordinate/chart_coordinate_render.dart';
 
 /// @author jd
 
