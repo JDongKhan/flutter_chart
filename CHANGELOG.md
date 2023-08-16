@@ -1,3 +1,7 @@
+## 0.0.5
+
+* support sdk: '>=2.17.0 <4.0.0'
+
 ## 0.0.4
 
 * delete tooltipRenderer 

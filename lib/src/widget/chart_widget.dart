@@ -297,7 +297,7 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
               widget.controller.zoom = zoom;
             }
           } else if (details.pointerCount == 1 && details.scale == 1) {
-            //移动
+            //移动 除以zoom，是降速，不然放大后会滑的很快
             widget.chartCoordinateRender.scroll(details.focalPointDelta / widget.controller.zoom);
             // widget.controller.localPosition = details.localFocalPoint;
           }
