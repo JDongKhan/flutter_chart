@@ -22,7 +22,7 @@ const List<Color> colors10 = [
   Color(0xffff99c3),
 ];
 
-//十字准星样式
+///十字准星样式
 class CrossHairStyle {
   final Color color;
   final bool horizontalShow;
@@ -44,28 +44,37 @@ class CrossHairStyle {
 
 typedef ChartTooltipFormatter = InlineSpan? Function(List<CharBodyState>);
 
-//坐标渲染器， 每次刷新会重新构造，切忌不要存放状态数据，数据都在state里面
+///坐标渲染器， 每次刷新会重新构造，切忌不要存放状态数据，数据都在state里面
 abstract class ChartCoordinateRender {
-  //图形外边距，用于控制坐标轴的外边距
+  ///图形外边距，用于控制坐标轴的外边距
   final EdgeInsets margin;
-  //图形内边距，用于控制坐标轴的内边距
+
+  ///图形内边距，用于控制坐标轴的内边距
   final EdgeInsets padding;
-  //缩放比例
+
+  ///缩放比例
   final bool zoomHorizontal;
   final bool zoomVertical;
-  //最小缩放
+
+  ///最小缩放
   final double? minZoom;
-  //最大缩放
+
+  ///最大缩放
   final double? maxZoom;
-  //坐标系中间的绘图
+
+  ///坐标系中间的绘图
   final List<ChartBodyRender> charts;
-  //安全区域
+
+  ///安全区域
   final EdgeInsets? safeArea;
-  //用widget弹框来处理点击
+
+  ///用widget弹框来处理点击
   final TooltipWidgetRenderer? tooltipWidgetRenderer;
-  //背景标注
+
+  ///背景标注
   final List<Annotation>? backgroundAnnotations;
-  //前景标注
+
+  ///前景标注
   final List<Annotation>? foregroundAnnotations;
 
   ChartCoordinateRender({
@@ -82,16 +91,19 @@ abstract class ChartCoordinateRender {
     this.safeArea,
   }) : contentMargin = EdgeInsets.fromLTRB(margin.left + padding.left, margin.top + padding.top, margin.right + padding.right, margin.bottom + padding.bottom);
 
-  //坐标转换工具
+  ///坐标转换工具
   late TransformUtils transformUtils;
-  //共享数据
+
+  ///共享数据
   late ChartController controller;
-  //画布尺寸
+
+  ///画布尺寸
   late Size size;
 
-  //图形内容的外边距信息
+  ///图形内容的外边距信息
   EdgeInsets contentMargin;
-  //未处理的坐标  原点在左上角
+
+  ///未处理的坐标  原点在左上角
   Rect get contentRect => Rect.fromLTRB(contentMargin.left, contentMargin.top, size.width - contentMargin.left, size.height - contentMargin.bottom);
 
   void init(Size size) {

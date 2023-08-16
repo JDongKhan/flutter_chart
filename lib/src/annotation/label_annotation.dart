@@ -4,13 +4,24 @@ import '../../flutter_chart.dart';
 
 /// @author jd
 class LabelAnnotation extends Annotation {
+  ///两个长度的数组，优先级最高，ImageAnnotation的位置，对应xy轴的value
   final List<num>? positions;
+
+  ///文本风格
   final TextStyle textStyle;
+
+  ///对齐方式
   final TextAlign textAlign;
+
+  ///内容
   final String text;
-  //是否跟随滚动
+
+  ///偏移，可以做细微调整
   final Offset offset;
+
+  ///设置Annotation的偏移，忽略positions的设置
   final Offset Function(Size)? anchor;
+
   LabelAnnotation({
     super.userInfo,
     super.onTap,
@@ -24,7 +35,7 @@ class LabelAnnotation extends Annotation {
     this.offset = Offset.zero,
     this.textAlign = TextAlign.start,
     this.textStyle = const TextStyle(color: Colors.red),
-  }) : assert(positions != null || anchor != null);
+  }) : assert(positions != null || anchor != null, 'positions or anchor must be not null');
 
   TextPainter? _textPainter;
 
@@ -45,21 +56,18 @@ class LabelAnnotation extends Annotation {
 
   @override
   void draw(Canvas canvas, Size size) {
-    if (minZoomVisible != null) {
-      if (coordinateChart.controller.zoom < minZoomVisible!) {
-        return;
-      }
+    if (minZoomVisible != null && coordinateChart.controller.zoom < minZoomVisible!) {
+      return;
     }
-    if (maxZoomVisible != null) {
-      if (coordinateChart.controller.zoom > maxZoomVisible!) {
-        return;
-      }
+    if (maxZoomVisible != null && coordinateChart.controller.zoom > maxZoomVisible!) {
+      return;
     }
 
     if (coordinateChart is DimensionsChartCoordinateRender) {
       DimensionsChartCoordinateRender chart = coordinateChart as DimensionsChartCoordinateRender;
       Offset ost;
       if (positions != null) {
+        assert(positions!.length == 2, 'positions must be two length');
         num xPo = positions![0];
         num yPo = positions![1];
         double itemWidth = xPo * chart.xAxis.density;

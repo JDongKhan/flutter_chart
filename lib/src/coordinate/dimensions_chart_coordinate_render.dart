@@ -9,12 +9,13 @@ import '../utils/transform_utils.dart';
 
 /// 象限坐标系
 class DimensionsChartCoordinateRender extends ChartCoordinateRender {
-  //坐标系颜色
+  ///y坐标轴
   final List<YAxis> yAxis;
+
+  ///x坐标轴
   final XAxis xAxis;
-  //自定义提示文案
-  //目前即支持canvas画tooltip，也支持widget画，而canvas画自定义内容受限，所以后面不再使用该方法
-  //十字准星样式
+
+  ///十字准星样式
   final CrossHairStyle crossHair;
 
   DimensionsChartCoordinateRender({
@@ -100,6 +101,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     _drawTooltip(canvas, size);
   }
 
+  ///绘制y轴
   void _drawYAxis(Canvas canvas, Size size) {
     int yAxisIndex = 0;
     for (YAxis yA in yAxis) {
@@ -147,7 +149,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     }
   }
 
-  ///该方法太耗性能，建议少用
+  ///该方法太耗性能，建议少用 未来背景可能使用单独一个canvas绘制
   Path _dashPath(Offset p1, Offset p2) {
     Path path = Path()
       ..moveTo(p1.dx, p1.dy)
@@ -155,6 +157,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     return dashPath(path, dashArray: CircularIntervalList([3, 3]), dashOffset: null);
   }
 
+  ///绘制Y轴文本
   void _drawYTextPaint(YAxis yAxis, Canvas canvas, String text, TextStyle textStyle, bool right, double left, double top, bool middle) {
     var textPainter = yAxis._textPainter[text];
     if (textPainter == null) {
@@ -178,6 +181,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     ); // 进行绘制
   }
 
+  ///绘制x轴
   void _drawXAxis(Canvas canvas, Size size) {
     double density = xAxis.density;
     num interval = xAxis.interval;
@@ -252,6 +256,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     }
   }
 
+  ///绘制x轴文本
   void _drawXTextPaint(Canvas canvas, String text, TextStyle textStyle, Size size, double left) {
     var textPainter = xAxis._textPainter[text];
     if (textPainter == null) {
@@ -276,8 +281,8 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     ); // 进行绘制
   }
 
+  ///绘制十字准星
   void _drawCrosshair(Canvas canvas, Size size) {
-    //十字准星
     Offset? anchor = controller.localPosition;
     if (anchor == null) {
       return;
@@ -460,59 +465,49 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
       }
     }
   }
-
-  //绘制阴影
-  // static void drawShadows(Canvas canvas, Path path, List<BoxShadow> shadows) {
-  //   for (final BoxShadow shadow in shadows) {
-  //     final Paint shadowPainter = shadow.toPaint();
-  //     if (shadow.spreadRadius == 0) {
-  //       canvas.drawPath(path.shift(shadow.offset), shadowPainter);
-  //     } else {
-  //       Rect zone = path.getBounds();
-  //       double xScale = (zone.width + shadow.spreadRadius) / zone.width;
-  //       double yScale = (zone.height + shadow.spreadRadius) / zone.height;
-  //       Matrix4 m4 = Matrix4.identity();
-  //       m4.translate(zone.width / 2, zone.height / 2);
-  //       m4.scale(xScale, yScale);
-  //       m4.translate(-zone.width / 2, -zone.height / 2);
-  //       canvas.drawPath(
-  //           path.shift(shadow.offset).transform(m4.storage), shadowPainter);
-  //     }
-  //   }
-  //   Paint whitePaint = Paint()..color = Colors.black;
-  //   canvas.drawPath(path, whitePaint);
-  // }
 }
 
 typedef AxisFormatter = String? Function(num);
 typedef AxisOffset = Offset? Function(Size size);
-//放大时的数据
+
+///放大时的数据
 typedef AxisDivideCountAtAmplify = int? Function(double);
 
-//x轴配置
+///x轴配置
 class XAxis {
-  //方便计算，count代表一屏显示的格子数
+  ///方便计算，count代表一屏显示的格子数
   final int count;
-  //每个格子代表的值
+
+  ///每个格子代表的值
   final num interval;
-  //x轴最大值， 最大格子数 = max / interval, 如果最大格子数 == count,则不会滚动
+
+  ///x轴最大值， 最大格子数 = max / interval, 如果最大格子数 == count,则不会滚动
   final num? max;
-  //x轴文案格式化  不要使用过于耗时的方法
+
+  ///x轴文案格式化  不要使用过于耗时的方法
   final AxisFormatter? formatter;
-  //每1个逻辑value代表多宽
+
+  ///每1个逻辑value代表多宽
   late double density;
-  //是否画格子线
+
+  ///是否画格子线
   final bool drawGrid;
-  //是否有分隔线
+
+  ///是否有分隔线
   final bool drawDivider;
-  //是否绘制最下面一行的线
+
+  ///是否绘制最下面一行的线
   bool drawLine;
-  //文字颜色
+
+  ///文字颜色
   final TextStyle textStyle;
-  //最边上的线的颜色
+
+  ///最边上的线的颜色
   final Color lineColor;
-  //放大时单item下分隔数量
+
+  ///放大时单item下分隔数量
   final AxisDivideCountAtAmplify? divideCount;
+
   XAxis({
     this.formatter,
     this.interval = 1,
@@ -530,35 +525,50 @@ class XAxis {
     return density * value;
   }
 
+  ///缓存对应的信息
   final Map<int, Path> _gridLine = {};
   final Map<String, TextPainter> _textPainter = {};
 }
 
-//y轴配置
+///y轴配置
 class YAxis {
-  //是否开启 暂时未启用
+  ///是否开启 暂时未启用
   final bool enable;
+
+  ///最小值
   final num min;
+
+  ///最大值
   final num max;
-  //一屏显示的数量
+
+  ///一屏显示的数量
   final int count;
-  //文案格式化 不要使用过于耗时的方法
+
+  ///文案格式化 不要使用过于耗时的方法
   final AxisFormatter? formatter;
-  //是否画轴线
+
+  ///是否画轴线
   final bool drawLine;
-  //是否画格子线
+
+  ///是否画格子线
   final bool drawGrid;
-  //是否有分隔线
+
+  ///是否有分隔线
   final bool drawDivider;
-  //密度
+
+  ///密度
   late double density;
-  //轴的偏移
+
+  ///轴的偏移
   final AxisOffset? offset;
-  //文字风格
+
+  ///文字风格
   final TextStyle textStyle;
-  //最边上线的颜色
+
+  ///最边上线的颜色
   final Color lineColor;
-  //文字距左边的间隙
+
+  ///文字距左边的间隙
   final double left;
 
   YAxis({
@@ -576,6 +586,7 @@ class YAxis {
     this.left = 0,
   });
 
+  ///缓存对应的信息
   final Map<int, Path> _gridLine = {};
   final Map<String, TextPainter> _textPainter = {};
 
@@ -595,10 +606,4 @@ class YAxis {
   double relativeHeight(num value) {
     return (value - min) * density;
   }
-}
-
-class AxisDividerLine {
-  final String text;
-  final Path path;
-  AxisDividerLine({required this.text, required this.path});
 }

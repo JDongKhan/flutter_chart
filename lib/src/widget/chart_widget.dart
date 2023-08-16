@@ -11,18 +11,24 @@ typedef TooltipRenderer = void Function(Canvas, Size size, Offset anchor, List<C
 typedef TooltipWidgetRenderer = PreferredSizeWidget? Function(BuildContext context, List<CharBodyState>);
 // typedef ChartCoordinateRenderBuilder = ChartCoordinateRender Function();
 
-//本widget只是起到提供Canvas的功能，不支持任何传参，避免参数来回传递导致难以维护以及混乱，需要自定义可自行去对应渲染器
+///本widget只是起到提供Canvas的功能，不支持任何传参，避免参数来回传递导致难以维护以及混乱，需要自定义可自行去对应渲染器
 class ChartWidget extends StatefulWidget {
+  ///坐标系
   final ChartCoordinateRender coordinateRender;
+
+  ///控制器
   final ChartController? controller;
-  //处于弹框和chart之间
+
+  ///处于弹框和chart之间
   final Widget? foregroundWidget;
+
   const ChartWidget({
     Key? key,
     required this.coordinateRender,
     this.controller,
     this.foregroundWidget,
   }) : super(key: key);
+
   @override
   State<ChartWidget> createState() => _ChartWidgetState();
 }
@@ -105,7 +111,7 @@ class _ChartWidgetState extends State<ChartWidget> {
     );
   }
 
-  //提示弹框
+  ///提示弹框
   Widget _buildTooltipWidget(ChartCoordinateRender baseChart, Size size) {
     return StatefulBuilder(
       builder: (BuildContext context, StateSetter setState) {
@@ -312,7 +318,6 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
           child: RepaintBoundary(
             child: CustomPaint(
               painter: _ChartPainter(
-                repaint: false,
                 chart: widget.chartCoordinateRender,
               ),
             ),
@@ -322,7 +327,7 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
     );
   }
 
-  //判断是否先处理Annotations
+  ///判断是否先处理Annotations
   bool _checkForegroundAnnotationsEvent(Offset point) {
     List<Annotation>? foregroundAnnotations = widget.chartCoordinateRender.foregroundAnnotations;
     if (foregroundAnnotations == null) {
@@ -338,13 +343,11 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
   }
 }
 
-//画图
+///画图
 class _ChartPainter extends CustomPainter {
   final ChartCoordinateRender chart;
-  final bool repaint;
   _ChartPainter({
     required this.chart,
-    this.repaint = false,
   }) : super(repaint: chart.controller);
 
   bool _init = false;
@@ -374,6 +377,6 @@ class _ChartPainter extends CustomPainter {
     if (oldController != newController) {
       return true;
     }
-    return repaint;
+    return false;
   }
 }

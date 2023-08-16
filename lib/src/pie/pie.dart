@@ -16,35 +16,49 @@ enum RotateDirection {
 }
 
 class Pie<T> extends ChartBodyRender<T> {
-  //颜色
+  ///颜色
   final List<Color> colors;
-  //优先级高于colors
+
+  ///优先级高于colors
   final List<Shader>? shaders;
-  //引导线颜色
+
+  ///引导线颜色
   final Color lineColor;
-  //内圆半径
+
+  ///内圆半径
   final double holeRadius;
-  //值的位置偏移
+
+  ///值的位置偏移
   final double valueTextOffset;
-  //值文案格式化 不要使用过于耗时的方法
+
+  ///值文案格式化 不要使用过于耗时的方法
   final ValueFormatter? valueFormatter;
-  //图例文案格式化 不要使用过于耗时的方法
+
+  ///图例文案格式化 不要使用过于耗时的方法
   final ValueFormatter? legendFormatter;
-  //值文字样式
+
+  ///值文字样式
   final TextStyle textStyle;
-  //图例样式
+
+  ///图例样式
   final TextStyle legendTextStyle;
-  //中间文案样式 为空则不显示
+
+  ///中间文案样式 为空则不显示
   final TextStyle? centerTextStyle;
-  //扇形的方向
+
+  ///扇形的方向
   final RotateDirection direction;
-  //百分比
+
+  ///百分比
   final double? spaceWidth;
-  //是否能点击
+
+  ///是否能点击
   final bool enableTap;
-  //是否显示引导线
+
+  ///是否显示引导线
   final bool guideLine;
-  //是否在图中显示value
+
+  ///是否在图中显示value
   final bool showValue;
 
   Pie({
@@ -73,6 +87,7 @@ class Pie<T> extends ChartBodyRender<T> {
     this.showValue = false,
     this.enableTap = true,
   });
+
   @override
   void draw(Canvas canvas, Size size) {
     CircularChartCoordinateRender chart = coordinateChart as CircularChartCoordinateRender;
@@ -171,7 +186,7 @@ class Pie<T> extends ChartBodyRender<T> {
     bodyState.shapeList = shapeList;
   }
 
-  //画空隙线
+  ///画空隙线
   void _drawSpaceLine(Canvas canvas, double radius, double startAngle, double sweepAngle) {
     if (spaceWidth == null) {
       return;
@@ -324,7 +339,7 @@ class Pie<T> extends ChartBodyRender<T> {
     }
   }
 
-  //绘制中间文案
+  ///绘制中间文案
   void _drawCenterValue(Canvas canvas, String? valueText) {
     CircularChartCoordinateRender chart = coordinateChart as CircularChartCoordinateRender;
     //中心点文案
@@ -344,7 +359,7 @@ class Pie<T> extends ChartBodyRender<T> {
     }
   }
 
-  //可以重写，依靠path和paint修改成特殊的样式
+  ///可以重写，依靠path和paint修改成特殊的样式
   void drawPie(Canvas canvas, Path path, Paint paint) {
     canvas.drawPath(path, paint);
   }

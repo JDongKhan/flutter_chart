@@ -31,7 +31,10 @@ class CircularChartCoordinateRender extends ChartCoordinateRender {
     this.borderColor = Colors.white,
   });
 
+  ///半径
   late double radius;
+
+  ///中心点
   late Offset center;
 
   @override
@@ -46,7 +49,7 @@ class CircularChartCoordinateRender extends ChartCoordinateRender {
     _drawForegroundAnnotations(canvas, size);
   }
 
-  //画背景圆
+  ///画背景圆
   void _drawCircle(Canvas canvas, Size size) {
     final sw = size.width - contentMargin.horizontal;
     final sh = size.height - contentMargin.vertical;
@@ -130,7 +133,7 @@ class CircularChartCoordinateRender extends ChartCoordinateRender {
     }
   }
 
-  //背景
+  ///背景
   void _drawBackgroundAnnotations(Canvas canvas, Size size) {
     backgroundAnnotations?.forEach((element) {
       element.init(this);
@@ -138,7 +141,7 @@ class CircularChartCoordinateRender extends ChartCoordinateRender {
     });
   }
 
-  //前景
+  ///前景
   void _drawForegroundAnnotations(Canvas canvas, Size size) {
     foregroundAnnotations?.forEach((element) {
       element.init(this);

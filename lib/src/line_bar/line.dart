@@ -9,28 +9,39 @@ typedef LinePosition<T> = List<num> Function(T);
 
 /// @author JD
 class Line<T> extends ChartBodyRender<T> {
-  //每个点对应的值 不要使用过于耗时的方法
+  ///每个点对应的值 不要使用过于耗时的方法
   final LinePosition values;
-  //线颜色
+
+  ///线颜色
   final List<Color> colors;
-  //优先级高于colors
+
+  ///优先级高于colors
   final List<Shader>? shaders;
-  //点的颜色
+
+  ///点的颜色
   final List<Color>? dotColors;
-  //点半径
+
+  ///点半径
   final double dotRadius;
-  //是否有空心圆
+
+  ///是否有空心圆
   final bool isHollow;
-  //线宽
+
+  ///线宽
   final double strokeWidth;
-  //填充颜色
+
+  ///填充颜色
   final bool? filled;
-  //曲线
+
+  ///曲线
   final bool isCurve;
-  //线 画笔
+
+  ///线 画笔
   final Paint paint;
-  //路径之间的处理规则
+
+  ///路径之间的处理规则
   final PathOperation? operation;
+
   Line({
     required super.data,
     required super.position,

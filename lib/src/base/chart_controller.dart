@@ -6,11 +6,11 @@ import 'chart_shape_state.dart';
 
 typedef AnnotationTooltipWidgetRenderer = PreferredSizeWidget? Function(BuildContext context);
 
-//数据共享，便于各个节点使用
+///数据共享，便于各个节点使用
 class ChartController extends ChangeNotifier {
   Offset? _localPosition;
 
-  //点击的位置信息
+  ///点击的位置信息
   set localPosition(value) {
     if (value != _localPosition) {
       _localPosition = value;
@@ -21,7 +21,8 @@ class ChartController extends ChangeNotifier {
   Offset? get localPosition => _localPosition;
 
   double _zoom = 1;
-  //缩放
+
+  ///缩放级别
   double get zoom => _zoom;
   set zoom(v) {
     if (_zoom != v) {
@@ -30,7 +31,7 @@ class ChartController extends ChangeNotifier {
     }
   }
 
-  //偏移
+  ///偏移
   Offset _offset = Offset.zero;
   Offset get offset => _offset;
   set offset(v) {
@@ -40,8 +41,7 @@ class ChartController extends ChangeNotifier {
     }
   }
 
-  void refresh() {}
-
+  ///清理信息
   void clear() {
     bool needNotify = false;
     if (tooltipWidgetBuilder != null) {
@@ -57,7 +57,7 @@ class ChartController extends ChangeNotifier {
     }
   }
 
-  //使用widget渲染tooltip
+  ///使用widget渲染tooltip
   AnnotationTooltipWidgetRenderer? tooltipWidgetBuilder;
   void showTooltipBuilder({required AnnotationTooltipWidgetRenderer builder, required Offset position}) {
     tooltipWidgetBuilder = builder;
@@ -65,6 +65,9 @@ class ChartController extends ChangeNotifier {
     notifyTooltip();
   }
 
+  StateSetter? tooltipStateSetter;
+
+  ///通知弹框层刷新
   void notifyTooltip() {
     if (tooltipStateSetter != null) {
       Future.microtask(() {
@@ -73,9 +76,7 @@ class ChartController extends ChangeNotifier {
     }
   }
 
-  StateSetter? tooltipStateSetter;
-
-  //根据位置缓存配置信息
+  ///根据位置缓存配置信息
   List<CharBodyState> childrenState = [];
 
   @override
@@ -88,7 +89,7 @@ class ChartController extends ChangeNotifier {
   }
 }
 
-//每块图表存放的状态
+///每块图表存放的状态
 class CharBodyState {
   CharBodyState();
   int? _selectedIndex;
@@ -97,5 +98,6 @@ class CharBodyState {
     _selectedIndex = v;
   }
 
+  ///图形列表
   List<ChartShapeState>? shapeList;
 }

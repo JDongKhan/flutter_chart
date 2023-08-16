@@ -5,7 +5,7 @@ import 'dart:ui';
 /// @author jd
 const double _maxWidth = 20;
 
-//每个图形(点/柱状图/扇形)的状态
+///每个图形(点/柱状图/扇形)的状态
 class ChartShapeState {
   Rect? rect;
   Path? path;
@@ -13,22 +13,27 @@ class ChartShapeState {
     this.rect,
     this.path,
   });
-  //此处用链表来解决查找附近其他图形的逻辑
-  //前面一个图形的信息 目的为了解决图形之间的关联信息
+
+  ///此处用链表来解决查找附近其他图形的逻辑
+  ///前面一个图形的信息 目的为了解决图形之间的关联信息
   ChartShapeState? preShapeState;
-  //下一个图形的信息
+
+  ///下一个图形的信息
   ChartShapeState? nextShapeState;
-  //坐标系最左边
+
+  ///坐标系最左边
   double? left;
-  //坐标系最右边
+
+  ///坐标系最右边
   double? right;
-  //某条数据下 可能会有多条数据
+
+  ///某条数据下 可能会有多条数据
   List<ChartShapeState> children = [];
 
-  //矩形
+  ///矩形
   ChartShapeState.rect({required this.rect});
 
-  //弧 用path保存 path不便于计算
+  ///弧 用path保存 path不便于计算
   ChartShapeState.arc({
     required Offset center, // 中心点
     required double innerRadius, // 小圆半径
@@ -59,7 +64,7 @@ class ChartShapeState {
     path = localPath.shift(center);
   }
 
-  //获取热区
+  ///获取热区
   Rect? getHotRect() {
     //处理前后关联热区
     if (preShapeState == null && nextShapeState == null) {
@@ -152,7 +157,7 @@ class ChartShapeState {
     return null;
   }
 
-  //判断热区是否命中
+  ///判断热区是否命中
   bool hitTest(Offset? anchor) {
     if (anchor == null) {
       return false;

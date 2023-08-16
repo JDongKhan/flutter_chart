@@ -1,3 +1,9 @@
+## 0.0.6
+
+* remove unused code 
+* format code
+
+
 ## 0.0.5
 
 * support sdk: '>=2.17.0 <4.0.0'

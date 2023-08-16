@@ -8,16 +8,21 @@ import '../coordinate/circular_chart_coordinate_render.dart';
 
 /// @author jd
 class Progress<T> extends ChartBodyRender<T> {
-  //线宽
+  ///线宽
   final double strokeWidth;
-  //开始弧度，可以调整起始位置
+
+  ///开始弧度，可以调整起始位置
   final double startAngle;
-  //结尾样式
+
+  ///结尾样式
   final StrokeCap? strokeCap;
-  //颜色
+
+  ///颜色
   final List<Color> colors;
-  //结尾画小原点
+
+  ///结尾画小原点
   final bool endPoint;
+
   Progress({
     required super.data,
     required super.position,

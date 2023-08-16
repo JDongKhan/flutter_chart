@@ -6,11 +6,13 @@ import '../utils/transform_utils.dart';
 
 /// @author jd
 class WaveProgress<T> extends ChartBodyRender<T> {
-  //波纹峰值
+  ///波纹峰值
   final double controlPoint;
-  //从0 到 1
+
+  ///从0 到 1
   final double controlOffset;
-  //颜色
+
+  ///颜色
   final List<Color> colors;
 
   WaveProgress({

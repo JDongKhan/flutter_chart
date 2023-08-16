@@ -7,9 +7,15 @@ typedef AnnotationPosition<T> = num Function(T);
 
 /// @author jd
 class LimitAnnotation extends Annotation {
+  ///限制线对应y轴的value
   final num limit;
+
+  ///线的颜色
   final Color color;
+
+  ///线宽
   final double strokeWidth;
+
   LimitAnnotation({
     super.scroll = false,
     super.yAxisPosition = 0,
@@ -21,6 +27,7 @@ class LimitAnnotation extends Annotation {
   });
   Paint? _paint;
   Path? _path;
+
   @override
   void init(ChartCoordinateRender coordinateChart) {
     super.init(coordinateChart);
@@ -59,15 +66,11 @@ class LimitAnnotation extends Annotation {
 
   @override
   void draw(Canvas canvas, Size size) {
-    if (minZoomVisible != null) {
-      if (coordinateChart.controller.zoom < minZoomVisible!) {
-        return;
-      }
+    if (minZoomVisible != null && coordinateChart.controller.zoom < minZoomVisible!) {
+      return;
     }
-    if (maxZoomVisible != null) {
-      if (coordinateChart.controller.zoom > maxZoomVisible!) {
-        return;
-      }
+    if (maxZoomVisible != null && coordinateChart.controller.zoom > maxZoomVisible!) {
+      return;
     }
     if (_path != null && _paint != null) {
       canvas.drawPath(_path!, _paint!);

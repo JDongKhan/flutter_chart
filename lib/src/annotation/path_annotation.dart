@@ -6,8 +6,13 @@ import 'annotation.dart';
 /// @author jd
 //路径
 class PathAnnotation extends Annotation {
+  ///路径
   final Path path;
+
+  ///颜色
   final Color color;
+
+  ///所在位置
   final Offset Function(Size)? anchor;
 
   PathAnnotation({
@@ -39,15 +44,11 @@ class PathAnnotation extends Annotation {
 
   @override
   void draw(Canvas canvas, Size size) {
-    if (minZoomVisible != null) {
-      if (coordinateChart.controller.zoom < minZoomVisible!) {
-        return;
-      }
+    if (minZoomVisible != null && coordinateChart.controller.zoom < minZoomVisible!) {
+      return;
     }
-    if (maxZoomVisible != null) {
-      if (coordinateChart.controller.zoom > maxZoomVisible!) {
-        return;
-      }
+    if (maxZoomVisible != null && coordinateChart.controller.zoom > maxZoomVisible!) {
+      return;
     }
     if (_paint != null && _path != null) {
       canvas.drawPath(_path!, _paint!);

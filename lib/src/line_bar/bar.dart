@@ -10,16 +10,21 @@ typedef BarPosition<T> = num Function(T);
 /// @author JD
 ///普通bar
 class Bar<T> extends ChartBodyRender<T> {
-  //bar的宽度
+  ///bar的宽度
   final double itemWidth;
-  //值格式化 不要使用过于耗时的方法
+
+  ///值格式化 不要使用过于耗时的方法
   final BarPosition value;
-  //颜色
+
+  ///颜色
   final Color color;
-  //优先级高于color
+
+  ///优先级高于color
   final Shader? shader;
-  //高亮颜色
+
+  ///高亮颜色
   final Color highlightColor;
+
   Bar({
     required super.data,
     required this.value,
@@ -30,6 +35,7 @@ class Bar<T> extends ChartBodyRender<T> {
     this.shader,
     this.highlightColor = Colors.yellow,
   });
+
   @override
   void draw(Canvas canvas, Size size) {
     DimensionsChartCoordinateRender chart = coordinateChart as DimensionsChartCoordinateRender;
@@ -83,23 +89,30 @@ class Bar<T> extends ChartBodyRender<T> {
 
 typedef StackBarPosition<T> = List<num> Function(T);
 
-//stackBar  支持水平/垂直排列
+///stackBar  支持水平/垂直排列
 class StackBar<T> extends ChartBodyRender<T> {
-  //值格式化
+  ///值格式化
   final StackBarPosition<T> values;
-  //bar的宽度
+
+  ///bar的宽度
   final double itemWidth;
-  //多个颜色
+
+  ///多个颜色
   final List<Color> colors;
-  //优先级高于colors
+
+  ///优先级高于colors
   final List<Shader>? shaders;
-  //高亮颜色
+
+  ///高亮颜色
   final Color highlightColor;
-  //方向
+
+  ///方向
   final Axis direction;
-  //撑满 如果为true则会根据实际数值的总和求比例，如果为false则会根据Y轴最大值求比例
+
+  ///撑满 如果为true则会根据实际数值的总和求比例，如果为false则会根据Y轴最大值求比例
   final bool full;
 
+  ///两个bar之间的间距
   final double padding;
 
   StackBar({
@@ -115,6 +128,7 @@ class StackBar<T> extends ChartBodyRender<T> {
     this.full = false,
     this.padding = 5,
   });
+
   @override
   void draw(Canvas canvas, Size size) {
     DimensionsChartCoordinateRender chart = coordinateChart as DimensionsChartCoordinateRender;
@@ -130,7 +144,7 @@ class StackBar<T> extends ChartBodyRender<T> {
     bodyState.shapeList = shapeList;
   }
 
-  //水平排列图形
+  ///水平排列图形
   ChartShapeState drawHorizontalBar(Canvas canvas, DimensionsChartCoordinateRender chart, int index, T data) {
     num po = position.call(data);
     List<num> vas = values.call(data);
@@ -185,6 +199,7 @@ class StackBar<T> extends ChartBodyRender<T> {
     return shape;
   }
 
+  ///垂直排列图形
   ChartShapeState drawVerticalBar(Canvas canvas, DimensionsChartCoordinateRender chart, int index, T data) {
     num po = position.call(data);
     List<num> vas = values.call(data);

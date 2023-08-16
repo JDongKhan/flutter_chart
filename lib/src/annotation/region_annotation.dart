@@ -7,8 +7,12 @@ import 'annotation.dart';
 /// @author jd
 //区间标注
 class RegionAnnotation extends Annotation {
+  ///区间在x轴上的位置，两个长度
   final List<num> positions;
+
+  ///区间颜色
   final Color color;
+
   RegionAnnotation({
     super.scroll = true,
     super.minZoomVisible,
@@ -29,19 +33,15 @@ class RegionAnnotation extends Annotation {
 
   @override
   void draw(Canvas canvas, Size size) {
-    if (minZoomVisible != null) {
-      if (coordinateChart.controller.zoom < minZoomVisible!) {
-        return;
-      }
+    if (minZoomVisible != null && coordinateChart.controller.zoom < minZoomVisible!) {
+      return;
     }
-    if (maxZoomVisible != null) {
-      if (coordinateChart.controller.zoom > maxZoomVisible!) {
-        return;
-      }
+    if (maxZoomVisible != null && coordinateChart.controller.zoom > maxZoomVisible!) {
+      return;
     }
-
     if (coordinateChart is DimensionsChartCoordinateRender) {
       DimensionsChartCoordinateRender chart = coordinateChart as DimensionsChartCoordinateRender;
+      assert(positions.length == 2, 'positions must be two length');
       num po1 = positions[0];
       num po2 = positions[1];
       double start = chart.transformUtils.transformX(po1 * chart.xAxis.density);
