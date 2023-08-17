@@ -1,3 +1,8 @@
+## 0.0.7
+
+* fix padding = EdgeInsets.zero bug
+
+
 ## 0.0.6
 
 * remove unused code 

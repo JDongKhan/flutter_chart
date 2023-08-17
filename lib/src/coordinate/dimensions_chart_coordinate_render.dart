@@ -216,7 +216,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
       left = transformUtils.withXZoomOffset(left);
 
       if (text != null) {
-        _drawXTextPaint(canvas, text, xAxis.textStyle, size, left);
+        _drawXTextPaint(canvas, text, xAxis.textStyle, size, left, first: (i == 0) && padding.left == 0, end: (i == count) && padding.right == 0);
       }
 
       //处理放大时里面的内容
@@ -257,7 +257,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
   }
 
   ///绘制x轴文本
-  void _drawXTextPaint(Canvas canvas, String text, TextStyle textStyle, Size size, double left) {
+  void _drawXTextPaint(Canvas canvas, String text, TextStyle textStyle, Size size, double left, {bool first = false, bool end = false}) {
     var textPainter = xAxis._textPainter[text];
     if (textPainter == null) {
       //layout耗性能，只做一次即可
@@ -275,7 +275,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     textPainter.paint(
       canvas,
       Offset(
-        left - textPainter.width / 2,
+        end ? left - textPainter.width : (first ? left : left - textPainter.width / 2),
         size.height - margin.bottom + 8,
       ),
     ); // 进行绘制
