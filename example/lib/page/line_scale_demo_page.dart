@@ -63,7 +63,7 @@ class _LineChartScaleDemoPageState extends State<LineChartScaleDemoPage> {
                 // zoomVertical: true,
                 crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
                 //提示的文案信息
-                tooltipWidgetRenderer: (BuildContext context, List<CharBodyState> body) {
+                tooltipBuilder: (BuildContext context, List<CharBodyState> body) {
                   return PreferredSize(
                     preferredSize: const Size(60, 60),
                     child: Container(

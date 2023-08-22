@@ -30,7 +30,8 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     super.minZoom,
     super.maxZoom,
     super.safeArea,
-    super.tooltipWidgetRenderer,
+    @Deprecated('instead of  using [tooltipBuilder]') super.tooltipWidgetRenderer,
+    super.tooltipBuilder,
     this.crossHair = const CrossHairStyle(),
     XAxis? xAxis,
   })  : assert(yAxis.isNotEmpty),
@@ -66,9 +67,6 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     }
 
     //开始渲染
-    Rect rect = Rect.fromLTWH(0, 0, size.width, size.height);
-    canvas.clipRect(rect);
-
     //转换工具
     transformUtils = TransformUtils(
       anchor: Offset(margin.left, size.height - margin.bottom),
@@ -83,12 +81,12 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     );
     // canvas.save();
     // 如果按坐标系切，就会面临坐标轴和里面的内容重复循环的问题，该组件的本意是尽可能减少无畏的循环，提高性能，如果
-    //给y轴切出来，超出这个范围就隐藏
+    // 给y轴切出来，超出这个范围就隐藏
     // canvas.clipRect(Rect.fromLTWH(0, 0, margin.left, size.height));
     _drawYAxis(canvas, size);
     // canvas.restore();
 
-    // //防止超过y轴
+    //防止超过y轴
     canvas.clipRect(Rect.fromLTWH(margin.left, 0, size.width - margin.horizontal, size.height));
     _drawXAxis(canvas, size);
     _drawBackgroundAnnotations(canvas, size);
@@ -140,7 +138,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
           canvas.drawLine(Offset(left, top), Offset(left + 3, top), yA.paint);
         }
       }
-      //再画实线
+      //画实线
       if (yA.drawLine) {
         canvas.drawLine(Offset(left, margin.top), Offset(left, size.height - margin.bottom), yA.paint);
       }
@@ -244,7 +242,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
         }
         canvas.drawPath(kDashPath, paint);
       }
-
+      //画底部线
       if (xAxis.drawLine && xAxis.drawDivider) {
         canvas.drawLine(Offset(left, size.height - margin.bottom), Offset(left, size.height - margin.bottom - 3), paint);
       }
@@ -366,7 +364,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
       return;
     }
     //用widget实现
-    if (tooltipWidgetRenderer != null) {
+    if (tooltipBuilder != null || tooltipWidgetRenderer != null) {
       controller.notifyTooltip();
       return;
     }

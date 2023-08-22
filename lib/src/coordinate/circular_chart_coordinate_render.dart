@@ -39,8 +39,6 @@ class CircularChartCoordinateRender extends ChartCoordinateRender {
 
   @override
   void paint(Canvas canvas, Size size) {
-    Rect rect = Rect.fromLTWH(0, 0, size.width, size.height);
-    canvas.clipRect(rect);
     _drawCircle(canvas, size);
     _drawBackgroundAnnotations(canvas, size);
     for (var element in charts) {

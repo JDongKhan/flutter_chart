@@ -8,7 +8,7 @@ import '../base/chart_body_render.dart';
 /// @author JD
 ///
 typedef TooltipRenderer = void Function(Canvas, Size size, Offset anchor, List<CharBodyState> indexs);
-typedef TooltipWidgetRenderer = PreferredSizeWidget? Function(BuildContext context, List<CharBodyState>);
+typedef TooltipWidgetBuilder = PreferredSizeWidget? Function(BuildContext context, List<CharBodyState>);
 // typedef ChartCoordinateRenderBuilder = ChartCoordinateRender Function();
 
 ///本widget只是起到提供Canvas的功能，不支持任何传参，避免参数来回传递导致难以维护以及混乱，需要自定义可自行去对应渲染器
@@ -42,6 +42,37 @@ class _ChartWidgetState extends State<ChartWidget> {
     super.initState();
   }
 
+  void _defaultOnTapOutside(PointerDownEvent event) {
+    /// The focus dropping behavior is only present on desktop platforms
+    /// and mobile browsers.
+    switch (defaultTargetPlatform) {
+      case TargetPlatform.android:
+      case TargetPlatform.iOS:
+      case TargetPlatform.fuchsia:
+        // On mobile platforms, we don't unfocus on touch events unless they're
+        // in the web browser, but we do unfocus for all other kinds of events.
+        switch (event.kind) {
+          case ui.PointerDeviceKind.touch:
+            _controller.clear();
+            break;
+          case ui.PointerDeviceKind.mouse:
+          case ui.PointerDeviceKind.stylus:
+          case ui.PointerDeviceKind.invertedStylus:
+          case ui.PointerDeviceKind.unknown:
+            _controller.clear();
+            break;
+          case ui.PointerDeviceKind.trackpad:
+            throw UnimplementedError('Unexpected pointer down event for trackpad');
+        }
+        break;
+      case TargetPlatform.linux:
+      case TargetPlatform.macOS:
+      case TargetPlatform.windows:
+        _controller.clear();
+        break;
+    }
+  }
+
   @override
   void didUpdateWidget(covariant ChartWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -61,7 +92,7 @@ class _ChartWidgetState extends State<ChartWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return _buildBody();
+    return TapRegion(onTapOutside: _defaultOnTapOutside, child: _buildBody());
   }
 
   Widget _buildBody() {
@@ -97,7 +128,7 @@ class _ChartWidgetState extends State<ChartWidget> {
             childrenWidget.add(widget.foregroundWidget!);
           }
           //弹框图层
-          if (baseChart.tooltipWidgetRenderer != null) {
+          if (baseChart.tooltipWidgetRenderer != null || baseChart.tooltipBuilder != null) {
             childrenWidget.add(_buildTooltipWidget(baseChart, size));
           }
           if (childrenWidget.length > 1) {
@@ -122,7 +153,8 @@ class _ChartWidgetState extends State<ChartWidget> {
         Offset offset = Offset(_controller.localPosition?.dx ?? 0, _controller.localPosition?.dy ?? 0);
 
         PreferredSizeWidget? widget = _controller.tooltipWidgetBuilder?.call(context);
-        widget ??= baseChart.tooltipWidgetRenderer!.call(context, _controller.childrenState);
+        TooltipWidgetBuilder? tooltipBuilder = baseChart.tooltipBuilder ?? baseChart.tooltipWidgetRenderer;
+        widget ??= tooltipBuilder?.call(context, _controller.childrenState);
 
         if (widget == null) {
           return const SizedBox.shrink();
@@ -200,25 +232,8 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
   double zoom = 1.0;
   double _beforeZoom = 1.0;
 
-  final FocusNode _focusNode = FocusNode();
-
-  @override
-  void initState() {
-    //处理点击外部消失焦点的=
-    _focusNode.addListener(_requestFocus);
-    super.initState();
-  }
-
-  void _requestFocus() {
-    if (!_focusNode.hasFocus) {
-      widget.controller.clear();
-    }
-  }
-
   @override
   void dispose() {
-    _focusNode.removeListener(_requestFocus);
-    _focusNode.unfocus();
     super.dispose();
   }
 
@@ -240,86 +255,51 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
     widget.controller.clear();
   }
 
-  void _defaultOnTapOutside(PointerDownEvent event) {
-    /// The focus dropping behavior is only present on desktop platforms
-    /// and mobile browsers.
-    switch (defaultTargetPlatform) {
-      case TargetPlatform.android:
-      case TargetPlatform.iOS:
-      case TargetPlatform.fuchsia:
-        // On mobile platforms, we don't unfocus on touch events unless they're
-        // in the web browser, but we do unfocus for all other kinds of events.
-        switch (event.kind) {
-          case ui.PointerDeviceKind.touch:
-            _focusNode.unfocus();
-            break;
-          case ui.PointerDeviceKind.mouse:
-          case ui.PointerDeviceKind.stylus:
-          case ui.PointerDeviceKind.invertedStylus:
-          case ui.PointerDeviceKind.unknown:
-            _focusNode.unfocus();
-            break;
-          case ui.PointerDeviceKind.trackpad:
-            throw UnimplementedError('Unexpected pointer down event for trackpad');
-        }
-        break;
-      case TargetPlatform.linux:
-      case TargetPlatform.macOS:
-      case TargetPlatform.windows:
-        _focusNode.unfocus();
-        break;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    return TapRegion(
-      onTapOutside: _defaultOnTapOutside,
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTapUp: (TapUpDetails details) {
-          widget.controller.clear();
-          if (!_checkForegroundAnnotationsEvent(details.localPosition)) {
-            widget.controller.localPosition = details.localPosition;
-          }
-          FocusScope.of(context).requestFocus(_focusNode); // 自动聚焦
-        },
-        onScaleStart: (ScaleStartDetails details) {
-          _beforeZoom = zoom;
-        },
-        onScaleUpdate: (ScaleUpdateDetails details) {
-          widget.controller.clear();
-          //缩放
-          if (details.scale != 1) {
-            if (widget.chartCoordinateRender.zoomHorizontal || widget.chartCoordinateRender.zoomVertical) {
-              zoom = _beforeZoom * details.scale;
-              double minZoom = widget.chartCoordinateRender.minZoom ?? 0;
-              double maxZoom = widget.chartCoordinateRender.maxZoom ?? double.infinity;
-              if (zoom < minZoom) {
-                zoom = minZoom;
-              } else if (zoom > maxZoom) {
-                zoom = maxZoom;
-              }
-              widget.controller.zoom = zoom;
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTapUp: (TapUpDetails details) {
+        widget.controller.clear();
+        if (!_checkForegroundAnnotationsEvent(details.localPosition)) {
+          widget.controller.localPosition = details.localPosition;
+        }
+      },
+      onScaleStart: (ScaleStartDetails details) {
+        _beforeZoom = zoom;
+      },
+      onScaleUpdate: (ScaleUpdateDetails details) {
+        widget.controller.clear();
+        //缩放
+        if (details.scale != 1) {
+          if (widget.chartCoordinateRender.zoomHorizontal || widget.chartCoordinateRender.zoomVertical) {
+            zoom = _beforeZoom * details.scale;
+            double minZoom = widget.chartCoordinateRender.minZoom ?? 0;
+            double maxZoom = widget.chartCoordinateRender.maxZoom ?? double.infinity;
+            if (zoom < minZoom) {
+              zoom = minZoom;
+            } else if (zoom > maxZoom) {
+              zoom = maxZoom;
             }
-          } else if (details.pointerCount == 1 && details.scale == 1) {
-            //移动 除以zoom，是降速，不然放大后会滑的很快
-            widget.chartCoordinateRender.scroll(details.focalPointDelta / widget.controller.zoom);
-            // widget.controller.localPosition = details.localFocalPoint;
+            widget.controller.zoom = zoom;
           }
-        },
-        onScaleEnd: (ScaleEndDetails details) {
-          //这里可以处理减速的操作
-          // print(details.velocity);
-        },
-        child: SizedBox(
-          width: widget.size.width,
-          height: widget.size.height,
-          child: RepaintBoundary(
-            child: CustomPaint(
-              painter: _ChartPainter(
-                chart: widget.chartCoordinateRender,
-              ),
+        } else if (details.pointerCount == 1 && details.scale == 1) {
+          //移动 除以zoom，是降速，不然放大后会滑的很快
+          widget.chartCoordinateRender.scroll(details.focalPointDelta / widget.controller.zoom);
+          // widget.controller.localPosition = details.localFocalPoint;
+        }
+      },
+      onScaleEnd: (ScaleEndDetails details) {
+        //这里可以处理减速的操作
+        // print(details.velocity);
+      },
+      child: SizedBox(
+        width: widget.size.width,
+        height: widget.size.height,
+        child: RepaintBoundary(
+          child: CustomPaint(
+            painter: _ChartPainter(
+              chart: widget.chartCoordinateRender,
             ),
           ),
         ),

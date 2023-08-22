@@ -69,7 +69,9 @@ abstract class ChartCoordinateRender {
   final EdgeInsets? safeArea;
 
   ///用widget弹框来处理点击
-  final TooltipWidgetRenderer? tooltipWidgetRenderer;
+  @Deprecated('instead of  using [tooltipBuilder] ')
+  final TooltipWidgetBuilder? tooltipWidgetRenderer;
+  final TooltipWidgetBuilder? tooltipBuilder;
 
   ///背景标注
   final List<Annotation>? backgroundAnnotations;
@@ -81,7 +83,8 @@ abstract class ChartCoordinateRender {
     required this.margin,
     required this.padding,
     required this.charts,
-    this.tooltipWidgetRenderer,
+    @Deprecated('instead of  using [tooltipBuilder] ') this.tooltipWidgetRenderer,
+    this.tooltipBuilder,
     this.zoomHorizontal = false,
     this.zoomVertical = false,
     this.minZoom,

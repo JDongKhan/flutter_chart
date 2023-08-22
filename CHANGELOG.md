@@ -1,3 +1,8 @@
+## 0.0.8
+
+* fix tooltip gesture issue
+
+
 ## 0.0.7
 
 * fix padding = EdgeInsets.zero bug

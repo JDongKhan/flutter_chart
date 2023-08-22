@@ -4,7 +4,7 @@ import 'chart_shape_state.dart';
 
 /// @author jd
 
-typedef AnnotationTooltipWidgetRenderer = PreferredSizeWidget? Function(BuildContext context);
+typedef AnnotationTooltipWidgetBuilder = PreferredSizeWidget? Function(BuildContext context);
 
 ///数据共享，便于各个节点使用
 class ChartController extends ChangeNotifier {
@@ -58,8 +58,8 @@ class ChartController extends ChangeNotifier {
   }
 
   ///使用widget渲染tooltip
-  AnnotationTooltipWidgetRenderer? tooltipWidgetBuilder;
-  void showTooltipBuilder({required AnnotationTooltipWidgetRenderer builder, required Offset position}) {
+  AnnotationTooltipWidgetBuilder? tooltipWidgetBuilder;
+  void showTooltipBuilder({required AnnotationTooltipWidgetBuilder builder, required Offset position}) {
     tooltipWidgetBuilder = builder;
     localPosition = position;
     notifyTooltip();

@@ -77,12 +77,21 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                       margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
                       padding: const EdgeInsets.only(left: 0, right: 0),
                       //提示的文案信息
-                      tooltipWidgetRenderer: (BuildContext context, List<CharBodyState> body) {
+                      tooltipBuilder: (BuildContext context, List<CharBodyState> body) {
+                        String text =
+                            'adfaskfnsaknfasfnfasnfsakfna\nsjfnadfaskfnsaknfasfnfas\nnfsakfnasjfnadfaskfnsaknfasfnfasn\nfsakfnasjfnadfaskf\nnsaknfasfnfasnfsakfna\nsjfnadfaskfnsaknfasfnfasnfsa\nkfnasjfnadfaskfnsaknfa\nsfnfasnfsakfnasjfnadfaskfn\nsaknfasfnfasnfsakfnasjfnad\nfaskfnsaknfasfnfasn\nfsakfnasjfn';
                         return PreferredSize(
-                          preferredSize: const Size(60, 60),
-                          child: Container(
-                            padding: const EdgeInsets.all(8),
-                            child: Text(body.map((e) => e.selectedIndex).toString()),
+                          preferredSize: const Size(60, 100),
+                          child: SizedBox(
+                            width: 60,
+                            height: 100,
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.vertical,
+                              child: Container(
+                                padding: const EdgeInsets.all(8),
+                                child: Text(text),
+                              ),
+                            ),
                           ),
                         );
                       },
@@ -149,7 +158,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                       margin: const EdgeInsets.only(left: 40, top: 5, right: 0, bottom: 30),
                       //提示的文案信息
                       crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
-                      tooltipWidgetRenderer: (BuildContext context, List<CharBodyState> body) {
+                      tooltipBuilder: (BuildContext context, List<CharBodyState> body) {
                         return PreferredSize(
                           preferredSize: const Size(60, 60),
                           child: Container(
@@ -191,7 +200,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                       margin: const EdgeInsets.only(left: 40, top: 5, right: 0, bottom: 30),
                       //提示的文案信息
                       crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
-                      tooltipWidgetRenderer: (BuildContext context, List<CharBodyState> body) {
+                      tooltipBuilder: (BuildContext context, List<CharBodyState> body) {
                         return PreferredSize(
                           preferredSize: const Size(60, 60),
                           child: Container(
@@ -252,7 +261,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                         margin: const EdgeInsets.only(left: 40, top: 5, right: 0, bottom: 30),
                         //提示的文案信息
                         crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
-                        tooltipWidgetRenderer: (BuildContext context, List<CharBodyState> body) {
+                        tooltipBuilder: (BuildContext context, List<CharBodyState> body) {
                           return PreferredSize(
                             preferredSize: const Size(60, 60),
                             child: Container(
@@ -319,7 +328,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                       margin: const EdgeInsets.only(left: 40, top: 5, right: 30, bottom: 30),
                       //提示的文案信息
                       crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
-                      tooltipWidgetRenderer: (BuildContext context, List<CharBodyState> body) {
+                      tooltipBuilder: (BuildContext context, List<CharBodyState> body) {
                         return PreferredSize(
                           preferredSize: const Size(60, 60),
                           child: Container(
