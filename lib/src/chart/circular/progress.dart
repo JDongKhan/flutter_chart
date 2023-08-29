@@ -1,10 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-
-import '../base/chart_body_render.dart';
-import '../coordinate/chart_coordinate_render.dart';
-import '../coordinate/circular_chart_coordinate_render.dart';
+import '../../utils/chart_utils.dart';
+import '../../base/chart_body_render.dart';
+import '../../coordinate/circular_chart_coordinate_render.dart';
 
 /// @author jd
 class Progress<T> extends ChartBodyRender<T> {

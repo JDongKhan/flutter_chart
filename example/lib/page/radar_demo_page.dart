@@ -79,7 +79,7 @@ class _RadarChartDemoPageState extends State<RadarChartDemoPage> with SingleTick
                       valueFormatter: (item) => [
                         item['value1'],
                       ],
-                      position: (item) => [
+                      values: (item) => [
                         (double.parse(item['value1'].toString())),
                       ],
                     ),
@@ -103,7 +103,7 @@ class _RadarChartDemoPageState extends State<RadarChartDemoPage> with SingleTick
                         item['value1'].toString(),
                         item['value2'].toString(),
                       ],
-                      position: (item) => [
+                      values: (item) => [
                         (double.parse(item['value1'].toString())),
                         (double.parse(item['value2'].toString())),
                       ],

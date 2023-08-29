@@ -2,10 +2,10 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-import '../base/chart_body_render.dart';
-import '../coordinate/chart_coordinate_render.dart';
-import '../base/chart_shape_state.dart';
-import '../coordinate/circular_chart_coordinate_render.dart';
+import '../../base/chart_body_render.dart';
+import '../../base/chart_shape_state.dart';
+import '../../coordinate/circular_chart_coordinate_render.dart';
+import '../../utils/chart_utils.dart';
 
 /// @author JD
 typedef ValueFormatter<T> = String Function(T);
@@ -65,6 +65,9 @@ class Pie<T> extends ChartBodyRender<T> {
   ///是否在图中显示value
   final bool showValue;
 
+  ///开始弧度，可以调整起始位置
+  final double startAngle;
+
   Pie({
     required super.data,
     required this.position,
@@ -83,6 +86,7 @@ class Pie<T> extends ChartBodyRender<T> {
     this.guideLine = false,
     this.showValue = false,
     this.enableTap = true,
+    this.startAngle = 0,
   });
 
   @override
@@ -112,7 +116,7 @@ class Pie<T> extends ChartBodyRender<T> {
       ..style = PaintingStyle.fill;
 
     //开始画扇形
-    double startAngle = 0;
+    double startAngle = this.startAngle;
     List<ChartShapeState> shapeList = [];
     assert(colors.length >= data.length);
     assert(shaders == null || shaders!.length >= data.length);

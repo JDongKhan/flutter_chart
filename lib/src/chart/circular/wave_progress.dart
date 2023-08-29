@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-
-import '../../flutter_chart.dart';
-import '../base/chart_body_render.dart';
-import '../utils/transform_utils.dart';
+import '../../base/chart_body_render.dart';
+import '../../coordinate/circular_chart_coordinate_render.dart';
+import '../../utils/transform_utils.dart';
+import '../../utils/chart_utils.dart';
 
 /// @author jd
 class WaveProgress<T> extends ChartBodyRender<T> {

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:path_drawing/path_drawing.dart';
 
-import '../../flutter_chart.dart';
+import '../coordinate/chart_coordinate_render.dart';
+import '../coordinate/dimensions_chart_coordinate_render.dart';
+import 'annotation.dart';
 
 typedef AnnotationPosition<T> = num Function(T);
 

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'page/line_right_demo_page.dart';
 import 'page/line_scale_demo_page.dart';
 import 'page/radar_demo_page.dart';
+import 'page/scatter_demo_page.dart';
 
 /// @author JD
 class ChartDemoPage extends StatelessWidget {
@@ -28,6 +29,16 @@ class ChartDemoPage extends StatelessWidget {
               );
             },
             child: const Text('Line'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => ScatterDemoPage(),
+                ),
+              );
+            },
+            child: const Text('Scatter'),
           ),
           TextButton(
             onPressed: () {

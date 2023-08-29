@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../flutter_chart.dart';
+import '../coordinate/chart_coordinate_render.dart';
+import '../coordinate/dimensions_chart_coordinate_render.dart';
+import 'annotation.dart';
 
 /// @author jd
 class LabelAnnotation extends Annotation {

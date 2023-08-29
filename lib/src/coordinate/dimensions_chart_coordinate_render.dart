@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:path_drawing/path_drawing.dart';
 
-import '../../flutter_chart.dart';
+import '../annotation/annotation.dart';
+import '../base/chart_controller.dart';
 import '../base/chart_shape_state.dart';
 import '../utils/transform_utils.dart';
+import 'chart_coordinate_render.dart';
 
 /// @author JD
 

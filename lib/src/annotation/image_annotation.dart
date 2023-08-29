@@ -3,7 +3,8 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../flutter_chart.dart';
+import '../coordinate/dimensions_chart_coordinate_render.dart';
+import 'annotation.dart';
 
 /// @author jd
 class ImageAnnotation extends Annotation {

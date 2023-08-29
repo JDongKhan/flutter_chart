@@ -2,12 +2,13 @@ import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import '../../utils/chart_utils.dart';
+import '../../base/chart_body_render.dart';
+import '../../base/chart_shape_state.dart';
+import '../../coordinate/circular_chart_coordinate_render.dart';
+import 'pie.dart';
 
-import '../../flutter_chart.dart';
-import '../base/chart_body_render.dart';
-import '../base/chart_shape_state.dart';
-
-typedef RadarChartPosition<T> = List<num> Function(T);
+typedef RadarChartValue<T> = List<num> Function(T);
 typedef RadarValueFormatter<T> = List<dynamic> Function(T);
 typedef RadarLegendFormatter = List<dynamic> Function();
 
@@ -21,7 +22,7 @@ class Radar<T> extends ChartBodyRender<T> {
   final num max;
 
   ///点的位置
-  final RadarChartPosition<T> position;
+  final RadarChartValue<T> values;
 
   ///值文案格式化 不要使用过于耗时的方法
   final RadarValueFormatter? valueFormatter;
@@ -41,15 +42,19 @@ class Radar<T> extends ChartBodyRender<T> {
   ///图例样式
   final TextStyle legendTextStyle;
 
+  ///开始弧度，可以调整起始位置
+  final double startAngle;
+
   Radar({
     required super.data,
-    required this.position,
+    required this.values,
     required this.max,
     this.lineColor = Colors.black12,
     this.direction = RotateDirection.forward,
     this.valueFormatter,
     this.legendFormatter,
     this.colors = colors10,
+    this.startAngle = -math.pi / 2,
     this.fillColors,
     this.legendTextStyle = const TextStyle(fontSize: 12, color: Colors.black, fontWeight: FontWeight.bold),
   });
@@ -61,7 +66,7 @@ class Radar<T> extends ChartBodyRender<T> {
     double radius = chart.radius;
 
     //开始点
-    double startAngle = -math.pi / 2;
+    double startAngle = this.startAngle;
     int itemLength = data.length;
     double percent = 1 / itemLength;
     List<ChartShapeState> shapeList = [];
@@ -114,7 +119,7 @@ class Radar<T> extends ChartBodyRender<T> {
       }
 
       //画value线
-      List<num> pos = position.call(itemData);
+      List<num> pos = values.call(itemData);
       List<dynamic>? valueLegendList = valueFormatter?.call(itemData);
       assert(valueLegendList == null || pos.length == valueLegendList.length);
       for (int j = 0; j < pos.length; j++) {
