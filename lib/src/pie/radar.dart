@@ -9,6 +9,7 @@ import '../base/chart_shape_state.dart';
 
 typedef RadarChartPosition<T> = List<num> Function(T);
 typedef RadarValueFormatter<T> = List<dynamic> Function(T);
+typedef RadarLegendFormatter = List<dynamic> Function();
 
 ///雷达图
 /// @author JD
@@ -24,6 +25,9 @@ class Radar<T> extends ChartBodyRender<T> {
 
   ///值文案格式化 不要使用过于耗时的方法
   final RadarValueFormatter? valueFormatter;
+
+  ///图例文案格式化 不要使用过于耗时的方法
+  final RadarLegendFormatter? legendFormatter;
 
   ///基线的颜色
   final Color lineColor;
@@ -44,6 +48,7 @@ class Radar<T> extends ChartBodyRender<T> {
     this.lineColor = Colors.black12,
     this.direction = RotateDirection.forward,
     this.valueFormatter,
+    this.legendFormatter,
     this.colors = colors10,
     this.fillColors,
     this.legendTextStyle = const TextStyle(fontSize: 12, color: Colors.black, fontWeight: FontWeight.bold),
@@ -62,6 +67,9 @@ class Radar<T> extends ChartBodyRender<T> {
     List<ChartShapeState> shapeList = [];
     // 计算出每个数据所占的弧度值
     final sweepAngle = percent * math.pi * 2 * (direction == RotateDirection.forward ? 1 : -1);
+
+    //图例
+    List<dynamic>? legendList = legendFormatter?.call();
 
     // 设置绘制属性
     final linePaint = Paint()
@@ -85,10 +93,30 @@ class Radar<T> extends ChartBodyRender<T> {
         linePath.lineTo(x, y);
       }
 
+      if (legendList != null) {
+        String legend = legendList[i].toString();
+        TextPainter legendTextPainter = TextPainter(
+          textAlign: TextAlign.center,
+          text: TextSpan(
+            text: legend,
+            style: legendTextStyle,
+          ),
+          textDirection: TextDirection.ltr,
+        )..layout(
+            minWidth: 0,
+            maxWidth: chart.size.width,
+          );
+        bool isLeft = x < center.dx;
+        bool isBottom = y >= center.dy;
+        Offset textOffset = Offset(isLeft ? (x - legendTextPainter.width) : x, isBottom ? y : y - legendTextPainter.height);
+        //最后再绘制，防止被挡住
+        textPainterList.add(RadarTextPainter(textPainter: legendTextPainter, offset: textOffset));
+      }
+
       //画value线
       List<num> pos = position.call(itemData);
-      List<dynamic>? legendList = valueFormatter?.call(itemData);
-      assert(legendList == null || pos.length == legendList.length);
+      List<dynamic>? valueLegendList = valueFormatter?.call(itemData);
+      assert(valueLegendList == null || pos.length == valueLegendList.length);
       for (int j = 0; j < pos.length; j++) {
         Path? dataLinePath = dataLinePathList[j];
         if (dataLinePath == null) {
@@ -107,8 +135,8 @@ class Radar<T> extends ChartBodyRender<T> {
         }
 
         //画文案
-        if (legendList != null) {
-          String legend = legendList[j].toString();
+        if (valueLegendList != null) {
+          String legend = valueLegendList[j].toString();
           TextPainter legendTextPainter = TextPainter(
             textAlign: TextAlign.center,
             text: TextSpan(
@@ -121,7 +149,8 @@ class Radar<T> extends ChartBodyRender<T> {
               maxWidth: chart.size.width,
             );
           bool isLeft = dataX < center.dx;
-          Offset textOffset = Offset(isLeft ? (dataX - legendTextPainter.width) : dataX, dataY - legendTextPainter.height);
+          bool isTop = dataY <= (center.dy - radius) && legendList != null;
+          Offset textOffset = Offset(isLeft ? (dataX - legendTextPainter.width) : dataX, isTop ? dataY : dataY - legendTextPainter.height);
           //最后再绘制，防止被挡住
           textPainterList.add(RadarTextPainter(textPainter: legendTextPainter, offset: textOffset));
         }

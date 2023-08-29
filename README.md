@@ -1,7 +1,7 @@
 
 ## Flutter_chart
 
-这是一款轻量级的flutter版本chart组件，目前已支持LineChart、BarChart、PieChart。
+这是一款轻量级的flutter版本chart组件，目前已支持LineChart、BarChart、PieChart、RadarChart、ProgressChart。
 
 ![demo png](1.gif "demo")
 ![demo png](2.gif "demo")

@@ -11,8 +11,6 @@ class RadarChartDemoPage extends StatefulWidget {
 }
 
 class _RadarChartDemoPageState extends State<RadarChartDemoPage> with SingleTickerProviderStateMixin {
-  final DateTime startTime = DateTime(2023, 1, 1);
-
   @override
   void initState() {
     super.initState();
@@ -27,31 +25,31 @@ class _RadarChartDemoPageState extends State<RadarChartDemoPage> with SingleTick
   Widget build(BuildContext context) {
     final List<Map> dataList = [
       {
-        'time': startTime.add(const Duration(days: 8)),
+        'title': "饮食",
         'value1': 600,
         'value2': 300,
         'value3': 200,
       },
       {
-        'time': startTime.add(const Duration(days: 1)),
+        'title': "穿衣",
         'value1': 100,
         'value2': 200,
         'value3': 300,
       },
       {
-        'time': startTime.add(const Duration(days: 3)),
+        'title': "出行",
         'value1': 200,
         'value2': 400,
         'value3': 300,
       },
       {
-        'time': startTime.add(const Duration(days: 5)),
+        'title': "游戏",
         'value1': 400,
         'value2': 200,
         'value3': 100,
       },
       {
-        'time': startTime.add(const Duration(days: 8)),
+        'title': "运动",
         'value1': 100,
         'value2': 300,
         'value3': 200,
@@ -77,6 +75,7 @@ class _RadarChartDemoPageState extends State<RadarChartDemoPage> with SingleTick
                       max: 600,
                       data: dataList,
                       fillColors: colors10.map((e) => e.withOpacity(0.1)).toList(),
+                      legendFormatter: () => dataList.map((e) => e['title']).toList(),
                       valueFormatter: (item) => [
                         item['value1'],
                       ],

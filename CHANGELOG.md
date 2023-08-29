@@ -1,3 +1,8 @@
+## 0.0.9
+
+* add radar chart
+
+
 ## 0.0.8
 
 * fix tooltip gesture issue
