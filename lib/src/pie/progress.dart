@@ -8,6 +8,10 @@ import '../coordinate/circular_chart_coordinate_render.dart';
 
 /// @author jd
 class Progress<T> extends ChartBodyRender<T> {
+  ///不要使用过于耗时的方法
+  ///数据在坐标系的位置，每个坐标系下取值逻辑不一样，在line和bar下是相对于每格的值，比如xAxis的interval为1，你的数据放在1列和2列中间，那么position就是0.5，在pie下是比例
+  final ChartPosition<T> position;
+
   ///线宽
   final double strokeWidth;
 
@@ -25,7 +29,7 @@ class Progress<T> extends ChartBodyRender<T> {
 
   Progress({
     required super.data,
-    required super.position,
+    required this.position,
     this.endPoint = false,
     this.colors = colors10,
     this.startAngle = pi,

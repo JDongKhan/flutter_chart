@@ -13,6 +13,7 @@ export 'src/coordinate/dimensions_chart_coordinate_render.dart';
 export 'src/line_bar/bar.dart';
 export 'src/line_bar/line.dart';
 export 'src/pie/pie.dart';
+export 'src/pie/radar.dart';
 export 'src/pie/progress.dart';
 export 'src/pie/wave_progress.dart';
 export 'src/utils/chart_utils.dart';

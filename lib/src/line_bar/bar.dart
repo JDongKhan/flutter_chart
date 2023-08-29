@@ -10,6 +10,10 @@ typedef BarPosition<T> = num Function(T);
 /// @author JD
 ///普通bar
 class Bar<T> extends ChartBodyRender<T> {
+  ///不要使用过于耗时的方法
+  ///数据在坐标系的位置，每个坐标系下取值逻辑不一样，在line和bar下是相对于每格的值，比如xAxis的interval为1，你的数据放在1列和2列中间，那么position就是0.5，在pie下是比例
+  final ChartPosition<T> position;
+
   ///bar的宽度
   final double itemWidth;
 
@@ -28,7 +32,7 @@ class Bar<T> extends ChartBodyRender<T> {
   Bar({
     required super.data,
     required this.value,
-    required super.position,
+    required this.position,
     super.yAxisPosition,
     this.itemWidth = 20,
     this.color = Colors.blue,
@@ -91,6 +95,10 @@ typedef StackBarPosition<T> = List<num> Function(T);
 
 ///stackBar  支持水平/垂直排列
 class StackBar<T> extends ChartBodyRender<T> {
+  ///不要使用过于耗时的方法
+  ///数据在坐标系的位置，每个坐标系下取值逻辑不一样，在line和bar下是相对于每格的值，比如xAxis的interval为1，你的数据放在1列和2列中间，那么position就是0.5，在pie下是比例
+  final ChartPosition<T> position;
+
   ///值格式化
   final StackBarPosition<T> values;
 
@@ -117,7 +125,7 @@ class StackBar<T> extends ChartBodyRender<T> {
 
   StackBar({
     required super.data,
-    required super.position,
+    required this.position,
     required this.values,
     super.yAxisPosition = 0,
     this.highlightColor = Colors.yellow,

@@ -6,6 +6,10 @@ import '../utils/transform_utils.dart';
 
 /// @author jd
 class WaveProgress<T> extends ChartBodyRender<T> {
+  ///不要使用过于耗时的方法
+  ///数据在坐标系的位置，每个坐标系下取值逻辑不一样，在line和bar下是相对于每格的值，比如xAxis的interval为1，你的数据放在1列和2列中间，那么position就是0.5，在pie下是比例
+  final ChartPosition<T> position;
+
   ///波纹峰值
   final double controlPoint;
 
@@ -17,7 +21,7 @@ class WaveProgress<T> extends ChartBodyRender<T> {
 
   WaveProgress({
     required super.data,
-    required super.position,
+    required this.position,
     this.controlOffset = 0.5,
     this.controlPoint = 10,
     this.colors = colors10,

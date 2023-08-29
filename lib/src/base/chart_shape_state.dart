@@ -32,6 +32,8 @@ class ChartShapeState {
 
   ///矩形
   ChartShapeState.rect({required this.rect});
+  //路径
+  ChartShapeState.path({required this.path});
 
   ///弧 用path保存 path不便于计算
   ChartShapeState.arc({
