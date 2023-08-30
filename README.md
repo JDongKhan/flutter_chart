@@ -1,13 +1,14 @@
 
 ## Flutter_chart
 
-这是一款轻量级的flutter版本chart组件，目前已支持LineChart、BarChart、PieChart、RadarChart、ProgressChart。
+这是一款轻量级的flutter版本chart组件，目前已支持Line、Bar、Pie、Radar、Scatter、Progress。
 
 ![demo png](1.gif "demo")
 ![demo png](2.gif "demo")
 ![demo png](3.gif "demo")
 ![demo png](4.gif "demo")
 ![demo png](4.1.gif "demo")
+![demo png](4.2.gif "demo")
 ![demo png](5.gif "demo")
 
 ### 为何自己造轮子？
@@ -29,7 +30,7 @@
 
 ## 主要功能：
 
-### 1、支持line、bar、pie、progress、radar等常规图形
+### 1、支持line、bar、pie、progress、radar、scatter等常规图形
     1）、支持line和bar多图形任意组合，可参照LineChart部分demo
     2）、图形支持过渡色
     3）、bar支持多个一组，且可以横排或竖排
