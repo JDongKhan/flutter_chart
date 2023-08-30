@@ -74,31 +74,11 @@ class _ScatterDemoPageState extends State<ScatterDemoPage> {
             height: 200,
             child: ChartWidget(
               coordinateRender: DimensionsChartCoordinateRender(
-                zoomHorizontal: false,
                 padding: const EdgeInsets.only(left: 5, top: 0, right: 5, bottom: 0),
-                // zoomVertical: true,
-                crossHair: const CrossHairStyle(verticalShow: false, horizontalShow: false),
-                //提示的文案信息
-                tooltipBuilder: (BuildContext context, List<CharBodyState> body) {
-                  return PreferredSize(
-                    preferredSize: const Size(60, 60),
-                    child: Container(
-                      padding: const EdgeInsets.all(8),
-                      child: Text(body.map((e) => e.selectedIndex).toString()),
-                    ),
-                  );
-                },
                 yAxis: [
-                  YAxis(
-                    min: 0,
-                    max: 500,
-                    drawGrid: true,
-                  ),
+                  YAxis(min: 0, max: 500, drawGrid: true),
                 ],
-                xAxis: XAxis(
-                  count: 7,
-                  max: 7,
-                ),
+                xAxis: XAxis(count: 7, max: 7),
                 charts: [
                   Scatter(
                     style: (item) => item['value1'] > 400 ? const ScatterStyle(color: Colors.red, radius: 2) : const ScatterStyle(color: Colors.blue, radius: 2),

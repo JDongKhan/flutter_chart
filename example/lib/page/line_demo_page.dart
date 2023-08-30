@@ -95,12 +95,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                           ),
                         );
                       },
-                      yAxis: [
-                        YAxis(
-                          min: 0,
-                          max: 500,
-                        )
-                      ],
+                      yAxis: [YAxis(min: 0, max: 500)],
                       xAxis: XAxis(
                         count: 7,
                         max: 20,
@@ -210,11 +205,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                         );
                       },
                       yAxis: [
-                        YAxis(
-                          min: 0,
-                          max: 500,
-                          drawGrid: true,
-                        ),
+                        YAxis(min: 0, max: 500, drawGrid: true),
                       ],
                       xAxis: XAxis(
                         count: 7,
@@ -271,11 +262,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                           );
                         },
                         yAxis: [
-                          YAxis(
-                            min: 0,
-                            max: 500,
-                            drawGrid: true,
-                          ),
+                          YAxis(min: 0, max: 500, drawGrid: true),
                         ],
                         xAxis: XAxis(
                           count: 7,
@@ -338,11 +325,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                         );
                       },
                       yAxis: [
-                        YAxis(
-                          min: 0,
-                          max: 500,
-                          drawGrid: true,
-                        ),
+                        YAxis(min: 0, max: 500, drawGrid: true),
                         YAxis(
                           min: 0,
                           max: 400,

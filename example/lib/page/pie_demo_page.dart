@@ -123,14 +123,8 @@ class _PieChartDemoPageState extends State<PieChartDemoPage> with SingleTickerPr
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: const [
-                          Text(
-                            '5%',
-                            style: TextStyle(fontSize: 24, color: Colors.black),
-                          ),
-                          Text(
-                            '完成度',
-                            style: TextStyle(fontSize: 30, color: Colors.black),
-                          ),
+                          Text('5%', style: TextStyle(fontSize: 24, color: Colors.black)),
+                          Text('完成度', style: TextStyle(fontSize: 30, color: Colors.black)),
                         ],
                       ),
                     ),

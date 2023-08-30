@@ -54,10 +54,7 @@ class BarChartDemoPage extends StatelessWidget {
                     coordinateRender: DimensionsChartCoordinateRender(
                       margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
                       yAxis: [
-                        YAxis(
-                          min: 0,
-                          max: 300,
-                        ),
+                        YAxis(min: 0, max: 300),
                       ],
                       xAxis: XAxis(
                         count: 7,
@@ -81,10 +78,7 @@ class BarChartDemoPage extends StatelessWidget {
                     coordinateRender: DimensionsChartCoordinateRender(
                       margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
                       yAxis: [
-                        YAxis(
-                          min: 0,
-                          max: 1000,
-                        ),
+                        YAxis(min: 0, max: 1000),
                       ],
                       xAxis: XAxis(
                         count: 7,
@@ -117,12 +111,7 @@ class BarChartDemoPage extends StatelessWidget {
                   child: ChartWidget(
                     coordinateRender: DimensionsChartCoordinateRender(
                       margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
-                      yAxis: [
-                        YAxis(
-                          min: 0,
-                          max: 100,
-                        )
-                      ],
+                      yAxis: [YAxis(min: 0, max: 100)],
                       xAxis: XAxis(
                         count: 7,
                         max: 30,
@@ -155,12 +144,7 @@ class BarChartDemoPage extends StatelessWidget {
                   height: 200,
                   child: ChartWidget(
                     coordinateRender: DimensionsChartCoordinateRender(
-                      yAxis: [
-                        YAxis(
-                          min: 0,
-                          max: 500,
-                        )
-                      ],
+                      yAxis: [YAxis(min: 0, max: 500)],
                       margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
                       xAxis: XAxis(
                         count: 7,
