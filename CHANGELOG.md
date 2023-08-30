@@ -1,6 +1,11 @@
+## 0.1.0
+
+* change scatter api 
+
 ## 0.0.9
 
 * add radar chart
+* add scatter chart
 
 
 ## 0.0.8

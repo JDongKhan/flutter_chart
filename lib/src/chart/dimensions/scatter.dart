@@ -9,6 +9,10 @@ typedef ScatterValue<T> = num Function(T);
 
 typedef ScatterColor<T> = Color Function(T);
 
+typedef ScatterStyleFunction<T> = ScatterStyle Function(T);
+
+ScatterStyleFunction _defaultScatterStyleFunction = (item) => const ScatterStyle(color: Colors.blue, radius: 2);
+
 /// @author JD
 class Scatter<T> extends ChartBodyRender<T> {
   ///不要使用过于耗时的方法
@@ -18,22 +22,15 @@ class Scatter<T> extends ChartBodyRender<T> {
   ///每个点对应的值 不要使用过于耗时的方法
   final ScatterValue value;
 
-  ///点的颜色
-  final ScatterColor? dotColor;
+  ///点的风格
+  final ScatterStyleFunction style;
 
-  ///点半径
-  final double dotRadius;
-
-  ///是否有空心圆
-  final bool isHollow;
   Scatter({
     required super.data,
     required this.position,
     required this.value,
-    this.dotColor,
-    this.dotRadius = 2,
-    this.isHollow = false,
-  });
+    ScatterStyleFunction? style,
+  }) : style = style ?? _defaultScatterStyleFunction;
 
   @override
   void draw(Canvas canvas, Size size) {
@@ -55,20 +52,22 @@ class Scatter<T> extends ChartBodyRender<T> {
       double xPo = xvs * chart.xAxis.density + left;
       double yPo = bottom - chart.yAxis[yAxisPosition].relativeHeight(yvs);
       yPo = chart.transformUtils.withYOffset(yPo);
+      ScatterStyle sy = style.call(itemData);
       //最后画点
-      if (dotRadius > 0) {
-        //先用白色覆盖
+      if (sy.radius > 0) {
         dotPaint.style = PaintingStyle.fill;
-        canvas.drawCircle(Offset(xPo, yPo), dotRadius, dotPaint..color = Colors.white);
-        //再画空心
-        if (isHollow) {
-          dotPaint.style = PaintingStyle.stroke;
-        } else {
-          dotPaint.style = PaintingStyle.fill;
-        }
-        Color color = dotColor?.call(itemData) ?? Colors.blue;
-        canvas.drawCircle(Offset(xPo, yPo), dotRadius, dotPaint..color = color);
+        Color color = sy.color;
+        canvas.drawCircle(Offset(xPo, yPo), sy.radius, dotPaint..color = color);
       }
     }
   }
+}
+
+class ScatterStyle {
+  final Color color;
+  final double radius;
+  const ScatterStyle({
+    required this.color,
+    required this.radius,
+  });
 }
