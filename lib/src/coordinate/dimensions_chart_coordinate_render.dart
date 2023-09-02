@@ -382,66 +382,17 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
       x = 0;
     }
     double zoom = controller.zoom;
-    if (zoom >= 1) {
-      //放大的场景  offset会受到zoom的影响，所以这里的宽度要先剔除zoom的影响再比较
-      double chartContentWidth = xAxis.density * (xAxis.max ?? xAxis.count);
-      double chartViewPortWidth = size.width - contentMargin.horizontal;
-      //处理成跟缩放无关的偏移
-      double maxOffset = (chartContentWidth - chartViewPortWidth) / zoom;
-      if (maxOffset < 0) {
-        //内容小于0
-        x = 0;
-      } else if (x > maxOffset) {
-        x = maxOffset;
-      }
+    //放大的场景  offset会受到zoom的影响，所以这里的宽度要先剔除zoom的影响再比较
+    double chartContentWidth = xAxis.density * (xAxis.max ?? xAxis.count);
+    double chartViewPortWidth = size.width - contentMargin.horizontal;
+    //处理成跟缩放无关的偏移
+    double maxOffset = (chartContentWidth - chartViewPortWidth);
+    if (maxOffset < 0) {
+      //内容小于0
+      x = 0;
+    } else if (x > maxOffset) {
+      x = maxOffset;
     }
-    // // zoom = zoom < 1 ? 1 : zoom;
-    // double minXOffsetValue = (1 - zoom) * size.width / 2;
-    // // print('$x -- $minXOffsetValue');
-    // if (x < minXOffsetValue) {
-    //   x = minXOffsetValue;
-    // }
-    // double chartContentWidth = xAxis.density * (xAxis.max ?? xAxis.count);
-    // double chartViewPortWidth = size.width - padding.horizontal;
-    // double maxOffset = chartContentWidth - chartViewPortWidth;
-    // if (x > maxOffset) {
-    //   x = maxOffset;
-    // }
-    // //因为offset可能为负的，换算成正值便于后面计算
-    // double realXOffset = x - minXOffsetValue;
-    // //说明内容超出了组件
-    // if (chartContentWidth > chartViewPortWidth) {
-    //   //偏移+
-    //   if ((realXOffset + chartViewPortWidth) >= chartContentWidth) {
-    //     x = chartContentWidth - chartViewPortWidth + minXOffsetValue;
-    //   }
-    // } else {
-    //   x = minXOffsetValue;
-    // }
-    //
-    // if (zoomVertical) {
-    //   //y轴
-    //   double minYOffsetValue = (1 - controller.zoom) * size.height / 2;
-    //
-    //   double chartContentHeight =
-    //       padding.vertical + yAxis[0].density * yAxis[0].max;
-    //   double chartViewPortHeight = size.height - margin.vertical;
-    //   //因为offset可能为负的，换算成正值便于后面计算
-    //   // double realYOffset = y - minYOffsetValue;
-    //   //说明内容超出了组件
-    //   if (chartContentHeight > chartViewPortHeight) {
-    //     if (y < minYOffsetValue) {
-    //       y = minYOffsetValue;
-    //     } else if (y > (chartContentHeight - chartViewPortHeight)) {
-    //       y = (chartContentHeight - chartViewPortHeight);
-    //     }
-    //   } else {
-    //     y = minYOffsetValue;
-    //   }
-    // } else {
-    //   y = 0;
-    // }
-
     controller.offset = Offset(x, 0);
     // print(controller.offset);
   }

@@ -8,7 +8,9 @@ typedef AnnotationTooltipWidgetBuilder = PreferredSizeWidget? Function(BuildCont
 
 ///数据共享，便于各个节点使用
 class ChartController extends ChangeNotifier {
+  ///点击的位置
   Offset? _localPosition;
+  Offset? get localPosition => _localPosition;
 
   ///点击的位置信息
   set localPosition(value) {
@@ -18,11 +20,8 @@ class ChartController extends ChangeNotifier {
     }
   }
 
-  Offset? get localPosition => _localPosition;
-
-  double _zoom = 1;
-
   ///缩放级别
+  double _zoom = 1;
   double get zoom => _zoom;
   set zoom(v) {
     if (_zoom != v) {
@@ -31,7 +30,7 @@ class ChartController extends ChangeNotifier {
     }
   }
 
-  ///偏移
+  ///滚动偏移
   Offset _offset = Offset.zero;
   Offset get offset => _offset;
   set offset(v) {
@@ -65,9 +64,8 @@ class ChartController extends ChangeNotifier {
     notifyTooltip();
   }
 
-  StateSetter? tooltipStateSetter;
-
   ///通知弹框层刷新
+  StateSetter? tooltipStateSetter;
   void notifyTooltip() {
     if (tooltipStateSetter != null) {
       Future.microtask(() {

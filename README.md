@@ -1,6 +1,10 @@
 
 ## Flutter_chart
 
+[![GitHub stars](https://img.shields.io/github/stars/JDongKhan/flutter_chart?logo=github&style=flat-square)](https://github.com/JDongKhan/flutter_chart/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/JDongKhan/flutter_chart?logo=github&style=flat-square)](https://github.com/JDongKhan/flutter_chart/network)
+
+
 这是一款轻量级的flutter版本chart组件，目前已支持Line、Bar、Pie、Radar、Scatter、Progress。
 
 ![demo png](1.gif "demo")

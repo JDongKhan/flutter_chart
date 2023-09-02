@@ -82,7 +82,8 @@ class TransformUtils {
     double x = offset.dx;
     double y = offset.dy;
     if (zoomHorizontal) {
-      x = offset.dx * zoom;
+      // x = offset.dx * zoom;
+      x = offset.dx;
     }
     if (zoomVertical) {
       y = offset.dy;

@@ -7,6 +7,7 @@ import '../annotation/annotation.dart';
 import '../base/chart_body_render.dart';
 import '../base/chart_controller.dart';
 import '../coordinate/chart_coordinate_render.dart';
+import '../coordinate/dimensions_chart_coordinate_render.dart';
 
 /// @author JD
 ///
@@ -231,9 +232,10 @@ class _ChartCoreWidget extends StatefulWidget {
 }
 
 class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
-  Offset offset = Offset.zero;
-  double zoom = 1.0;
   double _beforeZoom = 1.0;
+
+  late ScaleStartDetails _lastScaleStartDetails;
+  late double centerV;
 
   @override
   void dispose() {
@@ -252,7 +254,6 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
   }
 
   void _reset() {
-    zoom = 1.0;
     widget.controller.zoom = 1.0;
     widget.controller.offset = Offset.zero;
     widget.controller.clear();
@@ -269,30 +270,37 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
         }
       },
       onScaleStart: (ScaleStartDetails details) {
-        _beforeZoom = zoom;
+        _beforeZoom = widget.controller.zoom;
+        _lastScaleStartDetails = details;
+        if (widget.chartCoordinateRender is DimensionsChartCoordinateRender) {
+          DimensionsChartCoordinateRender render = widget.chartCoordinateRender as DimensionsChartCoordinateRender;
+          //计算中间值 用于根据手势
+          centerV = (widget.controller.offset.dx + widget.chartCoordinateRender.size.width / 2) / render.xAxis.density;
+        }
       },
       onScaleUpdate: (ScaleUpdateDetails details) {
         widget.controller.clear();
         //缩放
         if (details.scale != 1) {
           if (widget.chartCoordinateRender.zoomHorizontal || widget.chartCoordinateRender.zoomVertical) {
-            zoom = _beforeZoom * details.scale;
             double minZoom = widget.chartCoordinateRender.minZoom ?? 0;
             double maxZoom = widget.chartCoordinateRender.maxZoom ?? double.infinity;
-            if (zoom < minZoom) {
-              zoom = minZoom;
-            } else if (zoom > maxZoom) {
-              zoom = maxZoom;
+            double zoom = (_beforeZoom * details.scale).clamp(minZoom, maxZoom);
+            //计算缩放和校准偏移
+            if (widget.chartCoordinateRender is DimensionsChartCoordinateRender) {
+              DimensionsChartCoordinateRender render = widget.chartCoordinateRender as DimensionsChartCoordinateRender;
+              double startOffset = centerV * render.xAxis.density - widget.chartCoordinateRender.size.width / 2;
+              widget.controller.offset = Offset(startOffset, 0);
+              widget.controller.zoom = zoom;
             }
-            widget.controller.zoom = zoom;
           }
         } else if (details.pointerCount == 1 && details.scale == 1) {
-          //移动 除以zoom，是降速，不然放大后会滑的很快
-          widget.chartCoordinateRender.scroll(details.focalPointDelta / widget.controller.zoom);
+          widget.chartCoordinateRender.scroll(details.focalPointDelta);
           // widget.controller.localPosition = details.localFocalPoint;
         }
       },
       onScaleEnd: (ScaleEndDetails details) {
+        widget.chartCoordinateRender.scroll(Offset.zero);
         //这里可以处理减速的操作
         // print(details.velocity);
       },
