@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:path_drawing/path_drawing.dart';
 
 import '../annotation/annotation.dart';
-import '../base/chart_controller.dart';
+import '../base/chart_param.dart';
 import '../base/chart_shape_state.dart';
 import '../utils/transform_utils.dart';
 import 'chart_coordinate_render.dart';
@@ -32,7 +32,6 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     super.minZoom,
     super.maxZoom,
     super.safeArea,
-    @Deprecated('instead of  using [tooltipBuilder]') super.tooltipWidgetRenderer,
     super.tooltipBuilder,
     this.crossHair = const CrossHairStyle(),
     XAxis? xAxis,
@@ -50,7 +49,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     double density = (width - contentMargin.horizontal) / count / xAxis.interval;
     //x轴密度 即1 value 等于多少尺寸
     if (zoomHorizontal) {
-      xAxis.density = density * controller.zoom;
+      xAxis.density = density * param.zoom;
     } else {
       xAxis.density = density;
     }
@@ -62,7 +61,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
       double itemHeight = (height - margin.vertical) / yCount;
       double itemValue = (max - min) / yCount;
       if (zoomVertical) {
-        yA.density = itemHeight / itemValue * controller.zoom;
+        yA.density = itemHeight / itemValue * param.zoom;
       } else {
         yA.density = itemHeight / itemValue;
       }
@@ -72,8 +71,8 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     //转换工具
     transformUtils = TransformUtils(
       anchor: Offset(margin.left, size.height - margin.bottom),
-      zoom: controller.zoom,
-      offset: controller.offset,
+      zoom: param.zoom,
+      offset: param.offset,
       size: size,
       zoomVertical: zoomVertical,
       zoomHorizontal: zoomHorizontal,
@@ -193,11 +192,11 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     //实际要显示的数量
     int count = (xAxis.max ?? xAxis.count) ~/ interval;
     //缩放时过滤逻辑
-    double xFilterZoom = 1 / controller.zoom;
+    double xFilterZoom = 1 / param.zoom;
     //缩小时的策略
     int xReduceInterval = (xFilterZoom < 1 ? 1 : xFilterZoom).round();
     //放大后的策略
-    int? xDivideCount = xAxis.divideCount?.call(controller.zoom);
+    int? xDivideCount = xAxis.divideCount?.call(param.zoom);
     double? xAmplifyInterval;
     if (xDivideCount != null && xDivideCount > 0) {
       xAmplifyInterval = interval / xDivideCount;
@@ -283,7 +282,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
 
   ///绘制十字准星
   void _drawCrosshair(Canvas canvas, Size size) {
-    Offset? anchor = controller.localPosition;
+    Offset? anchor = param.localPosition;
     if (anchor == null) {
       return;
     }
@@ -294,7 +293,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     double diffLeft = 0;
 
     //查找更贴近点击的那条数据
-    for (CharBodyState entry in controller.childrenState) {
+    for (CharBodyState entry in param.childrenState) {
       int? index = entry.selectedIndex;
       if (index == null) {
         continue;
@@ -361,40 +360,15 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     Canvas canvas,
     Size size,
   ) {
-    Offset? anchor = controller.localPosition;
+    Offset? anchor = param.localPosition;
     if (anchor == null) {
       return;
     }
     //用widget实现
-    if (tooltipBuilder != null || tooltipWidgetRenderer != null) {
-      controller.notifyTooltip();
+    if (tooltipBuilder != null) {
+      param.notifyTooltip();
       return;
     }
-  }
-
-  @override
-  void scroll(Offset delta) {
-    Offset newOffset = controller.offset.translate(-delta.dx, -delta.dy);
-    //校准偏移，不然缩小后可能起点都在中间了，或者无限滚动
-    double x = newOffset.dx;
-    // double y = newOffset.dy;
-    if (x < 0) {
-      x = 0;
-    }
-    double zoom = controller.zoom;
-    //放大的场景  offset会受到zoom的影响，所以这里的宽度要先剔除zoom的影响再比较
-    double chartContentWidth = xAxis.density * (xAxis.max ?? xAxis.count);
-    double chartViewPortWidth = size.width - contentMargin.horizontal;
-    //处理成跟缩放无关的偏移
-    double maxOffset = (chartContentWidth - chartViewPortWidth);
-    if (maxOffset < 0) {
-      //内容小于0
-      x = 0;
-    } else if (x > maxOffset) {
-      x = maxOffset;
-    }
-    controller.offset = Offset(x, 0);
-    // print(controller.offset);
   }
 
   //背景

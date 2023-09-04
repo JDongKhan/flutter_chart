@@ -41,10 +41,10 @@ class WaveProgress<T> extends ChartBodyRender<T> {
       transformUtils = TransformUtils(
         anchor: progressCenter,
         size: chart.size,
-        offset: chart.controller.offset,
+        offset: chart.param.offset,
         zoomVertical: chart.zoomVertical,
         zoomHorizontal: chart.zoomHorizontal,
-        zoom: chart.controller.zoom,
+        zoom: chart.param.zoom,
         padding: chart.padding,
         reverseX: false,
         reverseY: true,

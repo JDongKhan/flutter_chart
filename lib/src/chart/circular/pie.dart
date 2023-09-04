@@ -141,7 +141,7 @@ class Pie<T> extends ChartBodyRender<T> {
       //放大区域
       ChartShapeState tapShape = shape;
       //判断是否选中
-      bool selected = enableTap && shape.hitTest(chart.controller.localPosition);
+      bool selected = enableTap && shape.hitTest(chart.param.localPosition);
       if (selected) {
         rd = radius + 2;
         bodyState.selectedIndex = i;

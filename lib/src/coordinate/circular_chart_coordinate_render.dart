@@ -76,8 +76,8 @@ class CircularChartCoordinateRender extends ChartCoordinateRender {
         padding: padding,
         zoomVertical: zoomVertical,
         zoomHorizontal: zoomHorizontal,
-        zoom: controller.zoom,
-        offset: controller.offset,
+        zoom: param.zoom,
+        offset: param.offset,
         reverseX: false,
         reverseY: false,
       );
@@ -98,8 +98,8 @@ class CircularChartCoordinateRender extends ChartCoordinateRender {
           padding: padding,
           zoomVertical: zoomVertical,
           zoomHorizontal: zoomHorizontal,
-          zoom: controller.zoom,
-          offset: controller.offset,
+          zoom: param.zoom,
+          offset: param.offset,
           reverseX: false,
           reverseY: true,
         );
@@ -111,8 +111,8 @@ class CircularChartCoordinateRender extends ChartCoordinateRender {
           padding: padding,
           zoomVertical: zoomVertical,
           zoomHorizontal: zoomHorizontal,
-          zoom: controller.zoom,
-          offset: controller.offset,
+          zoom: param.zoom,
+          offset: param.offset,
           reverseX: false,
           reverseY: false,
         );
@@ -146,7 +146,4 @@ class CircularChartCoordinateRender extends ChartCoordinateRender {
       element.draw(canvas, size);
     });
   }
-
-  @override
-  void scroll(Offset delta) {}
 }

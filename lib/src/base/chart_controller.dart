@@ -1,101 +1,69 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_chart_plus/flutter_chart.dart';
 
+import '../coordinate/chart_coordinate_render.dart';
+import 'chart_param.dart';
 import 'chart_shape_state.dart';
 
 /// @author jd
 
-typedef AnnotationTooltipWidgetBuilder = PreferredSizeWidget? Function(BuildContext context);
-
 ///数据共享，便于各个节点使用
-class ChartController extends ChangeNotifier {
-  ///点击的位置
-  Offset? _localPosition;
-  Offset? get localPosition => _localPosition;
+class ChartController {
+  ///
+  late ChartCoordinateRender chartCoordinateRender;
 
-  ///点击的位置信息
-  set localPosition(value) {
-    if (value != _localPosition) {
-      _localPosition = value;
-      notifyListeners();
-    }
-  }
-
-  ///缩放级别
-  double _zoom = 1;
-  double get zoom => _zoom;
-  set zoom(v) {
-    if (_zoom != v) {
-      _zoom = v;
-      notifyListeners();
-    }
-  }
-
-  ///滚动偏移
-  Offset _offset = Offset.zero;
-  Offset get offset => _offset;
-  set offset(v) {
-    if (v != _offset) {
-      _offset = v;
-      notifyListeners();
-    }
-  }
+  ///chart 图形参数
+  late ChartParam param;
 
   ///清理信息
   void clear() {
     bool needNotify = false;
-    if (tooltipWidgetBuilder != null) {
-      tooltipWidgetBuilder = null;
+    if (param.tooltipWidgetBuilder != null) {
+      param.tooltipWidgetBuilder = null;
       needNotify = true;
     }
-    if (localPosition != null) {
-      localPosition = null;
+    if (param.localPosition != null) {
+      param.localPosition = null;
       needNotify = true;
     }
     if (needNotify) {
-      notifyTooltip();
+      param.notifyTooltip();
     }
   }
 
   ///使用widget渲染tooltip
-  AnnotationTooltipWidgetBuilder? tooltipWidgetBuilder;
   void showTooltipBuilder({required AnnotationTooltipWidgetBuilder builder, required Offset position}) {
-    tooltipWidgetBuilder = builder;
-    localPosition = position;
-    notifyTooltip();
+    param.tooltipWidgetBuilder = builder;
+    param.localPosition = position;
+    param.notifyTooltip();
   }
 
-  ///通知弹框层刷新
-  StateSetter? tooltipStateSetter;
-  void notifyTooltip() {
-    if (tooltipStateSetter != null) {
-      Future.microtask(() {
-        tooltipStateSetter?.call(() {});
-      });
+  void scrollByDelta(Offset delta) {
+    Offset newOffset = param.offset.translate(-delta.dx, -delta.dy);
+    scroll(newOffset);
+  }
+
+  void scroll(Offset offset) {
+    //校准偏移，不然缩小后可能起点都在中间了，或者无限滚动
+    double x = offset.dx;
+    // double y = newOffset.dy;
+    if (x < 0) {
+      x = 0;
     }
+    if (chartCoordinateRender is DimensionsChartCoordinateRender) {
+      DimensionsChartCoordinateRender render = chartCoordinateRender as DimensionsChartCoordinateRender;
+      //放大的场景  offset会受到zoom的影响，所以这里的宽度要先剔除zoom的影响再比较
+      double chartContentWidth = render.xAxis.density * (render.xAxis.max ?? render.xAxis.count);
+      double chartViewPortWidth = render.size.width - render.contentMargin.horizontal;
+      //处理成跟缩放无关的偏移
+      double maxOffset = (chartContentWidth - chartViewPortWidth);
+      if (maxOffset < 0) {
+        //内容小于0
+        x = 0;
+      } else if (x > maxOffset) {
+        x = maxOffset;
+      }
+    }
+    param.offset = Offset(x, 0);
   }
-
-  ///根据位置缓存配置信息
-  List<CharBodyState> childrenState = [];
-
-  @override
-  void dispose() {
-    _localPosition = null;
-    tooltipStateSetter = null;
-    tooltipWidgetBuilder = null;
-    childrenState.clear();
-    super.dispose();
-  }
-}
-
-///每块图表存放的状态
-class CharBodyState {
-  CharBodyState();
-  int? _selectedIndex;
-  int? get selectedIndex => _selectedIndex;
-  set selectedIndex(v) {
-    _selectedIndex = v;
-  }
-
-  ///图形列表
-  List<ChartShapeState>? shapeList;
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../annotation/annotation.dart';
+import '../base/chart_param.dart';
 import '../utils/transform_utils.dart';
 import '../widget/chart_widget.dart';
 import '../base/chart_body_render.dart';
@@ -56,8 +57,6 @@ abstract class ChartCoordinateRender {
   final EdgeInsets? safeArea;
 
   ///用widget弹框来处理点击
-  @Deprecated('instead of  using [tooltipBuilder] ')
-  final TooltipWidgetBuilder? tooltipWidgetRenderer;
   final TooltipWidgetBuilder? tooltipBuilder;
 
   ///背景标注
@@ -70,7 +69,6 @@ abstract class ChartCoordinateRender {
     required this.margin,
     required this.padding,
     required this.charts,
-    @Deprecated('instead of  using [tooltipBuilder] ') this.tooltipWidgetRenderer,
     this.tooltipBuilder,
     this.zoomHorizontal = false,
     this.zoomVertical = false,
@@ -85,7 +83,7 @@ abstract class ChartCoordinateRender {
   late TransformUtils transformUtils;
 
   ///共享数据
-  late ChartController controller;
+  late ChartParam param;
 
   ///画布尺寸
   late Size size;
@@ -102,8 +100,6 @@ abstract class ChartCoordinateRender {
       element.init(this);
     }
   }
-
-  void scroll(Offset delta);
 
   void paint(Canvas canvas, Size size);
 }

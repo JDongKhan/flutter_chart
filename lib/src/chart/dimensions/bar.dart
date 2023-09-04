@@ -75,7 +75,7 @@ class Bar<T> extends ChartBodyRender<T> {
     ChartShapeState shape = ChartShapeState.rect(
       rect: rect,
     );
-    if (shape.hitTest(chart.controller.localPosition)) {
+    if (shape.hitTest(chart.param.localPosition)) {
       bodyState.selectedIndex = index;
       paint.color = highlightColor;
     } else {
@@ -194,7 +194,7 @@ class StackBar<T> extends ChartBodyRender<T> {
       } else {
         paint.color = colors[stackIndex];
       }
-      if (stackShape.hitTest(chart.controller.localPosition)) {
+      if (stackShape.hitTest(chart.param.localPosition)) {
         bodyState.selectedIndex = index;
         paint.color = highlightColor;
       }
@@ -248,7 +248,7 @@ class StackBar<T> extends ChartBodyRender<T> {
       }
       Rect rect = Rect.fromLTWH(left, top, itemWidth, itemHeight);
       ChartShapeState stackShape = ChartShapeState.rect(rect: rect);
-      if (stackShape.hitTest(chart.controller.localPosition)) {
+      if (stackShape.hitTest(chart.param.localPosition)) {
         bodyState.selectedIndex = index;
         paint.color = highlightColor;
         shape.children.add(stackShape);

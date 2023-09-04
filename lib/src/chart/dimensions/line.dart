@@ -94,7 +94,7 @@ class Line<T> extends ChartBodyRender<T> {
 
       //先判断是否选中，此场景是第一次渲染之后点击才有，所以用老数据即可
       List<ChartShapeState>? currentShapeList = bodyState.shapeList;
-      if (chart.controller.localPosition != null && (currentShapeList?[index].hitTest(chart.controller.localPosition!) == true)) {
+      if (chart.param.localPosition != null && (currentShapeList?[index].hitTest(chart.param.localPosition!) == true)) {
         bodyState.selectedIndex = index;
       }
       //一条数据下可能多条线

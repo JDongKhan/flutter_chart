@@ -1,6 +1,4 @@
-import 'dart:ui';
-
-import 'chart_controller.dart';
+import 'chart_param.dart';
 import 'chart_render.dart';
 
 /// @author jd

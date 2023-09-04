@@ -33,10 +33,10 @@ class RegionAnnotation extends Annotation {
 
   @override
   void draw(Canvas canvas, Size size) {
-    if (minZoomVisible != null && coordinateChart.controller.zoom < minZoomVisible!) {
+    if (minZoomVisible != null && coordinateChart.param.zoom < minZoomVisible!) {
       return;
     }
-    if (maxZoomVisible != null && coordinateChart.controller.zoom > maxZoomVisible!) {
+    if (maxZoomVisible != null && coordinateChart.param.zoom > maxZoomVisible!) {
       return;
     }
     if (coordinateChart is DimensionsChartCoordinateRender) {
