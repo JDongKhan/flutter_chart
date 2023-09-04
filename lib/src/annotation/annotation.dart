@@ -47,4 +47,14 @@ abstract class Annotation extends ChartRender {
     Rect rect = location! & size!;
     return rect.contains(point);
   }
+
+  bool needDraw() {
+    if (minZoomVisible != null && coordinateChart.param.zoom < minZoomVisible!) {
+      return false;
+    }
+    if (maxZoomVisible != null && coordinateChart.param.zoom > maxZoomVisible!) {
+      return false;
+    }
+    return true;
+  }
 }
