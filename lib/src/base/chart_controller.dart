@@ -7,44 +7,69 @@ import 'chart_param.dart';
 ///数据共享，便于各个节点使用
 class ChartController {
   ///
-  late ChartCoordinateRender chartCoordinateRender;
+  WeakReference<ChartCoordinateRender>? _chartCoordinateRender;
+
+  ///根据位置缓存配置信息
+  late List<ChartShapeLayoutParam> allLayoutParams;
+
+  Offset? tapPosition;
+
+  Offset? get localPosition => _param?.localPosition;
 
   ///chart 图形参数
-  late ChartParam param;
+  ChartParam? _param;
+
+  void attach(ChartCoordinateRender chartCoordinateRender) {
+    chartCoordinateRender.controller = this;
+    _chartCoordinateRender = WeakReference(chartCoordinateRender);
+  }
+
+  void detach() {
+    _chartCoordinateRender = null;
+  }
+
+  void bindParam(ChartParam p) {
+    _param = p;
+  }
+
+  ///重置提示框
+  void resetTooltip() {
+    bool needNotify = false;
+    if (tooltipWidgetBuilder != null) {
+      tooltipWidgetBuilder = null;
+      needNotify = true;
+    }
+    if (tapPosition != null) {
+      tapPosition = null;
+      needNotify = true;
+    }
+    if (_param?.localPosition != null) {
+      _param?.localPosition = null;
+      needNotify = true;
+    }
+    if (needNotify) {
+      notifyTooltip();
+    }
+  }
+
+  AnnotationTooltipWidgetBuilder? tooltipWidgetBuilder;
 
   ///使用widget渲染tooltip
   void showTooltipBuilder({required AnnotationTooltipWidgetBuilder builder, required Offset position}) {
-    param.tooltipWidgetBuilder = builder;
-    param.localPosition = position;
-    param.notifyTooltip();
+    tooltipWidgetBuilder = builder;
+    tapPosition = position;
+    notifyTooltip();
   }
 
-  void scrollByDelta(Offset delta) {
-    Offset newOffset = param.offset.translate(-delta.dx, -delta.dy);
-    scroll(newOffset);
+  ///通知弹框层刷新
+  StateSetter? tooltipStateSetter;
+  void notifyTooltip() {
+    if (tooltipStateSetter != null) {
+      tooltipStateSetter?.call(() {});
+    }
   }
 
-  void scroll(Offset offset) {
-    //校准偏移，不然缩小后可能起点都在中间了，或者无限滚动
-    double x = offset.dx;
-    // double y = newOffset.dy;
-    if (x < 0) {
-      x = 0;
-    }
-    if (chartCoordinateRender is DimensionsChartCoordinateRender) {
-      DimensionsChartCoordinateRender render = chartCoordinateRender as DimensionsChartCoordinateRender;
-      //放大的场景  offset会受到zoom的影响，所以这里的宽度要先剔除zoom的影响再比较
-      double chartContentWidth = render.xAxis.density * (render.xAxis.max ?? render.xAxis.count);
-      double chartViewPortWidth = render.size.width - render.contentMargin.horizontal;
-      //处理成跟缩放无关的偏移
-      double maxOffset = (chartContentWidth - chartViewPortWidth);
-      if (maxOffset < 0) {
-        //内容小于0
-        x = 0;
-      } else if (x > maxOffset) {
-        x = maxOffset;
-      }
-    }
-    param.offset = Offset(x, 0);
+  void reset() {
+    _param?.reset();
   }
 }

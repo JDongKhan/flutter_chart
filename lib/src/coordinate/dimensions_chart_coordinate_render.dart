@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:path_drawing/path_drawing.dart';
 
 import '../annotation/annotation.dart';
+import '../base/chart_param.dart';
 import '../measure/chart_shape_layout_param.dart';
 import '../utils/transform_utils.dart';
 import 'chart_coordinate_render.dart';
@@ -39,7 +40,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
         xAxis = xAxis ?? XAxis(max: 7);
 
   @override
-  void paint(Canvas canvas, Size size) {
+  void paint(ChartParam param, Canvas canvas, Size size) {
     //初始化配置
     double width = size.width;
     double height = size.height;
@@ -88,15 +89,15 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
 
     //防止超过y轴
     canvas.clipRect(Rect.fromLTWH(margin.left, 0, size.width - margin.horizontal, size.height));
-    _drawXAxis(canvas, size);
-    _drawBackgroundAnnotations(canvas, size);
+    _drawXAxis(param, canvas, size);
+    _drawBackgroundAnnotations(param, canvas, size);
     //绘图
     for (var element in charts) {
-      element.draw(canvas, size);
+      element.draw(param, canvas, size);
     }
-    _drawForegroundAnnotations(canvas, size);
-    _drawCrosshair(canvas, size);
-    _drawTooltip(canvas, size);
+    _drawForegroundAnnotations(param, canvas, size);
+    _drawCrosshair(param, canvas, size);
+    _drawTooltip(param, canvas, size);
   }
 
   ///绘制y轴
@@ -180,7 +181,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
   }
 
   ///绘制x轴
-  void _drawXAxis(Canvas canvas, Size size) {
+  void _drawXAxis(ChartParam param, Canvas canvas, Size size) {
     double density = xAxis.density;
     num interval = xAxis.interval;
     Paint paint = Paint()
@@ -280,9 +281,12 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
   }
 
   ///绘制十字准星
-  void _drawCrosshair(Canvas canvas, Size size) {
+  void _drawCrosshair(ChartParam param, Canvas canvas, Size size) {
     Offset? anchor = param.localPosition;
     if (anchor == null) {
+      return;
+    }
+    if (!crossHair.verticalShow && !crossHair.horizontalShow) {
       return;
     }
     double? top;
@@ -355,37 +359,36 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
   }
 
   //提示文案
-  void _drawTooltip(
-    Canvas canvas,
-    Size size,
-  ) {
+  void _drawTooltip(ChartParam param, Canvas canvas, Size size) {
     Offset? anchor = param.localPosition;
     if (anchor == null) {
       return;
     }
     //用widget实现
     if (tooltipBuilder != null) {
-      param.notifyTooltip();
+      Future.microtask(() {
+        controller.notifyTooltip();
+      });
       return;
     }
   }
 
   //背景
-  void _drawBackgroundAnnotations(Canvas canvas, Size size) {
+  void _drawBackgroundAnnotations(ChartParam param, Canvas canvas, Size size) {
     if (backgroundAnnotations != null) {
       for (Annotation annotation in backgroundAnnotations!) {
         annotation.init(this);
-        annotation.draw(canvas, size);
+        annotation.draw(param, canvas, size);
       }
     }
   }
 
   //前景
-  void _drawForegroundAnnotations(Canvas canvas, Size size) {
+  void _drawForegroundAnnotations(ChartParam param, Canvas canvas, Size size) {
     if (foregroundAnnotations != null) {
       for (Annotation annotation in foregroundAnnotations!) {
         annotation.init(this);
-        annotation.draw(canvas, size);
+        annotation.draw(param, canvas, size);
       }
     }
   }

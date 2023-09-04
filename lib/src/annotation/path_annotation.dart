@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../base/chart_param.dart';
 import '../coordinate/chart_coordinate_render.dart';
 import 'annotation.dart';
 
@@ -43,8 +44,8 @@ class PathAnnotation extends Annotation {
   }
 
   @override
-  void draw(Canvas canvas, Size size) {
-    if (!needDraw()) {
+  void draw(ChartParam param, Canvas canvas, Size size) {
+    if (!needDraw(param)) {
       return;
     }
     if (_paint != null && _path != null) {

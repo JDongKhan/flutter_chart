@@ -60,6 +60,7 @@ class _LineChartScaleDemoPageState extends State<LineChartScaleDemoPage> {
             child: ChartWidget(
               coordinateRender: DimensionsChartCoordinateRender(
                 zoomHorizontal: true,
+                padding: const EdgeInsets.only(left: 30, top: 0, right: 20, bottom: 0),
                 // zoomVertical: true,
                 crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
                 //提示的文案信息

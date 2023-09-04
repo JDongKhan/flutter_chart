@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import '../coordinate/chart_coordinate_render.dart';
+import 'chart_param.dart';
 
 /// @author jd
 
@@ -16,5 +17,5 @@ abstract class ChartRender {
     this.coordinateChart = coordinateChart;
   }
 
-  void draw(Canvas canvas, Size size);
+  void draw(ChartParam param, Canvas canvas, Size size);
 }

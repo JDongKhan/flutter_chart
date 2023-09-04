@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import '../../base/chart_param.dart';
 import '../../utils/chart_utils.dart';
 import '../../base/chart_body_render.dart';
 import '../../coordinate/circular_chart_coordinate_render.dart';
@@ -37,7 +38,7 @@ class Progress<T> extends ChartBodyRender<T> {
   });
 
   @override
-  void draw(Canvas canvas, Size size) {
+  void draw(ChartParam param, Canvas canvas, Size size) {
     CircularChartCoordinateRender chart = coordinateChart as CircularChartCoordinateRender;
     Offset center = chart.center;
     double radius = chart.radius;

@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import '../../base/chart_body_render.dart';
+import '../../base/chart_param.dart';
 import '../../measure/chart_shape_layout_param.dart';
 import '../../coordinate/circular_chart_coordinate_render.dart';
 import '../../utils/chart_utils.dart';
@@ -90,7 +91,7 @@ class Pie<T> extends ChartBodyRender<T> {
   });
 
   @override
-  void draw(Canvas canvas, Size size) {
+  void draw(ChartParam param, Canvas canvas, Size size) {
     CircularChartCoordinateRender chart = coordinateChart as CircularChartCoordinateRender;
     Offset center = chart.center;
     double radius = chart.radius;
@@ -141,7 +142,7 @@ class Pie<T> extends ChartBodyRender<T> {
       //放大区域
       ChartShapeLayoutParam tapShape = shape;
       //判断是否选中
-      bool selected = enableTap && shape.hitTest(chart.param.localPosition);
+      bool selected = enableTap && shape.hitTest(param.localPosition);
       if (selected) {
         rd = radius + 2;
         layoutParam.selectedIndex = i;

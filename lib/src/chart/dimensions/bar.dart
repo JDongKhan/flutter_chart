@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../base/chart_param.dart';
 import '../../coordinate/dimensions_chart_coordinate_render.dart';
 import '../../utils/chart_utils.dart';
 import '../../base/chart_body_render.dart';
@@ -41,7 +42,7 @@ class Bar<T> extends ChartBodyRender<T> {
   });
 
   @override
-  void draw(Canvas canvas, Size size) {
+  void draw(ChartParam param, Canvas canvas, Size size) {
     DimensionsChartCoordinateRender chart = coordinateChart as DimensionsChartCoordinateRender;
     List<ChartShapeLayoutParam> childrenLayoutParams = [];
     Paint paint = Paint()
@@ -49,13 +50,13 @@ class Bar<T> extends ChartBodyRender<T> {
       ..style = PaintingStyle.fill;
     for (int index = 0; index < data.length; index++) {
       T value = data[index];
-      childrenLayoutParams.add(drawBar(canvas, chart, paint, index, value));
+      childrenLayoutParams.add(drawBar(param, canvas, chart, paint, index, value));
     }
     layoutParam.children = childrenLayoutParams;
   }
 
   //可以重写 自定义特殊的图形
-  ChartShapeLayoutParam drawBar(Canvas canvas, DimensionsChartCoordinateRender chart, Paint paint, int index, T data) {
+  ChartShapeLayoutParam drawBar(ChartParam param, Canvas canvas, DimensionsChartCoordinateRender chart, Paint paint, int index, T data) {
     num po = position.call(data);
     num v = value.call(data);
     if (v == 0) {
@@ -75,7 +76,7 @@ class Bar<T> extends ChartBodyRender<T> {
     ChartShapeLayoutParam shape = ChartShapeLayoutParam.rect(
       rect: rect,
     );
-    if (shape.hitTest(chart.param.localPosition)) {
+    if (shape.hitTest(param.localPosition)) {
       layoutParam.selectedIndex = index;
       paint.color = highlightColor;
     } else {
@@ -138,22 +139,22 @@ class StackBar<T> extends ChartBodyRender<T> {
   });
 
   @override
-  void draw(Canvas canvas, Size size) {
+  void draw(ChartParam param, Canvas canvas, Size size) {
     DimensionsChartCoordinateRender chart = coordinateChart as DimensionsChartCoordinateRender;
     List<ChartShapeLayoutParam> childrenLayoutParams = [];
     for (int index = 0; index < data.length; index++) {
       T value = data[index];
       if (direction == Axis.horizontal) {
-        childrenLayoutParams.add(drawHorizontalBar(canvas, chart, index, value));
+        childrenLayoutParams.add(drawHorizontalBar(param, canvas, chart, index, value));
       } else {
-        childrenLayoutParams.add(drawVerticalBar(canvas, chart, index, value));
+        childrenLayoutParams.add(drawVerticalBar(param, canvas, chart, index, value));
       }
     }
     layoutParam.children = childrenLayoutParams;
   }
 
   ///水平排列图形
-  ChartShapeLayoutParam drawHorizontalBar(Canvas canvas, DimensionsChartCoordinateRender chart, int index, T data) {
+  ChartShapeLayoutParam drawHorizontalBar(ChartParam param, Canvas canvas, DimensionsChartCoordinateRender chart, int index, T data) {
     num po = position.call(data);
     List<num> vas = values.call(data);
     assert(colors.length >= vas.length);
@@ -194,7 +195,7 @@ class StackBar<T> extends ChartBodyRender<T> {
       } else {
         paint.color = colors[stackIndex];
       }
-      if (stackShape.hitTest(chart.param.localPosition)) {
+      if (stackShape.hitTest(param.localPosition)) {
         layoutParam.selectedIndex = index;
         paint.color = highlightColor;
       }
@@ -209,7 +210,7 @@ class StackBar<T> extends ChartBodyRender<T> {
   }
 
   ///垂直排列图形
-  ChartShapeLayoutParam drawVerticalBar(Canvas canvas, DimensionsChartCoordinateRender chart, int index, T data) {
+  ChartShapeLayoutParam drawVerticalBar(ChartParam param, Canvas canvas, DimensionsChartCoordinateRender chart, int index, T data) {
     num po = position.call(data);
     List<num> vas = values.call(data);
     assert(colors.length >= vas.length);
@@ -249,7 +250,7 @@ class StackBar<T> extends ChartBodyRender<T> {
       }
       Rect rect = Rect.fromLTWH(left, top, itemWidth, itemHeight);
       ChartShapeLayoutParam stackShape = ChartShapeLayoutParam.rect(rect: rect);
-      if (stackShape.hitTest(chart.param.localPosition)) {
+      if (stackShape.hitTest(param.localPosition)) {
         layoutParam.selectedIndex = index;
         paint.color = highlightColor;
         childrenLayoutParams.add(stackShape);

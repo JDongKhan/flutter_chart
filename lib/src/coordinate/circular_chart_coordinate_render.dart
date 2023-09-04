@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+import '../base/chart_param.dart';
 import 'chart_coordinate_render.dart';
 import '../utils/transform_utils.dart';
 
@@ -38,17 +39,17 @@ class CircularChartCoordinateRender extends ChartCoordinateRender {
   late Offset center;
 
   @override
-  void paint(Canvas canvas, Size size) {
-    _drawCircle(canvas, size);
-    _drawBackgroundAnnotations(canvas, size);
+  void paint(ChartParam param, Canvas canvas, Size size) {
+    _drawCircle(param, canvas, size);
+    _drawBackgroundAnnotations(param, canvas, size);
     for (var element in charts) {
-      element.draw(canvas, size);
+      element.draw(param, canvas, size);
     }
-    _drawForegroundAnnotations(canvas, size);
+    _drawForegroundAnnotations(param, canvas, size);
   }
 
   ///画背景圆
-  void _drawCircle(Canvas canvas, Size size) {
+  void _drawCircle(ChartParam param, Canvas canvas, Size size) {
     final sw = size.width - contentMargin.horizontal;
     final sh = size.height - contentMargin.vertical;
     // 定义圆形的绘制属性
@@ -132,18 +133,18 @@ class CircularChartCoordinateRender extends ChartCoordinateRender {
   }
 
   ///背景
-  void _drawBackgroundAnnotations(Canvas canvas, Size size) {
+  void _drawBackgroundAnnotations(ChartParam param, Canvas canvas, Size size) {
     backgroundAnnotations?.forEach((element) {
       element.init(this);
-      element.draw(canvas, size);
+      element.draw(param, canvas, size);
     });
   }
 
   ///前景
-  void _drawForegroundAnnotations(Canvas canvas, Size size) {
+  void _drawForegroundAnnotations(ChartParam param, Canvas canvas, Size size) {
     foregroundAnnotations?.forEach((element) {
       element.init(this);
-      element.draw(canvas, size);
+      element.draw(param, canvas, size);
     });
   }
 }

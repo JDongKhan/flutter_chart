@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../base/chart_body_render.dart';
+import '../../base/chart_param.dart';
 import '../../coordinate/circular_chart_coordinate_render.dart';
 import '../../utils/transform_utils.dart';
 import '../../utils/chart_utils.dart';
@@ -28,7 +29,7 @@ class WaveProgress<T> extends ChartBodyRender<T> {
   });
 
   @override
-  void draw(Canvas canvas, Size size) {
+  void draw(ChartParam param, Canvas canvas, Size size) {
     CircularChartCoordinateRender chart = coordinateChart as CircularChartCoordinateRender;
     Offset center = chart.center;
     double radius = chart.radius;
@@ -41,10 +42,10 @@ class WaveProgress<T> extends ChartBodyRender<T> {
       transformUtils = TransformUtils(
         anchor: progressCenter,
         size: chart.size,
-        offset: chart.param.offset,
+        offset: param.offset,
         zoomVertical: chart.zoomVertical,
         zoomHorizontal: chart.zoomHorizontal,
-        zoom: chart.param.zoom,
+        zoom: param.zoom,
         padding: chart.padding,
         reverseX: false,
         reverseY: true,

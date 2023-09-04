@@ -2,6 +2,7 @@ import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import '../../base/chart_param.dart';
 import '../../utils/chart_utils.dart';
 import '../../base/chart_body_render.dart';
 import '../../measure/chart_shape_layout_param.dart';
@@ -60,7 +61,7 @@ class Radar<T> extends ChartBodyRender<T> {
   });
 
   @override
-  void draw(Canvas canvas, Size size) {
+  void draw(ChartParam param, Canvas canvas, Size size) {
     CircularChartCoordinateRender chart = coordinateChart as CircularChartCoordinateRender;
     Offset center = chart.center;
     double radius = chart.radius;

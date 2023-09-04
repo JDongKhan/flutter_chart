@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../base/chart_param.dart';
 import '../../coordinate/dimensions_chart_coordinate_render.dart';
 import '../../utils/chart_utils.dart';
 import '../../base/chart_body_render.dart';
@@ -65,7 +66,7 @@ class Line<T> extends ChartBodyRender<T> {
           ..style = PaintingStyle.stroke;
 
   @override
-  void draw(Canvas canvas, Size size) {
+  void draw(ChartParam param, Canvas canvas, Size size) {
     DimensionsChartCoordinateRender chart = coordinateChart as DimensionsChartCoordinateRender;
     List<ChartShapeLayoutParam> shapeList = [];
 
@@ -95,7 +96,7 @@ class Line<T> extends ChartBodyRender<T> {
 
       //先判断是否选中，此场景是第一次渲染之后点击才有，所以用老数据即可
       List<ChartShapeLayoutParam> childrenLayoutParams = layoutParam.children;
-      if (chart.param.localPosition != null && index < childrenLayoutParams.length && (childrenLayoutParams[index].hitTest(chart.param.localPosition!) == true)) {
+      if (param.localPosition != null && index < childrenLayoutParams.length && (childrenLayoutParams[index].hitTest(param.localPosition!) == true)) {
         layoutParam.selectedIndex = index;
       }
       //一条数据下可能多条线

@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 
+import '../base/chart_param.dart';
 import '../base/chart_render.dart';
 
 /// @author jd
@@ -48,11 +49,11 @@ abstract class Annotation extends ChartRender {
     return rect.contains(point);
   }
 
-  bool needDraw() {
-    if (minZoomVisible != null && coordinateChart.param.zoom < minZoomVisible!) {
+  bool needDraw(ChartParam param) {
+    if (minZoomVisible != null && param.zoom < minZoomVisible!) {
       return false;
     }
-    if (maxZoomVisible != null && coordinateChart.param.zoom > maxZoomVisible!) {
+    if (maxZoomVisible != null && param.zoom > maxZoomVisible!) {
       return false;
     }
     return true;

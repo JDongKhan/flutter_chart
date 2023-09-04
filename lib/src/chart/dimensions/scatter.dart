@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../base/chart_param.dart';
 import '../../coordinate/dimensions_chart_coordinate_render.dart';
 import '../../base/chart_body_render.dart';
 
@@ -31,7 +32,7 @@ class Scatter<T> extends ChartBodyRender<T> {
   }) : style = style ?? _defaultScatterStyleFunction;
 
   @override
-  void draw(Canvas canvas, Size size) {
+  void draw(ChartParam param, Canvas canvas, Size size) {
     DimensionsChartCoordinateRender chart = coordinateChart as DimensionsChartCoordinateRender;
     //offset.dx 滚动偏移  (src.zoom - 1) * (src.size.width / 2) 缩放
     double left = chart.contentMargin.left;

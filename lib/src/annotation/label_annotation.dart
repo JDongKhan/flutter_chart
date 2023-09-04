@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../base/chart_param.dart';
 import '../coordinate/chart_coordinate_render.dart';
 import '../coordinate/dimensions_chart_coordinate_render.dart';
 import 'annotation.dart';
@@ -57,8 +58,8 @@ class LabelAnnotation extends Annotation {
   }
 
   @override
-  void draw(Canvas canvas, Size size) {
-    if (!needDraw()) {
+  void draw(ChartParam param, Canvas canvas, Size size) {
+    if (!needDraw(param)) {
       return;
     }
 
@@ -86,13 +87,13 @@ class LabelAnnotation extends Annotation {
           //不跟随缩放
           if (chart.zoomHorizontal) {
             left = chart.transformUtils.transformX(
-              itemWidth / chart.param.zoom,
+              itemWidth / param.zoom,
               containPadding: true,
             );
           }
           if (chart.zoomVertical) {
             top = chart.transformUtils.transformY(
-              itemHeight / chart.param.zoom,
+              itemHeight / param.zoom,
               containPadding: true,
             );
           }

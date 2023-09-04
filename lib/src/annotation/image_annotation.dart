@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../base/chart_param.dart';
 import '../coordinate/dimensions_chart_coordinate_render.dart';
 import 'annotation.dart';
 
@@ -50,8 +51,8 @@ class ImageAnnotation extends Annotation {
   }
 
   @override
-  void draw(Canvas canvas, final Size size) {
-    if (!needDraw()) {
+  void draw(ChartParam param, Canvas canvas, final Size size) {
+    if (!needDraw(param)) {
       return;
     }
 

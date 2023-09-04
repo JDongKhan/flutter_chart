@@ -7,6 +7,7 @@ import '../annotation/annotation.dart';
 import '../base/chart_body_render.dart';
 import '../base/chart_controller.dart';
 import '../base/chart_param.dart';
+import '../coordinate/dimensions_chart_coordinate_render.dart';
 import '../measure/chart_shape_layout_param.dart';
 import '../coordinate/chart_coordinate_render.dart';
 
@@ -41,8 +42,6 @@ class ChartWidget extends StatefulWidget {
 class _ChartWidgetState extends State<ChartWidget> {
   late ChartController _controller;
 
-  ChartParam? chartParam;
-
   @override
   void initState() {
     _controller = widget.controller ?? ChartController();
@@ -60,13 +59,13 @@ class _ChartWidgetState extends State<ChartWidget> {
         // in the web browser, but we do unfocus for all other kinds of events.
         switch (event.kind) {
           case ui.PointerDeviceKind.touch:
-            chartParam?.resetTooltip();
+            _controller.resetTooltip();
             break;
           case ui.PointerDeviceKind.mouse:
           case ui.PointerDeviceKind.stylus:
           case ui.PointerDeviceKind.invertedStylus:
           case ui.PointerDeviceKind.unknown:
-            chartParam?.resetTooltip();
+            _controller.resetTooltip();
             break;
           case ui.PointerDeviceKind.trackpad:
             throw UnimplementedError('Unexpected pointer down event for trackpad');
@@ -75,7 +74,7 @@ class _ChartWidgetState extends State<ChartWidget> {
       case TargetPlatform.linux:
       case TargetPlatform.macOS:
       case TargetPlatform.windows:
-        chartParam?.resetTooltip();
+        _controller.resetTooltip();
         break;
     }
   }
@@ -90,9 +89,8 @@ class _ChartWidgetState extends State<ChartWidget> {
 
   @override
   void dispose() {
-    //谁创建谁管理
-    chartParam?.dispose();
     super.dispose();
+    _controller.detach();
   }
 
   @override
@@ -106,19 +104,17 @@ class _ChartWidgetState extends State<ChartWidget> {
       child: LayoutBuilder(
         builder: (context, cs) {
           ChartCoordinateRender baseChart = widget.coordinateRender;
-          chartParam?.dispose();
-          ChartParam param = ChartParam();
-          chartParam = param;
-          baseChart.param = param;
-          _controller.param = param;
-          _controller.chartCoordinateRender = baseChart;
+          _controller.attach(baseChart);
+
+          List<ChartShapeLayoutParam> allP = [];
           //关联子状态
           for (int i = 0; i < baseChart.charts.length; i++) {
             ChartBodyRender body = baseChart.charts[i];
             ChartShapeLayoutParam c = ChartShapeLayoutParam();
             body.layoutParam = c;
-            param.childrenState.add(c);
+            allP.add(c);
           }
+          _controller.allLayoutParams = allP;
 
           Size size = Size(cs.maxWidth, cs.maxHeight);
           List<Widget> childrenWidget = [];
@@ -127,7 +123,6 @@ class _ChartWidgetState extends State<ChartWidget> {
             width: size.width,
             height: size.height,
             child: _ChartCoreWidget(
-              controller: _controller,
               chartCoordinateRender: baseChart,
             ),
           );
@@ -156,15 +151,16 @@ class _ChartWidgetState extends State<ChartWidget> {
   Widget _buildTooltipWidget(ChartCoordinateRender baseChart, Size size) {
     return StatefulBuilder(
       builder: (BuildContext context, StateSetter setState) {
-        _controller.param.tooltipStateSetter = setState;
-        if (_controller.param.localPosition == null) {
+        _controller.tooltipStateSetter = setState;
+        Offset? point = _controller.tapPosition ?? _controller.localPosition;
+        if (point == null) {
           return const SizedBox.shrink();
         }
-        Offset offset = Offset(_controller.param.localPosition?.dx ?? 0, _controller.param.localPosition?.dy ?? 0);
+        Offset offset = Offset(point.dx, point.dy);
 
-        PreferredSizeWidget? widget = _controller.param.tooltipWidgetBuilder?.call(context);
+        PreferredSizeWidget? widget = _controller.tooltipWidgetBuilder?.call(context);
         TooltipWidgetBuilder? tooltipBuilder = baseChart.tooltipBuilder;
-        widget ??= tooltipBuilder?.call(context, _controller.param.childrenState);
+        widget ??= tooltipBuilder?.call(context, _controller.allLayoutParams);
 
         if (widget == null) {
           return const SizedBox.shrink();
@@ -223,11 +219,9 @@ class _ChartWidgetState extends State<ChartWidget> {
 }
 
 class _ChartCoreWidget extends StatefulWidget {
-  final ChartController controller;
   final ChartCoordinateRender chartCoordinateRender;
   const _ChartCoreWidget({
     Key? key,
-    required this.controller,
     required this.chartCoordinateRender,
   }) : super(key: key);
 
@@ -238,6 +232,10 @@ class _ChartCoreWidget extends StatefulWidget {
 class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
   double _beforeZoom = 1.0;
   late Offset _lastOffset;
+  Offset? _localPosition;
+  Offset _offset = Offset.zero;
+  double _zoom = 1.0;
+  get _controller => widget.chartCoordinateRender.controller;
 
   @override
   void dispose() {
@@ -252,7 +250,7 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
   @override
   void didUpdateWidget(covariant _ChartCoreWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    widget.controller.param.reset();
+    _controller.reset();
   }
 
   @override
@@ -260,14 +258,17 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTapUp: (TapUpDetails details) {
-        widget.controller.param.resetTooltip();
+        _controller.resetTooltip();
         if (!_checkForegroundAnnotationsEvent(details.localPosition)) {
-          widget.controller.param.localPosition = details.localPosition;
+          _localPosition = details.localPosition;
+        } else {
+          _localPosition = null;
         }
+        setState(() {});
       },
       onScaleStart: (ScaleStartDetails details) {
-        _beforeZoom = widget.controller.param.zoom;
-        _lastOffset = widget.controller.param.offset;
+        _beforeZoom = _zoom;
+        _lastOffset = _offset;
         // if (widget.chartCoordinateRender is DimensionsChartCoordinateRender) {
         //   DimensionsChartCoordinateRender render = widget.chartCoordinateRender as DimensionsChartCoordinateRender;
         //   //计算中间值 用于根据手势
@@ -275,7 +276,7 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
         // }
       },
       onScaleUpdate: (ScaleUpdateDetails details) {
-        widget.controller.param.resetTooltip();
+        _controller.resetTooltip();
         //缩放
         if (details.scale != 1) {
           if (widget.chartCoordinateRender.zoomHorizontal || widget.chartCoordinateRender.zoomVertical) {
@@ -286,12 +287,11 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
             // double startOffset = centerV * render.xAxis.density - widget.chartCoordinateRender.size.width / 2;
             //计算缩放和校准偏移
             double startOffset = (_lastOffset.dx + widget.chartCoordinateRender.size.width / 2) * zoom / _beforeZoom - widget.chartCoordinateRender.size.width / 2;
-            widget.controller.param.zoom = zoom;
-            widget.controller.scroll(Offset(startOffset, 0));
+            _zoom = zoom;
+            scroll(Offset(startOffset, 0));
           }
         } else if (details.pointerCount == 1 && details.scale == 1) {
-          widget.controller.scrollByDelta(details.focalPointDelta);
-          // widget.controller.localPosition = details.localFocalPoint;
+          scrollByDelta(details.focalPointDelta);
         }
       },
       onScaleEnd: (ScaleEndDetails details) {
@@ -302,6 +302,12 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
         child: CustomPaint(
           painter: _ChartPainter(
             chart: widget.chartCoordinateRender,
+            param: ChartParam(
+              zoom: _zoom,
+              localPosition: _localPosition,
+              childrenState: _controller.allLayoutParams,
+              offset: _offset,
+            ),
           ),
         ),
       ),
@@ -322,22 +328,69 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
     }
     return false;
   }
+
+  void scrollByDelta(Offset delta) {
+    Offset newOffset = _offset.translate(-delta.dx, -delta.dy);
+    scroll(newOffset);
+    setState(() {});
+  }
+
+  void scroll(Offset offset) {
+    //校准偏移，不然缩小后可能起点都在中间了，或者无限滚动
+    double x = offset.dx;
+    // double y = newOffset.dy;
+    if (x < 0) {
+      x = 0;
+    }
+    if (widget.chartCoordinateRender is DimensionsChartCoordinateRender) {
+      DimensionsChartCoordinateRender render = widget.chartCoordinateRender as DimensionsChartCoordinateRender;
+      //放大的场景  offset会受到zoom的影响，所以这里的宽度要先剔除zoom的影响再比较
+      double chartContentWidth = render.xAxis.density * (render.xAxis.max ?? render.xAxis.count);
+      double chartViewPortWidth = render.size.width - render.contentMargin.horizontal;
+      //处理成跟缩放无关的偏移
+      double maxOffset = (chartContentWidth - chartViewPortWidth);
+      if (maxOffset < 0) {
+        //内容小于0
+        x = 0;
+      } else if (x > maxOffset) {
+        x = maxOffset;
+      }
+    }
+    _offset = Offset(x, 0);
+    setState(() {});
+  }
+
+  // void hitTest(Offset point) {
+  //   List<ChartBodyRender> charts = widget.chartCoordinateRender.charts;
+  //   //关联子状态
+  //   for (int i = 0; i < charts.length; i++) {
+  //     ChartBodyRender body = charts[i];
+  //     //先判断是否选中，此场景是第一次渲染之后点击才有，所以用老数据即可
+  //     ChartShapeLayoutParam layoutParam = body.layoutParam;
+  //     layoutParam.selectedIndex = null;
+  //     List<ChartShapeLayoutParam> childrenLayoutParams = body.layoutParam.children;
+  //     for (int index = 0; index < childrenLayoutParams.length; index++) {
+  //       if ((childrenLayoutParams[index].hitTest(point) == true)) {
+  //         layoutParam.selectedIndex = index;
+  //       }
+  //     }
+  //   }
+  // }
 }
 
 ///画图
 class _ChartPainter extends CustomPainter {
   final ChartCoordinateRender chart;
+  final ChartParam param;
   _ChartPainter({
     required this.chart,
-  }) : super(repaint: chart.param);
+    required this.param,
+  });
 
   bool _init = false;
   @override
   void paint(Canvas canvas, Size size) {
-    //重置
-    for (var element in chart.param.childrenState) {
-      element.selectedIndex = null;
-    }
+    chart.controller.bindParam(param);
     Rect clipRect = Offset.zero & size;
     canvas.clipRect(clipRect);
     //初始化
@@ -345,7 +398,7 @@ class _ChartPainter extends CustomPainter {
       chart.init(size);
       _init = true;
     }
-    chart.paint(canvas, size);
+    chart.paint(param, canvas, size);
   }
 
   @override
@@ -353,8 +406,8 @@ class _ChartPainter extends CustomPainter {
     if (oldDelegate.chart != chart) {
       return true;
     }
-    ChartParam chartParam = oldDelegate.chart.param;
-    ChartParam newChartParam = chart.param;
+    ChartParam chartParam = oldDelegate.param;
+    ChartParam newChartParam = param;
     if (chartParam != newChartParam) {
       return true;
     }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_chart_plus/src/base/chart_controller.dart';
 
 import '../annotation/annotation.dart';
 import '../base/chart_param.dart';
@@ -82,8 +83,7 @@ abstract class ChartCoordinateRender {
   ///坐标转换工具
   late TransformUtils transformUtils;
 
-  ///共享数据
-  late ChartParam param;
+  late ChartController controller;
 
   ///画布尺寸
   late Size size;
@@ -101,5 +101,5 @@ abstract class ChartCoordinateRender {
     }
   }
 
-  void paint(Canvas canvas, Size size);
+  void paint(ChartParam param, Canvas canvas, Size size);
 }
