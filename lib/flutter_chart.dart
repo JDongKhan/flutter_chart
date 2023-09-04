@@ -7,7 +7,7 @@ export 'src/annotation/limit_annotation.dart';
 export 'src/annotation/path_annotation.dart';
 export 'src/annotation/region_annotation.dart';
 export 'src/base/chart_controller.dart';
-export 'src/base/chart_shape_state.dart';
+export 'src/measure/chart_shape_layout_param.dart';
 export 'src/coordinate/chart_coordinate_render.dart';
 export 'src/coordinate/circular_chart_coordinate_render.dart';
 export 'src/coordinate/dimensions_chart_coordinate_render.dart';

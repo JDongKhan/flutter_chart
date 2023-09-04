@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:path_drawing/path_drawing.dart';
 
 import '../annotation/annotation.dart';
-import '../base/chart_param.dart';
-import '../base/chart_shape_state.dart';
+import '../measure/chart_shape_layout_param.dart';
 import '../utils/transform_utils.dart';
 import 'chart_coordinate_render.dart';
 
@@ -293,17 +292,17 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
     double diffLeft = 0;
 
     //查找更贴近点击的那条数据
-    for (CharBodyState entry in param.childrenState) {
+    for (ChartShapeLayoutParam entry in param.childrenState) {
       int? index = entry.selectedIndex;
       if (index == null) {
         continue;
       }
-      ChartShapeState? shape = entry.shapeList?[index];
-      if (shape == null) {
+      if (index >= entry.children.length) {
         continue;
       }
+      ChartShapeLayoutParam shape = entry.children[index];
       //用于找哪个子图更适合
-      for (ChartShapeState childShape in shape.children) {
+      for (ChartShapeLayoutParam childShape in shape.children) {
         if (childShape.rect != null) {
           double cTop = childShape.rect!.center.dy;
           double topDiffAbs = (cTop - anchor.dy).abs();

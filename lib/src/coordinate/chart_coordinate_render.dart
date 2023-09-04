@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../annotation/annotation.dart';
 import '../base/chart_param.dart';
-import '../base/chart_shape_state.dart';
+import '../measure/chart_shape_layout_param.dart';
 import '../utils/transform_utils.dart';
 import '../widget/chart_widget.dart';
 import '../base/chart_body_render.dart';
@@ -30,7 +30,7 @@ class CrossHairStyle {
   });
 }
 
-typedef ChartTooltipFormatter = InlineSpan? Function(List<CharBodyState>);
+typedef ChartTooltipFormatter = InlineSpan? Function(List<ChartShapeLayoutParam>);
 
 ///坐标渲染器， 每次刷新会重新构造，切忌不要存放状态数据，数据都在state里面
 abstract class ChartCoordinateRender {

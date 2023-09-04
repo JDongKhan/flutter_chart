@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import 'chart_shape_state.dart';
+import '../measure/chart_shape_layout_param.dart';
 
 typedef AnnotationTooltipWidgetBuilder = PreferredSizeWidget? Function(BuildContext context);
 
@@ -44,7 +44,7 @@ class ChartParam extends ChangeNotifier {
   }
 
   ///根据位置缓存配置信息
-  List<CharBodyState> childrenState = [];
+  List<ChartShapeLayoutParam> childrenState = [];
 
   ///通知弹框层刷新
   StateSetter? tooltipStateSetter;
@@ -82,4 +82,3 @@ class ChartParam extends ChangeNotifier {
     super.dispose();
   }
 }
-

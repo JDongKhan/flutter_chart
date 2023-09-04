@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../coordinate/dimensions_chart_coordinate_render.dart';
 import '../../utils/chart_utils.dart';
 import '../../base/chart_body_render.dart';
-import '../../base/chart_shape_state.dart';
+import '../../measure/chart_shape_layout_param.dart';
 
 typedef LinePosition<T> = List<num> Function(T);
 
@@ -67,7 +67,7 @@ class Line<T> extends ChartBodyRender<T> {
   @override
   void draw(Canvas canvas, Size size) {
     DimensionsChartCoordinateRender chart = coordinateChart as DimensionsChartCoordinateRender;
-    List<ChartShapeState> shapeList = [];
+    List<ChartShapeLayoutParam> shapeList = [];
 
     int index = 0;
     //offset.dx 滚动偏移  (src.zoom - 1) * (src.size.width / 2) 缩放
@@ -78,7 +78,8 @@ class Line<T> extends ChartBodyRender<T> {
     double top = chart.contentMargin.top;
     double bottom = chart.size.height - chart.contentMargin.bottom;
     Map<int, LineInfo> pathMap = {};
-    ChartShapeState? lastShape;
+    ChartShapeLayoutParam? lastShape;
+    List<ChartShapeLayoutParam> childrenLayoutParams = [];
     num? lastXvs;
     //遍历数据 处理数据信息
     for (T value in data) {
@@ -87,15 +88,15 @@ class Line<T> extends ChartBodyRender<T> {
         assert(lastXvs < xvs, '虽然支持逆序，但是为了防止数据顺序混乱，还是强制要求必须是正序的数组');
       }
       List<num> yvs = values.call(value);
-      List<ChartShapeState> shapes = [];
+      List<ChartShapeLayoutParam> shapes = [];
       assert(colors.length >= yvs.length, '颜色配置跟数据源不匹配');
       assert(shaders == null || shaders!.length >= yvs.length, '颜色配置跟数据源不匹配');
       double xPo = xvs * chart.xAxis.density + left;
 
       //先判断是否选中，此场景是第一次渲染之后点击才有，所以用老数据即可
-      List<ChartShapeState>? currentShapeList = bodyState.shapeList;
-      if (chart.param.localPosition != null && (currentShapeList?[index].hitTest(chart.param.localPosition!) == true)) {
-        bodyState.selectedIndex = index;
+      List<ChartShapeLayoutParam> childrenLayoutParams = layoutParam.children;
+      if (chart.param.localPosition != null && index < childrenLayoutParams.length && (childrenLayoutParams[index].hitTest(chart.param.localPosition!) == true)) {
+        layoutParam.selectedIndex = index;
       }
       //一条数据下可能多条线
       for (int valueIndex = 0; valueIndex < yvs.length; valueIndex++) {
@@ -113,7 +114,7 @@ class Line<T> extends ChartBodyRender<T> {
           lineInfo.path.moveTo(xPo, yPo);
         } else {
           if (isCurve) {
-            ChartShapeState lastChild = lastShape!.children[valueIndex];
+            ChartShapeLayoutParam lastChild = lastShape!.children[valueIndex];
             double preX = lastChild.rect!.center.dx;
             double preY = lastChild.rect!.center.dy;
             double xDiff = xPo - preX;
@@ -144,12 +145,12 @@ class Line<T> extends ChartBodyRender<T> {
         }
         lineInfo.pointList.add(Offset(xPo, yPo));
         //存放点的位置
-        ChartShapeState shape = ChartShapeState.rect(rect: Rect.fromCenter(center: Offset(xPo, yPo), width: dotRadius, height: dotRadius));
+        ChartShapeLayoutParam shape = ChartShapeLayoutParam.rect(rect: Rect.fromCenter(center: Offset(xPo, yPo), width: dotRadius, height: dotRadius));
         shapes.add(shape);
       }
 
       Rect currentRect = Rect.fromLTRB(xPo, top, xPo + dotRadius * 2, bottom);
-      ChartShapeState shape = ChartShapeState.rect(rect: currentRect);
+      ChartShapeLayoutParam shape = ChartShapeLayoutParam.rect(rect: currentRect);
       shape.left = left;
       shape.right = right;
       shape.children.addAll(shapes);
@@ -177,7 +178,7 @@ class Line<T> extends ChartBodyRender<T> {
     // }
     //开始绘制了
     drawLine(canvas, pathMap);
-    bodyState.shapeList = shapeList;
+    layoutParam.children = shapeList;
   }
 
   void drawLine(Canvas canvas, Map<int, LineInfo> pathMap) {

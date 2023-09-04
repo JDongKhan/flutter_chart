@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import '../../base/chart_body_render.dart';
-import '../../base/chart_shape_state.dart';
+import '../../measure/chart_shape_layout_param.dart';
 import '../../coordinate/circular_chart_coordinate_render.dart';
 import '../../utils/chart_utils.dart';
 
@@ -117,7 +117,7 @@ class Pie<T> extends ChartBodyRender<T> {
 
     //开始画扇形
     double startAngle = this.startAngle;
-    List<ChartShapeState> shapeList = [];
+    List<ChartShapeLayoutParam> childrenLayoutParams = [];
     assert(colors.length >= data.length);
     assert(shaders == null || shaders!.length >= data.length);
     int index = 0;
@@ -129,23 +129,23 @@ class Pie<T> extends ChartBodyRender<T> {
       final sweepAngle = percent * pi * 2 * (direction == RotateDirection.forward ? 1 : -1);
       double rd = radius;
       //图形区域
-      ChartShapeState shape = ChartShapeState.arc(
+      ChartShapeLayoutParam shape = ChartShapeLayoutParam.arc(
         center: center,
         startAngle: startAngle,
         sweepAngle: sweepAngle,
         innerRadius: holeRadius,
         outRadius: rd,
       );
-      shapeList.add(shape);
+      childrenLayoutParams.add(shape);
 
       //放大区域
-      ChartShapeState tapShape = shape;
+      ChartShapeLayoutParam tapShape = shape;
       //判断是否选中
       bool selected = enableTap && shape.hitTest(chart.param.localPosition);
       if (selected) {
         rd = radius + 2;
-        bodyState.selectedIndex = i;
-        tapShape = ChartShapeState.arc(
+        layoutParam.selectedIndex = i;
+        tapShape = ChartShapeLayoutParam.arc(
           center: center,
           startAngle: startAngle,
           sweepAngle: sweepAngle,
@@ -184,7 +184,7 @@ class Pie<T> extends ChartBodyRender<T> {
       startAngle = startAngle + sweepAngle;
       index++;
     }
-    bodyState.shapeList = shapeList;
+    layoutParam.children = childrenLayoutParams;
   }
 
   ///画空隙线

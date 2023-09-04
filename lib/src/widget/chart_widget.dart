@@ -7,13 +7,13 @@ import '../annotation/annotation.dart';
 import '../base/chart_body_render.dart';
 import '../base/chart_controller.dart';
 import '../base/chart_param.dart';
-import '../base/chart_shape_state.dart';
+import '../measure/chart_shape_layout_param.dart';
 import '../coordinate/chart_coordinate_render.dart';
 
 /// @author JD
 ///
-typedef TooltipRenderer = void Function(Canvas, Size size, Offset anchor, List<CharBodyState> indexs);
-typedef TooltipWidgetBuilder = PreferredSizeWidget? Function(BuildContext context, List<CharBodyState>);
+typedef TooltipRenderer = void Function(Canvas, Size size, Offset anchor, List<ChartShapeLayoutParam> indexs);
+typedef TooltipWidgetBuilder = PreferredSizeWidget? Function(BuildContext context, List<ChartShapeLayoutParam>);
 // typedef ChartCoordinateRenderBuilder = ChartCoordinateRender Function();
 
 ///本widget只是起到提供Canvas的功能，不支持任何传参，避免参数来回传递导致难以维护以及混乱，需要自定义可自行去对应渲染器
@@ -115,8 +115,8 @@ class _ChartWidgetState extends State<ChartWidget> {
           //关联子状态
           for (int i = 0; i < baseChart.charts.length; i++) {
             ChartBodyRender body = baseChart.charts[i];
-            CharBodyState c = CharBodyState();
-            body.bodyState = c;
+            ChartShapeLayoutParam c = ChartShapeLayoutParam();
+            body.layoutParam = c;
             param.childrenState.add(c);
           }
 

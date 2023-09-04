@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chart_plus/flutter_chart.dart';
-
-import '../coordinate/chart_coordinate_render.dart';
 import 'chart_param.dart';
-import 'chart_shape_state.dart';
 
 /// @author jd
 
