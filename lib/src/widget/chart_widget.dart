@@ -285,9 +285,8 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
             // double startOffset = centerV * render.xAxis.density - widget.chartCoordinateRender.size.width / 2;
             //计算缩放和校准偏移
             double startOffset = (_lastOffset.dx + widget.chartCoordinateRender.size.width / 2) * zoom / _beforeZoom - widget.chartCoordinateRender.size.width / 2;
-            //用于松手后调整位置边界处理
-            widget.controller.scroll(Offset(startOffset, 0));
             widget.controller.param.zoom = zoom;
+            widget.controller.scroll(Offset(startOffset, 0));
           }
         } else if (details.pointerCount == 1 && details.scale == 1) {
           widget.controller.scrollByDelta(details.focalPointDelta);
