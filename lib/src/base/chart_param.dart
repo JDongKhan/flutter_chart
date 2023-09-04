@@ -40,6 +40,7 @@ class ChartParam extends ChangeNotifier {
   void reset() {
     zoom = 1.0;
     offset = Offset.zero;
+    resetTooltip();
   }
 
   ///根据位置缓存配置信息
@@ -52,6 +53,22 @@ class ChartParam extends ChangeNotifier {
       Future.microtask(() {
         tooltipStateSetter?.call(() {});
       });
+    }
+  }
+
+  ///重置提示框
+  void resetTooltip() {
+    bool needNotify = false;
+    if (tooltipWidgetBuilder != null) {
+      tooltipWidgetBuilder = null;
+      needNotify = true;
+    }
+    if (localPosition != null) {
+      localPosition = null;
+      needNotify = true;
+    }
+    if (needNotify) {
+      notifyTooltip();
     }
   }
 

@@ -15,22 +15,6 @@ class ChartController {
   ///chart 图形参数
   late ChartParam param;
 
-  ///清理信息
-  void clear() {
-    bool needNotify = false;
-    if (param.tooltipWidgetBuilder != null) {
-      param.tooltipWidgetBuilder = null;
-      needNotify = true;
-    }
-    if (param.localPosition != null) {
-      param.localPosition = null;
-      needNotify = true;
-    }
-    if (needNotify) {
-      param.notifyTooltip();
-    }
-  }
-
   ///使用widget渲染tooltip
   void showTooltipBuilder({required AnnotationTooltipWidgetBuilder builder, required Offset position}) {
     param.tooltipWidgetBuilder = builder;

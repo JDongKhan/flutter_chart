@@ -8,7 +8,6 @@ import '../base/chart_body_render.dart';
 import '../base/chart_controller.dart';
 import '../base/chart_param.dart';
 import '../coordinate/chart_coordinate_render.dart';
-import '../coordinate/dimensions_chart_coordinate_render.dart';
 
 /// @author JD
 ///
@@ -60,13 +59,13 @@ class _ChartWidgetState extends State<ChartWidget> {
         // in the web browser, but we do unfocus for all other kinds of events.
         switch (event.kind) {
           case ui.PointerDeviceKind.touch:
-            _controller.clear();
+            chartParam?.resetTooltip();
             break;
           case ui.PointerDeviceKind.mouse:
           case ui.PointerDeviceKind.stylus:
           case ui.PointerDeviceKind.invertedStylus:
           case ui.PointerDeviceKind.unknown:
-            _controller.clear();
+            chartParam?.resetTooltip();
             break;
           case ui.PointerDeviceKind.trackpad:
             throw UnimplementedError('Unexpected pointer down event for trackpad');
@@ -75,7 +74,7 @@ class _ChartWidgetState extends State<ChartWidget> {
       case TargetPlatform.linux:
       case TargetPlatform.macOS:
       case TargetPlatform.windows:
-        _controller.clear();
+        chartParam?.resetTooltip();
         break;
     }
   }
@@ -123,10 +122,13 @@ class _ChartWidgetState extends State<ChartWidget> {
           Size size = Size(cs.maxWidth, cs.maxHeight);
           List<Widget> childrenWidget = [];
           //图表 chart
-          Widget chartWidget = _ChartCoreWidget(
-            size: size,
-            controller: _controller,
-            chartCoordinateRender: baseChart,
+          Widget chartWidget = SizedBox(
+            width: size.width,
+            height: size.height,
+            child: _ChartCoreWidget(
+              controller: _controller,
+              chartCoordinateRender: baseChart,
+            ),
           );
           childrenWidget.add(chartWidget);
 
@@ -220,12 +222,10 @@ class _ChartWidgetState extends State<ChartWidget> {
 }
 
 class _ChartCoreWidget extends StatefulWidget {
-  final Size size;
   final ChartController controller;
   final ChartCoordinateRender chartCoordinateRender;
   const _ChartCoreWidget({
     Key? key,
-    required this.size,
     required this.controller,
     required this.chartCoordinateRender,
   }) : super(key: key);
@@ -251,12 +251,7 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
   @override
   void didUpdateWidget(covariant _ChartCoreWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _reset();
-  }
-
-  void _reset() {
     widget.controller.param.reset();
-    widget.controller.clear();
   }
 
   @override
@@ -264,7 +259,7 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTapUp: (TapUpDetails details) {
-        widget.controller.clear();
+        widget.controller.param.resetTooltip();
         if (!_checkForegroundAnnotationsEvent(details.localPosition)) {
           widget.controller.param.localPosition = details.localPosition;
         }
@@ -279,7 +274,7 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
         // }
       },
       onScaleUpdate: (ScaleUpdateDetails details) {
-        widget.controller.clear();
+        widget.controller.param.resetTooltip();
         //缩放
         if (details.scale != 1) {
           if (widget.chartCoordinateRender.zoomHorizontal || widget.chartCoordinateRender.zoomVertical) {
@@ -303,14 +298,10 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
         //这里可以处理减速的操作
         // print(details.velocity);
       },
-      child: SizedBox(
-        width: widget.size.width,
-        height: widget.size.height,
-        child: RepaintBoundary(
-          child: CustomPaint(
-            painter: _ChartPainter(
-              chart: widget.chartCoordinateRender,
-            ),
+      child: RepaintBoundary(
+        child: CustomPaint(
+          painter: _ChartPainter(
+            chart: widget.chartCoordinateRender,
           ),
         ),
       ),
