@@ -5,6 +5,19 @@ import 'dart:ui';
 /// @author jd
 const double _maxWidth = 20;
 
+///每块图表存放的状态
+class CharBodyState {
+  CharBodyState();
+  int? _selectedIndex;
+  int? get selectedIndex => _selectedIndex;
+  set selectedIndex(v) {
+    _selectedIndex = v;
+  }
+
+  ///图形列表
+  List<ChartShapeState>? shapeList;
+}
+
 ///每个图形(点/柱状图/扇形)的状态
 class ChartShapeState {
   Rect? rect;

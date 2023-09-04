@@ -7,6 +7,7 @@ import '../annotation/annotation.dart';
 import '../base/chart_body_render.dart';
 import '../base/chart_controller.dart';
 import '../base/chart_param.dart';
+import '../base/chart_shape_state.dart';
 import '../coordinate/chart_coordinate_render.dart';
 
 /// @author JD

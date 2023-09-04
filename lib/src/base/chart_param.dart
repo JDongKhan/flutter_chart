@@ -83,15 +83,3 @@ class ChartParam extends ChangeNotifier {
   }
 }
 
-///每块图表存放的状态
-class CharBodyState {
-  CharBodyState();
-  int? _selectedIndex;
-  int? get selectedIndex => _selectedIndex;
-  set selectedIndex(v) {
-    _selectedIndex = v;
-  }
-
-  ///图形列表
-  List<ChartShapeState>? shapeList;
-}

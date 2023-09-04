@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../annotation/annotation.dart';
 import '../base/chart_param.dart';
+import '../base/chart_shape_state.dart';
 import '../utils/transform_utils.dart';
 import '../widget/chart_widget.dart';
 import '../base/chart_body_render.dart';
-import '../base/chart_controller.dart';
 
 ///
 /// @author JD

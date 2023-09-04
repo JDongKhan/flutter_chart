@@ -1,5 +1,5 @@
-import 'chart_param.dart';
 import 'chart_render.dart';
+import 'chart_shape_state.dart';
 
 /// @author jd
 
