@@ -59,45 +59,57 @@ class Radar<T> extends ChartBodyRender<T> {
     this.legendTextStyle = const TextStyle(fontSize: 12, color: Colors.black, fontWeight: FontWeight.bold),
   });
 
-  @override
-  void draw(Canvas canvas, ChartParam param) {
-    param as ChartCircularParam;
-    Offset center = param.center;
-    double radius = param.radius;
+  late double _sweepAngle;
+  late Paint _linePaint;
+  late Paint _dataLinePaint;
+  Paint? _fillDataLinePaint;
 
-    //开始点
-    double startAngle = this.startAngle;
+  @override
+  void init(ChartParam param) {
+    param as ChartCircularParam;
+    super.init(param);
     int itemLength = data.length;
     double percent = 1 / itemLength;
-    List<ChartLayoutParam> childrenLayoutParams = [];
     // 计算出每个数据所占的弧度值
-    final sweepAngle = percent * math.pi * 2 * (direction == RotateDirection.forward ? 1 : -1);
-
-    //图例
-    List<dynamic>? legendList = legendFormatter?.call();
+    _sweepAngle = percent * math.pi * 2 * (direction == RotateDirection.forward ? 1 : -1);
 
     // 设置绘制属性
-    final linePaint = Paint()
+    _linePaint = Paint()
       ..strokeWidth = 1.0
       ..isAntiAlias = true
       ..color = lineColor
       ..style = PaintingStyle.stroke;
 
-    Path linePath = Path();
-    Map<int, Path> dataLinePathList = {};
-    List<RadarTextPainter> textPainterList = [];
+    _dataLinePaint = Paint()
+      ..strokeWidth = 1.0
+      ..isAntiAlias = true
+      ..style = PaintingStyle.stroke;
+
+    if (fillColors != null) {
+      _fillDataLinePaint = Paint()
+        ..isAntiAlias = true
+        ..style = PaintingStyle.fill;
+    }
+
+    //图例
+    List<dynamic>? legendList = legendFormatter?.call();
+    Offset center = param.center;
+    double radius = param.radius;
+    //开始点
+    double startAngle = this.startAngle;
     for (int i = 0; i < itemLength; i++) {
       T itemData = data[i];
       //画边框
       final x = math.cos(startAngle) * radius + center.dx;
       final y = math.sin(startAngle) * radius + center.dy;
-      canvas.drawLine(center, Offset(x, y), linePaint);
+      _linePathList.add(Path()
+        ..moveTo(center.dx, center.dy)
+        ..lineTo(x, y));
       if (i == 0) {
-        linePath.moveTo(x, y);
+        _borderLinePath.moveTo(x, y);
       } else {
-        linePath.lineTo(x, y);
+        _borderLinePath.lineTo(x, y);
       }
-
       if (legendList != null) {
         String legend = legendList[i].toString();
         TextPainter legendTextPainter = TextPainter(
@@ -115,7 +127,7 @@ class Radar<T> extends ChartBodyRender<T> {
         bool isBottom = y >= center.dy;
         Offset textOffset = Offset(isLeft ? (x - legendTextPainter.width) : x, isBottom ? y : y - legendTextPainter.height);
         //最后再绘制，防止被挡住
-        textPainterList.add(RadarTextPainter(textPainter: legendTextPainter, offset: textOffset));
+        _textPainterList.add(RadarTextPainter(textPainter: legendTextPainter, offset: textOffset));
       }
 
       //画value线
@@ -123,10 +135,10 @@ class Radar<T> extends ChartBodyRender<T> {
       List<dynamic>? valueLegendList = valueFormatter?.call(itemData);
       assert(valueLegendList == null || pos.length == valueLegendList.length);
       for (int j = 0; j < pos.length; j++) {
-        Path? dataLinePath = dataLinePathList[j];
+        Path? dataLinePath = _dataLinePathList[j];
         if (dataLinePath == null) {
           dataLinePath = Path();
-          dataLinePathList[j] = dataLinePath;
+          _dataLinePathList[j] = dataLinePath;
         }
         num subPos = pos[j];
         double vp = subPos / max;
@@ -157,43 +169,53 @@ class Radar<T> extends ChartBodyRender<T> {
           bool isTop = dataY <= (center.dy - radius) && legendList != null;
           Offset textOffset = Offset(isLeft ? (dataX - legendTextPainter.width) : dataX, isTop ? dataY : dataY - legendTextPainter.height);
           //最后再绘制，防止被挡住
-          textPainterList.add(RadarTextPainter(textPainter: legendTextPainter, offset: textOffset));
+          _textPainterList.add(RadarTextPainter(textPainter: legendTextPainter, offset: textOffset));
         }
       }
 
       //继续下一个
-      startAngle = startAngle + sweepAngle;
+      startAngle = startAngle + _sweepAngle;
     }
-    linePath.close();
-    canvas.drawPath(linePath, linePaint);
+    _borderLinePath.close();
+  }
+
+  ///由内向外的线
+  final List<Path> _linePathList = [];
+
+  ///外边框
+  final Path _borderLinePath = Path();
+
+  ///图例 和 value
+  final List<RadarTextPainter> _textPainterList = [];
+
+  ///数据相关的path
+  final Map<int, Path> _dataLinePathList = {};
+
+  @override
+  void draw(Canvas canvas, ChartParam param) {
+    //画边框
+    for (var element in _linePathList) {
+      canvas.drawPath(element, _linePaint);
+    }
+    canvas.drawPath(_borderLinePath, _linePaint);
     //画数据
     int index = 0;
-    for (Path dataPath in dataLinePathList.values) {
+    for (Path dataPath in _dataLinePathList.values) {
       dataPath.close();
-
       // 设置绘制属性
-      final dataLinePaint = Paint()
-        ..strokeWidth = 1.0
-        ..color = colors[index]
-        ..isAntiAlias = true
-        ..style = PaintingStyle.stroke;
-      canvas.drawPath(dataPath, dataLinePaint);
+      _dataLinePaint.color = colors[index];
+      canvas.drawPath(dataPath, _dataLinePaint);
 
       if (fillColors != null) {
-        final fillDataLinePaint = Paint()
-          ..color = fillColors![index]
-          ..isAntiAlias = true
-          ..style = PaintingStyle.fill;
-        canvas.drawPath(dataPath, fillDataLinePaint);
+        _fillDataLinePaint?.color = fillColors![index];
+        canvas.drawPath(dataPath, _fillDataLinePaint!);
       }
       index++;
     }
     //最后再绘制，防止被挡住
-    for (RadarTextPainter textPainter in textPainterList) {
+    for (RadarTextPainter textPainter in _textPainterList) {
       textPainter.textPainter.paint(canvas, textPainter.offset);
     }
-
-    layoutParam.children = childrenLayoutParams;
   }
 }
 

@@ -29,18 +29,17 @@ class WaveProgress<T> extends ChartBodyRender<T> {
     this.colors = colors10,
   });
 
+  late TransformUtils _transformUtils;
   @override
-  void draw(Canvas canvas, ChartParam param) {
+  void init(ChartParam param) {
+    super.init(param);
     param as ChartCircularParam;
     Offset center = param.center;
     double radius = param.radius;
-    canvas.clipPath(Path()..addOval(Rect.fromCircle(center: center, radius: radius)));
-
-    TransformUtils transformUtils;
     //处理圆形场景
     if (param.arcPosition == ArcPosition.none) {
       Offset progressCenter = Offset(center.dx, center.dy + radius);
-      transformUtils = TransformUtils(
+      _transformUtils = TransformUtils(
         anchor: progressCenter,
         size: param.size,
         offset: param.offset,
@@ -53,8 +52,17 @@ class WaveProgress<T> extends ChartBodyRender<T> {
       );
     } else {
       //半圆就不用特别处理了
-      transformUtils = param.transformUtils;
+      _transformUtils = param.transformUtils;
     }
+  }
+
+  @override
+  void draw(Canvas canvas, ChartParam param) {
+    param as ChartCircularParam;
+    Offset center = param.center;
+    double radius = param.radius;
+    canvas.clipPath(Path()..addOval(Rect.fromCircle(center: center, radius: radius)));
+
     var index = 0;
     for (T item in data) {
       num po = position.call(item);
@@ -68,17 +76,13 @@ class WaveProgress<T> extends ChartBodyRender<T> {
       Paint paint = Paint()
         ..color = colors[index]
         ..style = PaintingStyle.fill;
-      Path path = _createBezierPath(transformUtils, radius, waterHeight);
+      Path path = _createBezierPath(_transformUtils, radius, waterHeight);
       canvas.drawPath(path, paint);
       index++;
     }
   }
 
-  Path _createBezierPath(
-    TransformUtils transformUtils,
-    double radius,
-    double waterHeight,
-  ) {
+  Path _createBezierPath(TransformUtils transformUtils, double radius, double waterHeight) {
     double ofst = radius * controlOffset;
 
     Path path = Path();

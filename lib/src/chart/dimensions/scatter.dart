@@ -31,6 +31,13 @@ class Scatter<T> extends ChartBodyRender<T> {
     ScatterStyleFunction? style,
   }) : style = style ?? _defaultScatterStyleFunction;
 
+  late Paint _dotPaint;
+  @override
+  void init(ChartParam param) {
+    super.init(param);
+    _dotPaint = Paint()..strokeWidth = 1;
+  }
+
   @override
   void draw(Canvas canvas, ChartParam param) {
     param as ChartDimensionParam;
@@ -42,8 +49,6 @@ class Scatter<T> extends ChartBodyRender<T> {
     // double top = param.contentMargin.top;
     double bottom = param.size.height - param.contentMargin.bottom;
 
-    Paint dotPaint = Paint()..strokeWidth = 1;
-
     //遍历数据 处理数据信息
     for (T itemData in data) {
       num xvs = position.call(itemData);
@@ -54,9 +59,9 @@ class Scatter<T> extends ChartBodyRender<T> {
       ScatterStyle sy = style.call(itemData);
       //最后画点
       if (sy.radius > 0) {
-        dotPaint.style = PaintingStyle.fill;
+        _dotPaint.style = PaintingStyle.fill;
         Color color = sy.color;
-        canvas.drawCircle(Offset(xPo, yPo), sy.radius, dotPaint..color = color);
+        canvas.drawCircle(Offset(xPo, yPo), sy.radius, _dotPaint..color = color);
       }
     }
   }

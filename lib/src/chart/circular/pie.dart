@@ -90,31 +90,37 @@ class Pie<T> extends ChartBodyRender<T> {
     this.startAngle = 0,
   });
 
+  List<num> _values = [];
+  num _total = 0;
+  late Paint _paint;
   @override
-  void draw(Canvas canvas, ChartParam param) {
-    param as ChartCircularParam;
-    Offset center = param.center;
-    double radius = param.radius;
-
+  void init(ChartParam param) {
+    super.init(param);
     //先计算比例
-    List<num> values = [];
-    num total = 0;
+    _values = [];
+    _total = 0;
     for (int i = 0; i < data.length; i++) {
       T item = data[i];
       //计算值
       num po = position.call(item);
-      total += po;
-      values.add(po);
+      _total += po;
+      _values.add(po);
     }
-    if (total == 0) {
-      return;
-    }
-
     // 设置绘制属性
-    final paint = Paint()
+    _paint = Paint()
       ..strokeWidth = 0.0
       ..isAntiAlias = true
       ..style = PaintingStyle.fill;
+  }
+
+  @override
+  void draw(Canvas canvas, ChartParam param) {
+    if (_total == 0) {
+      return;
+    }
+    param as ChartCircularParam;
+    Offset center = param.center;
+    double radius = param.radius;
 
     //开始画扇形
     double startAngle = this.startAngle;
@@ -125,7 +131,7 @@ class Pie<T> extends ChartBodyRender<T> {
     for (int i = 0; i < data.length; i++) {
       T item = data[i];
       //直接读取
-      num percent = values[i] / total;
+      num percent = _values[i] / _total;
       // 计算出每个数据所占的弧度值
       final sweepAngle = percent * pi * 2 * (direction == RotateDirection.forward ? 1 : -1);
       double rd = radius;
@@ -155,11 +161,11 @@ class Pie<T> extends ChartBodyRender<T> {
         );
       }
       if (shaders != null) {
-        paint.shader = shaders![i];
+        _paint.shader = shaders![i];
       } else {
-        paint.color = colors[i];
+        _paint.color = colors[i];
       }
-      drawPie(canvas, tapShape.path!, paint);
+      drawPie(canvas, tapShape.path!, _paint);
       //绘制间隙
       _drawSpaceLine(param, canvas, rd, startAngle, sweepAngle);
 

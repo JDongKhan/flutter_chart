@@ -65,6 +65,18 @@ class Line<T> extends ChartBodyRender<T> {
           ..strokeWidth = strokeWidth
           ..style = PaintingStyle.stroke;
 
+  final Paint _dotPaint = Paint();
+  Paint? _fullPaint;
+  @override
+  void init(ChartParam param) {
+    super.init(param);
+    if (filled == true) {
+      _fullPaint = Paint()
+        ..strokeWidth = strokeWidth
+        ..style = PaintingStyle.fill;
+    }
+  }
+
   @override
   void draw(Canvas canvas, ChartParam param) {
     param as ChartDimensionParam;
@@ -183,15 +195,7 @@ class Line<T> extends ChartBodyRender<T> {
 
   void drawLine(ChartParam param, Canvas canvas, Map<int, LineInfo> pathMap) {
     //点
-    Paint dotPaint = Paint()..strokeWidth = strokeWidth;
-
-    Paint? fullPaint;
-    if (filled == true) {
-      fullPaint = Paint()
-        ..strokeWidth = strokeWidth
-        ..style = PaintingStyle.fill;
-    }
-
+    _dotPaint.strokeWidth = strokeWidth;
     List<Color> dotColorList = dotColors ?? colors;
     Path? lastPath;
     pathMap.forEach((index, lineInfo) {
@@ -210,9 +214,9 @@ class Line<T> extends ChartBodyRender<T> {
           ..lineTo(first.dx, param.contentRect.bottom);
 
         if (shaders != null) {
-          fullPaint!.shader = shaders![index];
+          _fullPaint?.shader = shaders![index];
         } else {
-          fullPaint!.color = colors[index];
+          _fullPaint?.color = colors[index];
         }
         Path newPath = lineInfo.path;
         if (operation != null) {
@@ -221,21 +225,21 @@ class Line<T> extends ChartBodyRender<T> {
           }
           lastPath = lineInfo.path;
         }
-        canvas.drawPath(newPath, fullPaint);
+        canvas.drawPath(newPath, _fullPaint!);
       }
       //最后画点
       if (dotRadius > 0) {
         for (Offset point in lineInfo.pointList) {
           //先用白色覆盖
-          dotPaint.style = PaintingStyle.fill;
-          canvas.drawCircle(Offset(point.dx, point.dy), dotRadius, dotPaint..color = Colors.white);
+          _dotPaint.style = PaintingStyle.fill;
+          canvas.drawCircle(Offset(point.dx, point.dy), dotRadius, _dotPaint..color = Colors.white);
           //再画空心
           if (isHollow) {
-            dotPaint.style = PaintingStyle.stroke;
+            _dotPaint.style = PaintingStyle.stroke;
           } else {
-            dotPaint.style = PaintingStyle.fill;
+            _dotPaint.style = PaintingStyle.fill;
           }
-          canvas.drawCircle(Offset(point.dx, point.dy), dotRadius, dotPaint..color = dotColorList[index]);
+          canvas.drawCircle(Offset(point.dx, point.dy), dotRadius, _dotPaint..color = dotColorList[index]);
         }
       }
     });

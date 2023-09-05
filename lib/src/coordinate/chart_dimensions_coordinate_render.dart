@@ -114,7 +114,6 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
       if (yA.drawLine) {
         canvas.drawLine(Offset(left, margin.top), Offset(left, size.height - margin.bottom), yA.paint);
       }
-
       yAxisIndex++;
     }
   }

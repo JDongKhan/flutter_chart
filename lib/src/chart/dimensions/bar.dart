@@ -49,13 +49,13 @@ class Bar<T> extends ChartBodyRender<T> {
       ..style = PaintingStyle.fill;
     for (int index = 0; index < data.length; index++) {
       T value = data[index];
-      childrenLayoutParams.add(drawBar(param, canvas, paint, index, value));
+      childrenLayoutParams.add(_drawBar(param, canvas, paint, index, value));
     }
     layoutParam.children = childrenLayoutParams;
   }
 
   //可以重写 自定义特殊的图形
-  ChartLayoutParam drawBar(ChartParam param, Canvas canvas, Paint paint, int index, T data) {
+  ChartLayoutParam _drawBar(ChartParam param, Canvas canvas, Paint paint, int index, T data) {
     param as ChartDimensionParam;
     num po = position.call(data);
     num v = value.call(data);
@@ -145,16 +145,16 @@ class StackBar<T> extends ChartBodyRender<T> {
     for (int index = 0; index < data.length; index++) {
       T value = data[index];
       if (direction == Axis.horizontal) {
-        childrenLayoutParams.add(drawHorizontalBar(param, canvas, index, value));
+        childrenLayoutParams.add(_drawHorizontalBar(param, canvas, index, value));
       } else {
-        childrenLayoutParams.add(drawVerticalBar(param, canvas, index, value));
+        childrenLayoutParams.add(_drawVerticalBar(param, canvas, index, value));
       }
     }
     layoutParam.children = childrenLayoutParams;
   }
 
   ///水平排列图形
-  ChartLayoutParam drawHorizontalBar(ChartDimensionParam param, Canvas canvas, int index, T data) {
+  ChartLayoutParam _drawHorizontalBar(ChartDimensionParam param, Canvas canvas, int index, T data) {
     num po = position.call(data);
     List<num> vas = values.call(data);
     assert(colors.length >= vas.length);
@@ -210,7 +210,7 @@ class StackBar<T> extends ChartBodyRender<T> {
   }
 
   ///垂直排列图形
-  ChartLayoutParam drawVerticalBar(ChartDimensionParam param, Canvas canvas, int index, T data) {
+  ChartLayoutParam _drawVerticalBar(ChartDimensionParam param, Canvas canvas, int index, T data) {
     num po = position.call(data);
     List<num> vas = values.call(data);
     assert(colors.length >= vas.length);
