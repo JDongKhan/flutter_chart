@@ -3,9 +3,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import '../../base/chart_body_render.dart';
-import '../../base/chart_param.dart';
+import '../../measure/chart_param.dart';
 import '../../measure/chart_layout_param.dart';
-import '../../coordinate/circular_chart_coordinate_render.dart';
+import '../../coordinate/chart_circular_coordinate_render.dart';
 import '../../utils/chart_utils.dart';
 
 /// @author JD
@@ -92,7 +92,7 @@ class Pie<T> extends ChartBodyRender<T> {
 
   @override
   void draw(ChartParam param, Canvas canvas, Size size) {
-    CircularChartCoordinateRender chart = coordinateChart as CircularChartCoordinateRender;
+    ChartCircularCoordinateRender chart = coordinateChart as ChartCircularCoordinateRender;
     Offset center = chart.center;
     double radius = chart.radius;
 
@@ -193,7 +193,7 @@ class Pie<T> extends ChartBodyRender<T> {
     if (spaceWidth == null) {
       return;
     }
-    CircularChartCoordinateRender chart = coordinateChart as CircularChartCoordinateRender;
+    ChartCircularCoordinateRender chart = coordinateChart as ChartCircularCoordinateRender;
     Offset center = chart.center;
     //开始线
     var start1X = cos(startAngle) * holeRadius + center.dx;
@@ -221,7 +221,7 @@ class Pie<T> extends ChartBodyRender<T> {
     if (valueText == null && legend == null) {
       return;
     }
-    CircularChartCoordinateRender chart = coordinateChart as CircularChartCoordinateRender;
+    ChartCircularCoordinateRender chart = coordinateChart as ChartCircularCoordinateRender;
     Offset center = chart.center;
     //中心弧度
     final double radians = startAngle + sweepAngle / 2;
@@ -317,7 +317,7 @@ class Pie<T> extends ChartBodyRender<T> {
   // }
   //
   void _drawValue(Canvas canvas, String? valueText, double radius, double startAngle, double sweepAngle) {
-    CircularChartCoordinateRender chart = coordinateChart as CircularChartCoordinateRender;
+    ChartCircularCoordinateRender chart = coordinateChart as ChartCircularCoordinateRender;
     //中心弧度
     final double radians = startAngle + sweepAngle / 2;
     //画value
@@ -343,7 +343,7 @@ class Pie<T> extends ChartBodyRender<T> {
 
   ///绘制中间文案
   void _drawCenterValue(Canvas canvas, String? valueText) {
-    CircularChartCoordinateRender chart = coordinateChart as CircularChartCoordinateRender;
+    ChartCircularCoordinateRender chart = coordinateChart as ChartCircularCoordinateRender;
     //中心点文案
     if (centerTextStyle != null && valueText != null) {
       TextPainter valueTextPainter = TextPainter(

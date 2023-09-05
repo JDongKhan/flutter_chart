@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:path_drawing/path_drawing.dart';
 
-import '../base/chart_param.dart';
+import '../measure/chart_param.dart';
 import '../coordinate/chart_coordinate_render.dart';
-import '../coordinate/dimensions_chart_coordinate_render.dart';
+import '../coordinate/chart_dimensions_coordinate_render.dart';
 import 'annotation.dart';
 
 typedef AnnotationPosition<T> = num Function(T);
@@ -34,8 +34,8 @@ class LimitAnnotation extends Annotation {
   @override
   void init(ChartCoordinateRender coordinateChart) {
     super.init(coordinateChart);
-    if (coordinateChart is DimensionsChartCoordinateRender) {
-      DimensionsChartCoordinateRender chart = coordinateChart;
+    if (coordinateChart is ChartDimensionsCoordinateRender) {
+      ChartDimensionsCoordinateRender chart = coordinateChart;
       num po = limit;
       double itemHeight = chart.yAxis[yAxisPosition].relativeHeight(po);
       Offset start = Offset(

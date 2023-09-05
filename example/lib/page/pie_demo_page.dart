@@ -75,7 +75,7 @@ class _PieChartDemoPageState extends State<PieChartDemoPage> with SingleTickerPr
             SizedBox(
               height: 200,
               child: ChartWidget(
-                coordinateRender: CircularChartCoordinateRender(
+                coordinateRender: ChartCircularCoordinateRender(
                   margin: const EdgeInsets.all(30),
                   charts: [
                     Pie(
@@ -92,7 +92,7 @@ class _PieChartDemoPageState extends State<PieChartDemoPage> with SingleTickerPr
             SizedBox(
               height: 200,
               child: ChartWidget(
-                coordinateRender: CircularChartCoordinateRender(
+                coordinateRender: ChartCircularCoordinateRender(
                   margin: const EdgeInsets.all(30),
                   charts: [
                     Pie(
@@ -130,7 +130,7 @@ class _PieChartDemoPageState extends State<PieChartDemoPage> with SingleTickerPr
                     ),
                   ),
                   ChartWidget(
-                    coordinateRender: CircularChartCoordinateRender(
+                    coordinateRender: ChartCircularCoordinateRender(
                       margin: const EdgeInsets.only(bottom: 10),
                       strokeCap: StrokeCap.round,
                       borderColor: Colors.grey,
@@ -157,7 +157,7 @@ class _PieChartDemoPageState extends State<PieChartDemoPage> with SingleTickerPr
               child: AnimatedBuilder(
                 animation: _animationController,
                 builder: (c, child) => ChartWidget(
-                  coordinateRender: CircularChartCoordinateRender(
+                  coordinateRender: ChartCircularCoordinateRender(
                     borderColor: Colors.grey,
                     charts: [
                       WaveProgress(

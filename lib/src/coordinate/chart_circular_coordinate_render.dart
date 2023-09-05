@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-import '../base/chart_param.dart';
+import '../measure/chart_param.dart';
 import 'chart_coordinate_render.dart';
 import '../utils/transform_utils.dart';
 
@@ -12,14 +12,17 @@ enum ArcPosition {
   down,
 }
 
+@Deprecated('instead of  using [ChartCircularCoordinateRender]')
+typedef CircularChartCoordinateRender = ChartCircularCoordinateRender;
+
 /// @author JD
 /// 圆形坐标系
-class CircularChartCoordinateRender extends ChartCoordinateRender {
+class ChartCircularCoordinateRender extends ChartCoordinateRender {
   final double borderWidth;
   final Color borderColor;
   final StrokeCap? strokeCap;
   final ArcPosition arcPosition;
-  CircularChartCoordinateRender({
+  ChartCircularCoordinateRender({
     super.margin = EdgeInsets.zero,
     super.padding = EdgeInsets.zero,
     required super.charts,

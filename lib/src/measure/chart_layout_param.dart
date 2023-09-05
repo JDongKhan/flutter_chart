@@ -10,14 +10,18 @@ typedef CharBodyState = ChartLayoutParam;
 
 ///每个图形(点/柱状图/扇形)的状态
 class ChartLayoutParam {
+  ///图形的区域
   Rect? rect;
+
+  ///形成图形的path
   Path? path;
+
   ChartLayoutParam({
     this.rect,
     this.path,
   });
 
-  //选中的索引
+  //选中children的索引
   int? selectedIndex;
 
   ///此处用链表来解决查找附近其他图形的逻辑
@@ -36,11 +40,10 @@ class ChartLayoutParam {
   ///某条数据下 可能会有多条数据
   List<ChartLayoutParam> children = [];
 
-  ChartLayoutParam.empty();
-
   ///矩形
   ChartLayoutParam.rect({required this.rect});
-  //路径
+
+  ///路径
   ChartLayoutParam.path({required this.path});
 
   ///弧 用path保存 path不便于计算

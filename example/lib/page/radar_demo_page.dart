@@ -68,7 +68,7 @@ class _RadarChartDemoPageState extends State<RadarChartDemoPage> with SingleTick
               height: 200,
               margin: const EdgeInsets.only(top: 20),
               child: ChartWidget(
-                coordinateRender: CircularChartCoordinateRender(
+                coordinateRender: ChartCircularCoordinateRender(
                   margin: const EdgeInsets.all(12),
                   charts: [
                     Radar(
@@ -92,7 +92,7 @@ class _RadarChartDemoPageState extends State<RadarChartDemoPage> with SingleTick
               height: 200,
               margin: const EdgeInsets.only(top: 20),
               child: ChartWidget(
-                coordinateRender: CircularChartCoordinateRender(
+                coordinateRender: ChartCircularCoordinateRender(
                   margin: const EdgeInsets.all(12),
                   charts: [
                     Radar(

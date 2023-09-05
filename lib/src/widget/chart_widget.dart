@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import '../annotation/annotation.dart';
 import '../base/chart_body_render.dart';
 import '../base/chart_controller.dart';
-import '../base/chart_param.dart';
-import '../coordinate/dimensions_chart_coordinate_render.dart';
+import '../measure/chart_param.dart';
+import '../coordinate/chart_dimensions_coordinate_render.dart';
 import '../measure/chart_layout_param.dart';
 import '../coordinate/chart_coordinate_render.dart';
 
@@ -221,6 +221,7 @@ class _ChartCoreWidget extends StatefulWidget {
 class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
   double _beforeZoom = 1.0;
   late Offset _lastOffset;
+
   Offset? _localPosition;
   Offset _offset = Offset.zero;
   double _zoom = 1.0;
@@ -244,6 +245,12 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
     }
   }
 
+  void _reset() {
+    _offset = Offset.zero;
+    _zoom = 1.0;
+    _localPosition = null;
+  }
+
   @override
   void dispose() {
     super.dispose();
@@ -258,7 +265,7 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
   void didUpdateWidget(covariant _ChartCoreWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
     _initState();
-    _controller.reset();
+    _reset();
   }
 
   @override
@@ -312,6 +319,8 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
           painter: _ChartPainter(
             chart: widget.chartCoordinateRender,
             param: ChartParam(
+              margin: widget.chartCoordinateRender.margin,
+              padding: widget.chartCoordinateRender.padding,
               zoom: _zoom,
               localPosition: _localPosition,
               childrenState: allParams,
@@ -351,8 +360,8 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
     if (x < 0) {
       x = 0;
     }
-    if (widget.chartCoordinateRender is DimensionsChartCoordinateRender) {
-      DimensionsChartCoordinateRender render = widget.chartCoordinateRender as DimensionsChartCoordinateRender;
+    if (widget.chartCoordinateRender is ChartDimensionsCoordinateRender) {
+      ChartDimensionsCoordinateRender render = widget.chartCoordinateRender as ChartDimensionsCoordinateRender;
       //放大的场景  offset会受到zoom的影响，所以这里的宽度要先剔除zoom的影响再比较
       double chartContentWidth = render.xAxis.density * (render.xAxis.max ?? render.xAxis.count);
       double chartViewPortWidth = render.size.width - render.contentMargin.horizontal;

@@ -2,11 +2,11 @@ import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import '../../base/chart_param.dart';
+import '../../measure/chart_param.dart';
 import '../../utils/chart_utils.dart';
 import '../../base/chart_body_render.dart';
 import '../../measure/chart_layout_param.dart';
-import '../../coordinate/circular_chart_coordinate_render.dart';
+import '../../coordinate/chart_circular_coordinate_render.dart';
 import 'pie.dart';
 
 typedef RadarChartValue<T> = List<num> Function(T);
@@ -62,7 +62,7 @@ class Radar<T> extends ChartBodyRender<T> {
 
   @override
   void draw(ChartParam param, Canvas canvas, Size size) {
-    CircularChartCoordinateRender chart = coordinateChart as CircularChartCoordinateRender;
+    ChartCircularCoordinateRender chart = coordinateChart as ChartCircularCoordinateRender;
     Offset center = chart.center;
     double radius = chart.radius;
 

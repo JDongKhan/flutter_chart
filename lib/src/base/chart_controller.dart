@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chart_plus/flutter_chart.dart';
-import 'chart_param.dart';
+import '../measure/chart_param.dart';
 
 /// @author jd
 
@@ -67,9 +67,5 @@ class ChartController {
     if (tooltipStateSetter != null) {
       tooltipStateSetter?.call(() {});
     }
-  }
-
-  void reset() {
-    _param?.reset();
   }
 }

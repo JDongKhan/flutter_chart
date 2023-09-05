@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../base/chart_param.dart';
-import '../../coordinate/dimensions_chart_coordinate_render.dart';
+import '../../measure/chart_param.dart';
+import '../../coordinate/chart_dimensions_coordinate_render.dart';
 import '../../utils/chart_utils.dart';
 import '../../base/chart_body_render.dart';
 import '../../measure/chart_layout_param.dart';
@@ -43,7 +43,7 @@ class Bar<T> extends ChartBodyRender<T> {
 
   @override
   void draw(ChartParam param, Canvas canvas, Size size) {
-    DimensionsChartCoordinateRender chart = coordinateChart as DimensionsChartCoordinateRender;
+    ChartDimensionsCoordinateRender chart = coordinateChart as ChartDimensionsCoordinateRender;
     List<ChartLayoutParam> childrenLayoutParams = [];
     Paint paint = Paint()
       ..strokeWidth = 1
@@ -56,7 +56,7 @@ class Bar<T> extends ChartBodyRender<T> {
   }
 
   //可以重写 自定义特殊的图形
-  ChartLayoutParam drawBar(ChartParam param, Canvas canvas, DimensionsChartCoordinateRender chart, Paint paint, int index, T data) {
+  ChartLayoutParam drawBar(ChartParam param, Canvas canvas, ChartDimensionsCoordinateRender chart, Paint paint, int index, T data) {
     num po = position.call(data);
     num v = value.call(data);
     if (v == 0) {
@@ -140,7 +140,7 @@ class StackBar<T> extends ChartBodyRender<T> {
 
   @override
   void draw(ChartParam param, Canvas canvas, Size size) {
-    DimensionsChartCoordinateRender chart = coordinateChart as DimensionsChartCoordinateRender;
+    ChartDimensionsCoordinateRender chart = coordinateChart as ChartDimensionsCoordinateRender;
     List<ChartLayoutParam> childrenLayoutParams = [];
     for (int index = 0; index < data.length; index++) {
       T value = data[index];
@@ -154,7 +154,7 @@ class StackBar<T> extends ChartBodyRender<T> {
   }
 
   ///水平排列图形
-  ChartLayoutParam drawHorizontalBar(ChartParam param, Canvas canvas, DimensionsChartCoordinateRender chart, int index, T data) {
+  ChartLayoutParam drawHorizontalBar(ChartParam param, Canvas canvas, ChartDimensionsCoordinateRender chart, int index, T data) {
     num po = position.call(data);
     List<num> vas = values.call(data);
     assert(colors.length >= vas.length);
@@ -210,7 +210,7 @@ class StackBar<T> extends ChartBodyRender<T> {
   }
 
   ///垂直排列图形
-  ChartLayoutParam drawVerticalBar(ChartParam param, Canvas canvas, DimensionsChartCoordinateRender chart, int index, T data) {
+  ChartLayoutParam drawVerticalBar(ChartParam param, Canvas canvas, ChartDimensionsCoordinateRender chart, int index, T data) {
     num po = position.call(data);
     List<num> vas = values.call(data);
     assert(colors.length >= vas.length);

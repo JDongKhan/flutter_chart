@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../base/chart_param.dart';
-import '../../coordinate/dimensions_chart_coordinate_render.dart';
+import '../../measure/chart_param.dart';
+import '../../coordinate/chart_dimensions_coordinate_render.dart';
 import '../../utils/chart_utils.dart';
 import '../../base/chart_body_render.dart';
 import '../../measure/chart_layout_param.dart';
@@ -67,7 +67,7 @@ class Line<T> extends ChartBodyRender<T> {
 
   @override
   void draw(ChartParam param, Canvas canvas, Size size) {
-    DimensionsChartCoordinateRender chart = coordinateChart as DimensionsChartCoordinateRender;
+    ChartDimensionsCoordinateRender chart = coordinateChart as ChartDimensionsCoordinateRender;
     List<ChartLayoutParam> shapeList = [];
 
     int index = 0;
@@ -167,23 +167,23 @@ class Line<T> extends ChartBodyRender<T> {
     }
 
     //开启后可查看热区是否正确
-    int i = 0;
-    for (var element in shapeList) {
-      Rect newRect = Rect.fromLTRB(element.getHotRect()!.left + 1, element.getHotRect()!.top + 1, element.getHotRect()!.right - 1, element.getHotRect()!.bottom);
-      Paint newPaint = Paint()
-        ..color = colors10[i % colors10.length]
-        ..strokeWidth = strokeWidth
-        ..style = PaintingStyle.stroke;
-      canvas.drawRect(newRect, newPaint);
-      i++;
-    }
+    // int i = 0;
+    // for (var element in shapeList) {
+    //   Rect newRect = Rect.fromLTRB(element.getHotRect()!.left + 1, element.getHotRect()!.top + 1, element.getHotRect()!.right - 1, element.getHotRect()!.bottom);
+    //   Paint newPaint = Paint()
+    //     ..color = colors10[i % colors10.length]
+    //     ..strokeWidth = strokeWidth
+    //     ..style = PaintingStyle.stroke;
+    //   canvas.drawRect(newRect, newPaint);
+    //   i++;
+    // }
     //开始绘制了
     drawLine(canvas, pathMap);
     layoutParam.children = shapeList;
   }
 
   void drawLine(Canvas canvas, Map<int, LineInfo> pathMap) {
-    DimensionsChartCoordinateRender chart = coordinateChart as DimensionsChartCoordinateRender;
+    ChartDimensionsCoordinateRender chart = coordinateChart as ChartDimensionsCoordinateRender;
     //点
     Paint dotPaint = Paint()..strokeWidth = strokeWidth;
 

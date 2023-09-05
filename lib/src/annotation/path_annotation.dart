@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../base/chart_param.dart';
+import '../measure/chart_param.dart';
 import '../coordinate/chart_coordinate_render.dart';
 import 'annotation.dart';
 

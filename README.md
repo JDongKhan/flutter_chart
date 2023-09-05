@@ -24,7 +24,7 @@
 当然自己造了个轮子也不是什么都支持的，所以首要目的是满足基本功能之余代码尽可能精简、独立，让使用者可以二次开发或者在之前的基础上容易扩展，最主要的是本组件支持数组内画多条图形，而仅仅一次遍历就可以了。
 
 本项目是基于坐标系+图形+Annotation三种概念实现，
-提供了两个坐标系：DimensionsChartCoordinateRender象限坐标系和CircularChartCoordinateRender圆形坐标系 、各种对应的图形render、各种annotation，这三个各种组合基本可以满足绝大部分场景。
+提供了两个坐标系：DimensionsCoordinateRender象限坐标系和CircularCoordinateRender圆形坐标系 、各种对应的图形render、各种annotation，这三个各种组合基本可以满足绝大部分场景。
 
 当然了，如果满足不了你的需求，你可以重写ChartRender自己绘制，如果是需要增强能力则可以通过增加Annotation（在example中有使用，可以查看如何使用），甚至可以自定义Annotation。
 
@@ -48,7 +48,7 @@
     2）、标注可自定义是否跟随滚动
     3）、标注可点击可携带信息便于点击处理
     4）、标注支持缩放范围设置，可在某一个缩放比例范围内才显示出来。
-### 3、DimensionsChartCoordinateRender坐标系x轴支持放大、缩小后动态设置
+### 3、DimensionsCoordinateRender坐标系x轴支持放大、缩小后动态设置
     1）、放大后可以在空隙中显示更精确的刻度，如时间坐标以天分隔，放大后天之间显示小时刻度
     2）、缩小后刻度过于密集会自动过滤
 ### 4、支持图表分层，分为弹框层、前景层、图表层。

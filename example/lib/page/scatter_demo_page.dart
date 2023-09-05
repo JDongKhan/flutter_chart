@@ -73,7 +73,7 @@ class _ScatterDemoPageState extends State<ScatterDemoPage> {
           SizedBox(
             height: 200,
             child: ChartWidget(
-              coordinateRender: DimensionsChartCoordinateRender(
+              coordinateRender: ChartDimensionsCoordinateRender(
                 padding: const EdgeInsets.only(left: 5, top: 0, right: 5, bottom: 0),
                 yAxis: [
                   YAxis(min: 0, max: 500, drawGrid: true),

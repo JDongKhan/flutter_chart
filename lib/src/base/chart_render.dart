@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import '../coordinate/chart_coordinate_render.dart';
-import 'chart_param.dart';
+import '../measure/chart_param.dart';
 
 /// @author jd
 

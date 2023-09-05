@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chart_plus/src/base/chart_controller.dart';
 
 import '../annotation/annotation.dart';
-import '../base/chart_param.dart';
+import '../measure/chart_param.dart';
 import '../measure/chart_layout_param.dart';
 import '../utils/transform_utils.dart';
 import '../widget/chart_widget.dart';

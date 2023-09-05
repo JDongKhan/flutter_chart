@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../base/chart_body_render.dart';
-import '../../base/chart_param.dart';
-import '../../coordinate/circular_chart_coordinate_render.dart';
+import '../../measure/chart_param.dart';
+import '../../coordinate/chart_circular_coordinate_render.dart';
 import '../../utils/transform_utils.dart';
 import '../../utils/chart_utils.dart';
 
@@ -30,7 +30,7 @@ class WaveProgress<T> extends ChartBodyRender<T> {
 
   @override
   void draw(ChartParam param, Canvas canvas, Size size) {
-    CircularChartCoordinateRender chart = coordinateChart as CircularChartCoordinateRender;
+    ChartCircularCoordinateRender chart = coordinateChart as ChartCircularCoordinateRender;
     Offset center = chart.center;
     double radius = chart.radius;
     canvas.clipPath(Path()..addOval(Rect.fromCircle(center: center, radius: radius)));

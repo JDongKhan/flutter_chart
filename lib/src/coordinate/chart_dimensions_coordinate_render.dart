@@ -2,15 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:path_drawing/path_drawing.dart';
 
 import '../annotation/annotation.dart';
-import '../base/chart_param.dart';
+import '../measure/chart_param.dart';
 import '../measure/chart_layout_param.dart';
 import '../utils/transform_utils.dart';
 import 'chart_coordinate_render.dart';
 
 /// @author JD
 
+@Deprecated('instead of  using [ChartDimensionsCoordinateRender]')
+typedef DimensionsChartCoordinateRender = ChartDimensionsCoordinateRender;
+
 /// 象限坐标系
-class DimensionsChartCoordinateRender extends ChartCoordinateRender {
+class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
   ///y坐标轴
   final List<YAxis> yAxis;
 
@@ -20,7 +23,7 @@ class DimensionsChartCoordinateRender extends ChartCoordinateRender {
   ///十字准星样式
   final CrossHairStyle crossHair;
 
-  DimensionsChartCoordinateRender({
+  ChartDimensionsCoordinateRender({
     super.margin = const EdgeInsets.only(left: 30, top: 0, right: 0, bottom: 25),
     super.padding = const EdgeInsets.only(left: 30, top: 0, right: 0, bottom: 0),
     required super.charts,

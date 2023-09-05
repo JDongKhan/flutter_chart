@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../base/chart_param.dart';
+import '../measure/chart_param.dart';
 import '../coordinate/chart_coordinate_render.dart';
-import '../coordinate/dimensions_chart_coordinate_render.dart';
+import '../coordinate/chart_dimensions_coordinate_render.dart';
 import 'annotation.dart';
 
 /// @author jd
@@ -63,8 +63,8 @@ class LabelAnnotation extends Annotation {
       return;
     }
 
-    if (coordinateChart is DimensionsChartCoordinateRender) {
-      DimensionsChartCoordinateRender chart = coordinateChart as DimensionsChartCoordinateRender;
+    if (coordinateChart is ChartDimensionsCoordinateRender) {
+      ChartDimensionsCoordinateRender chart = coordinateChart as ChartDimensionsCoordinateRender;
       Offset ost;
       if (positions != null) {
         assert(positions!.length == 2, 'positions must be two length');

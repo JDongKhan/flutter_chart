@@ -72,7 +72,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                 SizedBox(
                   height: 200,
                   child: ChartWidget(
-                    coordinateRender: DimensionsChartCoordinateRender(
+                    coordinateRender: ChartDimensionsCoordinateRender(
                       crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
                       margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
                       padding: const EdgeInsets.only(left: 0, right: 0),
@@ -119,7 +119,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                   height: 200,
                   child: ChartWidget(
                     controller: controller,
-                    coordinateRender: DimensionsChartCoordinateRender(
+                    coordinateRender: ChartDimensionsCoordinateRender(
                       zoomHorizontal: true,
                       foregroundAnnotations: [
                         LimitAnnotation(limit: 380),
@@ -190,7 +190,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                   // color: Colors.yellow,
                   height: 200,
                   child: ChartWidget(
-                    coordinateRender: DimensionsChartCoordinateRender(
+                    coordinateRender: ChartDimensionsCoordinateRender(
                       zoomHorizontal: true,
                       margin: const EdgeInsets.only(left: 40, top: 5, right: 0, bottom: 30),
                       //提示的文案信息
@@ -247,7 +247,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                   height: 200,
                   child: LayoutBuilder(builder: (context, cs) {
                     return ChartWidget(
-                      coordinateRender: DimensionsChartCoordinateRender(
+                      coordinateRender: ChartDimensionsCoordinateRender(
                         zoomHorizontal: true,
                         margin: const EdgeInsets.only(left: 40, top: 5, right: 0, bottom: 30),
                         //提示的文案信息
@@ -311,7 +311,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                   // color: Colors.yellow,
                   height: 200,
                   child: ChartWidget(
-                    coordinateRender: DimensionsChartCoordinateRender(
+                    coordinateRender: ChartDimensionsCoordinateRender(
                       margin: const EdgeInsets.only(left: 40, top: 5, right: 30, bottom: 30),
                       //提示的文案信息
                       crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
