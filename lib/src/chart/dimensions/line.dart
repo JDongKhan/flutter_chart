@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_chart_plus/src/measure/chart_dimension_param.dart';
-
-import '../../measure/chart_param.dart';
+import '../../param/chart_dimension_param.dart';
+import '../../param/chart_param.dart';
 import '../../utils/chart_utils.dart';
 import '../../base/chart_body_render.dart';
-import '../../measure/chart_layout_param.dart';
+import '../../param/chart_layout_param.dart';
 
 typedef LinePosition<T> = List<num> Function(T);
 

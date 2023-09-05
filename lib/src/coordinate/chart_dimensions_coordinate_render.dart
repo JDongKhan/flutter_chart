@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:path_drawing/path_drawing.dart';
 
 import '../annotation/annotation.dart';
-import '../measure/chart_param.dart';
-import '../measure/chart_layout_param.dart';
+import '../param/chart_param.dart';
+import '../param/chart_layout_param.dart';
 import 'chart_coordinate_render.dart';
 
 /// @author JD

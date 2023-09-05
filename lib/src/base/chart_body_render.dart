@@ -1,5 +1,5 @@
 import 'chart_render.dart';
-import '../measure/chart_layout_param.dart';
+import '../param/chart_layout_param.dart';
 
 /// @author jd
 

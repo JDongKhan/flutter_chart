@@ -1,8 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import '../../measure/chart_circular_param.dart';
-import '../../measure/chart_param.dart';
+import '../../param/chart_circular_param.dart';
+import '../../param/chart_param.dart';
 import '../../utils/chart_utils.dart';
 import '../../base/chart_body_render.dart';
 import '../../coordinate/chart_circular_coordinate_render.dart';

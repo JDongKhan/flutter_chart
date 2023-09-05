@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import '../coordinate/chart_circular_coordinate_render.dart';
 import '../coordinate/chart_coordinate_render.dart';
 import '../coordinate/chart_dimensions_coordinate_render.dart';
-import '../measure/chart_layout_param.dart';
+import 'chart_layout_param.dart';
 import '../utils/transform_utils.dart';
 import 'chart_circular_param.dart';
 import 'chart_dimension_param.dart';

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chart_plus/src/base/chart_controller.dart';
 
 import '../annotation/annotation.dart';
-import '../measure/chart_param.dart';
-import '../measure/chart_layout_param.dart';
+import '../param/chart_param.dart';
+import '../param/chart_layout_param.dart';
 import '../widget/chart_widget.dart';
 import '../base/chart_body_render.dart';
 

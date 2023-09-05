@@ -3,9 +3,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import '../../base/chart_body_render.dart';
-import '../../measure/chart_circular_param.dart';
-import '../../measure/chart_param.dart';
-import '../../measure/chart_layout_param.dart';
+import '../../param/chart_circular_param.dart';
+import '../../param/chart_param.dart';
+import '../../param/chart_layout_param.dart';
 import '../../utils/chart_utils.dart';
 
 /// @author JD

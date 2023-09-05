@@ -1,5 +1,5 @@
 import 'dart:ui';
-import '../measure/chart_param.dart';
+import '../param/chart_param.dart';
 
 /// @author jd
 

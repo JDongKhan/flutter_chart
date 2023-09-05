@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chart_plus/flutter_chart.dart';
-import '../measure/chart_param.dart';
+import '../param/chart_layout_param.dart';
+import '../param/chart_param.dart';
 
 /// @author jd
 

@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 
-import '../measure/chart_param.dart';
+import '../param/chart_param.dart';
 import '../base/chart_render.dart';
 
 /// @author jd

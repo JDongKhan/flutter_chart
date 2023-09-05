@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import '../annotation/annotation.dart';
 import '../base/chart_body_render.dart';
 import '../base/chart_controller.dart';
-import '../measure/chart_param.dart';
-import '../measure/chart_layout_param.dart';
+import '../param/chart_param.dart';
+import '../param/chart_layout_param.dart';
 import '../coordinate/chart_coordinate_render.dart';
 
 /// @author JD

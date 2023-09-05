@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_chart_plus/src/measure/chart_param.dart';
-
+import 'chart_param.dart';
 import '../coordinate/chart_dimensions_coordinate_render.dart';
 import '../utils/transform_utils.dart';
 
