@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_chart_plus/src/measure/chart_dimension_param.dart';
 
 import '../measure/chart_param.dart';
-import '../coordinate/chart_dimensions_coordinate_render.dart';
 import 'annotation.dart';
 
 /// @author jd

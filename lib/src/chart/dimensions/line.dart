@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chart_plus/src/measure/chart_dimension_param.dart';
 
 import '../../measure/chart_param.dart';
-import '../../coordinate/chart_dimensions_coordinate_render.dart';
 import '../../utils/chart_utils.dart';
 import '../../base/chart_body_render.dart';
 import '../../measure/chart_layout_param.dart';
@@ -81,7 +80,6 @@ class Line<T> extends ChartBodyRender<T> {
     double bottom = param.size.height - param.contentMargin.bottom;
     Map<int, LineInfo> pathMap = {};
     ChartLayoutParam? lastShape;
-    List<ChartLayoutParam> childrenLayoutParams = [];
     num? lastXvs;
     //遍历数据 处理数据信息
     for (T value in data) {

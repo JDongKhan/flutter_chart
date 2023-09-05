@@ -6,7 +6,6 @@ import '../../base/chart_body_render.dart';
 import '../../measure/chart_circular_param.dart';
 import '../../measure/chart_param.dart';
 import '../../measure/chart_layout_param.dart';
-import '../../coordinate/chart_circular_coordinate_render.dart';
 import '../../utils/chart_utils.dart';
 
 /// @author JD

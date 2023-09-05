@@ -7,7 +7,6 @@ import '../annotation/annotation.dart';
 import '../base/chart_body_render.dart';
 import '../base/chart_controller.dart';
 import '../measure/chart_param.dart';
-import '../coordinate/chart_dimensions_coordinate_render.dart';
 import '../measure/chart_layout_param.dart';
 import '../coordinate/chart_coordinate_render.dart';
 
@@ -112,6 +111,7 @@ class _ChartWidgetState extends State<ChartWidget> {
             width: size.width,
             height: size.height,
             child: _ChartCoreWidget(
+              size: size,
               chartCoordinateRender: baseChart,
             ),
           );
@@ -209,8 +209,10 @@ class _ChartWidgetState extends State<ChartWidget> {
 
 class _ChartCoreWidget extends StatefulWidget {
   final ChartCoordinateRender chartCoordinateRender;
+  final Size size;
   const _ChartCoreWidget({
     Key? key,
+    required this.size,
     required this.chartCoordinateRender,
   }) : super(key: key);
 
@@ -240,6 +242,8 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
     for (int i = 0; i < charts.length; i++) {
       ChartBodyRender body = charts[i];
       ChartLayoutParam c = ChartLayoutParam();
+      c.left = 0;
+      c.right = widget.size.width;
       body.layoutParam = c;
       allParams.add(c);
     }

@@ -13,6 +13,7 @@ class ChartCircularParam extends ChartParam {
   ///中心点
   late Offset center;
 
+  //边框宽度
   final double borderWidth;
 
   final ArcPosition arcPosition;
@@ -54,10 +55,7 @@ class ChartCircularParam extends ChartParam {
       double minSize = math.min(sw, sh);
       radius = math.min(maxSize / 2, minSize) - borderWidth / 2;
       center = size.center(Offset.zero);
-      double startAngle = 0;
-      double sweepAngle = math.pi;
       if (arcPosition == ArcPosition.up) {
-        startAngle = math.pi;
         center = Offset(center.dx, size.height - contentMargin.bottom);
         transformUtils = TransformUtils(
           anchor: center,
@@ -87,6 +85,7 @@ class ChartCircularParam extends ChartParam {
     }
   }
 
+  @override
   Offset scroll(Offset offset) {
     return Offset.zero;
   }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../measure/chart_dimension_param.dart';
 import '../../measure/chart_param.dart';
-import '../../coordinate/chart_dimensions_coordinate_render.dart';
 import '../../utils/chart_utils.dart';
 import '../../base/chart_body_render.dart';
 import '../../measure/chart_layout_param.dart';

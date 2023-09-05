@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import '../measure/chart_circular_param.dart';
 import '../measure/chart_param.dart';
 import 'chart_coordinate_render.dart';
-import '../utils/transform_utils.dart';
 
 enum ArcPosition {
   none,

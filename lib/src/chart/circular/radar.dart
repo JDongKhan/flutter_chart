@@ -1,5 +1,4 @@
 import 'dart:math' as math;
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import '../../measure/chart_circular_param.dart';
@@ -7,7 +6,6 @@ import '../../measure/chart_param.dart';
 import '../../utils/chart_utils.dart';
 import '../../base/chart_body_render.dart';
 import '../../measure/chart_layout_param.dart';
-import '../../coordinate/chart_circular_coordinate_render.dart';
 import 'pie.dart';
 
 typedef RadarChartValue<T> = List<num> Function(T);

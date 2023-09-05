@@ -3,8 +3,6 @@ import 'package:flutter_chart_plus/src/measure/chart_dimension_param.dart';
 import 'package:path_drawing/path_drawing.dart';
 
 import '../measure/chart_param.dart';
-import '../coordinate/chart_coordinate_render.dart';
-import '../coordinate/chart_dimensions_coordinate_render.dart';
 import 'annotation.dart';
 
 typedef AnnotationPosition<T> = num Function(T);

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../measure/chart_dimension_param.dart';
 import '../../measure/chart_param.dart';
-import '../../coordinate/chart_dimensions_coordinate_render.dart';
 import '../../base/chart_body_render.dart';
 
 typedef ScatterValue<T> = num Function(T);

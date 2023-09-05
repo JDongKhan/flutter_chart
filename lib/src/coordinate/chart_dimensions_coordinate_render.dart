@@ -4,7 +4,6 @@ import 'package:path_drawing/path_drawing.dart';
 import '../annotation/annotation.dart';
 import '../measure/chart_param.dart';
 import '../measure/chart_layout_param.dart';
-import '../utils/transform_utils.dart';
 import 'chart_coordinate_render.dart';
 
 /// @author JD

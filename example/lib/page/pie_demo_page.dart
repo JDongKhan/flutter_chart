@@ -111,7 +111,7 @@ class _PieChartDemoPageState extends State<PieChartDemoPage> with SingleTickerPr
                 ),
               ),
             ),
-            const Text('Progress Pie'),
+            const Text('Progress Pie 1'),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 40),
               height: 200,
@@ -136,6 +136,45 @@ class _PieChartDemoPageState extends State<PieChartDemoPage> with SingleTickerPr
                       borderColor: Colors.grey,
                       borderWidth: 13,
                       arcPosition: ArcPosition.up,
+                      charts: [
+                        Progress(
+                          strokeWidth: 9,
+                          endPoint: true,
+                          strokeCap: StrokeCap.round,
+                          data: [0.5, 0.2],
+                          position: (item) => item,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Text('Progress Pie 2'),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 40),
+              height: 200,
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    bottom: 50,
+                    child: Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: const [
+                          Text('5%', style: TextStyle(fontSize: 24, color: Colors.black)),
+                          Text('完成度', style: TextStyle(fontSize: 30, color: Colors.black)),
+                        ],
+                      ),
+                    ),
+                  ),
+                  ChartWidget(
+                    coordinateRender: ChartCircularCoordinateRender(
+                      margin: const EdgeInsets.only(bottom: 10),
+                      strokeCap: StrokeCap.round,
+                      borderColor: Colors.grey,
+                      borderWidth: 13,
+                      arcPosition: ArcPosition.down,
                       charts: [
                         Progress(
                           strokeWidth: 9,
