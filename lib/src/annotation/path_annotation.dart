@@ -28,8 +28,8 @@ class PathAnnotation extends Annotation {
   Paint? _paint;
   Path? _path;
   @override
-  void init(ChartParam param, ChartCoordinateRender coordinateChart) {
-    super.init(param, coordinateChart);
+  void init(ChartParam param) {
+    super.init(param);
     _paint = Paint()
       ..color = color
       ..style = PaintingStyle.fill

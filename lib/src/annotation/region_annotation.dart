@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_chart_plus/src/measure/chart_dimension_param.dart';
 
 import '../measure/chart_param.dart';
 import '../coordinate/chart_coordinate_render.dart';
@@ -24,8 +25,8 @@ class RegionAnnotation extends Annotation {
 
   Paint? _paint;
   @override
-  void init(ChartParam param, ChartCoordinateRender coordinateChart) {
-    super.init(param, coordinateChart);
+  void init(ChartParam param) {
+    super.init(param);
     _paint = Paint()
       ..color = color
       ..style = PaintingStyle.fill
@@ -37,14 +38,13 @@ class RegionAnnotation extends Annotation {
     if (!needDraw(param)) {
       return;
     }
-    if (coordinateChart is ChartDimensionsCoordinateRender) {
-      ChartDimensionsCoordinateRender chart = coordinateChart as ChartDimensionsCoordinateRender;
+    if (param is ChartDimensionParam) {
       assert(positions.length == 2, 'positions must be two length');
       num po1 = positions[0];
       num po2 = positions[1];
-      double start = param.transformUtils.transformX(po1 * chart.xAxis.density);
+      double start = param.transformUtils.transformX(po1 * param.xAxis.density);
       start = param.transformUtils.withXZoomOffset(start);
-      double end = param.transformUtils.transformX(po2 * chart.xAxis.density);
+      double end = param.transformUtils.transformX(po2 * param.xAxis.density);
       end = param.transformUtils.withXZoomOffset(end);
 
       double top = param.contentMargin.top;

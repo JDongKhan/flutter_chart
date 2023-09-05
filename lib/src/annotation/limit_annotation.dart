@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_chart_plus/src/measure/chart_dimension_param.dart';
 import 'package:path_drawing/path_drawing.dart';
 
 import '../measure/chart_param.dart';
@@ -32,21 +33,20 @@ class LimitAnnotation extends Annotation {
   Path? _path;
 
   @override
-  void init(ChartParam param, ChartCoordinateRender coordinateChart) {
-    super.init(param, coordinateChart);
-    if (coordinateChart is ChartDimensionsCoordinateRender) {
-      ChartDimensionsCoordinateRender chart = coordinateChart;
+  void init(ChartParam param) {
+    super.init(param);
+    if (param is ChartDimensionParam) {
       num po = limit;
-      double itemHeight = chart.yAxis[yAxisPosition].relativeHeight(po);
+      double itemHeight = param.yAxis[yAxisPosition].relativeHeight(po);
       Offset start = Offset(
-        chart.padding.left,
+        param.padding.left,
         param.transformUtils.transformY(
           itemHeight,
           containPadding: true,
         ),
       );
       Offset end = Offset(
-        param.size.width - chart.padding.right,
+        param.size.width - param.padding.right,
         param.transformUtils.transformY(
           itemHeight,
           containPadding: true,

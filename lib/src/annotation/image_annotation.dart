@@ -2,6 +2,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_chart_plus/src/measure/chart_dimension_param.dart';
 
 import '../measure/chart_param.dart';
 import '../coordinate/chart_dimensions_coordinate_render.dart';
@@ -56,15 +57,14 @@ class ImageAnnotation extends Annotation {
       return;
     }
 
-    if (coordinateChart is ChartDimensionsCoordinateRender) {
-      ChartDimensionsCoordinateRender chart = coordinateChart as ChartDimensionsCoordinateRender;
+    if (param is ChartDimensionParam) {
       Offset ost;
       if (positions != null) {
         assert(positions!.length == 2, 'positions must be two length');
         num xPo = positions![0];
         num yPo = positions![1];
-        double itemWidth = xPo * chart.xAxis.density;
-        double itemHeight = chart.yAxis[yAxisPosition].relativeHeight(yPo);
+        double itemWidth = xPo * param.xAxis.density;
+        double itemHeight = param.yAxis[yAxisPosition].relativeHeight(yPo);
         ost = param.transformUtils.withZoomOffset(
           Offset(
             param.transformUtils.transformX(itemWidth, containPadding: true),

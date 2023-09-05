@@ -344,7 +344,7 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
   void _drawBackgroundAnnotations(ChartParam param, Canvas canvas, Size size) {
     if (backgroundAnnotations != null) {
       for (Annotation annotation in backgroundAnnotations!) {
-        annotation.init(param, this);
+        annotation.init(param);
         annotation.draw(param, canvas, size);
       }
     }
@@ -354,7 +354,7 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
   void _drawForegroundAnnotations(ChartParam param, Canvas canvas, Size size) {
     if (foregroundAnnotations != null) {
       for (Annotation annotation in foregroundAnnotations!) {
-        annotation.init(param, this);
+        annotation.init(param);
         annotation.draw(param, canvas, size);
       }
     }

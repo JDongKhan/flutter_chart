@@ -90,7 +90,7 @@ class ChartCircularCoordinateRender extends ChartCoordinateRender {
   ///背景
   void _drawBackgroundAnnotations(ChartParam param, Canvas canvas, Size size) {
     backgroundAnnotations?.forEach((element) {
-      element.init(param, this);
+      element.init(param);
       element.draw(param, canvas, size);
     });
   }
@@ -98,7 +98,7 @@ class ChartCircularCoordinateRender extends ChartCoordinateRender {
   ///前景
   void _drawForegroundAnnotations(ChartParam param, Canvas canvas, Size size) {
     foregroundAnnotations?.forEach((element) {
-      element.init(param, this);
+      element.init(param);
       element.draw(param, canvas, size);
     });
   }

@@ -84,7 +84,7 @@ abstract class ChartCoordinateRender {
 
   void init(ChartParam param, Size size) {
     for (var element in charts) {
-      element.init(param, this);
+      element.init(param);
     }
   }
 
