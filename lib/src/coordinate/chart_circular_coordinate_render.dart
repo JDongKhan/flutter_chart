@@ -44,6 +44,7 @@ class ChartCircularCoordinateRender extends ChartCoordinateRender {
     var index = 0;
     for (var element in charts) {
       element.index = index;
+      element.init(param);
       element.draw(param, canvas, size);
       index++;
     }

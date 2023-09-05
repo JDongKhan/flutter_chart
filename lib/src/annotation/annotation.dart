@@ -28,7 +28,7 @@ abstract class Annotation extends ChartRender {
   ///所在的位置（左上角的点）
   Offset? location;
 
-  ///尺寸
+  ///标注的尺寸
   Size? size;
 
   Annotation({

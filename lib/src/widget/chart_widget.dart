@@ -385,7 +385,6 @@ class _ChartPainter extends CustomPainter {
     required this.param,
   });
 
-  bool _init = false;
   @override
   void paint(Canvas canvas, Size size) {
     chart.controller.bindParam(param);
@@ -395,11 +394,6 @@ class _ChartPainter extends CustomPainter {
     }
     Rect clipRect = Offset.zero & size;
     canvas.clipRect(clipRect);
-    //初始化
-    if (_init == false) {
-      chart.init(param, size);
-      _init = true;
-    }
     chart.paint(param, canvas, size);
   }
 

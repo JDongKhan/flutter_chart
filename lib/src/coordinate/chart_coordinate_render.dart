@@ -82,11 +82,5 @@ abstract class ChartCoordinateRender {
 
   late ChartController controller;
 
-  void init(ChartParam param, Size size) {
-    for (var element in charts) {
-      element.init(param);
-    }
-  }
-
   void paint(ChartParam param, Canvas canvas, Size size);
 }
