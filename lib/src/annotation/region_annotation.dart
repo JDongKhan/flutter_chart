@@ -47,8 +47,8 @@ class RegionAnnotation extends Annotation {
       double end = chart.transformUtils.transformX(po2 * chart.xAxis.density);
       end = chart.transformUtils.withXZoomOffset(end);
 
-      double top = chart.contentMargin.top;
-      double bottom = chart.size.height - chart.contentMargin.bottom;
+      double top = param.contentMargin.top;
+      double bottom = chart.size.height - param.contentMargin.bottom;
       if (_paint != null) {
         canvas.drawRect(Rect.fromLTRB(start, top, end, bottom), _paint!);
       }

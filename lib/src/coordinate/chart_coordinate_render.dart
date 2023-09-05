@@ -78,7 +78,7 @@ abstract class ChartCoordinateRender {
     this.backgroundAnnotations,
     this.foregroundAnnotations,
     this.safeArea,
-  }) : contentMargin = EdgeInsets.fromLTRB(margin.left + padding.left, margin.top + padding.top, margin.right + padding.right, margin.bottom + padding.bottom);
+  });
 
   ///坐标转换工具
   late TransformUtils transformUtils;
@@ -87,12 +87,6 @@ abstract class ChartCoordinateRender {
 
   ///画布尺寸
   late Size size;
-
-  ///图形内容的外边距信息
-  EdgeInsets contentMargin;
-
-  ///未处理的坐标  原点在左上角
-  Rect get contentRect => Rect.fromLTRB(contentMargin.left, contentMargin.top, size.width - contentMargin.left, size.height - contentMargin.bottom);
 
   void init(Size size) {
     this.size = size;

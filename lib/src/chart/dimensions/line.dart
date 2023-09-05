@@ -72,12 +72,12 @@ class Line<T> extends ChartBodyRender<T> {
 
     int index = 0;
     //offset.dx 滚动偏移  (src.zoom - 1) * (src.size.width / 2) 缩放
-    double left = chart.contentMargin.left;
+    double left = param.contentMargin.left;
     left = chart.transformUtils.withXZoomOffset(left);
 
-    double right = chart.size.width - chart.contentMargin.right;
-    double top = chart.contentMargin.top;
-    double bottom = chart.size.height - chart.contentMargin.bottom;
+    double right = chart.size.width - param.contentMargin.right;
+    double top = param.contentMargin.top;
+    double bottom = chart.size.height - param.contentMargin.bottom;
     Map<int, LineInfo> pathMap = {};
     ChartLayoutParam? lastShape;
     List<ChartLayoutParam> childrenLayoutParams = [];
@@ -178,12 +178,11 @@ class Line<T> extends ChartBodyRender<T> {
     //   i++;
     // }
     //开始绘制了
-    drawLine(canvas, pathMap);
+    drawLine(param, canvas, pathMap);
     layoutParam.children = shapeList;
   }
 
-  void drawLine(Canvas canvas, Map<int, LineInfo> pathMap) {
-    ChartDimensionsCoordinateRender chart = coordinateChart as ChartDimensionsCoordinateRender;
+  void drawLine(ChartParam param, Canvas canvas, Map<int, LineInfo> pathMap) {
     //点
     Paint dotPaint = Paint()..strokeWidth = strokeWidth;
 
@@ -208,8 +207,8 @@ class Line<T> extends ChartBodyRender<T> {
         Offset last = lineInfo.pointList.last;
         Offset first = lineInfo.pointList.first;
         lineInfo.path
-          ..lineTo(last.dx, chart.contentRect.bottom)
-          ..lineTo(first.dx, chart.contentRect.bottom);
+          ..lineTo(last.dx, param.contentRect.bottom)
+          ..lineTo(first.dx, param.contentRect.bottom);
 
         if (shaders != null) {
           fullPaint!.shader = shaders![index];

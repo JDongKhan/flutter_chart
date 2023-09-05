@@ -13,6 +13,9 @@ abstract class ChartBodyRender<T> extends ChartRender {
   ///图表的布局状态
   late ChartLayoutParam layoutParam;
 
+  ///在图表中的位置
+  late int index;
+
   ///跟哪个y轴关联
   final int yAxisPosition;
   ChartBodyRender({

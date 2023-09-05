@@ -45,16 +45,19 @@ class ChartCircularCoordinateRender extends ChartCoordinateRender {
   void paint(ChartParam param, Canvas canvas, Size size) {
     _drawCircle(param, canvas, size);
     _drawBackgroundAnnotations(param, canvas, size);
+    var index = 0;
     for (var element in charts) {
+      element.index = index;
       element.draw(param, canvas, size);
+      index++;
     }
     _drawForegroundAnnotations(param, canvas, size);
   }
 
   ///画背景圆
   void _drawCircle(ChartParam param, Canvas canvas, Size size) {
-    final sw = size.width - contentMargin.horizontal;
-    final sh = size.height - contentMargin.vertical;
+    final sw = size.width - param.contentMargin.horizontal;
+    final sh = size.height - param.contentMargin.vertical;
     // 定义圆形的绘制属性
     final paint = Paint()
       ..style = PaintingStyle.stroke
@@ -95,7 +98,7 @@ class ChartCircularCoordinateRender extends ChartCoordinateRender {
       double sweepAngle = pi;
       if (arcPosition == ArcPosition.up) {
         startAngle = pi;
-        center = Offset(center.dx, size.height - contentMargin.bottom);
+        center = Offset(center.dx, size.height - param.contentMargin.bottom);
         transformUtils = TransformUtils(
           anchor: center,
           size: size,
@@ -108,7 +111,7 @@ class ChartCircularCoordinateRender extends ChartCoordinateRender {
           reverseY: true,
         );
       } else if (arcPosition == ArcPosition.down) {
-        center = Offset(center.dx, contentMargin.top);
+        center = Offset(center.dx, param.contentMargin.top);
         transformUtils = TransformUtils(
           anchor: center,
           size: size,

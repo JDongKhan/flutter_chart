@@ -62,10 +62,10 @@ class Bar<T> extends ChartBodyRender<T> {
     if (v == 0) {
       return ChartLayoutParam();
     }
-    double bottom = chart.size.height - chart.contentMargin.bottom;
-    double contentHeight = chart.size.height - chart.contentMargin.vertical;
+    double bottom = chart.size.height - param.contentMargin.bottom;
+    double contentHeight = chart.size.height - param.contentMargin.vertical;
 
-    double left = chart.contentMargin.left + chart.xAxis.density * po - itemWidth / 2;
+    double left = param.contentMargin.left + chart.xAxis.density * po - itemWidth / 2;
     left = chart.transformUtils.withXZoomOffset(left);
 
     double present = v / chart.yAxis[yAxisPosition].max;
@@ -163,21 +163,21 @@ class StackBar<T> extends ChartBodyRender<T> {
     if (total == 0) {
       return ChartLayoutParam();
     }
-    double bottom = chart.size.height - chart.contentMargin.bottom;
-    double contentHeight = chart.size.height - chart.contentMargin.vertical;
+    double bottom = chart.size.height - param.contentMargin.bottom;
+    double contentHeight = chart.size.height - param.contentMargin.vertical;
     int stackIndex = 0;
 
     double center = vas.length * itemWidth / 2;
 
-    double left = chart.contentMargin.left + chart.xAxis.density * po - itemWidth / 2 - center;
+    double left = param.contentMargin.left + chart.xAxis.density * po - itemWidth / 2 - center;
     left = chart.transformUtils.withXZoomOffset(left);
 
     ChartLayoutParam shape = ChartLayoutParam.rect(
       rect: Rect.fromLTWH(
         left,
-        chart.contentMargin.top,
+        param.contentMargin.top,
         itemWidth * vas.length + padding * (vas.length - 1),
-        chart.size.height - chart.contentMargin.vertical,
+        chart.size.height - param.contentMargin.vertical,
       ),
     );
     List<ChartLayoutParam> childrenLayoutParams = [];
@@ -222,17 +222,17 @@ class StackBar<T> extends ChartBodyRender<T> {
     if (total == 0) {
       return ChartLayoutParam();
     }
-    double bottom = chart.size.height - chart.contentMargin.bottom;
-    double contentHeight = chart.size.height - chart.contentMargin.vertical;
+    double bottom = chart.size.height - param.contentMargin.bottom;
+    double contentHeight = chart.size.height - param.contentMargin.vertical;
     int stackIndex = 0;
-    double left = chart.contentMargin.left + chart.xAxis.density * po - itemWidth / 2;
+    double left = param.contentMargin.left + chart.xAxis.density * po - itemWidth / 2;
     left = chart.transformUtils.withXZoomOffset(left);
     ChartLayoutParam shape = ChartLayoutParam.rect(
       rect: Rect.fromLTWH(
         left,
-        chart.contentMargin.top,
+        param.contentMargin.top,
         itemWidth,
-        chart.size.height - chart.contentMargin.vertical,
+        chart.size.height - param.contentMargin.vertical,
       ),
     );
     List<ChartLayoutParam> childrenLayoutParams = [];

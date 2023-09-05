@@ -221,7 +221,7 @@ class _ChartCoreWidget extends StatefulWidget {
 class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
   double _beforeZoom = 1.0;
   late Offset _lastOffset;
-
+  late ChartParam _chartParam;
   Offset? _localPosition;
   Offset _offset = Offset.zero;
   double _zoom = 1.0;
@@ -270,6 +270,13 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
 
   @override
   Widget build(BuildContext context) {
+    _chartParam = ChartParam.coordinate(
+      zoom: _zoom,
+      offset: _offset,
+      localPosition: _localPosition,
+      childrenState: allParams,
+      coordinate: widget.chartCoordinateRender,
+    );
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTapUp: (TapUpDetails details) {
@@ -318,14 +325,7 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
         child: CustomPaint(
           painter: _ChartPainter(
             chart: widget.chartCoordinateRender,
-            param: ChartParam(
-              margin: widget.chartCoordinateRender.margin,
-              padding: widget.chartCoordinateRender.padding,
-              zoom: _zoom,
-              localPosition: _localPosition,
-              childrenState: allParams,
-              offset: _offset,
-            ),
+            param: _chartParam,
           ),
         ),
       ),
@@ -364,7 +364,7 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
       ChartDimensionsCoordinateRender render = widget.chartCoordinateRender as ChartDimensionsCoordinateRender;
       //放大的场景  offset会受到zoom的影响，所以这里的宽度要先剔除zoom的影响再比较
       double chartContentWidth = render.xAxis.density * (render.xAxis.max ?? render.xAxis.count);
-      double chartViewPortWidth = render.size.width - render.contentMargin.horizontal;
+      double chartViewPortWidth = render.size.width - _chartParam.contentMargin.horizontal;
       //处理成跟缩放无关的偏移
       double maxOffset = (chartContentWidth - chartViewPortWidth);
       if (maxOffset < 0) {
@@ -409,6 +409,7 @@ class _ChartPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     chart.controller.bindParam(param);
+    param.init(size: size, margin: chart.margin, padding: chart.padding);
     for (var element in param.childrenState) {
       element.selectedIndex = null;
     }

@@ -35,12 +35,12 @@ class Scatter<T> extends ChartBodyRender<T> {
   void draw(ChartParam param, Canvas canvas, Size size) {
     ChartDimensionsCoordinateRender chart = coordinateChart as ChartDimensionsCoordinateRender;
     //offset.dx 滚动偏移  (src.zoom - 1) * (src.size.width / 2) 缩放
-    double left = chart.contentMargin.left;
+    double left = param.contentMargin.left;
     left = chart.transformUtils.withXZoomOffset(left);
 
-    double right = chart.size.width - chart.contentMargin.right;
-    double top = chart.contentMargin.top;
-    double bottom = chart.size.height - chart.contentMargin.bottom;
+    double right = chart.size.width - param.contentMargin.right;
+    double top = param.contentMargin.top;
+    double bottom = chart.size.height - param.contentMargin.bottom;
 
     Paint dotPaint = Paint()..strokeWidth = 1;
 

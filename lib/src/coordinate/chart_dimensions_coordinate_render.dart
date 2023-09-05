@@ -49,7 +49,7 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
     double height = size.height;
     int count = xAxis.count;
     //每格的宽度，用于控制一屏最多显示个数
-    double density = (width - contentMargin.horizontal) / count / xAxis.interval;
+    double density = (width - param.contentMargin.horizontal) / count / xAxis.interval;
     //x轴密度 即1 value 等于多少尺寸
     if (zoomHorizontal) {
       xAxis.density = density * param.zoom;
@@ -87,7 +87,7 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
     // 如果按坐标系切，就会面临坐标轴和里面的内容重复循环的问题，该组件的本意是尽可能减少无畏的循环，提高性能，如果
     // 给y轴切出来，超出这个范围就隐藏
     // canvas.clipRect(Rect.fromLTWH(0, 0, margin.left, size.height));
-    _drawYAxis(canvas, size);
+    _drawYAxis(param, canvas, size);
     // canvas.restore();
 
     //防止超过y轴
@@ -95,8 +95,11 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
     _drawXAxis(param, canvas, size);
     _drawBackgroundAnnotations(param, canvas, size);
     //绘图
+    var index = 0;
     for (var element in charts) {
+      element.index = index;
       element.draw(param, canvas, size);
+      index++;
     }
     _drawForegroundAnnotations(param, canvas, size);
     _drawCrosshair(param, canvas, size);
@@ -104,7 +107,7 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
   }
 
   ///绘制y轴
-  void _drawYAxis(Canvas canvas, Size size) {
+  void _drawYAxis(ChartParam param, Canvas canvas, Size size) {
     int yAxisIndex = 0;
     for (YAxis yA in yAxis) {
       Offset offset = yA.offset?.call(size) ?? Offset.zero;
@@ -121,7 +124,7 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
           vv = vv.toInt();
         }
         String text = yA.formatter?.call(i) ?? '${min + vv}';
-        double top = size.height - contentMargin.bottom - vv * yA.density;
+        double top = size.height - param.contentMargin.bottom - vv * yA.density;
         top = transformUtils.withYOffset(top);
         //绘制文本
         if (i == count) {
@@ -214,7 +217,7 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
       }
 
       String? text = xAxis.formatter?.call(i);
-      double left = contentMargin.left + density * interval * i;
+      double left = param.contentMargin.left + density * interval * i;
       left = transformUtils.withXZoomOffset(left);
 
       if (text != null) {
@@ -226,7 +229,7 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
         for (int j = 1; j < xDivideCount; j++) {
           num newValue = i + j * xAmplifyInterval!;
           String? newText = xAxis.formatter?.call(newValue);
-          double left = contentMargin.left + density * interval * newValue;
+          double left = param.contentMargin.left + density * interval * newValue;
           left = transformUtils.withXZoomOffset(left);
           if (newText != null) {
             _drawXTextPaint(canvas, newText, xAxis.textStyle, size, left);
