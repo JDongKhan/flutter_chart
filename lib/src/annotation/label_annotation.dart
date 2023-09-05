@@ -43,8 +43,8 @@ class LabelAnnotation extends Annotation {
   TextPainter? _textPainter;
 
   @override
-  void init(ChartCoordinateRender coordinateChart) {
-    super.init(coordinateChart);
+  void init(ChartParam param, ChartCoordinateRender coordinateChart) {
+    super.init(param, coordinateChart);
     _textPainter = TextPainter(
       text: TextSpan(
         text: text,
@@ -53,7 +53,7 @@ class LabelAnnotation extends Annotation {
       textDirection: TextDirection.ltr,
     )..layout(
         minWidth: 0,
-        maxWidth: coordinateChart.size.width,
+        maxWidth: param.size.width,
       );
   }
 
@@ -72,27 +72,27 @@ class LabelAnnotation extends Annotation {
         num yPo = positions![1];
         double itemWidth = xPo * chart.xAxis.density;
         double itemHeight = chart.yAxis[yAxisPosition].relativeHeight(yPo);
-        double left = chart.transformUtils.transformX(
+        double left = param.transformUtils.transformX(
           itemWidth,
           containPadding: true,
         );
-        double top = chart.transformUtils.transformY(
+        double top = param.transformUtils.transformY(
           itemHeight,
           containPadding: true,
         );
         if (scroll) {
-          left = chart.transformUtils.withXZoomOffset(left);
-          top = chart.transformUtils.withYOffset(top);
+          left = param.transformUtils.withXZoomOffset(left);
+          top = param.transformUtils.withYOffset(top);
         } else {
           //不跟随缩放
           if (chart.zoomHorizontal) {
-            left = chart.transformUtils.transformX(
+            left = param.transformUtils.transformX(
               itemWidth / param.zoom,
               containPadding: true,
             );
           }
           if (chart.zoomVertical) {
-            top = chart.transformUtils.transformY(
+            top = param.transformUtils.transformY(
               itemHeight / param.zoom,
               containPadding: true,
             );
@@ -100,7 +100,7 @@ class LabelAnnotation extends Annotation {
         }
         ost = Offset(left, top).translate(offset.dx, offset.dy);
       } else {
-        ost = anchor!(chart.size);
+        ost = anchor!(param.size);
       }
 
       if (textAlign == TextAlign.end) {

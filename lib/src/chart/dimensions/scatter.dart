@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../measure/chart_dimension_param.dart';
 import '../../measure/chart_param.dart';
 import '../../coordinate/chart_dimensions_coordinate_render.dart';
 import '../../base/chart_body_render.dart';
@@ -33,14 +34,14 @@ class Scatter<T> extends ChartBodyRender<T> {
 
   @override
   void draw(ChartParam param, Canvas canvas, Size size) {
-    ChartDimensionsCoordinateRender chart = coordinateChart as ChartDimensionsCoordinateRender;
+    param as ChartDimensionParam;
     //offset.dx 滚动偏移  (src.zoom - 1) * (src.size.width / 2) 缩放
     double left = param.contentMargin.left;
-    left = chart.transformUtils.withXZoomOffset(left);
+    left = param.transformUtils.withXZoomOffset(left);
 
-    double right = chart.size.width - param.contentMargin.right;
+    double right = param.size.width - param.contentMargin.right;
     double top = param.contentMargin.top;
-    double bottom = chart.size.height - param.contentMargin.bottom;
+    double bottom = param.size.height - param.contentMargin.bottom;
 
     Paint dotPaint = Paint()..strokeWidth = 1;
 
@@ -48,9 +49,9 @@ class Scatter<T> extends ChartBodyRender<T> {
     for (T itemData in data) {
       num xvs = position.call(itemData);
       num yvs = value.call(itemData);
-      double xPo = xvs * chart.xAxis.density + left;
-      double yPo = bottom - chart.yAxis[yAxisPosition].relativeHeight(yvs);
-      yPo = chart.transformUtils.withYOffset(yPo);
+      double xPo = xvs * param.xAxis.density + left;
+      double yPo = bottom - param.yAxis[yAxisPosition].relativeHeight(yvs);
+      yPo = param.transformUtils.withYOffset(yPo);
       ScatterStyle sy = style.call(itemData);
       //最后画点
       if (sy.radius > 0) {

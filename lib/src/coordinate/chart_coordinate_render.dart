@@ -80,18 +80,11 @@ abstract class ChartCoordinateRender {
     this.safeArea,
   });
 
-  ///坐标转换工具
-  late TransformUtils transformUtils;
-
   late ChartController controller;
 
-  ///画布尺寸
-  late Size size;
-
-  void init(Size size) {
-    this.size = size;
+  void init(ChartParam param, Size size) {
     for (var element in charts) {
-      element.init(this);
+      element.init(param, this);
     }
   }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_chart_plus/src/measure/chart_dimension_param.dart';
 
 import '../../measure/chart_param.dart';
 import '../../coordinate/chart_dimensions_coordinate_render.dart';
@@ -67,17 +68,17 @@ class Line<T> extends ChartBodyRender<T> {
 
   @override
   void draw(ChartParam param, Canvas canvas, Size size) {
-    ChartDimensionsCoordinateRender chart = coordinateChart as ChartDimensionsCoordinateRender;
+    param as ChartDimensionParam;
     List<ChartLayoutParam> shapeList = [];
 
     int index = 0;
     //offset.dx 滚动偏移  (src.zoom - 1) * (src.size.width / 2) 缩放
     double left = param.contentMargin.left;
-    left = chart.transformUtils.withXZoomOffset(left);
+    left = param.transformUtils.withXZoomOffset(left);
 
-    double right = chart.size.width - param.contentMargin.right;
+    double right = param.size.width - param.contentMargin.right;
     double top = param.contentMargin.top;
-    double bottom = chart.size.height - param.contentMargin.bottom;
+    double bottom = param.size.height - param.contentMargin.bottom;
     Map<int, LineInfo> pathMap = {};
     ChartLayoutParam? lastShape;
     List<ChartLayoutParam> childrenLayoutParams = [];
@@ -92,7 +93,7 @@ class Line<T> extends ChartBodyRender<T> {
       List<ChartLayoutParam> shapes = [];
       assert(colors.length >= yvs.length, '颜色配置跟数据源不匹配');
       assert(shaders == null || shaders!.length >= yvs.length, '颜色配置跟数据源不匹配');
-      double xPo = xvs * chart.xAxis.density + left;
+      double xPo = xvs * param.xAxis.density + left;
 
       //先判断是否选中，此场景是第一次渲染之后点击才有，所以用老数据即可
       List<ChartLayoutParam> childrenLayoutParams = layoutParam.children;
@@ -109,8 +110,8 @@ class Line<T> extends ChartBodyRender<T> {
         }
         //计算点的位置
         num value = yvs[valueIndex];
-        double yPo = bottom - chart.yAxis[yAxisPosition].relativeHeight(value);
-        yPo = chart.transformUtils.withYOffset(yPo);
+        double yPo = bottom - param.yAxis[yAxisPosition].relativeHeight(value);
+        yPo = param.transformUtils.withYOffset(yPo);
         if (index == 0) {
           lineInfo.path.moveTo(xPo, yPo);
         } else {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../base/chart_body_render.dart';
+import '../../measure/chart_circular_param.dart';
 import '../../measure/chart_param.dart';
 import '../../coordinate/chart_circular_coordinate_render.dart';
 import '../../utils/transform_utils.dart';
@@ -30,35 +31,35 @@ class WaveProgress<T> extends ChartBodyRender<T> {
 
   @override
   void draw(ChartParam param, Canvas canvas, Size size) {
-    ChartCircularCoordinateRender chart = coordinateChart as ChartCircularCoordinateRender;
-    Offset center = chart.center;
-    double radius = chart.radius;
+    param as ChartCircularParam;
+    Offset center = param.center;
+    double radius = param.radius;
     canvas.clipPath(Path()..addOval(Rect.fromCircle(center: center, radius: radius)));
 
     TransformUtils transformUtils;
     //处理圆形场景
-    if (chart.arcPosition == ArcPosition.none) {
+    if (param.arcPosition == ArcPosition.none) {
       Offset progressCenter = Offset(center.dx, center.dy + radius);
       transformUtils = TransformUtils(
         anchor: progressCenter,
-        size: chart.size,
+        size: param.size,
         offset: param.offset,
-        zoomVertical: chart.zoomVertical,
-        zoomHorizontal: chart.zoomHorizontal,
+        zoomVertical: false,
+        zoomHorizontal: false,
         zoom: param.zoom,
-        padding: chart.padding,
+        padding: param.padding,
         reverseX: false,
         reverseY: true,
       );
     } else {
       //半圆就不用特别处理了
-      transformUtils = chart.transformUtils;
+      transformUtils = param.transformUtils;
     }
     var index = 0;
     for (T item in data) {
       num po = position.call(item);
       double height = radius * 2;
-      if (chart.arcPosition == ArcPosition.none) {
+      if (param.arcPosition == ArcPosition.none) {
         height = radius * 2;
       } else {
         height = radius;

@@ -32,22 +32,22 @@ class LimitAnnotation extends Annotation {
   Path? _path;
 
   @override
-  void init(ChartCoordinateRender coordinateChart) {
-    super.init(coordinateChart);
+  void init(ChartParam param, ChartCoordinateRender coordinateChart) {
+    super.init(param, coordinateChart);
     if (coordinateChart is ChartDimensionsCoordinateRender) {
       ChartDimensionsCoordinateRender chart = coordinateChart;
       num po = limit;
       double itemHeight = chart.yAxis[yAxisPosition].relativeHeight(po);
       Offset start = Offset(
         chart.padding.left,
-        chart.transformUtils.transformY(
+        param.transformUtils.transformY(
           itemHeight,
           containPadding: true,
         ),
       );
       Offset end = Offset(
-        chart.size.width - chart.padding.right,
-        chart.transformUtils.transformY(
+        param.size.width - chart.padding.right,
+        param.transformUtils.transformY(
           itemHeight,
           containPadding: true,
         ),

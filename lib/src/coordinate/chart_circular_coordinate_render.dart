@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+import '../measure/chart_circular_param.dart';
 import '../measure/chart_param.dart';
 import 'chart_coordinate_render.dart';
 import '../utils/transform_utils.dart';
@@ -35,14 +36,9 @@ class ChartCircularCoordinateRender extends ChartCoordinateRender {
     this.borderColor = Colors.white,
   });
 
-  ///半径
-  late double radius;
-
-  ///中心点
-  late Offset center;
-
   @override
   void paint(ChartParam param, Canvas canvas, Size size) {
+    param as ChartCircularParam;
     _drawCircle(param, canvas, size);
     _drawBackgroundAnnotations(param, canvas, size);
     var index = 0;
@@ -55,9 +51,7 @@ class ChartCircularCoordinateRender extends ChartCoordinateRender {
   }
 
   ///画背景圆
-  void _drawCircle(ChartParam param, Canvas canvas, Size size) {
-    final sw = size.width - param.contentMargin.horizontal;
-    final sh = size.height - param.contentMargin.vertical;
+  void _drawCircle(ChartCircularParam param, Canvas canvas, Size size) {
     // 定义圆形的绘制属性
     final paint = Paint()
       ..style = PaintingStyle.stroke
@@ -71,65 +65,20 @@ class ChartCircularCoordinateRender extends ChartCoordinateRender {
 
     //满圆
     if (arcPosition == ArcPosition.none) {
-      // 确定圆的半径
-      radius = min(sw, sh) / 2 - borderWidth / 2;
-      // 定义中心点
-      center = size.center(Offset.zero);
       // 使用 Canvas 的 drawCircle 绘制
-      canvas.drawCircle(center, radius, paint);
-      transformUtils = TransformUtils(
-        anchor: center,
-        size: size,
-        padding: padding,
-        zoomVertical: zoomVertical,
-        zoomHorizontal: zoomHorizontal,
-        zoom: param.zoom,
-        offset: param.offset,
-        reverseX: false,
-        reverseY: false,
-      );
+      canvas.drawCircle(param.center, param.radius, paint);
     } else {
-      //带有弧度
-      double maxSize = max(sw, sh);
-      double minSize = min(sw, sh);
-      radius = min(maxSize / 2, minSize) - borderWidth / 2;
-      center = size.center(Offset.zero);
       double startAngle = 0;
       double sweepAngle = pi;
       if (arcPosition == ArcPosition.up) {
         startAngle = pi;
-        center = Offset(center.dx, size.height - param.contentMargin.bottom);
-        transformUtils = TransformUtils(
-          anchor: center,
-          size: size,
-          padding: padding,
-          zoomVertical: zoomVertical,
-          zoomHorizontal: zoomHorizontal,
-          zoom: param.zoom,
-          offset: param.offset,
-          reverseX: false,
-          reverseY: true,
-        );
-      } else if (arcPosition == ArcPosition.down) {
-        center = Offset(center.dx, param.contentMargin.top);
-        transformUtils = TransformUtils(
-          anchor: center,
-          size: size,
-          padding: padding,
-          zoomVertical: zoomVertical,
-          zoomHorizontal: zoomHorizontal,
-          zoom: param.zoom,
-          offset: param.offset,
-          reverseX: false,
-          reverseY: false,
-        );
-      }
+      } else if (arcPosition == ArcPosition.down) {}
       Path path = Path()
         ..addArc(
           Rect.fromCenter(
-            center: center,
-            width: radius * 2,
-            height: radius * 2,
+            center: param.center,
+            width: param.radius * 2,
+            height: param.radius * 2,
           ),
           startAngle,
           sweepAngle,
@@ -141,7 +90,7 @@ class ChartCircularCoordinateRender extends ChartCoordinateRender {
   ///背景
   void _drawBackgroundAnnotations(ChartParam param, Canvas canvas, Size size) {
     backgroundAnnotations?.forEach((element) {
-      element.init(this);
+      element.init(param, this);
       element.draw(param, canvas, size);
     });
   }
@@ -149,7 +98,7 @@ class ChartCircularCoordinateRender extends ChartCoordinateRender {
   ///前景
   void _drawForegroundAnnotations(ChartParam param, Canvas canvas, Size size) {
     foregroundAnnotations?.forEach((element) {
-      element.init(this);
+      element.init(param, this);
       element.draw(param, canvas, size);
     });
   }

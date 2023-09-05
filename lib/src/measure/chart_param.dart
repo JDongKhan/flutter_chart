@@ -72,7 +72,7 @@ abstract class ChartParam extends ChangeNotifier {
     contentMargin = EdgeInsets.fromLTRB(margin.left + padding.left, margin.top + padding.top, margin.right + padding.right, margin.bottom + padding.bottom);
   }
 
-  void scroll(Offset offset);
+  Offset scroll(Offset offset);
 
   @override
   bool operator ==(Object other) {

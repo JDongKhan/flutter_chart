@@ -44,45 +44,6 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
 
   @override
   void paint(ChartParam param, Canvas canvas, Size size) {
-    //初始化配置
-    double width = size.width;
-    double height = size.height;
-    int count = xAxis.count;
-    //每格的宽度，用于控制一屏最多显示个数
-    double density = (width - param.contentMargin.horizontal) / count / xAxis.interval;
-    //x轴密度 即1 value 等于多少尺寸
-    if (zoomHorizontal) {
-      xAxis.density = density * param.zoom;
-    } else {
-      xAxis.density = density;
-    }
-    for (YAxis yA in yAxis) {
-      num max = yA.max;
-      num min = yA.min;
-      int yCount = yA.count;
-      //y轴密度  即1 value 等于多少尺寸
-      double itemHeight = (height - margin.vertical) / yCount;
-      double itemValue = (max - min) / yCount;
-      if (zoomVertical) {
-        yA.density = itemHeight / itemValue * param.zoom;
-      } else {
-        yA.density = itemHeight / itemValue;
-      }
-    }
-
-    //开始渲染
-    //转换工具
-    transformUtils = TransformUtils(
-      anchor: Offset(margin.left, size.height - margin.bottom),
-      zoom: param.zoom,
-      offset: param.offset,
-      size: size,
-      zoomVertical: zoomVertical,
-      zoomHorizontal: zoomHorizontal,
-      padding: padding,
-      reverseX: false,
-      reverseY: true,
-    );
     // canvas.save();
     // 如果按坐标系切，就会面临坐标轴和里面的内容重复循环的问题，该组件的本意是尽可能减少无畏的循环，提高性能，如果
     // 给y轴切出来，超出这个范围就隐藏
@@ -125,7 +86,7 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
         }
         String text = yA.formatter?.call(i) ?? '${min + vv}';
         double top = size.height - param.contentMargin.bottom - vv * yA.density;
-        top = transformUtils.withYOffset(top);
+        top = param.transformUtils.withYOffset(top);
         //绘制文本
         if (i == count) {
           _drawYTextPaint(yA, canvas, text, yA.textStyle, yAxisIndex > 0, left + yA.left, top, false);
@@ -218,7 +179,7 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
 
       String? text = xAxis.formatter?.call(i);
       double left = param.contentMargin.left + density * interval * i;
-      left = transformUtils.withXZoomOffset(left);
+      left = param.transformUtils.withXZoomOffset(left);
 
       if (text != null) {
         _drawXTextPaint(canvas, text, xAxis.textStyle, size, left, first: (i == 0) && padding.left == 0, end: (i == count) && padding.right == 0);
@@ -230,7 +191,7 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
           num newValue = i + j * xAmplifyInterval!;
           String? newText = xAxis.formatter?.call(newValue);
           double left = param.contentMargin.left + density * interval * newValue;
-          left = transformUtils.withXZoomOffset(left);
+          left = param.transformUtils.withXZoomOffset(left);
           if (newText != null) {
             _drawXTextPaint(canvas, newText, xAxis.textStyle, size, left);
           }
@@ -383,7 +344,7 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
   void _drawBackgroundAnnotations(ChartParam param, Canvas canvas, Size size) {
     if (backgroundAnnotations != null) {
       for (Annotation annotation in backgroundAnnotations!) {
-        annotation.init(this);
+        annotation.init(param, this);
         annotation.draw(param, canvas, size);
       }
     }
@@ -393,7 +354,7 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
   void _drawForegroundAnnotations(ChartParam param, Canvas canvas, Size size) {
     if (foregroundAnnotations != null) {
       for (Annotation annotation in foregroundAnnotations!) {
-        annotation.init(this);
+        annotation.init(param, this);
         annotation.draw(param, canvas, size);
       }
     }

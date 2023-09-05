@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import '../../base/chart_body_render.dart';
+import '../../measure/chart_circular_param.dart';
 import '../../measure/chart_param.dart';
 import '../../measure/chart_layout_param.dart';
 import '../../coordinate/chart_circular_coordinate_render.dart';
@@ -92,9 +93,9 @@ class Pie<T> extends ChartBodyRender<T> {
 
   @override
   void draw(ChartParam param, Canvas canvas, Size size) {
-    ChartCircularCoordinateRender chart = coordinateChart as ChartCircularCoordinateRender;
-    Offset center = chart.center;
-    double radius = chart.radius;
+    param as ChartCircularParam;
+    Offset center = param.center;
+    double radius = param.radius;
 
     //先计算比例
     List<num> values = [];
@@ -161,25 +162,25 @@ class Pie<T> extends ChartBodyRender<T> {
       }
       drawPie(canvas, tapShape.path!, paint);
       //绘制间隙
-      _drawSpaceLine(canvas, rd, startAngle, sweepAngle);
+      _drawSpaceLine(param, canvas, rd, startAngle, sweepAngle);
 
       String? valueText = valueFormatter?.call(item);
       String? legend = legendFormatter?.call(item);
 
       //绘制引导线
       if (guideLine) {
-        _drawLineAndText(canvas, valueText, legend, index, rd, startAngle, sweepAngle);
+        _drawLineAndText(param, canvas, valueText, legend, index, rd, startAngle, sweepAngle);
       }
       //选中就绘制
       if (selected) {
-        _drawCenterValue(canvas, valueText);
+        _drawCenterValue(param, canvas, valueText);
       }
       //画圆弧
       // baseChart.canvas.drawArc(
       //     newRect, startAngle, sweepAngle, true, paint..color = colors[i]);
       // _drawLegend(item, radius, startAngle, sweepAngle);
       if (showValue) {
-        _drawValue(canvas, valueText, radius, startAngle, sweepAngle);
+        _drawValue(param, canvas, valueText, radius, startAngle, sweepAngle);
       }
       //继续下一个
       startAngle = startAngle + sweepAngle;
@@ -189,12 +190,11 @@ class Pie<T> extends ChartBodyRender<T> {
   }
 
   ///画空隙线
-  void _drawSpaceLine(Canvas canvas, double radius, double startAngle, double sweepAngle) {
+  void _drawSpaceLine(ChartCircularParam param, Canvas canvas, double radius, double startAngle, double sweepAngle) {
     if (spaceWidth == null) {
       return;
     }
-    ChartCircularCoordinateRender chart = coordinateChart as ChartCircularCoordinateRender;
-    Offset center = chart.center;
+    Offset center = param.center;
     //开始线
     var start1X = cos(startAngle) * holeRadius + center.dx;
     var start1Y = sin(startAngle) * holeRadius + center.dy;
@@ -217,12 +217,11 @@ class Pie<T> extends ChartBodyRender<T> {
     canvas.drawLine(start2Offset, end2Offset, paint);
   }
 
-  void _drawLineAndText(Canvas canvas, String? valueText, String? legend, int index, double radius, double startAngle, double sweepAngle) {
+  void _drawLineAndText(ChartCircularParam param, Canvas canvas, String? valueText, String? legend, int index, double radius, double startAngle, double sweepAngle) {
     if (valueText == null && legend == null) {
       return;
     }
-    ChartCircularCoordinateRender chart = coordinateChart as ChartCircularCoordinateRender;
-    Offset center = chart.center;
+    Offset center = param.center;
     //中心弧度
     final double radians = startAngle + sweepAngle / 2;
     double line1 = 10;
@@ -258,7 +257,7 @@ class Pie<T> extends ChartBodyRender<T> {
         textDirection: TextDirection.ltr,
       )..layout(
           minWidth: 0,
-          maxWidth: chart.size.width,
+          maxWidth: param.size.width,
         );
       // 使用三角函数计算文字位置 并根据文字大小适配
       Offset textOffset = Offset(isLeft ? point3.dx : point3.dx - legendTextPainter.width, point3.dy - legendTextPainter.height);
@@ -281,7 +280,7 @@ class Pie<T> extends ChartBodyRender<T> {
         textDirection: TextDirection.ltr,
       )..layout(
           minWidth: 0,
-          maxWidth: chart.size.width,
+          maxWidth: param.size.width,
         );
       // 使用三角函数计算文字位置 并根据文字大小适配
       Offset textOffset = Offset(isLeft ? point3.dx : point3.dx - valueTextPainter.width, point3.dy);
@@ -316,8 +315,7 @@ class Pie<T> extends ChartBodyRender<T> {
   //   }
   // }
   //
-  void _drawValue(Canvas canvas, String? valueText, double radius, double startAngle, double sweepAngle) {
-    ChartCircularCoordinateRender chart = coordinateChart as ChartCircularCoordinateRender;
+  void _drawValue(ChartParam param, Canvas canvas, String? valueText, double radius, double startAngle, double sweepAngle) {
     //中心弧度
     final double radians = startAngle + sweepAngle / 2;
     //画value
@@ -332,18 +330,17 @@ class Pie<T> extends ChartBodyRender<T> {
         textDirection: TextDirection.ltr,
       )..layout(
           minWidth: 0,
-          maxWidth: chart.size.width,
+          maxWidth: param.size.width,
         );
       // 使用三角函数计算文字位置 并根据文字大小适配
-      double x = cos(radians) * (radius / 2 + valueTextOffset) + chart.size.width / 2 - valueTextPainter.width / 2;
-      double y = sin(radians) * (radius / 2 + valueTextOffset) + chart.size.height / 2 - valueTextPainter.height / 2;
+      double x = cos(radians) * (radius / 2 + valueTextOffset) + param.size.width / 2 - valueTextPainter.width / 2;
+      double y = sin(radians) * (radius / 2 + valueTextOffset) + param.size.height / 2 - valueTextPainter.height / 2;
       valueTextPainter.paint(canvas, Offset(x, y));
     }
   }
 
   ///绘制中间文案
-  void _drawCenterValue(Canvas canvas, String? valueText) {
-    ChartCircularCoordinateRender chart = coordinateChart as ChartCircularCoordinateRender;
+  void _drawCenterValue(ChartCircularParam param, Canvas canvas, String? valueText) {
     //中心点文案
     if (centerTextStyle != null && valueText != null) {
       TextPainter valueTextPainter = TextPainter(
@@ -355,9 +352,9 @@ class Pie<T> extends ChartBodyRender<T> {
         textDirection: TextDirection.ltr,
       )..layout(
           minWidth: 0,
-          maxWidth: chart.size.width,
+          maxWidth: param.size.width,
         );
-      valueTextPainter.paint(canvas, chart.center.translate(-valueTextPainter.width / 2, -valueTextPainter.height / 2));
+      valueTextPainter.paint(canvas, param.center.translate(-valueTextPainter.width / 2, -valueTextPainter.height / 2));
     }
   }
 

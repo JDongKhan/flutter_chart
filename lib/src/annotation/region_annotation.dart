@@ -24,8 +24,8 @@ class RegionAnnotation extends Annotation {
 
   Paint? _paint;
   @override
-  void init(ChartCoordinateRender coordinateChart) {
-    super.init(coordinateChart);
+  void init(ChartParam param, ChartCoordinateRender coordinateChart) {
+    super.init(param, coordinateChart);
     _paint = Paint()
       ..color = color
       ..style = PaintingStyle.fill
@@ -42,13 +42,13 @@ class RegionAnnotation extends Annotation {
       assert(positions.length == 2, 'positions must be two length');
       num po1 = positions[0];
       num po2 = positions[1];
-      double start = chart.transformUtils.transformX(po1 * chart.xAxis.density);
-      start = chart.transformUtils.withXZoomOffset(start);
-      double end = chart.transformUtils.transformX(po2 * chart.xAxis.density);
-      end = chart.transformUtils.withXZoomOffset(end);
+      double start = param.transformUtils.transformX(po1 * chart.xAxis.density);
+      start = param.transformUtils.withXZoomOffset(start);
+      double end = param.transformUtils.transformX(po2 * chart.xAxis.density);
+      end = param.transformUtils.withXZoomOffset(end);
 
       double top = param.contentMargin.top;
-      double bottom = chart.size.height - param.contentMargin.bottom;
+      double bottom = param.size.height - param.contentMargin.bottom;
       if (_paint != null) {
         canvas.drawRect(Rect.fromLTRB(start, top, end, bottom), _paint!);
       }

@@ -2,6 +2,7 @@ import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import '../../measure/chart_circular_param.dart';
 import '../../measure/chart_param.dart';
 import '../../utils/chart_utils.dart';
 import '../../base/chart_body_render.dart';
@@ -62,9 +63,9 @@ class Radar<T> extends ChartBodyRender<T> {
 
   @override
   void draw(ChartParam param, Canvas canvas, Size size) {
-    ChartCircularCoordinateRender chart = coordinateChart as ChartCircularCoordinateRender;
-    Offset center = chart.center;
-    double radius = chart.radius;
+    param as ChartCircularParam;
+    Offset center = param.center;
+    double radius = param.radius;
 
     //开始点
     double startAngle = this.startAngle;
@@ -110,7 +111,7 @@ class Radar<T> extends ChartBodyRender<T> {
           textDirection: TextDirection.ltr,
         )..layout(
             minWidth: 0,
-            maxWidth: chart.size.width,
+            maxWidth: param.size.width,
           );
         bool isLeft = x < center.dx;
         bool isBottom = y >= center.dy;
@@ -152,7 +153,7 @@ class Radar<T> extends ChartBodyRender<T> {
             textDirection: TextDirection.ltr,
           )..layout(
               minWidth: 0,
-              maxWidth: chart.size.width,
+              maxWidth: param.size.width,
             );
           bool isLeft = dataX < center.dx;
           bool isTop = dataY <= (center.dy - radius) && legendList != null;

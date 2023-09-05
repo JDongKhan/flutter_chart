@@ -309,7 +309,7 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
 
             // double startOffset = centerV * render.xAxis.density - widget.chartCoordinateRender.size.width / 2;
             //计算缩放和校准偏移
-            double startOffset = (_lastOffset.dx + widget.chartCoordinateRender.size.width / 2) * zoom / _beforeZoom - widget.chartCoordinateRender.size.width / 2;
+            double startOffset = (_lastOffset.dx + _chartParam.size.width / 2) * zoom / _beforeZoom - _chartParam.size.width / 2;
             _zoom = zoom;
             scroll(Offset(startOffset, 0));
           }
@@ -354,27 +354,7 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
   }
 
   void scroll(Offset offset) {
-    //校准偏移，不然缩小后可能起点都在中间了，或者无限滚动
-    double x = offset.dx;
-    // double y = newOffset.dy;
-    if (x < 0) {
-      x = 0;
-    }
-    if (widget.chartCoordinateRender is ChartDimensionsCoordinateRender) {
-      ChartDimensionsCoordinateRender render = widget.chartCoordinateRender as ChartDimensionsCoordinateRender;
-      //放大的场景  offset会受到zoom的影响，所以这里的宽度要先剔除zoom的影响再比较
-      double chartContentWidth = render.xAxis.density * (render.xAxis.max ?? render.xAxis.count);
-      double chartViewPortWidth = render.size.width - _chartParam.contentMargin.horizontal;
-      //处理成跟缩放无关的偏移
-      double maxOffset = (chartContentWidth - chartViewPortWidth);
-      if (maxOffset < 0) {
-        //内容小于0
-        x = 0;
-      } else if (x > maxOffset) {
-        x = maxOffset;
-      }
-    }
-    _offset = Offset(x, 0);
+    _offset = _chartParam.scroll(offset);
     setState(() {});
   }
 
@@ -417,7 +397,7 @@ class _ChartPainter extends CustomPainter {
     canvas.clipRect(clipRect);
     //初始化
     if (_init == false) {
-      chart.init(size);
+      chart.init(param, size);
       _init = true;
     }
     chart.paint(param, canvas, size);

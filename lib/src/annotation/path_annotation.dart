@@ -28,8 +28,8 @@ class PathAnnotation extends Annotation {
   Paint? _paint;
   Path? _path;
   @override
-  void init(ChartCoordinateRender coordinateChart) {
-    super.init(coordinateChart);
+  void init(ChartParam param, ChartCoordinateRender coordinateChart) {
+    super.init(param, coordinateChart);
     _paint = Paint()
       ..color = color
       ..style = PaintingStyle.fill
@@ -37,7 +37,7 @@ class PathAnnotation extends Annotation {
 
     _path = path;
     if (anchor != null) {
-      Offset ost = anchor!(coordinateChart.size);
+      Offset ost = anchor!(param.size);
       final matrix = Matrix4.identity()..leftTranslate(ost.dx, ost.dy);
       _path = path.transform(matrix.storage);
     }

@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import '../../measure/chart_circular_param.dart';
 import '../../measure/chart_param.dart';
 import '../../utils/chart_utils.dart';
 import '../../base/chart_body_render.dart';
@@ -39,9 +40,9 @@ class Progress<T> extends ChartBodyRender<T> {
 
   @override
   void draw(ChartParam param, Canvas canvas, Size size) {
-    ChartCircularCoordinateRender chart = coordinateChart as ChartCircularCoordinateRender;
-    Offset center = chart.center;
-    double radius = chart.radius;
+    param as ChartCircularParam;
+    Offset center = param.center;
+    double radius = param.radius;
 
     // 定义圆形的绘制属性
     final paint = Paint()
@@ -68,11 +69,11 @@ class Progress<T> extends ChartBodyRender<T> {
     double startAngle = this.startAngle;
     double fullSweepAngle = pi;
     //
-    if (chart.arcPosition == ArcPosition.none) {
+    if (param.arcPosition == ArcPosition.none) {
       fullSweepAngle = pi * 2;
-    } else if (chart.arcPosition == ArcPosition.up) {
+    } else if (param.arcPosition == ArcPosition.up) {
       fullSweepAngle = pi;
-    } else if (chart.arcPosition == ArcPosition.down) {
+    } else if (param.arcPosition == ArcPosition.down) {
       startAngle = 0;
     }
 

@@ -87,5 +87,7 @@ class ChartCircularParam extends ChartParam {
     }
   }
 
-  void scroll(Offset offset) {}
+  Offset scroll(Offset offset) {
+    return Offset.zero;
+  }
 }

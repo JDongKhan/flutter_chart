@@ -70,7 +70,8 @@ class ChartDimensionParam extends ChartParam {
     );
   }
 
-  void scroll(Offset offset) {
+  @override
+  Offset scroll(Offset offset) {
     //校准偏移，不然缩小后可能起点都在中间了，或者无限滚动
     double x = offset.dx;
     // double y = newOffset.dy;
@@ -88,6 +89,6 @@ class ChartDimensionParam extends ChartParam {
     } else if (x > maxOffset) {
       x = maxOffset;
     }
-    super.offset = Offset(x, 0);
+    return Offset(x, 0);
   }
 }

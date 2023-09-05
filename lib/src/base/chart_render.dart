@@ -13,7 +13,7 @@ abstract class ChartRender {
   late ChartCoordinateRender coordinateChart;
 
   ///初始化
-  void init(ChartCoordinateRender coordinateChart) {
+  void init(ChartParam param, ChartCoordinateRender coordinateChart) {
     this.coordinateChart = coordinateChart;
   }
 

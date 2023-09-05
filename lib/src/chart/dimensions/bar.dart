@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../measure/chart_dimension_param.dart';
 import '../../measure/chart_param.dart';
 import '../../coordinate/chart_dimensions_coordinate_render.dart';
 import '../../utils/chart_utils.dart';
@@ -43,32 +44,32 @@ class Bar<T> extends ChartBodyRender<T> {
 
   @override
   void draw(ChartParam param, Canvas canvas, Size size) {
-    ChartDimensionsCoordinateRender chart = coordinateChart as ChartDimensionsCoordinateRender;
     List<ChartLayoutParam> childrenLayoutParams = [];
     Paint paint = Paint()
       ..strokeWidth = 1
       ..style = PaintingStyle.fill;
     for (int index = 0; index < data.length; index++) {
       T value = data[index];
-      childrenLayoutParams.add(drawBar(param, canvas, chart, paint, index, value));
+      childrenLayoutParams.add(drawBar(param, canvas, paint, index, value));
     }
     layoutParam.children = childrenLayoutParams;
   }
 
   //可以重写 自定义特殊的图形
-  ChartLayoutParam drawBar(ChartParam param, Canvas canvas, ChartDimensionsCoordinateRender chart, Paint paint, int index, T data) {
+  ChartLayoutParam drawBar(ChartParam param, Canvas canvas, Paint paint, int index, T data) {
+    param as ChartDimensionParam;
     num po = position.call(data);
     num v = value.call(data);
     if (v == 0) {
       return ChartLayoutParam();
     }
-    double bottom = chart.size.height - param.contentMargin.bottom;
-    double contentHeight = chart.size.height - param.contentMargin.vertical;
+    double bottom = param.size.height - param.contentMargin.bottom;
+    double contentHeight = param.size.height - param.contentMargin.vertical;
 
-    double left = param.contentMargin.left + chart.xAxis.density * po - itemWidth / 2;
-    left = chart.transformUtils.withXZoomOffset(left);
+    double left = param.contentMargin.left + param.xAxis.density * po - itemWidth / 2;
+    left = param.transformUtils.withXZoomOffset(left);
 
-    double present = v / chart.yAxis[yAxisPosition].max;
+    double present = v / param.yAxis[yAxisPosition].max;
     double itemHeight = contentHeight * present;
     double top = bottom - itemHeight;
 
@@ -140,44 +141,44 @@ class StackBar<T> extends ChartBodyRender<T> {
 
   @override
   void draw(ChartParam param, Canvas canvas, Size size) {
-    ChartDimensionsCoordinateRender chart = coordinateChart as ChartDimensionsCoordinateRender;
+    param as ChartDimensionParam;
     List<ChartLayoutParam> childrenLayoutParams = [];
     for (int index = 0; index < data.length; index++) {
       T value = data[index];
       if (direction == Axis.horizontal) {
-        childrenLayoutParams.add(drawHorizontalBar(param, canvas, chart, index, value));
+        childrenLayoutParams.add(drawHorizontalBar(param, canvas, index, value));
       } else {
-        childrenLayoutParams.add(drawVerticalBar(param, canvas, chart, index, value));
+        childrenLayoutParams.add(drawVerticalBar(param, canvas, index, value));
       }
     }
     layoutParam.children = childrenLayoutParams;
   }
 
   ///水平排列图形
-  ChartLayoutParam drawHorizontalBar(ChartParam param, Canvas canvas, ChartDimensionsCoordinateRender chart, int index, T data) {
+  ChartLayoutParam drawHorizontalBar(ChartDimensionParam param, Canvas canvas, int index, T data) {
     num po = position.call(data);
     List<num> vas = values.call(data);
     assert(colors.length >= vas.length);
     assert(shaders == null || shaders!.length >= vas.length);
-    num total = chart.yAxis[yAxisPosition].max;
+    num total = param.yAxis[yAxisPosition].max;
     if (total == 0) {
       return ChartLayoutParam();
     }
-    double bottom = chart.size.height - param.contentMargin.bottom;
-    double contentHeight = chart.size.height - param.contentMargin.vertical;
+    double bottom = param.size.height - param.contentMargin.bottom;
+    double contentHeight = param.size.height - param.contentMargin.vertical;
     int stackIndex = 0;
 
     double center = vas.length * itemWidth / 2;
 
-    double left = param.contentMargin.left + chart.xAxis.density * po - itemWidth / 2 - center;
-    left = chart.transformUtils.withXZoomOffset(left);
+    double left = param.contentMargin.left + param.xAxis.density * po - itemWidth / 2 - center;
+    left = param.transformUtils.withXZoomOffset(left);
 
     ChartLayoutParam shape = ChartLayoutParam.rect(
       rect: Rect.fromLTWH(
         left,
         param.contentMargin.top,
         itemWidth * vas.length + padding * (vas.length - 1),
-        chart.size.height - param.contentMargin.vertical,
+        param.size.height - param.contentMargin.vertical,
       ),
     );
     List<ChartLayoutParam> childrenLayoutParams = [];
@@ -210,29 +211,29 @@ class StackBar<T> extends ChartBodyRender<T> {
   }
 
   ///垂直排列图形
-  ChartLayoutParam drawVerticalBar(ChartParam param, Canvas canvas, ChartDimensionsCoordinateRender chart, int index, T data) {
+  ChartLayoutParam drawVerticalBar(ChartDimensionParam param, Canvas canvas, int index, T data) {
     num po = position.call(data);
     List<num> vas = values.call(data);
     assert(colors.length >= vas.length);
     assert(shaders == null || shaders!.length >= vas.length);
-    num total = chart.yAxis[yAxisPosition].max;
+    num total = param.yAxis[yAxisPosition].max;
     if (full) {
       total = vas.fold(0, (previousValue, element) => previousValue + element);
     }
     if (total == 0) {
       return ChartLayoutParam();
     }
-    double bottom = chart.size.height - param.contentMargin.bottom;
-    double contentHeight = chart.size.height - param.contentMargin.vertical;
+    double bottom = param.size.height - param.contentMargin.bottom;
+    double contentHeight = param.size.height - param.contentMargin.vertical;
     int stackIndex = 0;
-    double left = param.contentMargin.left + chart.xAxis.density * po - itemWidth / 2;
-    left = chart.transformUtils.withXZoomOffset(left);
+    double left = param.contentMargin.left + param.xAxis.density * po - itemWidth / 2;
+    left = param.transformUtils.withXZoomOffset(left);
     ChartLayoutParam shape = ChartLayoutParam.rect(
       rect: Rect.fromLTWH(
         left,
         param.contentMargin.top,
         itemWidth,
-        chart.size.height - param.contentMargin.vertical,
+        param.size.height - param.contentMargin.vertical,
       ),
     );
     List<ChartLayoutParam> childrenLayoutParams = [];
