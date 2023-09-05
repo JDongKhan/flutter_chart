@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../measure/chart_shape_layout_param.dart';
+import '../measure/chart_layout_param.dart';
 
 typedef AnnotationTooltipWidgetBuilder = PreferredSizeWidget? Function(BuildContext context);
 
@@ -15,7 +15,7 @@ class ChartParam {
   Offset offset = Offset.zero;
 
   ///根据位置缓存配置信息
-  List<ChartShapeLayoutParam> childrenState = [];
+  List<ChartLayoutParam> childrenState = [];
 
   ChartParam({
     this.localPosition,

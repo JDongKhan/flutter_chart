@@ -8,13 +8,13 @@ import '../base/chart_body_render.dart';
 import '../base/chart_controller.dart';
 import '../base/chart_param.dart';
 import '../coordinate/dimensions_chart_coordinate_render.dart';
-import '../measure/chart_shape_layout_param.dart';
+import '../measure/chart_layout_param.dart';
 import '../coordinate/chart_coordinate_render.dart';
 
 /// @author JD
 ///
-typedef TooltipRenderer = void Function(Canvas, Size size, Offset anchor, List<ChartShapeLayoutParam> indexs);
-typedef TooltipWidgetBuilder = PreferredSizeWidget? Function(BuildContext context, List<ChartShapeLayoutParam>);
+typedef TooltipRenderer = void Function(Canvas, Size size, Offset anchor, List<ChartLayoutParam> indexs);
+typedef TooltipWidgetBuilder = PreferredSizeWidget? Function(BuildContext context, List<ChartLayoutParam>);
 // typedef ChartCoordinateRenderBuilder = ChartCoordinateRender Function();
 
 ///本widget只是起到提供Canvas的功能，不支持任何传参，避免参数来回传递导致难以维护以及混乱，需要自定义可自行去对应渲染器
@@ -105,17 +105,6 @@ class _ChartWidgetState extends State<ChartWidget> {
         builder: (context, cs) {
           ChartCoordinateRender baseChart = widget.coordinateRender;
           _controller.attach(baseChart);
-
-          List<ChartShapeLayoutParam> allP = [];
-          //关联子状态
-          for (int i = 0; i < baseChart.charts.length; i++) {
-            ChartBodyRender body = baseChart.charts[i];
-            ChartShapeLayoutParam c = ChartShapeLayoutParam();
-            body.layoutParam = c;
-            allP.add(c);
-          }
-          _controller.allLayoutParams = allP;
-
           Size size = Size(cs.maxWidth, cs.maxHeight);
           List<Widget> childrenWidget = [];
           //图表 chart
@@ -160,7 +149,7 @@ class _ChartWidgetState extends State<ChartWidget> {
 
         PreferredSizeWidget? widget = _controller.tooltipWidgetBuilder?.call(context);
         TooltipWidgetBuilder? tooltipBuilder = baseChart.tooltipBuilder;
-        widget ??= tooltipBuilder?.call(context, _controller.allLayoutParams);
+        widget ??= tooltipBuilder?.call(context, _controller.chartParam);
 
         if (widget == null) {
           return const SizedBox.shrink();
@@ -236,6 +225,24 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
   Offset _offset = Offset.zero;
   double _zoom = 1.0;
   get _controller => widget.chartCoordinateRender.controller;
+  late List<ChartLayoutParam> allParams;
+  @override
+  void initState() {
+    _initState();
+    super.initState();
+  }
+
+  void _initState() {
+    allParams = [];
+    List<ChartBodyRender> charts = widget.chartCoordinateRender.charts;
+    //关联子状态
+    for (int i = 0; i < charts.length; i++) {
+      ChartBodyRender body = charts[i];
+      ChartLayoutParam c = ChartLayoutParam();
+      body.layoutParam = c;
+      allParams.add(c);
+    }
+  }
 
   @override
   void dispose() {
@@ -250,6 +257,7 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
   @override
   void didUpdateWidget(covariant _ChartCoreWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
+    _initState();
     _controller.reset();
   }
 
@@ -269,6 +277,7 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
       onScaleStart: (ScaleStartDetails details) {
         _beforeZoom = _zoom;
         _lastOffset = _offset;
+        _localPosition = null;
         // if (widget.chartCoordinateRender is DimensionsChartCoordinateRender) {
         //   DimensionsChartCoordinateRender render = widget.chartCoordinateRender as DimensionsChartCoordinateRender;
         //   //计算中间值 用于根据手势
@@ -305,7 +314,7 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
             param: ChartParam(
               zoom: _zoom,
               localPosition: _localPosition,
-              childrenState: _controller.allLayoutParams,
+              childrenState: allParams,
               offset: _offset,
             ),
           ),
@@ -391,6 +400,9 @@ class _ChartPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     chart.controller.bindParam(param);
+    for (var element in param.childrenState) {
+      element.selectedIndex = null;
+    }
     Rect clipRect = Offset.zero & size;
     canvas.clipRect(clipRect);
     //初始化

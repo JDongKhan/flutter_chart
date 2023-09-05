@@ -5,11 +5,14 @@ import 'dart:ui';
 /// @author jd
 const double _maxWidth = 20;
 
+@Deprecated('instead of  using [ChartLayoutParam]')
+typedef CharBodyState = ChartLayoutParam;
+
 ///每个图形(点/柱状图/扇形)的状态
-class ChartShapeLayoutParam {
+class ChartLayoutParam {
   Rect? rect;
   Path? path;
-  ChartShapeLayoutParam({
+  ChartLayoutParam({
     this.rect,
     this.path,
   });
@@ -19,10 +22,10 @@ class ChartShapeLayoutParam {
 
   ///此处用链表来解决查找附近其他图形的逻辑
   ///前面一个图形的信息 目的为了解决图形之间的关联信息
-  ChartShapeLayoutParam? preShapeState;
+  ChartLayoutParam? preShapeState;
 
   ///下一个图形的信息
-  ChartShapeLayoutParam? nextShapeState;
+  ChartLayoutParam? nextShapeState;
 
   ///坐标系最左边
   double? left;
@@ -31,17 +34,17 @@ class ChartShapeLayoutParam {
   double? right;
 
   ///某条数据下 可能会有多条数据
-  List<ChartShapeLayoutParam> children = [];
+  List<ChartLayoutParam> children = [];
 
-  ChartShapeLayoutParam.empty();
+  ChartLayoutParam.empty();
 
   ///矩形
-  ChartShapeLayoutParam.rect({required this.rect});
+  ChartLayoutParam.rect({required this.rect});
   //路径
-  ChartShapeLayoutParam.path({required this.path});
+  ChartLayoutParam.path({required this.path});
 
   ///弧 用path保存 path不便于计算
-  ChartShapeLayoutParam.arc({
+  ChartLayoutParam.arc({
     required Offset center, // 中心点
     required double innerRadius, // 小圆半径
     required double outRadius, // 大圆半径
@@ -85,7 +88,7 @@ class ChartShapeLayoutParam {
       return null;
     } else if (preShapeState == null && nextShapeState != null) {
       //说明是第一个
-      ChartShapeLayoutParam next = nextShapeState!;
+      ChartLayoutParam next = nextShapeState!;
       bool reverse = nextShapeState!.rect!.center.dx < rect!.center.dx;
       double l = rect!.left;
       double r = rect!.right;
@@ -109,7 +112,7 @@ class ChartShapeLayoutParam {
       return Rect.fromLTRB(l, rect!.top, r, rect!.bottom);
     } else if (preShapeState != null && nextShapeState == null) {
       //说明是最后一个
-      ChartShapeLayoutParam pre = preShapeState!;
+      ChartLayoutParam pre = preShapeState!;
       bool reverse = preShapeState!.rect!.center.dx > rect!.center.dx;
       double l = rect!.left;
       double r = rect!.right;
@@ -133,8 +136,8 @@ class ChartShapeLayoutParam {
       return Rect.fromLTRB(l, rect!.top, r, rect!.bottom);
     } else if (preShapeState != null && nextShapeState != null) {
       //说明是中间点
-      ChartShapeLayoutParam next = nextShapeState!;
-      ChartShapeLayoutParam pre = preShapeState!;
+      ChartLayoutParam next = nextShapeState!;
+      ChartLayoutParam pre = preShapeState!;
       bool reverse = nextShapeState!.rect!.center.dx < rect!.center.dx;
       double l = rect!.left;
       double r = rect!.right;

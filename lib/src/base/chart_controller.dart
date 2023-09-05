@@ -10,7 +10,7 @@ class ChartController {
   WeakReference<ChartCoordinateRender>? _chartCoordinateRender;
 
   ///根据位置缓存配置信息
-  late List<ChartShapeLayoutParam> allLayoutParams;
+  List<ChartLayoutParam> get chartParam => _param?.childrenState ?? [];
 
   Offset? tapPosition;
 

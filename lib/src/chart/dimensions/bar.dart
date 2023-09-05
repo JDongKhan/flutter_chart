@@ -4,7 +4,7 @@ import '../../base/chart_param.dart';
 import '../../coordinate/dimensions_chart_coordinate_render.dart';
 import '../../utils/chart_utils.dart';
 import '../../base/chart_body_render.dart';
-import '../../measure/chart_shape_layout_param.dart';
+import '../../measure/chart_layout_param.dart';
 
 typedef BarPosition<T> = num Function(T);
 
@@ -44,7 +44,7 @@ class Bar<T> extends ChartBodyRender<T> {
   @override
   void draw(ChartParam param, Canvas canvas, Size size) {
     DimensionsChartCoordinateRender chart = coordinateChart as DimensionsChartCoordinateRender;
-    List<ChartShapeLayoutParam> childrenLayoutParams = [];
+    List<ChartLayoutParam> childrenLayoutParams = [];
     Paint paint = Paint()
       ..strokeWidth = 1
       ..style = PaintingStyle.fill;
@@ -56,11 +56,11 @@ class Bar<T> extends ChartBodyRender<T> {
   }
 
   //可以重写 自定义特殊的图形
-  ChartShapeLayoutParam drawBar(ChartParam param, Canvas canvas, DimensionsChartCoordinateRender chart, Paint paint, int index, T data) {
+  ChartLayoutParam drawBar(ChartParam param, Canvas canvas, DimensionsChartCoordinateRender chart, Paint paint, int index, T data) {
     num po = position.call(data);
     num v = value.call(data);
     if (v == 0) {
-      return ChartShapeLayoutParam();
+      return ChartLayoutParam();
     }
     double bottom = chart.size.height - chart.contentMargin.bottom;
     double contentHeight = chart.size.height - chart.contentMargin.vertical;
@@ -73,7 +73,7 @@ class Bar<T> extends ChartBodyRender<T> {
     double top = bottom - itemHeight;
 
     Rect rect = Rect.fromLTWH(left, top, itemWidth, itemHeight);
-    ChartShapeLayoutParam shape = ChartShapeLayoutParam.rect(
+    ChartLayoutParam shape = ChartLayoutParam.rect(
       rect: rect,
     );
     if (shape.hitTest(param.localPosition)) {
@@ -141,7 +141,7 @@ class StackBar<T> extends ChartBodyRender<T> {
   @override
   void draw(ChartParam param, Canvas canvas, Size size) {
     DimensionsChartCoordinateRender chart = coordinateChart as DimensionsChartCoordinateRender;
-    List<ChartShapeLayoutParam> childrenLayoutParams = [];
+    List<ChartLayoutParam> childrenLayoutParams = [];
     for (int index = 0; index < data.length; index++) {
       T value = data[index];
       if (direction == Axis.horizontal) {
@@ -154,14 +154,14 @@ class StackBar<T> extends ChartBodyRender<T> {
   }
 
   ///水平排列图形
-  ChartShapeLayoutParam drawHorizontalBar(ChartParam param, Canvas canvas, DimensionsChartCoordinateRender chart, int index, T data) {
+  ChartLayoutParam drawHorizontalBar(ChartParam param, Canvas canvas, DimensionsChartCoordinateRender chart, int index, T data) {
     num po = position.call(data);
     List<num> vas = values.call(data);
     assert(colors.length >= vas.length);
     assert(shaders == null || shaders!.length >= vas.length);
     num total = chart.yAxis[yAxisPosition].max;
     if (total == 0) {
-      return ChartShapeLayoutParam();
+      return ChartLayoutParam();
     }
     double bottom = chart.size.height - chart.contentMargin.bottom;
     double contentHeight = chart.size.height - chart.contentMargin.vertical;
@@ -172,7 +172,7 @@ class StackBar<T> extends ChartBodyRender<T> {
     double left = chart.contentMargin.left + chart.xAxis.density * po - itemWidth / 2 - center;
     left = chart.transformUtils.withXZoomOffset(left);
 
-    ChartShapeLayoutParam shape = ChartShapeLayoutParam.rect(
+    ChartLayoutParam shape = ChartLayoutParam.rect(
       rect: Rect.fromLTWH(
         left,
         chart.contentMargin.top,
@@ -180,13 +180,13 @@ class StackBar<T> extends ChartBodyRender<T> {
         chart.size.height - chart.contentMargin.vertical,
       ),
     );
-    List<ChartShapeLayoutParam> childrenLayoutParams = [];
+    List<ChartLayoutParam> childrenLayoutParams = [];
     for (num v in vas) {
       double present = v / total;
       double itemHeight = contentHeight * present;
       double top = bottom - itemHeight;
       Rect rect = Rect.fromLTWH(left, top, itemWidth, itemHeight);
-      ChartShapeLayoutParam stackShape = ChartShapeLayoutParam.rect(rect: rect);
+      ChartLayoutParam stackShape = ChartLayoutParam.rect(rect: rect);
       Paint paint = Paint()
         ..strokeWidth = 1
         ..style = PaintingStyle.fill;
@@ -210,7 +210,7 @@ class StackBar<T> extends ChartBodyRender<T> {
   }
 
   ///垂直排列图形
-  ChartShapeLayoutParam drawVerticalBar(ChartParam param, Canvas canvas, DimensionsChartCoordinateRender chart, int index, T data) {
+  ChartLayoutParam drawVerticalBar(ChartParam param, Canvas canvas, DimensionsChartCoordinateRender chart, int index, T data) {
     num po = position.call(data);
     List<num> vas = values.call(data);
     assert(colors.length >= vas.length);
@@ -220,14 +220,14 @@ class StackBar<T> extends ChartBodyRender<T> {
       total = vas.fold(0, (previousValue, element) => previousValue + element);
     }
     if (total == 0) {
-      return ChartShapeLayoutParam();
+      return ChartLayoutParam();
     }
     double bottom = chart.size.height - chart.contentMargin.bottom;
     double contentHeight = chart.size.height - chart.contentMargin.vertical;
     int stackIndex = 0;
     double left = chart.contentMargin.left + chart.xAxis.density * po - itemWidth / 2;
     left = chart.transformUtils.withXZoomOffset(left);
-    ChartShapeLayoutParam shape = ChartShapeLayoutParam.rect(
+    ChartLayoutParam shape = ChartLayoutParam.rect(
       rect: Rect.fromLTWH(
         left,
         chart.contentMargin.top,
@@ -235,7 +235,7 @@ class StackBar<T> extends ChartBodyRender<T> {
         chart.size.height - chart.contentMargin.vertical,
       ),
     );
-    List<ChartShapeLayoutParam> childrenLayoutParams = [];
+    List<ChartLayoutParam> childrenLayoutParams = [];
     for (num v in vas) {
       double present = v / total;
       double itemHeight = contentHeight * present;
@@ -249,7 +249,7 @@ class StackBar<T> extends ChartBodyRender<T> {
         paint.color = colors[stackIndex];
       }
       Rect rect = Rect.fromLTWH(left, top, itemWidth, itemHeight);
-      ChartShapeLayoutParam stackShape = ChartShapeLayoutParam.rect(rect: rect);
+      ChartLayoutParam stackShape = ChartLayoutParam.rect(rect: rect);
       if (stackShape.hitTest(param.localPosition)) {
         layoutParam.selectedIndex = index;
         paint.color = highlightColor;

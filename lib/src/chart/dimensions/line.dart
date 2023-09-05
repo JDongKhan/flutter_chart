@@ -4,7 +4,7 @@ import '../../base/chart_param.dart';
 import '../../coordinate/dimensions_chart_coordinate_render.dart';
 import '../../utils/chart_utils.dart';
 import '../../base/chart_body_render.dart';
-import '../../measure/chart_shape_layout_param.dart';
+import '../../measure/chart_layout_param.dart';
 
 typedef LinePosition<T> = List<num> Function(T);
 
@@ -68,7 +68,7 @@ class Line<T> extends ChartBodyRender<T> {
   @override
   void draw(ChartParam param, Canvas canvas, Size size) {
     DimensionsChartCoordinateRender chart = coordinateChart as DimensionsChartCoordinateRender;
-    List<ChartShapeLayoutParam> shapeList = [];
+    List<ChartLayoutParam> shapeList = [];
 
     int index = 0;
     //offset.dx 滚动偏移  (src.zoom - 1) * (src.size.width / 2) 缩放
@@ -79,8 +79,8 @@ class Line<T> extends ChartBodyRender<T> {
     double top = chart.contentMargin.top;
     double bottom = chart.size.height - chart.contentMargin.bottom;
     Map<int, LineInfo> pathMap = {};
-    ChartShapeLayoutParam? lastShape;
-    List<ChartShapeLayoutParam> childrenLayoutParams = [];
+    ChartLayoutParam? lastShape;
+    List<ChartLayoutParam> childrenLayoutParams = [];
     num? lastXvs;
     //遍历数据 处理数据信息
     for (T value in data) {
@@ -89,13 +89,13 @@ class Line<T> extends ChartBodyRender<T> {
         assert(lastXvs < xvs, '虽然支持逆序，但是为了防止数据顺序混乱，还是强制要求必须是正序的数组');
       }
       List<num> yvs = values.call(value);
-      List<ChartShapeLayoutParam> shapes = [];
+      List<ChartLayoutParam> shapes = [];
       assert(colors.length >= yvs.length, '颜色配置跟数据源不匹配');
       assert(shaders == null || shaders!.length >= yvs.length, '颜色配置跟数据源不匹配');
       double xPo = xvs * chart.xAxis.density + left;
 
       //先判断是否选中，此场景是第一次渲染之后点击才有，所以用老数据即可
-      List<ChartShapeLayoutParam> childrenLayoutParams = layoutParam.children;
+      List<ChartLayoutParam> childrenLayoutParams = layoutParam.children;
       if (param.localPosition != null && index < childrenLayoutParams.length && (childrenLayoutParams[index].hitTest(param.localPosition!) == true)) {
         layoutParam.selectedIndex = index;
       }
@@ -115,7 +115,7 @@ class Line<T> extends ChartBodyRender<T> {
           lineInfo.path.moveTo(xPo, yPo);
         } else {
           if (isCurve) {
-            ChartShapeLayoutParam lastChild = lastShape!.children[valueIndex];
+            ChartLayoutParam lastChild = lastShape!.children[valueIndex];
             double preX = lastChild.rect!.center.dx;
             double preY = lastChild.rect!.center.dy;
             double xDiff = xPo - preX;
@@ -146,12 +146,12 @@ class Line<T> extends ChartBodyRender<T> {
         }
         lineInfo.pointList.add(Offset(xPo, yPo));
         //存放点的位置
-        ChartShapeLayoutParam shape = ChartShapeLayoutParam.rect(rect: Rect.fromCenter(center: Offset(xPo, yPo), width: dotRadius, height: dotRadius));
+        ChartLayoutParam shape = ChartLayoutParam.rect(rect: Rect.fromCenter(center: Offset(xPo, yPo), width: dotRadius, height: dotRadius));
         shapes.add(shape);
       }
 
       Rect currentRect = Rect.fromLTRB(xPo, top, xPo + dotRadius * 2, bottom);
-      ChartShapeLayoutParam shape = ChartShapeLayoutParam.rect(rect: currentRect);
+      ChartLayoutParam shape = ChartLayoutParam.rect(rect: currentRect);
       shape.left = left;
       shape.right = right;
       shape.children.addAll(shapes);
@@ -167,16 +167,16 @@ class Line<T> extends ChartBodyRender<T> {
     }
 
     //开启后可查看热区是否正确
-    // int i = 0;
-    // for (var element in shapeList) {
-    //   Rect newRect = Rect.fromLTRB(element.getHotRect()!.left + 1, element.getHotRect()!.top + 1, element.getHotRect()!.right - 1, element.getHotRect()!.bottom);
-    //   Paint newPaint = Paint()
-    //     ..color = colors10[i % colors10.length]
-    //     ..strokeWidth = strokeWidth
-    //     ..style = PaintingStyle.stroke;
-    //   canvas.drawRect(newRect, newPaint);
-    //   i++;
-    // }
+    int i = 0;
+    for (var element in shapeList) {
+      Rect newRect = Rect.fromLTRB(element.getHotRect()!.left + 1, element.getHotRect()!.top + 1, element.getHotRect()!.right - 1, element.getHotRect()!.bottom);
+      Paint newPaint = Paint()
+        ..color = colors10[i % colors10.length]
+        ..strokeWidth = strokeWidth
+        ..style = PaintingStyle.stroke;
+      canvas.drawRect(newRect, newPaint);
+      i++;
+    }
     //开始绘制了
     drawLine(canvas, pathMap);
     layoutParam.children = shapeList;

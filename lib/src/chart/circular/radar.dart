@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import '../../base/chart_param.dart';
 import '../../utils/chart_utils.dart';
 import '../../base/chart_body_render.dart';
-import '../../measure/chart_shape_layout_param.dart';
+import '../../measure/chart_layout_param.dart';
 import '../../coordinate/circular_chart_coordinate_render.dart';
 import 'pie.dart';
 
@@ -70,7 +70,7 @@ class Radar<T> extends ChartBodyRender<T> {
     double startAngle = this.startAngle;
     int itemLength = data.length;
     double percent = 1 / itemLength;
-    List<ChartShapeLayoutParam> childrenLayoutParams = [];
+    List<ChartLayoutParam> childrenLayoutParams = [];
     // 计算出每个数据所占的弧度值
     final sweepAngle = percent * math.pi * 2 * (direction == RotateDirection.forward ? 1 : -1);
 
