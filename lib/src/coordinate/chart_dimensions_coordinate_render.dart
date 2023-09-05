@@ -179,7 +179,7 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
 
       String? text = xAxis.formatter?.call(i);
       double left = param.contentMargin.left + density * interval * i;
-      left = param.transformUtils.withXZoomOffset(left);
+      left = param.transformUtils.withXOffset(left);
 
       if (text != null) {
         _drawXTextPaint(canvas, text, xAxis.textStyle, size, left, first: (i == 0) && padding.left == 0, end: (i == count) && padding.right == 0);
@@ -191,7 +191,7 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
           num newValue = i + j * xAmplifyInterval!;
           String? newText = xAxis.formatter?.call(newValue);
           double left = param.contentMargin.left + density * interval * newValue;
-          left = param.transformUtils.withXZoomOffset(left);
+          left = param.transformUtils.withXOffset(left);
           if (newText != null) {
             _drawXTextPaint(canvas, newText, xAxis.textStyle, size, left);
           }

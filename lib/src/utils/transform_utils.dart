@@ -77,30 +77,16 @@ class TransformUtils {
     return Rect.fromLTWH(x, y, rect.width, rect.height);
   }
 
-  ///缩放后的偏移
-  Offset get zoomOffset {
-    double x = offset.dx;
-    double y = offset.dy;
-    if (zoomHorizontal) {
-      // x = offset.dx * zoom;
-      x = offset.dx;
-    }
-    if (zoomVertical) {
-      y = offset.dy;
-    }
-    return Offset(x, y);
-  }
-
   Offset withZoomOffset(Offset point, [bool scrollable = true]) {
     if (scrollable) {
-      return Offset(point.dx - zoomOffset.dx, point.dy - zoomOffset.dy);
+      return Offset(point.dx - offset.dx, point.dy - offset.dy);
     }
     return point;
   }
 
-  double withXZoomOffset(double dx, [bool scrollable = true]) {
+  double withXOffset(double dx, [bool scrollable = true]) {
     if (scrollable) {
-      return dx - zoomOffset.dx;
+      return dx - offset.dx;
     }
     return dx;
   }
@@ -108,7 +94,7 @@ class TransformUtils {
   //
   double withYOffset(double dy, [bool scrollable = true]) {
     if (scrollable) {
-      return dy - zoomOffset.dy;
+      return dy - offset.dy;
     }
     return dy;
   }
