@@ -66,14 +66,14 @@ class Line<T> extends ChartBodyRender<T> {
           ..style = PaintingStyle.stroke;
 
   @override
-  void draw(ChartParam param, Canvas canvas, Size size) {
+  void draw(Canvas canvas, ChartParam param) {
     param as ChartDimensionParam;
     List<ChartLayoutParam> shapeList = [];
 
     int index = 0;
     //offset.dx 滚动偏移  (src.zoom - 1) * (src.size.width / 2) 缩放
     double left = param.contentMargin.left;
-    left = param.transformUtils.withXZoomOffset(left);
+    left = param.transformUtils.withXOffset(left);
 
     double right = param.size.width - param.contentMargin.right;
     double top = param.contentMargin.top;

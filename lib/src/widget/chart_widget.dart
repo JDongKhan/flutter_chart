@@ -392,13 +392,13 @@ class _ChartPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     chart.controller.bindParam(param);
-    param.init(size: size, margin: chart.margin, padding: chart.padding);
     for (var element in param.childrenState) {
       element.selectedIndex = null;
     }
     Rect clipRect = Offset.zero & size;
     canvas.clipRect(clipRect);
-    chart.paint(param, canvas, size);
+    param.init(size: size, margin: chart.margin, padding: chart.padding);
+    chart.paint(canvas, param);
   }
 
   @override

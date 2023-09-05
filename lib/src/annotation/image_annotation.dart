@@ -51,7 +51,7 @@ class ImageAnnotation extends Annotation {
   }
 
   @override
-  void draw(ChartParam param, Canvas canvas, final Size size) {
+  void draw(Canvas canvas, ChartParam param) {
     if (!needDraw(param)) {
       return;
     }
@@ -64,7 +64,7 @@ class ImageAnnotation extends Annotation {
         num yPo = positions![1];
         double itemWidth = xPo * param.xAxis.density;
         double itemHeight = param.yAxis[yAxisPosition].relativeHeight(yPo);
-        ost = param.transformUtils.withZoomOffset(
+        ost = param.transformUtils.withOffset(
           Offset(
             param.transformUtils.transformX(itemWidth, containPadding: true),
             param.transformUtils.transformY(itemHeight, containPadding: true),
@@ -72,7 +72,7 @@ class ImageAnnotation extends Annotation {
           scroll,
         );
       } else {
-        ost = anchor!(size);
+        ost = anchor!(param.size);
       }
       Paint paint = Paint()..isAntiAlias = true;
       canvas.drawImage(

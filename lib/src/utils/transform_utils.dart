@@ -77,7 +77,7 @@ class TransformUtils {
     return Rect.fromLTWH(x, y, rect.width, rect.height);
   }
 
-  Offset withZoomOffset(Offset point, [bool scrollable = true]) {
+  Offset withOffset(Offset point, [bool scrollable = true]) {
     if (scrollable) {
       return Offset(point.dx - offset.dx, point.dy - offset.dy);
     }

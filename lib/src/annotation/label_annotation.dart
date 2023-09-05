@@ -57,7 +57,7 @@ class LabelAnnotation extends Annotation {
   }
 
   @override
-  void draw(ChartParam param, Canvas canvas, Size size) {
+  void draw(Canvas canvas, ChartParam param) {
     if (!needDraw(param)) {
       return;
     }
@@ -79,7 +79,7 @@ class LabelAnnotation extends Annotation {
           containPadding: true,
         );
         if (scroll) {
-          left = param.transformUtils.withXZoomOffset(left);
+          left = param.transformUtils.withXOffset(left);
           top = param.transformUtils.withYOffset(top);
         } else {
           //不跟随缩放

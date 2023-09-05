@@ -32,7 +32,7 @@ class RegionAnnotation extends Annotation {
   }
 
   @override
-  void draw(ChartParam param, Canvas canvas, Size size) {
+  void draw(Canvas canvas, ChartParam param) {
     if (!needDraw(param)) {
       return;
     }
@@ -41,9 +41,9 @@ class RegionAnnotation extends Annotation {
       num po1 = positions[0];
       num po2 = positions[1];
       double start = param.transformUtils.transformX(po1 * param.xAxis.density);
-      start = param.transformUtils.withXZoomOffset(start);
+      start = param.transformUtils.withXOffset(start);
       double end = param.transformUtils.transformX(po2 * param.xAxis.density);
-      end = param.transformUtils.withXZoomOffset(end);
+      end = param.transformUtils.withXOffset(end);
 
       double top = param.contentMargin.top;
       double bottom = param.size.height - param.contentMargin.bottom;

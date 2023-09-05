@@ -81,5 +81,5 @@ abstract class ChartCoordinateRender {
 
   late ChartController controller;
 
-  void paint(ChartParam param, Canvas canvas, Size size);
+  void paint(Canvas canvas, ChartParam param);
 }

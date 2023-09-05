@@ -32,14 +32,14 @@ class Scatter<T> extends ChartBodyRender<T> {
   }) : style = style ?? _defaultScatterStyleFunction;
 
   @override
-  void draw(ChartParam param, Canvas canvas, Size size) {
+  void draw(Canvas canvas, ChartParam param) {
     param as ChartDimensionParam;
     //offset.dx 滚动偏移  (src.zoom - 1) * (src.size.width / 2) 缩放
     double left = param.contentMargin.left;
-    left = param.transformUtils.withXZoomOffset(left);
+    left = param.transformUtils.withXOffset(left);
 
-    double right = param.size.width - param.contentMargin.right;
-    double top = param.contentMargin.top;
+    // double right = param.size.width - param.contentMargin.right;
+    // double top = param.contentMargin.top;
     double bottom = param.size.height - param.contentMargin.bottom;
 
     Paint dotPaint = Paint()..strokeWidth = 1;

@@ -36,22 +36,24 @@ class ChartCircularCoordinateRender extends ChartCoordinateRender {
   });
 
   @override
-  void paint(ChartParam param, Canvas canvas, Size size) {
+  void paint(Canvas canvas, ChartParam param) {
     param as ChartCircularParam;
-    _drawCircle(param, canvas, size);
-    _drawBackgroundAnnotations(param, canvas, size);
+    _drawCircle(param, canvas);
+    _drawBackgroundAnnotations(param, canvas);
     var index = 0;
     for (var element in charts) {
       element.index = index;
-      element.init(param);
-      element.draw(param, canvas, size);
+      if (!element.isInit) {
+        element.init(param);
+      }
+      element.draw(canvas, param);
       index++;
     }
-    _drawForegroundAnnotations(param, canvas, size);
+    _drawForegroundAnnotations(param, canvas);
   }
 
   ///画背景圆
-  void _drawCircle(ChartCircularParam param, Canvas canvas, Size size) {
+  void _drawCircle(ChartCircularParam param, Canvas canvas) {
     // 定义圆形的绘制属性
     final paint = Paint()
       ..style = PaintingStyle.stroke
@@ -88,18 +90,22 @@ class ChartCircularCoordinateRender extends ChartCoordinateRender {
   }
 
   ///背景
-  void _drawBackgroundAnnotations(ChartParam param, Canvas canvas, Size size) {
+  void _drawBackgroundAnnotations(ChartParam param, Canvas canvas) {
     backgroundAnnotations?.forEach((element) {
-      element.init(param);
-      element.draw(param, canvas, size);
+      if (!element.isInit) {
+        element.init(param);
+      }
+      element.draw(canvas, param);
     });
   }
 
   ///前景
-  void _drawForegroundAnnotations(ChartParam param, Canvas canvas, Size size) {
+  void _drawForegroundAnnotations(ChartParam param, Canvas canvas) {
     foregroundAnnotations?.forEach((element) {
-      element.init(param);
-      element.draw(param, canvas, size);
+      if (!element.isInit) {
+        element.init(param);
+      }
+      element.draw(canvas, param);
     });
   }
 }

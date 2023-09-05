@@ -91,7 +91,7 @@ class Pie<T> extends ChartBodyRender<T> {
   });
 
   @override
-  void draw(ChartParam param, Canvas canvas, Size size) {
+  void draw(Canvas canvas, ChartParam param) {
     param as ChartCircularParam;
     Offset center = param.center;
     double radius = param.radius;

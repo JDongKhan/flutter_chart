@@ -66,7 +66,7 @@ class LimitAnnotation extends Annotation {
   }
 
   @override
-  void draw(ChartParam param, Canvas canvas, Size size) {
+  void draw(Canvas canvas, ChartParam param) {
     if (!needDraw(param)) {
       return;
     }

@@ -42,7 +42,7 @@ class Bar<T> extends ChartBodyRender<T> {
   });
 
   @override
-  void draw(ChartParam param, Canvas canvas, Size size) {
+  void draw(Canvas canvas, ChartParam param) {
     List<ChartLayoutParam> childrenLayoutParams = [];
     Paint paint = Paint()
       ..strokeWidth = 1
@@ -66,7 +66,7 @@ class Bar<T> extends ChartBodyRender<T> {
     double contentHeight = param.size.height - param.contentMargin.vertical;
 
     double left = param.contentMargin.left + param.xAxis.density * po - itemWidth / 2;
-    left = param.transformUtils.withXZoomOffset(left);
+    left = param.transformUtils.withXOffset(left);
 
     double present = v / param.yAxis[yAxisPosition].max;
     double itemHeight = contentHeight * present;
@@ -139,7 +139,7 @@ class StackBar<T> extends ChartBodyRender<T> {
   });
 
   @override
-  void draw(ChartParam param, Canvas canvas, Size size) {
+  void draw(Canvas canvas, ChartParam param) {
     param as ChartDimensionParam;
     List<ChartLayoutParam> childrenLayoutParams = [];
     for (int index = 0; index < data.length; index++) {
@@ -170,7 +170,7 @@ class StackBar<T> extends ChartBodyRender<T> {
     double center = vas.length * itemWidth / 2;
 
     double left = param.contentMargin.left + param.xAxis.density * po - itemWidth / 2 - center;
-    left = param.transformUtils.withXZoomOffset(left);
+    left = param.transformUtils.withXOffset(left);
 
     ChartLayoutParam shape = ChartLayoutParam.rect(
       rect: Rect.fromLTWH(
@@ -226,7 +226,7 @@ class StackBar<T> extends ChartBodyRender<T> {
     double contentHeight = param.size.height - param.contentMargin.vertical;
     int stackIndex = 0;
     double left = param.contentMargin.left + param.xAxis.density * po - itemWidth / 2;
-    left = param.transformUtils.withXZoomOffset(left);
+    left = param.transformUtils.withXOffset(left);
     ChartLayoutParam shape = ChartLayoutParam.rect(
       rect: Rect.fromLTWH(
         left,

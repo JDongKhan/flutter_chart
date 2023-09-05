@@ -42,33 +42,37 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
         xAxis = xAxis ?? XAxis(max: 7);
 
   @override
-  void paint(ChartParam param, Canvas canvas, Size size) {
+  void paint(Canvas canvas, ChartParam param) {
+    Size size = param.size;
     // canvas.save();
     // 如果按坐标系切，就会面临坐标轴和里面的内容重复循环的问题，该组件的本意是尽可能减少无畏的循环，提高性能，如果
     // 给y轴切出来，超出这个范围就隐藏
     // canvas.clipRect(Rect.fromLTWH(0, 0, margin.left, size.height));
-    _drawYAxis(param, canvas, size);
+    _drawYAxis(param, canvas);
     // canvas.restore();
 
     //防止超过y轴
     canvas.clipRect(Rect.fromLTWH(margin.left, 0, size.width - margin.horizontal, size.height));
-    _drawXAxis(param, canvas, size);
-    _drawBackgroundAnnotations(param, canvas, size);
+    _drawXAxis(param, canvas);
+    _drawBackgroundAnnotations(param, canvas);
     //绘图
     var index = 0;
     for (var element in charts) {
       element.index = index;
-      element.init(param);
-      element.draw(param, canvas, size);
+      if (!element.isInit) {
+        element.init(param);
+      }
+      element.draw(canvas, param);
       index++;
     }
-    _drawForegroundAnnotations(param, canvas, size);
+    _drawForegroundAnnotations(param, canvas);
     _drawCrosshair(param, canvas, size);
     _drawTooltip(param, canvas, size);
   }
 
   ///绘制y轴
-  void _drawYAxis(ChartParam param, Canvas canvas, Size size) {
+  void _drawYAxis(ChartParam param, Canvas canvas) {
+    Size size = param.size;
     int yAxisIndex = 0;
     for (YAxis yA in yAxis) {
       Offset offset = yA.offset?.call(size) ?? Offset.zero;
@@ -148,7 +152,8 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
   }
 
   ///绘制x轴
-  void _drawXAxis(ChartParam param, Canvas canvas, Size size) {
+  void _drawXAxis(ChartParam param, Canvas canvas) {
+    Size size = param.size;
     double density = xAxis.density;
     num interval = xAxis.interval;
     Paint paint = Paint()
@@ -341,21 +346,25 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
   }
 
   //背景
-  void _drawBackgroundAnnotations(ChartParam param, Canvas canvas, Size size) {
+  void _drawBackgroundAnnotations(ChartParam param, Canvas canvas) {
     if (backgroundAnnotations != null) {
-      for (Annotation annotation in backgroundAnnotations!) {
-        annotation.init(param);
-        annotation.draw(param, canvas, size);
+      for (Annotation element in backgroundAnnotations!) {
+        if (!element.isInit) {
+          element.init(param);
+        }
+        element.draw(canvas, param);
       }
     }
   }
 
   //前景
-  void _drawForegroundAnnotations(ChartParam param, Canvas canvas, Size size) {
+  void _drawForegroundAnnotations(ChartParam param, Canvas canvas) {
     if (foregroundAnnotations != null) {
-      for (Annotation annotation in foregroundAnnotations!) {
-        annotation.init(param);
-        annotation.draw(param, canvas, size);
+      for (Annotation element in foregroundAnnotations!) {
+        if (!element.isInit) {
+          element.init(param);
+        }
+        element.draw(canvas, param);
       }
     }
   }

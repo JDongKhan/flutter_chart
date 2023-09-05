@@ -7,8 +7,12 @@ import '../measure/chart_param.dart';
 abstract class ChartRender {
   ChartRender();
 
-  ///初始化
-  void init(ChartParam param) {}
+  bool isInit = false;
 
-  void draw(ChartParam param, Canvas canvas, Size size);
+  ///初始化
+  void init(ChartParam param) {
+    isInit = true;
+  }
+
+  void draw(Canvas canvas, ChartParam param);
 }
