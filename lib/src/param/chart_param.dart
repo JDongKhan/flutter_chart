@@ -81,4 +81,7 @@ abstract class ChartParam extends ChangeNotifier {
     }
     return super == other;
   }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, zoom);
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_chart_plus/flutter_chart.dart';
+import '../coordinate/chart_coordinate_render.dart';
 import '../param/chart_layout_param.dart';
 import '../param/chart_param.dart';
 
@@ -8,7 +8,7 @@ import '../param/chart_param.dart';
 ///数据共享，便于各个节点使用
 class ChartController {
   ///
-  WeakReference<ChartCoordinateRender>? _chartCoordinateRender;
+  // WeakReference<ChartCoordinateRender>? _chartCoordinateRender;
 
   ///根据位置缓存配置信息
   List<ChartLayoutParam> get chartParam => _param?.childrenState ?? [];
@@ -22,11 +22,11 @@ class ChartController {
 
   void attach(ChartCoordinateRender chartCoordinateRender) {
     chartCoordinateRender.controller = this;
-    _chartCoordinateRender = WeakReference(chartCoordinateRender);
+    // _chartCoordinateRender = WeakReference(chartCoordinateRender);
   }
 
   void detach() {
-    _chartCoordinateRender = null;
+    // _chartCoordinateRender = null;
   }
 
   void bindParam(ChartParam p) {

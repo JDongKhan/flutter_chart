@@ -5,7 +5,6 @@ import '../../param/chart_circular_param.dart';
 import '../../param/chart_param.dart';
 import '../../utils/chart_utils.dart';
 import '../../base/chart_body_render.dart';
-import '../../param/chart_layout_param.dart';
 import 'pie.dart';
 
 typedef RadarChartValue<T> = List<num> Function(T);
