@@ -124,13 +124,12 @@ class Line<T> extends ChartBodyRender<T> {
         Offset currentPoint = Offset(xPo, yPo);
         //数据过滤
         if (!param.outDraw && xPo < 0) {
-          debugPrint('1-第${index + 1}个数据超出去');
+          // debugPrint('1-第${index + 1}个数据超出去');
           lineInfo.startPoint = currentPoint;
           continue;
         }
         if (lineInfo.path == null) {
           lineInfo.path = Path();
-          lineInfo.pointList = [];
           Offset? startPoint = lineInfo.startPoint;
           if (startPoint == null) {
             lineInfo.startPoint = currentPoint;
@@ -177,7 +176,7 @@ class Line<T> extends ChartBodyRender<T> {
         shape.index = index;
         shapes.add(shape);
         shape.userInfo = value;
-        lineInfo.pointList?.add(shape);
+        lineInfo.pointList.add(shape);
         lineInfo.endPoint = currentPoint;
       }
 
@@ -198,7 +197,7 @@ class Line<T> extends ChartBodyRender<T> {
 
       //数据过滤
       if (!param.outDraw && xPo > param.size.width) {
-        debugPrint('2-第$index个数据超出去');
+        // debugPrint('2-第$index个数据超出去');
         break;
       }
     }
@@ -224,9 +223,10 @@ class Line<T> extends ChartBodyRender<T> {
     _dotPaint.strokeWidth = strokeWidth;
     List<Color> dotColorList = dotColors ?? colors;
     Path? lastPath;
-    pathMap.forEach((index, lineInfo) {
-      if (lineInfo.path == null) {
-        return;
+    for (int index in pathMap.keys) {
+      LineInfo? lineInfo = pathMap[index];
+      if (lineInfo == null || lineInfo.path == null) {
+        continue;
       }
       //先画线
       if (shaders != null && filled == false) {
@@ -256,10 +256,17 @@ class Line<T> extends ChartBodyRender<T> {
         }
         canvas.drawPath(newPath, _fullPaint!);
       }
-      // print(lineInfo.pointList);
-      //最后画点
+    }
+
+    //最后画点  防止被挡住
+    // print(lineInfo.pointList);
+    for (int index in pathMap.keys) {
+      LineInfo? lineInfo = pathMap[index];
+      if (lineInfo == null) {
+        continue;
+      }
       if (dotRadius > 0) {
-        for (ChartLayoutParam point in lineInfo.pointList!) {
+        for (ChartLayoutParam point in lineInfo.pointList) {
           if (!param.outDraw && point.rect!.center.dx < 0) {
             // debugPrint('1-第${lineInfo.pointList.indexOf(point) + 1} 个点 $point 超出去');
             continue;
@@ -280,7 +287,7 @@ class Line<T> extends ChartBodyRender<T> {
           canvas.drawCircle(point.rect!.center, dotRadius, _dotPaint..color = dotColorList[index]);
         }
       }
-    });
+    }
   }
 }
 
@@ -288,6 +295,6 @@ class LineInfo {
   Offset? startPoint;
   Offset? endPoint;
   Path? path;
-  List<ChartLayoutParam>? pointList;
+  List<ChartLayoutParam> pointList = [];
   LineInfo();
 }

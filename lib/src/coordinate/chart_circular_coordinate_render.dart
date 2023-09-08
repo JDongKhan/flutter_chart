@@ -50,7 +50,7 @@ class ChartCircularCoordinateRender extends ChartCoordinateRender {
     _drawBackgroundAnnotations(param, canvas);
     var index = 0;
     for (var element in charts) {
-      element.index = index;
+      element.indexAtChart = index;
       if (!element.isInit) {
         element.init(param);
       }
