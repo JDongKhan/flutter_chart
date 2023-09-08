@@ -15,9 +15,6 @@ class ChartDimensionParam extends ChartParam {
   final bool zoomVertical;
 
   ChartDimensionParam.coordinate({
-    super.localPosition,
-    super.zoom = 1,
-    super.offset = Offset.zero,
     super.outDraw,
     required super.childrenState,
     required ChartDimensionsCoordinateRender coordinate,
@@ -70,7 +67,7 @@ class ChartDimensionParam extends ChartParam {
   }
 
   @override
-  Offset scroll(Offset offset) {
+  void scroll(Offset offset) {
     //校准偏移，不然缩小后可能起点都在中间了，或者无限滚动
     double x = offset.dx;
     // double y = newOffset.dy;
@@ -88,6 +85,6 @@ class ChartDimensionParam extends ChartParam {
     } else if (x > maxOffset) {
       x = maxOffset;
     }
-    return Offset(x, 0);
+    this.offset = Offset(x, 0);
   }
 }

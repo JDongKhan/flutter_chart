@@ -12,16 +12,40 @@ typedef AnnotationTooltipWidgetBuilder = PreferredSizeWidget? Function(BuildCont
 
 abstract class ChartParam extends ChangeNotifier {
   ///点击的位置
-  Offset? localPosition;
+  Offset? _localPosition;
+  set localPosition(v) {
+    if (v != _localPosition) {
+      _localPosition = v;
+      notifyListeners();
+    }
+  }
+
+  get localPosition => _localPosition;
 
   ///缩放级别
-  final double zoom;
+  double _zoom = 1;
+  set zoom(v) {
+    if (v != _zoom) {
+      _zoom = v;
+      notifyListeners();
+    }
+  }
+
+  get zoom => _zoom;
+
+  ///滚动偏移
+  Offset _offset = Offset.zero;
+  set offset(v) {
+    if (v != _offset) {
+      _offset = v;
+      notifyListeners();
+    }
+  }
+
+  get offset => _offset;
 
   ///不在屏幕内是否绘制 默认不绘制
   final bool outDraw;
-
-  ///滚动偏移
-  Offset offset;
 
   ///根据位置缓存配置信息
   List<ChartLayoutParam> childrenState = [];
@@ -30,35 +54,23 @@ abstract class ChartParam extends ChangeNotifier {
   ChartLayoutParam paramAt(index) => childrenState[index];
 
   ChartParam({
-    this.localPosition,
-    this.zoom = 1,
-    this.offset = Offset.zero,
     this.outDraw = false,
     required this.childrenState,
   });
 
   factory ChartParam.coordinate({
-    Offset? localPosition,
-    double zoom = 1,
-    Offset offset = Offset.zero,
     bool outDraw = false,
     required List<ChartLayoutParam> childrenState,
     required ChartCoordinateRender coordinate,
   }) {
     if (coordinate is ChartDimensionsCoordinateRender) {
       return ChartDimensionParam.coordinate(
-        localPosition: localPosition,
-        zoom: zoom,
-        offset: offset,
         outDraw: outDraw,
         childrenState: childrenState,
         coordinate: coordinate,
       );
     }
     return ChartCircularParam.coordinate(
-      localPosition: localPosition,
-      zoom: zoom,
-      offset: offset,
       outDraw: outDraw,
       childrenState: childrenState,
       coordinate: coordinate as ChartCircularCoordinateRender,
@@ -87,16 +99,16 @@ abstract class ChartParam extends ChangeNotifier {
     contentMargin = EdgeInsets.fromLTRB(margin.left + padding.left, margin.top + padding.top, margin.right + padding.right, margin.bottom + padding.bottom);
   }
 
-  Offset scroll(Offset offset);
+  void scroll(Offset offset);
 
   @override
   bool operator ==(Object other) {
     if (other is ChartParam) {
-      return super == other && zoom == other.zoom;
+      return super == other && zoom == other.zoom && localPosition == other.localPosition;
     }
     return super == other;
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, zoom);
+  int get hashCode => Object.hash(runtimeType, zoom, localPosition);
 }

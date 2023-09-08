@@ -18,9 +18,6 @@ class ChartCircularParam extends ChartParam {
   final ArcPosition arcPosition;
 
   ChartCircularParam.coordinate({
-    super.localPosition,
-    super.zoom = 1,
-    super.offset = Offset.zero,
     super.outDraw,
     required super.childrenState,
     required ChartCircularCoordinateRender coordinate,
@@ -86,7 +83,5 @@ class ChartCircularParam extends ChartParam {
   }
 
   @override
-  Offset scroll(Offset offset) {
-    return Offset.zero;
-  }
+  void scroll(Offset offset) {}
 }

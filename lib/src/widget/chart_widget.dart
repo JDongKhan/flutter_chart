@@ -224,9 +224,6 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
   double _beforeZoom = 1.0;
   late Offset _lastOffset;
   late ChartParam _chartParam;
-  Offset? _localPosition;
-  Offset _offset = Offset.zero;
-  double _zoom = 1.0;
   get _controller => widget.chartCoordinateRender.controller;
   late List<ChartLayoutParam> allParams;
   @override
@@ -249,12 +246,6 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
     }
   }
 
-  void _reset() {
-    _offset = Offset.zero;
-    _zoom = 1.0;
-    _localPosition = null;
-  }
-
   @override
   void dispose() {
     super.dispose();
@@ -269,16 +260,12 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
   void didUpdateWidget(covariant _ChartCoreWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
     _initState();
-    _reset();
   }
 
   @override
   Widget build(BuildContext context) {
     _chartParam = ChartParam.coordinate(
-      zoom: _zoom,
-      offset: _offset,
       outDraw: widget.chartCoordinateRender.outDraw,
-      localPosition: _localPosition,
       childrenState: allParams,
       coordinate: widget.chartCoordinateRender,
     );
@@ -286,17 +273,17 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
       behavior: HitTestBehavior.opaque,
       onTapUp: (TapUpDetails details) {
         _controller.resetTooltip();
+        Offset? localPosition;
         if (!_checkForegroundAnnotationsEvent(details.localPosition)) {
-          _localPosition = details.localPosition;
+          localPosition = details.localPosition;
         } else {
-          _localPosition = null;
+          localPosition = null;
         }
-        setState(() {});
+        _chartParam.localPosition = localPosition;
       },
       onScaleStart: (ScaleStartDetails details) {
-        _beforeZoom = _zoom;
-        _lastOffset = _offset;
-        _localPosition = null;
+        _beforeZoom = _chartParam.zoom;
+        _lastOffset = _chartParam.offset;
         // if (widget.chartCoordinateRender is DimensionsChartCoordinateRender) {
         //   DimensionsChartCoordinateRender render = widget.chartCoordinateRender as DimensionsChartCoordinateRender;
         //   //计算中间值 用于根据手势
@@ -315,7 +302,7 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
             // double startOffset = centerV * render.xAxis.density - widget.chartCoordinateRender.size.width / 2;
             //计算缩放和校准偏移
             double startOffset = (_lastOffset.dx + _chartParam.size.width / 2) * zoom / _beforeZoom - _chartParam.size.width / 2;
-            _zoom = zoom;
+            _chartParam.zoom = zoom;
             scroll(Offset(startOffset, 0));
           }
         } else if (details.pointerCount == 1 && details.scale == 1) {
@@ -353,14 +340,12 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
   }
 
   void scrollByDelta(Offset delta) {
-    Offset newOffset = _offset.translate(-delta.dx, -delta.dy);
+    Offset newOffset = _chartParam.offset.translate(-delta.dx, -delta.dy);
     scroll(newOffset);
-    setState(() {});
   }
 
   void scroll(Offset offset) {
-    _offset = _chartParam.scroll(offset);
-    setState(() {});
+    _chartParam.scroll(offset);
   }
 
   // void hitTest(Offset point) {
@@ -388,7 +373,7 @@ class _ChartPainter extends CustomPainter {
   _ChartPainter({
     required this.chart,
     required this.param,
-  });
+  }) : super(repaint: param);
 
   @override
   void paint(Canvas canvas, Size size) {
