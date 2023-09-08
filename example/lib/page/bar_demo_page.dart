@@ -172,6 +172,39 @@ class BarChartDemoPage extends StatelessWidget {
                     ),
                   ),
                 ),
+                SizedBox(
+                  height: 200,
+                  child: ChartWidget(
+                    coordinateRender: ChartDimensionsCoordinateRender(
+                      yAxis: [YAxis(min: 0, max: 500)],
+                      margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
+                      xAxis: XAxis(
+                        count: 7,
+                        max: 30,
+                        formatter: (index) {
+                          return startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd');
+                        },
+                      ),
+                      charts: [
+                        StackBar(
+                          hotColor: Colors.yellow.withOpacity(0.1),
+                          data: dataList,
+                          position: (item) {
+                            return parserDateTimeToDayValue(item['time'] as DateTime, startTime);
+                          },
+                          direction: Axis.horizontal,
+                          itemWidth: 10,
+                          highlightColor: Colors.yellow,
+                          values: (item) => [
+                            double.parse(item['value1'].toString()),
+                            double.parse(item['value2'].toString()),
+                            double.parse(item['value3'].toString()),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ],
             ),
           ),

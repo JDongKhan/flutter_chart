@@ -48,7 +48,6 @@ class Bar<T> extends ChartBodyRender<T> {
   @override
   void draw(Canvas canvas, ChartParam param) {
     List<ChartLayoutParam> childrenLayoutParams = [];
-
     for (int index = 0; index < data.length; index++) {
       T item = data[index];
       num xPoV = position.call(item);
@@ -129,6 +128,9 @@ class StackBar<T> extends ChartBodyRender<T> {
   ///撑满 如果为true则会根据实际数值的总和求比例，如果为false则会根据Y轴最大值求比例
   final bool full;
 
+  ///绘制热区 颜色
+  final Color? hotColor;
+
   ///两个bar之间的间距
   final double padding;
 
@@ -144,11 +146,14 @@ class StackBar<T> extends ChartBodyRender<T> {
     this.direction = Axis.horizontal,
     this.full = false,
     this.padding = 5,
+    this.hotColor,
   });
 
   final Paint _paint = Paint()
     ..strokeWidth = 1
     ..style = PaintingStyle.fill;
+
+  late final Paint _hotPaint = Paint()..style = PaintingStyle.fill;
 
   @override
   void draw(Canvas canvas, ChartParam param) {
@@ -166,7 +171,7 @@ class StackBar<T> extends ChartBodyRender<T> {
       } else {
         p = _measureVerticalBarLayoutParam(param, po, vas);
       }
-      childrenLayoutParams.add(p);
+      childrenLayoutParams.add(p..index = index);
 
       int stackIndex = 0;
       for (ChartLayoutParam cp in p.children) {
@@ -185,6 +190,14 @@ class StackBar<T> extends ChartBodyRender<T> {
           canvas.drawRect(cp.rect!, _paint);
         }
         stackIndex++;
+      }
+
+      //绘制热区
+      if (hotColor != null && p.rect != null) {
+        canvas.drawRect(
+          p.rect!,
+          _hotPaint..color = hotColor!,
+        );
       }
     }
     layoutParam.children = childrenLayoutParams;

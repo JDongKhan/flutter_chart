@@ -38,17 +38,15 @@ class Progress<T> extends ChartBodyRender<T> {
     this.strokeCap,
   });
 
-  late Paint _paint;
+  late final Paint _paint = Paint()
+    ..style = PaintingStyle.stroke
+    ..isAntiAlias = true
+    ..strokeWidth = strokeWidth;
   Paint? _endPaint;
 
   @override
   void init(ChartParam param) {
     super.init(param);
-    // 定义圆形的绘制属性
-    _paint = Paint()
-      ..style = PaintingStyle.stroke
-      ..isAntiAlias = true
-      ..strokeWidth = strokeWidth;
 
     if (strokeCap != null) {
       _paint.strokeCap = strokeCap!;

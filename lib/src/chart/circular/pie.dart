@@ -92,7 +92,11 @@ class Pie<T> extends ChartBodyRender<T> {
 
   List<num> _values = [];
   num _total = 0;
-  late Paint _paint;
+  late final Paint _paint = Paint()
+    ..strokeWidth = 0.0
+    ..isAntiAlias = true
+    ..style = PaintingStyle.fill;
+
   @override
   void init(ChartParam param) {
     super.init(param);
@@ -106,11 +110,6 @@ class Pie<T> extends ChartBodyRender<T> {
       _total += po;
       _values.add(po);
     }
-    // 设置绘制属性
-    _paint = Paint()
-      ..strokeWidth = 0.0
-      ..isAntiAlias = true
-      ..style = PaintingStyle.fill;
   }
 
   @override

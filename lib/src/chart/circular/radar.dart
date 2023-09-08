@@ -59,8 +59,15 @@ class Radar<T> extends ChartBodyRender<T> {
   });
 
   late double _sweepAngle;
-  late Paint _linePaint;
-  late Paint _dataLinePaint;
+  late final Paint _linePaint = Paint()
+    ..strokeWidth = 1.0
+    ..isAntiAlias = true
+    ..color = lineColor
+    ..style = PaintingStyle.stroke;
+  late final Paint _dataLinePaint = Paint()
+    ..strokeWidth = 1.0
+    ..isAntiAlias = true
+    ..style = PaintingStyle.stroke;
   Paint? _fillDataLinePaint;
 
   @override
@@ -71,18 +78,6 @@ class Radar<T> extends ChartBodyRender<T> {
     double percent = 1 / itemLength;
     // 计算出每个数据所占的弧度值
     _sweepAngle = percent * math.pi * 2 * (direction == RotateDirection.forward ? 1 : -1);
-
-    // 设置绘制属性
-    _linePaint = Paint()
-      ..strokeWidth = 1.0
-      ..isAntiAlias = true
-      ..color = lineColor
-      ..style = PaintingStyle.stroke;
-
-    _dataLinePaint = Paint()
-      ..strokeWidth = 1.0
-      ..isAntiAlias = true
-      ..style = PaintingStyle.stroke;
 
     if (fillColors != null) {
       _fillDataLinePaint = Paint()
@@ -171,7 +166,6 @@ class Radar<T> extends ChartBodyRender<T> {
           _textPainterList.add(RadarTextPainter(textPainter: legendTextPainter, offset: textOffset));
         }
       }
-
       //继续下一个
       startAngle = startAngle + _sweepAngle;
     }
