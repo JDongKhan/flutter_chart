@@ -47,6 +47,12 @@ class _LineChartScaleDemoPageState extends State<LineChartScaleDemoPage> {
         'value2': 450,
         'value3': 300,
       },
+      {
+        'time': startTime.add(const Duration(days: 9)),
+        'value1': 300,
+        'value2': 450,
+        'value3': 300,
+      },
     ];
 
     return Scaffold(

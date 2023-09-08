@@ -41,53 +41,61 @@ class Bar<T> extends ChartBodyRender<T> {
     this.highlightColor = Colors.yellow,
   });
 
+  final Paint _paint = Paint()
+    ..strokeWidth = 1
+    ..style = PaintingStyle.fill;
+
   @override
   void draw(Canvas canvas, ChartParam param) {
     List<ChartLayoutParam> childrenLayoutParams = [];
-    Paint paint = Paint()
-      ..strokeWidth = 1
-      ..style = PaintingStyle.fill;
+
     for (int index = 0; index < data.length; index++) {
-      T value = data[index];
-      childrenLayoutParams.add(_drawBar(param, canvas, paint, index, value));
+      T item = data[index];
+      num xPoV = position.call(item);
+      num yPoV = value.call(item);
+      ChartLayoutParam p = _measureBarLayoutParam(param, xPoV, yPoV)..index = index;
+      if (p.rect != null) {
+        if (p.hitTest(param.localPosition)) {
+          layoutParam.selectedIndex = index;
+          _paint.shader = null;
+          _paint.color = highlightColor;
+        } else {
+          if (shader != null) {
+            _paint.shader = shader;
+          } else {
+            _paint.color = color;
+          }
+        }
+        //开始绘制，bar不同于line，在循环中就可以绘制
+        canvas.drawRect(p.rect!, _paint);
+      }
+      childrenLayoutParams.add(p);
     }
     layoutParam.children = childrenLayoutParams;
   }
 
   //可以重写 自定义特殊的图形
-  ChartLayoutParam _drawBar(ChartParam param, Canvas canvas, Paint paint, int index, T data) {
+  ChartLayoutParam _measureBarLayoutParam(ChartParam param, num xPoV, num yPoV) {
     param as ChartDimensionParam;
-    num po = position.call(data);
-    num v = value.call(data);
-    if (v == 0) {
+    if (yPoV == 0) {
       return ChartLayoutParam();
     }
     double bottom = param.size.height - param.contentMargin.bottom;
     double contentHeight = param.size.height - param.contentMargin.vertical;
 
-    double left = param.contentMargin.left + param.xAxis.density * po - itemWidth / 2;
+    double left = param.contentMargin.left + param.xAxis.density * xPoV - itemWidth / 2;
     left = param.transformUtils.withXOffset(left);
 
-    double present = v / param.yAxis[yAxisPosition].max;
+    double present = yPoV / param.yAxis[yAxisPosition].max;
     double itemHeight = contentHeight * present;
     double top = bottom - itemHeight;
-
+    if (left > param.size.width || (left + itemWidth) < 0) {
+      return ChartLayoutParam();
+    }
     Rect rect = Rect.fromLTWH(left, top, itemWidth, itemHeight);
     ChartLayoutParam shape = ChartLayoutParam.rect(
       rect: rect,
     );
-    if (shape.hitTest(param.localPosition)) {
-      layoutParam.selectedIndex = index;
-      paint.color = highlightColor;
-    } else {
-      if (shader != null) {
-        paint.shader = shader;
-      } else {
-        paint.color = color;
-      }
-    }
-    //开始绘制，bar不同于line，在循环中就可以绘制
-    canvas.drawRect(rect, paint);
     return shape;
   }
 }
@@ -138,34 +146,58 @@ class StackBar<T> extends ChartBodyRender<T> {
     this.padding = 5,
   });
 
+  final Paint _paint = Paint()
+    ..strokeWidth = 1
+    ..style = PaintingStyle.fill;
+
   @override
   void draw(Canvas canvas, ChartParam param) {
     param as ChartDimensionParam;
     List<ChartLayoutParam> childrenLayoutParams = [];
     for (int index = 0; index < data.length; index++) {
-      T value = data[index];
+      T item = data[index];
+      num po = position.call(item);
+      List<num> vas = values.call(item);
+      assert(colors.length >= vas.length);
+      assert(shaders == null || shaders!.length >= vas.length);
+      ChartLayoutParam p;
       if (direction == Axis.horizontal) {
-        childrenLayoutParams.add(_drawHorizontalBar(param, canvas, index, value));
+        p = _measureHorizontalBarLayoutParam(param, po, vas);
       } else {
-        childrenLayoutParams.add(_drawVerticalBar(param, canvas, index, value));
+        p = _measureVerticalBarLayoutParam(param, po, vas);
+      }
+      childrenLayoutParams.add(p);
+
+      int stackIndex = 0;
+      for (ChartLayoutParam cp in p.children) {
+        if (cp.rect != null) {
+          if (shaders != null) {
+            _paint.shader = shaders![stackIndex];
+          } else {
+            _paint.color = colors[stackIndex];
+          }
+          if (cp.hitTest(param.localPosition)) {
+            layoutParam.selectedIndex = index;
+            _paint.shader = null;
+            _paint.color = highlightColor;
+          }
+          //画图
+          canvas.drawRect(cp.rect!, _paint);
+        }
+        stackIndex++;
       }
     }
     layoutParam.children = childrenLayoutParams;
   }
 
   ///水平排列图形
-  ChartLayoutParam _drawHorizontalBar(ChartDimensionParam param, Canvas canvas, int index, T data) {
-    num po = position.call(data);
-    List<num> vas = values.call(data);
-    assert(colors.length >= vas.length);
-    assert(shaders == null || shaders!.length >= vas.length);
+  ChartLayoutParam _measureHorizontalBarLayoutParam(ChartDimensionParam param, num po, List<num> vas) {
     num total = param.yAxis[yAxisPosition].max;
     if (total == 0) {
       return ChartLayoutParam();
     }
     double bottom = param.size.height - param.contentMargin.bottom;
     double contentHeight = param.size.height - param.contentMargin.vertical;
-    int stackIndex = 0;
 
     double center = vas.length * itemWidth / 2;
 
@@ -187,34 +219,15 @@ class StackBar<T> extends ChartBodyRender<T> {
       double top = bottom - itemHeight;
       Rect rect = Rect.fromLTWH(left, top, itemWidth, itemHeight);
       ChartLayoutParam stackShape = ChartLayoutParam.rect(rect: rect);
-      Paint paint = Paint()
-        ..strokeWidth = 1
-        ..style = PaintingStyle.fill;
-      if (shaders != null) {
-        paint.shader = shaders![stackIndex];
-      } else {
-        paint.color = colors[stackIndex];
-      }
-      if (stackShape.hitTest(param.localPosition)) {
-        layoutParam.selectedIndex = index;
-        paint.color = highlightColor;
-      }
-      //画图
-      canvas.drawRect(rect, paint);
       left = left + itemWidth + padding;
       childrenLayoutParams.add(stackShape);
-      stackIndex++;
     }
     shape.children = childrenLayoutParams;
     return shape;
   }
 
   ///垂直排列图形
-  ChartLayoutParam _drawVerticalBar(ChartDimensionParam param, Canvas canvas, int index, T data) {
-    num po = position.call(data);
-    List<num> vas = values.call(data);
-    assert(colors.length >= vas.length);
-    assert(shaders == null || shaders!.length >= vas.length);
+  ChartLayoutParam _measureVerticalBarLayoutParam(ChartDimensionParam param, num po, List<num> vas) {
     num total = param.yAxis[yAxisPosition].max;
     if (full) {
       total = vas.fold(0, (previousValue, element) => previousValue + element);
@@ -224,7 +237,6 @@ class StackBar<T> extends ChartBodyRender<T> {
     }
     double bottom = param.size.height - param.contentMargin.bottom;
     double contentHeight = param.size.height - param.contentMargin.vertical;
-    int stackIndex = 0;
     double left = param.contentMargin.left + param.xAxis.density * po - itemWidth / 2;
     left = param.transformUtils.withXOffset(left);
     ChartLayoutParam shape = ChartLayoutParam.rect(
@@ -240,23 +252,9 @@ class StackBar<T> extends ChartBodyRender<T> {
       double present = v / total;
       double itemHeight = contentHeight * present;
       double top = bottom - itemHeight;
-      Paint paint = Paint()
-        ..strokeWidth = 1
-        ..style = PaintingStyle.fill;
-      if (shaders != null) {
-        paint.shader = shaders![stackIndex];
-      } else {
-        paint.color = colors[stackIndex];
-      }
       Rect rect = Rect.fromLTWH(left, top, itemWidth, itemHeight);
       ChartLayoutParam stackShape = ChartLayoutParam.rect(rect: rect);
-      if (stackShape.hitTest(param.localPosition)) {
-        layoutParam.selectedIndex = index;
-        paint.color = highlightColor;
-        childrenLayoutParams.add(stackShape);
-      }
-      canvas.drawRect(rect, paint);
-      stackIndex++;
+      childrenLayoutParams.add(stackShape);
       bottom = top;
     }
     shape.children = childrenLayoutParams;

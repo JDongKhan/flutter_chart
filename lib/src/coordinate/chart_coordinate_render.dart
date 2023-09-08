@@ -65,6 +65,9 @@ abstract class ChartCoordinateRender {
   ///前景标注
   final List<Annotation>? foregroundAnnotations;
 
+  ///不在屏幕内是否绘制 默认不绘制
+  final bool outDraw;
+
   ChartCoordinateRender({
     required this.margin,
     required this.padding,
@@ -74,6 +77,7 @@ abstract class ChartCoordinateRender {
     this.zoomVertical = false,
     this.minZoom,
     this.maxZoom,
+    this.outDraw = false,
     this.backgroundAnnotations,
     this.foregroundAnnotations,
     this.safeArea,

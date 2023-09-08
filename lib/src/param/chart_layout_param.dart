@@ -21,6 +21,12 @@ class ChartLayoutParam {
     this.path,
   });
 
+  ///数据所在数组的位置
+  int? index;
+
+  ///存放额外信息
+  dynamic userInfo;
+
   //选中children的索引
   int? selectedIndex;
 
@@ -190,5 +196,10 @@ class ChartLayoutParam {
     }
 
     return false;
+  }
+
+  @override
+  String toString() {
+    return '{index:$index userInfo:$userInfo}';
   }
 }

@@ -21,6 +21,7 @@ class ChartCircularParam extends ChartParam {
     super.localPosition,
     super.zoom = 1,
     super.offset = Offset.zero,
+    super.outDraw,
     required super.childrenState,
     required ChartCircularCoordinateRender coordinate,
   })  : arcPosition = coordinate.arcPosition,

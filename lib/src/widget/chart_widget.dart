@@ -277,6 +277,7 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
     _chartParam = ChartParam.coordinate(
       zoom: _zoom,
       offset: _offset,
+      outDraw: widget.chartCoordinateRender.outDraw,
       localPosition: _localPosition,
       childrenState: allParams,
       coordinate: widget.chartCoordinateRender,

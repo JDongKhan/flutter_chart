@@ -34,6 +34,7 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
     super.minZoom,
     super.maxZoom,
     super.safeArea,
+    super.outDraw = false,
     super.tooltipBuilder,
     this.crossHair = const CrossHairStyle(),
     XAxis? xAxis,

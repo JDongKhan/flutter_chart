@@ -1,7 +1,8 @@
 
 ## 0.1.1
 
-* fix zoom bug
+* fix zoom bug 
+* performance optimization for line chart
 
 ## 0.1.0
 

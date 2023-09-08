@@ -27,6 +27,7 @@ class ChartCircularCoordinateRender extends ChartCoordinateRender {
     super.padding = EdgeInsets.zero,
     required super.charts,
     super.safeArea,
+    super.outDraw = false,
     super.backgroundAnnotations,
     super.foregroundAnnotations,
     this.arcPosition = ArcPosition.none,
@@ -34,6 +35,13 @@ class ChartCircularCoordinateRender extends ChartCoordinateRender {
     this.strokeCap,
     this.borderColor = Colors.white,
   });
+
+  // 定义圆形的绘制属性
+  late final Paint _paint = Paint()
+    ..style = PaintingStyle.stroke
+    ..color = borderColor
+    ..isAntiAlias = true
+    ..strokeWidth = borderWidth;
 
   @override
   void paint(Canvas canvas, ChartParam param) {
@@ -54,21 +62,13 @@ class ChartCircularCoordinateRender extends ChartCoordinateRender {
 
   ///画背景圆
   void _drawCircle(ChartCircularParam param, Canvas canvas) {
-    // 定义圆形的绘制属性
-    final paint = Paint()
-      ..style = PaintingStyle.stroke
-      ..color = borderColor
-      ..isAntiAlias = true
-      ..strokeWidth = borderWidth;
-
     if (strokeCap != null) {
-      paint.strokeCap = strokeCap!;
+      _paint.strokeCap = strokeCap!;
     }
-
     //满圆
     if (arcPosition == ArcPosition.none) {
       // 使用 Canvas 的 drawCircle 绘制
-      canvas.drawCircle(param.center, param.radius, paint);
+      canvas.drawCircle(param.center, param.radius, _paint);
     } else {
       double startAngle = 0;
       double sweepAngle = pi;
@@ -85,7 +85,7 @@ class ChartCircularCoordinateRender extends ChartCoordinateRender {
           startAngle,
           sweepAngle,
         );
-      canvas.drawPath(path, paint);
+      canvas.drawPath(path, _paint);
     }
   }
 

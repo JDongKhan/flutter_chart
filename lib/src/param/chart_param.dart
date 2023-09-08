@@ -17,6 +17,9 @@ abstract class ChartParam extends ChangeNotifier {
   ///缩放级别
   final double zoom;
 
+  ///不在屏幕内是否绘制 默认不绘制
+  final bool outDraw;
+
   ///滚动偏移
   Offset offset;
 
@@ -30,6 +33,7 @@ abstract class ChartParam extends ChangeNotifier {
     this.localPosition,
     this.zoom = 1,
     this.offset = Offset.zero,
+    this.outDraw = false,
     required this.childrenState,
   });
 
@@ -37,16 +41,25 @@ abstract class ChartParam extends ChangeNotifier {
     Offset? localPosition,
     double zoom = 1,
     Offset offset = Offset.zero,
+    bool outDraw = false,
     required List<ChartLayoutParam> childrenState,
     required ChartCoordinateRender coordinate,
   }) {
     if (coordinate is ChartDimensionsCoordinateRender) {
-      return ChartDimensionParam.coordinate(localPosition: localPosition, zoom: zoom, offset: offset, childrenState: childrenState, coordinate: coordinate);
+      return ChartDimensionParam.coordinate(
+        localPosition: localPosition,
+        zoom: zoom,
+        offset: offset,
+        outDraw: outDraw,
+        childrenState: childrenState,
+        coordinate: coordinate,
+      );
     }
     return ChartCircularParam.coordinate(
       localPosition: localPosition,
       zoom: zoom,
       offset: offset,
+      outDraw: outDraw,
       childrenState: childrenState,
       coordinate: coordinate as ChartCircularCoordinateRender,
     );
@@ -58,6 +71,8 @@ abstract class ChartParam extends ChangeNotifier {
   late Size size;
   late EdgeInsets margin;
   late EdgeInsets padding;
+
+  Size get contentSize => contentRect.size;
 
   ///图形内容的外边距信息
   late EdgeInsets contentMargin;
