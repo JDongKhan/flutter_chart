@@ -104,11 +104,11 @@ abstract class ChartParam extends ChangeNotifier {
   @override
   bool operator ==(Object other) {
     if (other is ChartParam) {
-      return super == other && zoom == other.zoom && localPosition == other.localPosition;
+      return super == other && zoom == other.zoom && localPosition == other.localPosition && offset == other.offset;
     }
     return super == other;
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, zoom, localPosition);
+  int get hashCode => Object.hash(runtimeType, _zoom, _offset, _localPosition);
 }
