@@ -185,6 +185,59 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                     ),
                   ),
                 ),
+                SizedBox(
+                  // color: Colors.yellow,
+                  height: 200,
+                  child: ChartWidget(
+                    coordinateRender: ChartDimensionsCoordinateRender(
+                      zoomHorizontal: true,
+                      margin: const EdgeInsets.only(left: 40, top: 5, right: 0, bottom: 30),
+                      //提示的文案信息
+                      crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
+                      tooltipBuilder: (BuildContext context, List<ChartLayoutParam> body) {
+                        return PreferredSize(
+                          preferredSize: const Size(60, 60),
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            child: Text(body.map((e) => e.selectedIndex).toString()),
+                          ),
+                        );
+                      },
+                      yAxis: [
+                        YAxis(min: 0, max: 500, drawGrid: true),
+                      ],
+                      xAxis: XAxis(
+                        count: 9,
+                        drawGrid: true,
+                        formatter: (index) => startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd'),
+                      ),
+                      charts: [
+                        Line(
+                          data: dataList,
+                          //填充需要开启这个属性
+                          filled: true,
+                          position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
+                          colors: [Colors.blue, Colors.red],
+                          dotColors: [Colors.blue, Colors.black],
+                          shaders: [
+                            ui.Gradient.linear(Offset.zero, Offset(0, 200), [
+                              Colors.red.withOpacity(0.3),
+                              Colors.black.withOpacity(0.5),
+                            ]),
+                            ui.Gradient.linear(Offset.zero, Offset(0, 200), [
+                              Colors.blue.withOpacity(0.5),
+                              Colors.yellow.withOpacity(0.5),
+                            ]),
+                          ],
+                          values: (item) => [
+                            item['value2'] as num,
+                            item['value1'] as num,
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
                 const Text('shaders'),
                 SizedBox(
                   // color: Colors.yellow,
@@ -217,7 +270,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                       charts: [
                         Line(
                           data: dataList,
-                          //需要开启这个属性
+                          //填充需要开启这个属性
                           filled: true,
                           operation: PathOperation.xor,
                           position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),

@@ -78,7 +78,7 @@ class ChartDimensionParam extends ChartParam {
       x = 0;
     }
     //放大的场景  offset会受到zoom的影响，所以这里的宽度要先剔除zoom的影响再比较
-    double chartContentWidth = xAxis.density * (xAxis.max ?? xAxis.count);
+    double chartContentWidth = xAxis.density * xAxis.max;
     double chartViewPortWidth = size.width - contentMargin.horizontal;
     //处理成跟缩放无关的偏移
     double maxOffset = (chartContentWidth - chartViewPortWidth);

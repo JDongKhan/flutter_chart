@@ -27,6 +27,7 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
     super.padding = const EdgeInsets.only(left: 30, top: 0, right: 0, bottom: 0),
     required super.charts,
     required this.yAxis,
+    required this.xAxis,
     super.backgroundAnnotations,
     super.foregroundAnnotations,
     super.zoomHorizontal,
@@ -37,10 +38,8 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
     super.outDraw = false,
     super.tooltipBuilder,
     this.crossHair = const CrossHairStyle(),
-    XAxis? xAxis,
   })  : assert(yAxis.isNotEmpty),
-        assert(zoomVertical == false, '暂不支持垂直方向缩放'),
-        xAxis = xAxis ?? XAxis(max: 7);
+        assert(zoomVertical == false, '暂不支持垂直方向缩放');
 
   @override
   void paint(Canvas canvas, ChartParam param) {
@@ -162,7 +161,7 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
       ..strokeWidth = 1;
 
     //实际要显示的数量
-    int count = (xAxis.max ?? xAxis.count) ~/ interval;
+    int count = xAxis.max ~/ interval;
     //缩放时过滤逻辑
     double xFilterZoom = 1 / param.zoom;
     //缩小时的策略
@@ -384,13 +383,13 @@ class XAxis {
   ///每个格子代表的值
   final num interval;
 
-  ///x轴最大值， 最大格子数 = max / interval, 如果最大格子数 == count,则不会滚动
-  final num? max;
+  ///x轴最大值， 最大格子数 = max / interval, 如果最大格子数 == count,则不会滚动, 默认值为count的值
+  final num max;
 
   ///x轴文案格式化  不要使用过于耗时的方法
   final AxisFormatter? formatter;
 
-  ///每1个逻辑value代表多宽
+  ///每1个逻辑value代表多宽， 在绘制过程中如果使用Matrix4转换不便更为细腻的控制，所以设计出了密度的概念
   late double density;
 
   ///是否画格子线
@@ -412,17 +411,17 @@ class XAxis {
   final AxisDivideCountAtAmplify? divideCount;
 
   XAxis({
+    required this.count,
     this.formatter,
     this.interval = 1,
-    this.count = 7,
     this.drawLine = true,
     this.drawGrid = false,
     this.lineColor = const Color(0x99cccccc),
     this.textStyle = const TextStyle(fontSize: 12, color: Colors.grey),
     this.drawDivider = false,
     this.divideCount,
-    this.max,
-  });
+    num? max,
+  }) : max = max ?? count;
 
   num widthOf(num value) {
     return density * value;
@@ -475,9 +474,9 @@ class YAxis {
   final double left;
 
   YAxis({
-    this.enable = true,
-    required this.min,
     required this.max,
+    this.min = 0,
+    this.enable = true,
     this.formatter,
     this.count = 5,
     this.drawLine = true,

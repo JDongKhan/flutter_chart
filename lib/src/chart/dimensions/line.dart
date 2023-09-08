@@ -19,7 +19,7 @@ class Line<T> extends ChartBodyRender<T> {
   ///线颜色
   final List<Color> colors;
 
-  ///优先级高于colors
+  ///优先级高于colors  跟filled有关，false是折线的颜色，true是填充色
   final List<Shader>? shaders;
 
   ///点的颜色
@@ -34,14 +34,11 @@ class Line<T> extends ChartBodyRender<T> {
   ///线宽
   final double strokeWidth;
 
-  ///填充颜色
+  ///是否填充颜色  true：填充，false：不填充  默认false
   final bool? filled;
 
-  ///曲线
+  ///是否是曲线  默认false
   final bool isCurve;
-
-  ///线 画笔
-  final Paint paint;
 
   ///路径之间的处理规则
   final PathOperation? operation;
@@ -60,12 +57,17 @@ class Line<T> extends ChartBodyRender<T> {
     this.filled = false,
     this.isCurve = false,
     this.operation,
-  }) : paint = Paint()
-          ..strokeWidth = strokeWidth
-          ..style = PaintingStyle.stroke;
+  });
 
-  final Paint _dotPaint = Paint();
+  ///线 画笔
+  late final Paint paint = Paint()
+    ..strokeWidth = strokeWidth
+    ..style = PaintingStyle.stroke;
+
+  late final Paint _dotPaint = Paint()..strokeWidth = strokeWidth;
+
   Paint? _fullPaint;
+
   @override
   void init(ChartParam param) {
     super.init(param);
@@ -219,9 +221,6 @@ class Line<T> extends ChartBodyRender<T> {
   }
 
   void _drawLine(ChartParam param, Canvas canvas, Map<int, LineInfo> pathMap) {
-    //点
-    _dotPaint.strokeWidth = strokeWidth;
-    List<Color> dotColorList = dotColors ?? colors;
     Path? lastPath;
     for (int index in pathMap.keys) {
       LineInfo? lineInfo = pathMap[index];
@@ -260,6 +259,7 @@ class Line<T> extends ChartBodyRender<T> {
 
     //最后画点  防止被挡住
     // print(lineInfo.pointList);
+    List<Color> dotColorList = dotColors ?? colors;
     for (int index in pathMap.keys) {
       LineInfo? lineInfo = pathMap[index];
       if (lineInfo == null) {
@@ -275,11 +275,11 @@ class Line<T> extends ChartBodyRender<T> {
             // debugPrint('2-第${lineInfo.pointList.indexOf(point) + 1} 个点 $point超出去');
             break;
           }
-          //先用白色覆盖
-          _dotPaint.style = PaintingStyle.fill;
-          canvas.drawCircle(point.rect!.center, dotRadius, _dotPaint..color = Colors.white);
           //再画空心
           if (isHollow) {
+            //先用白色覆盖
+            _dotPaint.style = PaintingStyle.fill;
+            canvas.drawCircle(point.rect!.center, dotRadius, _dotPaint..color = Colors.white);
             _dotPaint.style = PaintingStyle.stroke;
           } else {
             _dotPaint.style = PaintingStyle.fill;

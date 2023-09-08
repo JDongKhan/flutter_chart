@@ -74,7 +74,7 @@ class ChartCircularCoordinateRender extends ChartCoordinateRender {
       double sweepAngle = pi;
       if (arcPosition == ArcPosition.up) {
         startAngle = pi;
-      } else if (arcPosition == ArcPosition.down) {}
+      }
       Path path = Path()
         ..addArc(
           Rect.fromCenter(
