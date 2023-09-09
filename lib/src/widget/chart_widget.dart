@@ -313,7 +313,7 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with SingleTickerPro
             double zoom = (_beforeZoom * details.scale).clamp(minZoom, maxZoom);
 
             // double startOffset = centerV * render.xAxis.density - widget.chartCoordinateRender.size.width / 2;
-            //计算缩放和校准偏移
+            //计算缩放和校准偏移  暂不支持垂直方向缩放，因为应该很少有这个需求
             double startOffset = (_lastOffset.dx + _chartParam.size.width / 2) * zoom / _beforeZoom - _chartParam.size.width / 2;
             _chartParam.zoom = zoom;
             scroll(Offset(startOffset, 0));
