@@ -115,7 +115,10 @@ class Line<T> extends ChartBodyRender<T> {
           lastYValue = p.children.map((e) => e.yValue ?? 0).toList();
           lastXValue = p.xValue;
         }
-        xValue = lerpDouble(lastXValue, xValue, param.controlValue) ?? xValue;
+        if (lastXValue != null) {
+          //初始动画x轴不动
+          xValue = lerpDouble(lastXValue, xValue, param.controlValue) ?? xValue;
+        }
         yValues = lerpList(lastYValue, yValues, param.controlValue) ?? yValues;
       }
 

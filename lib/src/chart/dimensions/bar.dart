@@ -66,7 +66,9 @@ class Bar<T> extends ChartBodyRender<T> {
           lastYValue = p.yValue;
           lastXValue = p.xValue;
         }
-        xValue = lerpDouble(lastXValue, xValue, param.controlValue) ?? xValue;
+        if (lastXValue != null) {
+          xValue = lerpDouble(lastXValue, xValue, param.controlValue) ?? xValue;
+        }
         yValue = lerpDouble(lastYValue, yValue, param.controlValue) ?? yValue;
       }
       ChartLayoutParam p = _measureBarLayoutParam(param, xValue, yValue)..index = index;
@@ -196,7 +198,10 @@ class StackBar<T> extends ChartBodyRender<T> {
           lastYPov = p.children.map((e) => e.yValue ?? 0).toList();
           lastXValue = p.xValue;
         }
-        xValue = lerpDouble(lastXValue, xValue, param.controlValue) ?? xValue;
+        if (lastXValue != null) {
+          //初始动画x轴不动
+          xValue = lerpDouble(lastXValue, xValue, param.controlValue) ?? xValue;
+        }
         yValues = lerpList(lastYPov, yValues, param.controlValue) ?? yValues;
       }
 
@@ -227,7 +232,7 @@ class StackBar<T> extends ChartBodyRender<T> {
       }
 
       //绘制热区
-      if (hotColor != null && p.rect != null) {
+      if (hotColor != null && p.rect != null && param.controlValue == 1) {
         canvas.drawRect(
           p.rect!,
           _hotPaint..color = hotColor!,
