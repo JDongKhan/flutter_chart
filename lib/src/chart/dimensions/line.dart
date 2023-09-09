@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import '../../param/chart_dimension_param.dart';
 import '../../param/chart_param.dart';
@@ -82,7 +84,7 @@ class Line<T> extends ChartBodyRender<T> {
   void draw(Canvas canvas, ChartParam param) {
     param as ChartDimensionParam;
     List<ChartLayoutParam> shapeList = [];
-
+    List<ChartLayoutParam>? lastDataList = getLastData(param.animal);
     int index = 0;
     //offset.dx 滚动偏移  (src.zoom - 1) * (src.size.width / 2) 缩放
     double left = param.contentMargin.left;
@@ -93,18 +95,32 @@ class Line<T> extends ChartBodyRender<T> {
     double bottom = param.size.height - param.contentMargin.bottom;
     Map<int, LineInfo> pathMap = {};
     ChartLayoutParam? lastShape;
-    num? lastXvs;
+    num? lastXValue;
     //遍历数据 处理数据信息
     for (T value in data) {
-      num xvs = position.call(value);
-      if (lastXvs != null) {
-        assert(lastXvs < xvs, '虽然支持逆序，但是为了防止数据顺序混乱，还是强制要求必须是正序的数组');
+      num xValue = position.call(value);
+      if (lastXValue != null) {
+        assert(lastXValue < xValue, '虽然支持逆序，但是为了防止数据顺序混乱，还是强制要求必须是正序的数组');
       }
-      List<num> yvs = values.call(value);
+      List<num> yValues = values.call(value);
       List<ChartLayoutParam> shapes = [];
-      assert(colors.length >= yvs.length, '颜色配置跟数据源不匹配');
-      assert(shaders == null || shaders!.length >= yvs.length, '颜色配置跟数据源不匹配');
-      double xPo = xvs * param.xAxis.density + left;
+      assert(colors.length >= yValues.length, '颜色配置跟数据源不匹配');
+      assert(shaders == null || shaders!.length >= yValues.length, '颜色配置跟数据源不匹配');
+      //是否有动画
+      if (param.animal && param.controlValue < 1) {
+        List<num>? lastYValue;
+        num? lastXValue;
+        if (lastDataList != null && index < lastDataList.length) {
+          ChartLayoutParam p = lastDataList[index];
+          lastYValue = p.children.map((e) => e.yValue ?? 0).toList();
+          lastXValue = p.xValue;
+        }
+        xValue = lerpDouble(lastXValue, xValue, param.controlValue) ?? xValue;
+        yValues = lerpList(lastYValue, yValues, param.controlValue) ?? yValues;
+      }
+
+      //x轴位置
+      double xPos = xValue * param.xAxis.density + left;
 
       //先判断是否选中，此场景是第一次渲染之后点击才有，所以用老数据即可
       List<ChartLayoutParam> childrenLayoutParams = layoutParam.children;
@@ -112,7 +128,7 @@ class Line<T> extends ChartBodyRender<T> {
         layoutParam.selectedIndex = index;
       }
       //一组数据下可能多条线
-      for (int valueIndex = 0; valueIndex < yvs.length; valueIndex++) {
+      for (int valueIndex = 0; valueIndex < yValues.length; valueIndex++) {
         //每条线用map存放下，以便后面统一绘制
         LineInfo? lineInfo = pathMap[valueIndex];
         if (lineInfo == null) {
@@ -120,12 +136,13 @@ class Line<T> extends ChartBodyRender<T> {
           pathMap[valueIndex] = lineInfo;
         }
         //计算点的位置
-        num value = yvs[valueIndex];
-        double yPo = bottom - param.yAxis[yAxisPosition].relativeHeight(value) * param.controlValue;
-        yPo = param.transformUtils.withYOffset(yPo);
-        Offset currentPoint = Offset(xPo, yPo);
+        num yValue = yValues[valueIndex];
+        //y轴位置
+        double yPos = bottom - param.yAxis[yAxisPosition].relativeHeight(yValue);
+        yPos = param.transformUtils.withYOffset(yPos);
+        Offset currentPoint = Offset(xPos, yPos);
         //数据过滤
-        if (!param.outDraw && xPo < 0) {
+        if (!param.outDraw && xPos < 0) {
           // debugPrint('1-第${index + 1}个数据超出去');
           lineInfo.startPoint = currentPoint;
           continue;
@@ -136,23 +153,23 @@ class Line<T> extends ChartBodyRender<T> {
           if (startPoint == null) {
             lineInfo.startPoint = currentPoint;
             //前面没有超出的数据
-            lineInfo.path?.moveTo(xPo, yPo);
+            lineInfo.path?.moveTo(xPos, yPos);
           } else {
             //前面有超出的数据，从前面最后一个超出的开始画
             lineInfo.path?.moveTo(startPoint.dx, startPoint.dy);
-            lineInfo.path?.lineTo(xPo, yPo);
+            lineInfo.path?.lineTo(xPos, yPos);
           }
         } else {
           if (isCurve) {
             ChartLayoutParam lastChild = lastShape!.children[valueIndex];
             double preX = lastChild.rect!.center.dx;
             double preY = lastChild.rect!.center.dy;
-            double xDiff = xPo - preX;
+            double xDiff = xPos - preX;
             double centerX1 = preX + xDiff / 2;
             double centerY1 = preY;
 
-            double centerX2 = xPo - xDiff / 2;
-            double centerY2 = yPo;
+            double centerX2 = xPos - xDiff / 2;
+            double centerY2 = yPos;
 
             // chart.canvas.drawCircle(
             //     Offset(centerX1, centerY1), 2, Paint()..color = Colors.red);
@@ -166,26 +183,29 @@ class Line<T> extends ChartBodyRender<T> {
               centerY1, // control point 1
               centerX2,
               centerY2, //  control point 2
-              xPo,
-              yPo,
+              xPos,
+              yPos,
             );
           } else {
-            lineInfo.path?.lineTo(xPo, yPo);
+            lineInfo.path?.lineTo(xPos, yPos);
           }
         }
         //存放点的位置
         ChartLayoutParam shape = ChartLayoutParam.rect(rect: Rect.fromCenter(center: currentPoint, width: dotRadius, height: dotRadius));
         shape.index = index;
         shapes.add(shape);
-        shape.userInfo = value;
+        shape.xValue = xValue;
+        shape.yValue = yValue;
+        shape.userInfo = yValue;
         lineInfo.pointList.add(shape);
         lineInfo.endPoint = currentPoint;
       }
 
-      Rect currentRect = Rect.fromLTRB(xPo, top, xPo + dotRadius * 2, bottom);
+      Rect currentRect = Rect.fromLTRB(xPos, top, xPos + dotRadius * 2, bottom);
       ChartLayoutParam shape = ChartLayoutParam.rect(rect: currentRect);
       shape.left = left;
       shape.right = right;
+      shape.xValue = xValue;
       shape.children.addAll(shapes);
       //这里用链表解决查找附近节点的问题
       shape.preShapeState = lastShape;
@@ -195,10 +215,10 @@ class Line<T> extends ChartBodyRender<T> {
       lastShape = shape;
       //放到最后
       index++;
-      lastXvs = xvs;
+      lastXValue = xValue;
 
       //数据过滤
-      if (!param.outDraw && xPo > param.size.width) {
+      if (!param.outDraw && xPos > param.size.width) {
         // debugPrint('2-第$index个数据超出去');
         break;
       }

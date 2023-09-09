@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 import '../../param/chart_dimension_param.dart';
@@ -48,11 +50,26 @@ class Bar<T> extends ChartBodyRender<T> {
   @override
   void draw(Canvas canvas, ChartParam param) {
     List<ChartLayoutParam> childrenLayoutParams = [];
+
+    List<ChartLayoutParam>? lastDataList = getLastData(param.animal);
+
     for (int index = 0; index < data.length; index++) {
       T item = data[index];
-      num xPoV = position.call(item);
-      num yPoV = value.call(item);
-      ChartLayoutParam p = _measureBarLayoutParam(param, xPoV, yPoV)..index = index;
+      num xValue = position.call(item);
+      num yValue = value.call(item);
+      //是否有补间动画
+      if (param.animal && param.controlValue < 1) {
+        num? lastYValue;
+        num? lastXValue;
+        if (lastDataList != null && index < lastDataList.length) {
+          ChartLayoutParam p = lastDataList[index];
+          lastYValue = p.yValue;
+          lastXValue = p.xValue;
+        }
+        xValue = lerpDouble(lastXValue, xValue, param.controlValue) ?? xValue;
+        yValue = lerpDouble(lastYValue, yValue, param.controlValue) ?? yValue;
+      }
+      ChartLayoutParam p = _measureBarLayoutParam(param, xValue, yValue)..index = index;
       if (p.rect != null) {
         if (p.hitTest(param.localPosition)) {
           layoutParam.selectedIndex = index;
@@ -74,27 +91,28 @@ class Bar<T> extends ChartBodyRender<T> {
   }
 
   //可以重写 自定义特殊的图形
-  ChartLayoutParam _measureBarLayoutParam(ChartParam param, num xPoV, num yPoV) {
+  ChartLayoutParam _measureBarLayoutParam(ChartParam param, num xValue, num yValue) {
     param as ChartDimensionParam;
-    if (yPoV == 0) {
-      return ChartLayoutParam();
-    }
     double bottom = param.size.height - param.contentMargin.bottom;
     double contentHeight = param.size.height - param.contentMargin.vertical;
 
-    double left = param.contentMargin.left + param.xAxis.density * xPoV - itemWidth / 2;
+    double left = param.contentMargin.left + param.xAxis.density * xValue - itemWidth / 2;
     left = param.transformUtils.withXOffset(left);
 
-    double present = yPoV / param.yAxis[yAxisPosition].max;
-    double itemHeight = contentHeight * present * param.controlValue;
+    double present = yValue / param.yAxis[yAxisPosition].max;
+    double itemHeight = contentHeight * present;
     double top = bottom - itemHeight;
     if (left > param.size.width || (left + itemWidth) < 0) {
-      return ChartLayoutParam();
+      return ChartLayoutParam()
+        ..xValue = xValue
+        ..yValue = yValue;
     }
     Rect rect = Rect.fromLTWH(left, top, itemWidth, itemHeight);
     ChartLayoutParam shape = ChartLayoutParam.rect(
       rect: rect,
-    );
+    )
+      ..xValue = xValue
+      ..yValue = yValue;
     return shape;
   }
 }
@@ -159,17 +177,33 @@ class StackBar<T> extends ChartBodyRender<T> {
   void draw(Canvas canvas, ChartParam param) {
     param as ChartDimensionParam;
     List<ChartLayoutParam> childrenLayoutParams = [];
+    List<ChartLayoutParam>? lastDataList = getLastData(param.animal);
+
     for (int index = 0; index < data.length; index++) {
       T item = data[index];
-      num po = position.call(item);
-      List<num> vas = values.call(item);
-      assert(colors.length >= vas.length);
-      assert(shaders == null || shaders!.length >= vas.length);
+      num xValue = position.call(item);
+      List<num> yValues = values.call(item);
+      assert(colors.length >= yValues.length);
+      assert(shaders == null || shaders!.length >= yValues.length);
       ChartLayoutParam p;
+
+      //是否有补间动画
+      if (param.animal && param.controlValue < 1) {
+        List<num>? lastYPov;
+        num? lastXValue;
+        if (lastDataList != null && index < lastDataList.length) {
+          ChartLayoutParam p = lastDataList[index];
+          lastYPov = p.children.map((e) => e.yValue ?? 0).toList();
+          lastXValue = p.xValue;
+        }
+        xValue = lerpDouble(lastXValue, xValue, param.controlValue) ?? xValue;
+        yValues = lerpList(lastYPov, yValues, param.controlValue) ?? yValues;
+      }
+
       if (direction == Axis.horizontal) {
-        p = _measureHorizontalBarLayoutParam(param, po, vas);
+        p = _measureHorizontalBarLayoutParam(param, xValue, yValues);
       } else {
-        p = _measureVerticalBarLayoutParam(param, po, vas);
+        p = _measureVerticalBarLayoutParam(param, xValue, yValues);
       }
       childrenLayoutParams.add(p..index = index);
 
@@ -204,53 +238,56 @@ class StackBar<T> extends ChartBodyRender<T> {
   }
 
   ///水平排列图形
-  ChartLayoutParam _measureHorizontalBarLayoutParam(ChartDimensionParam param, num po, List<num> vas) {
+  ChartLayoutParam _measureHorizontalBarLayoutParam(ChartDimensionParam param, num xValue, List<num> yValues) {
     num total = param.yAxis[yAxisPosition].max;
     if (total == 0) {
-      return ChartLayoutParam();
+      return ChartLayoutParam()..xValue = xValue;
     }
     double bottom = param.size.height - param.contentMargin.bottom;
     double contentHeight = param.size.height - param.contentMargin.vertical;
 
-    double center = vas.length * itemWidth / 2;
+    double center = yValues.length * itemWidth / 2;
 
-    double left = param.contentMargin.left + param.xAxis.density * po - itemWidth / 2 - center;
+    double left = param.contentMargin.left + param.xAxis.density * xValue - itemWidth / 2 - center;
     left = param.transformUtils.withXOffset(left);
 
     ChartLayoutParam shape = ChartLayoutParam.rect(
       rect: Rect.fromLTWH(
         left,
         param.contentMargin.top,
-        itemWidth * vas.length + padding * (vas.length - 1),
+        itemWidth * yValues.length + padding * (yValues.length - 1),
         param.size.height - param.contentMargin.vertical,
       ),
     );
     List<ChartLayoutParam> childrenLayoutParams = [];
-    for (num v in vas) {
-      double present = v / total;
-      double itemHeight = contentHeight * present * param.controlValue;
+    for (num yV in yValues) {
+      double present = yV / total;
+      double itemHeight = contentHeight * present;
       double top = bottom - itemHeight;
       Rect rect = Rect.fromLTWH(left, top, itemWidth, itemHeight);
       ChartLayoutParam stackShape = ChartLayoutParam.rect(rect: rect);
       left = left + itemWidth + padding;
+      stackShape.xValue = xValue;
+      stackShape.yValue = yV;
       childrenLayoutParams.add(stackShape);
     }
+    shape.xValue = xValue;
     shape.children = childrenLayoutParams;
     return shape;
   }
 
   ///垂直排列图形
-  ChartLayoutParam _measureVerticalBarLayoutParam(ChartDimensionParam param, num po, List<num> vas) {
+  ChartLayoutParam _measureVerticalBarLayoutParam(ChartDimensionParam param, num xValue, List<num> yValues) {
     num total = param.yAxis[yAxisPosition].max;
     if (full) {
-      total = vas.fold(0, (previousValue, element) => previousValue + element);
+      total = yValues.fold(0, (previousValue, element) => previousValue + element);
     }
     if (total == 0) {
-      return ChartLayoutParam();
+      return ChartLayoutParam()..xValue = xValue;
     }
     double bottom = param.size.height - param.contentMargin.bottom;
     double contentHeight = param.size.height - param.contentMargin.vertical;
-    double left = param.contentMargin.left + param.xAxis.density * po - itemWidth / 2;
+    double left = param.contentMargin.left + param.xAxis.density * xValue - itemWidth / 2;
     left = param.transformUtils.withXOffset(left);
     ChartLayoutParam shape = ChartLayoutParam.rect(
       rect: Rect.fromLTWH(
@@ -261,16 +298,19 @@ class StackBar<T> extends ChartBodyRender<T> {
       ),
     );
     List<ChartLayoutParam> childrenLayoutParams = [];
-    for (num v in vas) {
-      double present = v / total;
-      double itemHeight = contentHeight * present * param.controlValue;
+    for (num yV in yValues) {
+      double present = yV / total;
+      double itemHeight = contentHeight * present;
       double top = bottom - itemHeight;
       Rect rect = Rect.fromLTWH(left, top, itemWidth, itemHeight);
       ChartLayoutParam stackShape = ChartLayoutParam.rect(rect: rect);
+      stackShape.xValue = xValue;
+      stackShape.yValue = yV;
       childrenLayoutParams.add(stackShape);
       bottom = top;
     }
     shape.children = childrenLayoutParams;
+    shape.xValue = xValue;
     return shape;
   }
 }

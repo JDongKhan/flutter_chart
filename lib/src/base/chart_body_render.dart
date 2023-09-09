@@ -1,3 +1,6 @@
+import 'dart:ui';
+
+import 'chart_controller.dart';
 import 'chart_render.dart';
 import '../param/chart_layout_param.dart';
 
@@ -22,4 +25,33 @@ abstract class ChartBodyRender<T> extends ChartRender {
     required this.data,
     this.yAxisPosition = 0,
   });
+
+  late ChartController controller;
+
+  List<ChartLayoutParam>? getLastData(bool animal) {
+    if (!animal) {
+      return null;
+    }
+    ChartBodyRender? e = controller.lastCoordinate?.charts[indexAtChart];
+    if (e == null) {
+      return null;
+    }
+    return e.layoutParam.children;
+  }
+
+  List<num>? lerpList(List<num>? a, List<num>? b, double t) {
+    if (b == null) {
+      return null;
+    }
+    if (a == null || a.isEmpty) {
+      return b.map((e) => lerpDouble(null, e, t) as num).toList();
+    }
+    List<num> l = [];
+    int index = 0;
+    for (var element in b) {
+      l.add(lerpDouble(a[index], element, t) as num);
+      index++;
+    }
+    return l;
+  }
 }

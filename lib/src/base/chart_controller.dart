@@ -8,7 +8,9 @@ import '../param/chart_param.dart';
 ///数据共享，便于各个节点使用
 class ChartController {
   ///
-  // WeakReference<ChartCoordinateRender>? _chartCoordinateRender;
+  ChartCoordinateRender? _chartCoordinateRender;
+  ChartCoordinateRender? _lastChartCoordinateRender;
+  ChartCoordinateRender? get lastCoordinate => _lastChartCoordinateRender;
 
   ///通知弹框层刷新
   StateSetter? _tooltipStateSetter;
@@ -52,17 +54,20 @@ class ChartController {
     _tapPosition = position;
     notifyTooltip();
   }
+
+  void dispose() {
+    _chartCoordinateRender = null;
+    _lastChartCoordinateRender = null;
+  }
 }
 
 extension InnerFuncation on ChartController {
   void attach(ChartCoordinateRender chartCoordinateRender) {
     chartCoordinateRender.controller = this;
-    // _chartCoordinateRender = WeakReference(chartCoordinateRender);
+    _lastChartCoordinateRender = _chartCoordinateRender;
+    _chartCoordinateRender = chartCoordinateRender;
   }
 
-  void detach() {
-    // _chartCoordinateRender = null;
-  }
   void bindParam(ChartParam p) {
     _param = p;
   }

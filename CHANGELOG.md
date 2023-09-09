@@ -1,3 +1,8 @@
+## 0.1.3
+
+* add tween animation 
+
+
 ## 0.1.2
 
 * change api 

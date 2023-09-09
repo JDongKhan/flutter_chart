@@ -7,6 +7,7 @@ import 'page/line_right_demo_page.dart';
 import 'page/line_scale_demo_page.dart';
 import 'page/radar_demo_page.dart';
 import 'page/scatter_demo_page.dart';
+import 'page/tween_bar_demo_page.dart';
 
 /// @author JD
 class ChartDemoPage extends StatelessWidget {
@@ -89,6 +90,16 @@ class ChartDemoPage extends StatelessWidget {
               );
             },
             child: const Text('ecg or oxy'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => TweenBarChartDemoPage(),
+                ),
+              );
+            },
+            child: const Text('tween animal'),
           ),
         ],
       ),

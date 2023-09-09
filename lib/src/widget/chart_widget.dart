@@ -89,7 +89,9 @@ class _ChartWidgetState extends State<ChartWidget> {
   @override
   void dispose() {
     super.dispose();
-    _controller.detach();
+    if (widget.controller == null) {
+      _controller.dispose();
+    }
   }
 
   @override
@@ -239,11 +241,13 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with SingleTickerPro
       });
     }
     _initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _startAnimal();
+    });
     super.initState();
   }
 
   void _initState() {
-    _animationController?.forward();
     allParams = [];
     List<ChartBodyRender> charts = widget.chartCoordinateRender.charts;
     //关联子状态
@@ -272,6 +276,12 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with SingleTickerPro
   void didUpdateWidget(covariant _ChartCoreWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
     _initState();
+    _startAnimal();
+  }
+
+  void _startAnimal() {
+    _animationController?.reset();
+    _animationController?.forward();
   }
 
   @override

@@ -43,6 +43,12 @@ class ChartLayoutParam {
   ///坐标系最右边
   double? right;
 
+  ///对应数据x轴的原始值
+  num? xValue;
+
+  ///对应数据y轴的原始值
+  num? yValue;
+
   ///某条数据下 可能会有多条数据
   List<ChartLayoutParam> children = [];
 
