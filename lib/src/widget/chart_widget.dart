@@ -232,8 +232,8 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with SingleTickerPro
   AnimationController? _animationController;
   @override
   void initState() {
-    if (widget.chartCoordinateRender.animal) {
-      _animationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 1000));
+    if (widget.chartCoordinateRender.animationDuration != null) {
+      _animationController = AnimationController(vsync: this, duration: widget.chartCoordinateRender.animationDuration);
       _animationController?.addListener(() {
         setState(() {});
       });

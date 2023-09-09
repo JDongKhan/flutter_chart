@@ -35,7 +35,7 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
     super.maxZoom,
     super.safeArea,
     super.outDraw,
-    super.animal,
+    super.animationDuration,
     super.tooltipBuilder,
     this.crossHair = const CrossHairStyle(),
   }) : assert(yAxis.isNotEmpty);

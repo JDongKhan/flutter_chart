@@ -28,7 +28,7 @@ class ChartCircularCoordinateRender extends ChartCoordinateRender {
     required super.charts,
     super.safeArea,
     super.outDraw,
-    super.animal,
+    super.animationDuration,
     super.backgroundAnnotations,
     super.foregroundAnnotations,
     this.arcPosition = ArcPosition.none,
