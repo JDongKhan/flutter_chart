@@ -85,6 +85,7 @@ class BarChartDemoPage extends StatelessWidget {
                       xAxis: XAxis(
                         count: 7,
                         max: 30,
+                        zoom: true,
                         formatter: (index) {
                           return startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd');
                         },

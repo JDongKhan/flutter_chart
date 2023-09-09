@@ -7,6 +7,8 @@
 
 这是一款轻量级的flutter版本chart组件，目前已支持Line、Bar、Pie、Radar、Scatter、Progress。
 
+提示：根据多年经验，本项目应该能满足大部分需求场景，如果你喜欢，麻烦给点个小星星，谢谢。
+
 ![demo png](1.gif "demo")
 ![demo png](2.gif "demo")
 ![demo png](3.gif "demo")
@@ -112,6 +114,7 @@ child: ChartWidget(
         xAxis: XAxis(
           count: 7,
           max: 30,
+          zoom:true,
           formatter: (index) {
             return startTime.add(Duration(days: index)).toStringWithFormat(format: 'dd');
           },
@@ -161,6 +164,7 @@ child: ChartWidget(
         xAxis: XAxis(
           count: 7,
           max: 20,
+          zoom:true,
           drawLine: false,
           formatter: (index) => startTime.add(Duration(days: index)).toStringWithFormat(format: 'dd'),
         ),
