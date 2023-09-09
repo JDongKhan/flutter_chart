@@ -143,7 +143,7 @@ class _ChartWidgetState extends State<ChartWidget> {
   Widget _buildTooltipWidget(ChartCoordinateRender baseChart, Size size) {
     return StatefulBuilder(
       builder: (BuildContext context, StateSetter setState) {
-        _controller.tooltipStateSetter = setState;
+        _controller.bindTooltipStateSetter(setState);
         Offset? point = _controller.tapPosition ?? _controller.localPosition;
         if (point == null) {
           return const SizedBox.shrink();

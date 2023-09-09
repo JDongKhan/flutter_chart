@@ -5,6 +5,7 @@ import '../annotation/annotation.dart';
 import '../param/chart_param.dart';
 import '../param/chart_layout_param.dart';
 import 'chart_coordinate_render.dart';
+import '../base/chart_controller.dart';
 
 /// @author JD
 

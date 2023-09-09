@@ -10,38 +10,28 @@ class ChartController {
   ///
   // WeakReference<ChartCoordinateRender>? _chartCoordinateRender;
 
-  ///根据位置缓存配置信息
-  List<ChartLayoutParam> get chartParam => _param?.childrenState ?? [];
-
-  Offset? tapPosition;
-
-  Offset? get localPosition => _param?.localPosition;
+  ///通知弹框层刷新
+  StateSetter? _tooltipStateSetter;
 
   ///chart 图形参数
   ChartParam? _param;
 
-  void attach(ChartCoordinateRender chartCoordinateRender) {
-    chartCoordinateRender.controller = this;
-    // _chartCoordinateRender = WeakReference(chartCoordinateRender);
-  }
+  ///根据位置缓存配置信息
+  List<ChartLayoutParam> get chartParam => _param?.childrenState ?? [];
 
-  void detach() {
-    // _chartCoordinateRender = null;
-  }
-
-  void bindParam(ChartParam p) {
-    _param = p;
-  }
+  Offset? _tapPosition;
+  Offset? get tapPosition => _tapPosition;
+  Offset? get localPosition => _param?.localPosition;
 
   ///重置提示框
   void resetTooltip() {
     bool needNotify = false;
     if (tooltipWidgetBuilder != null) {
-      tooltipWidgetBuilder = null;
+      _tooltipWidgetBuilder = null;
       needNotify = true;
     }
-    if (tapPosition != null) {
-      tapPosition = null;
+    if (_tapPosition != null) {
+      _tapPosition = null;
       needNotify = true;
     }
     if (_param?.localPosition != null) {
@@ -53,20 +43,37 @@ class ChartController {
     }
   }
 
-  AnnotationTooltipWidgetBuilder? tooltipWidgetBuilder;
+  AnnotationTooltipWidgetBuilder? _tooltipWidgetBuilder;
+  get tooltipWidgetBuilder => _tooltipWidgetBuilder;
 
   ///使用widget渲染tooltip
   void showTooltipBuilder({required AnnotationTooltipWidgetBuilder builder, required Offset position}) {
-    tooltipWidgetBuilder = builder;
-    tapPosition = position;
+    _tooltipWidgetBuilder = builder;
+    _tapPosition = position;
     notifyTooltip();
   }
+}
 
-  ///通知弹框层刷新
-  StateSetter? tooltipStateSetter;
+extension InnerFuncation on ChartController {
+  void attach(ChartCoordinateRender chartCoordinateRender) {
+    chartCoordinateRender.controller = this;
+    // _chartCoordinateRender = WeakReference(chartCoordinateRender);
+  }
+
+  void detach() {
+    // _chartCoordinateRender = null;
+  }
+  void bindParam(ChartParam p) {
+    _param = p;
+  }
+
+  void bindTooltipStateSetter(StateSetter? stateSetter) {
+    _tooltipStateSetter = stateSetter;
+  }
+
   void notifyTooltip() {
-    if (tooltipStateSetter != null) {
-      tooltipStateSetter?.call(() {});
+    if (_tooltipStateSetter != null) {
+      _tooltipStateSetter?.call(() {});
     }
   }
 }
