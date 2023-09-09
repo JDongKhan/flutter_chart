@@ -94,7 +94,10 @@ class _ChartWidgetState extends State<ChartWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return TapRegion(onTapOutside: _defaultOnTapOutside, child: _buildBody());
+    return TapRegion(
+      onTapOutside: _defaultOnTapOutside,
+      child: _buildBody(),
+    );
   }
 
   Widget _buildBody() {
