@@ -16,6 +16,7 @@
 ![demo png](4.1.gif "demo")
 ![demo png](4.2.gif "demo")
 ![demo png](5.gif "demo")
+![demo png](6.gif "demo")
 
 ### 为何自己造轮子？
 市面上有很多种chart，经过长时间的调研，发现没有一款完成符合自己需求的组件，有的样式太过个性化比如fl_chart，有的功能太简单，找了许久感觉graphic最合适，但是在项目使用过程中发现一些bug， 
