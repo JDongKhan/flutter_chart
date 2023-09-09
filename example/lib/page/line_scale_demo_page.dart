@@ -64,8 +64,7 @@ class _LineChartScaleDemoPageState extends State<LineChartScaleDemoPage> {
           SizedBox(
             height: 200,
             child: ChartWidget(
-              coordinateRender: DimensionsChartCoordinateRender(
-                zoomHorizontal: true,
+              coordinateRender: ChartDimensionsCoordinateRender(
                 padding: const EdgeInsets.only(left: 30, top: 0, right: 20, bottom: 0),
                 // zoomVertical: true,
                 crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
@@ -89,6 +88,7 @@ class _LineChartScaleDemoPageState extends State<LineChartScaleDemoPage> {
                 xAxis: XAxis(
                   count: 7,
                   max: 9,
+                  zoom: true,
                   drawDivider: true,
                   divideCount: (zoom) => zoom.toInt(),
                   formatter: (index) {

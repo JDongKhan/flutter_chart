@@ -108,6 +108,8 @@ abstract class ChartParam extends ChangeNotifier {
 
   void scroll(Offset offset);
 
+  void scale(double zoom) {}
+
   @override
   bool operator ==(Object other) {
     if (other is ChartParam) {

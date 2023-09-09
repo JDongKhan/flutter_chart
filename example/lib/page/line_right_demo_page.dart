@@ -69,7 +69,6 @@ class _LineChartRightDemoPageState extends State<LineChartRightDemoPage> {
             height: 200,
             child: ChartWidget(
               coordinateRender: ChartDimensionsCoordinateRender(
-                zoomHorizontal: false,
                 padding: const EdgeInsets.only(left: 0, top: 0, right: 0, bottom: 0),
                 // zoomVertical: true,
                 crossHair: const CrossHairStyle(verticalShow: false, horizontalShow: false),

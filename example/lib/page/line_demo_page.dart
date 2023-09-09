@@ -73,7 +73,6 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                   height: 200,
                   child: ChartWidget(
                     coordinateRender: ChartDimensionsCoordinateRender(
-                      zoomHorizontal: true,
                       crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
                       margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
                       padding: const EdgeInsets.only(left: 0, right: 0),
@@ -100,6 +99,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                       yAxis: [YAxis(min: 0, max: 500)],
                       xAxis: XAxis(
                         count: 9,
+                        zoom: true,
                         formatter: (index) => startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd'),
                       ),
                       charts: [
@@ -121,7 +121,6 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                   child: ChartWidget(
                     controller: controller,
                     coordinateRender: ChartDimensionsCoordinateRender(
-                      zoomHorizontal: true,
                       foregroundAnnotations: [
                         LimitAnnotation(limit: 380),
                         LimitAnnotation(limit: 210),
@@ -169,6 +168,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                       xAxis: XAxis(
                         count: 7,
                         max: 20,
+                        zoom: true,
                         drawGrid: true,
                         drawLine: true,
                         formatter: (index) => startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd'),
@@ -191,7 +191,6 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                   height: 200,
                   child: ChartWidget(
                     coordinateRender: ChartDimensionsCoordinateRender(
-                      zoomHorizontal: true,
                       margin: const EdgeInsets.only(left: 40, top: 5, right: 0, bottom: 30),
                       //提示的文案信息
                       crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
@@ -210,6 +209,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                       xAxis: XAxis(
                         count: 9,
                         drawGrid: true,
+                        zoom: true,
                         formatter: (index) => startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd'),
                       ),
                       charts: [
@@ -221,11 +221,11 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                           colors: [Colors.blue, Colors.red],
                           dotColors: [Colors.blue, Colors.black],
                           shaders: [
-                            ui.Gradient.linear(Offset.zero, Offset(0, 200), [
+                            ui.Gradient.linear(Offset.zero, const Offset(0, 200), [
                               Colors.red.withOpacity(0.3),
                               Colors.black.withOpacity(0.5),
                             ]),
-                            ui.Gradient.linear(Offset.zero, Offset(0, 200), [
+                            ui.Gradient.linear(Offset.zero, const Offset(0, 200), [
                               Colors.blue.withOpacity(0.5),
                               Colors.yellow.withOpacity(0.5),
                             ]),
@@ -245,7 +245,6 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                   height: 200,
                   child: ChartWidget(
                     coordinateRender: ChartDimensionsCoordinateRender(
-                      zoomHorizontal: true,
                       margin: const EdgeInsets.only(left: 40, top: 5, right: 0, bottom: 30),
                       //提示的文案信息
                       crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
@@ -264,6 +263,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                       xAxis: XAxis(
                         count: 7,
                         max: 20,
+                        zoom: true,
                         drawGrid: true,
                         drawLine: true,
                         formatter: (index) => startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd'),
@@ -302,7 +302,6 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                   child: LayoutBuilder(builder: (context, cs) {
                     return ChartWidget(
                       coordinateRender: ChartDimensionsCoordinateRender(
-                        zoomHorizontal: true,
                         margin: const EdgeInsets.only(left: 40, top: 5, right: 0, bottom: 30),
                         //提示的文案信息
                         crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
@@ -321,6 +320,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                         xAxis: XAxis(
                           count: 7,
                           max: 20,
+                          zoom: true,
                           drawGrid: true,
                           drawLine: true,
                           formatter: (index) => startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd'),

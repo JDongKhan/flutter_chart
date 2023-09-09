@@ -61,6 +61,11 @@ class ChartCircularCoordinateRender extends ChartCoordinateRender {
     _drawForegroundAnnotations(param, canvas);
   }
 
+  @override
+  bool canZoom() {
+    return false;
+  }
+
   ///画背景圆
   void _drawCircle(ChartCircularParam param, Canvas canvas) {
     if (strokeCap != null) {

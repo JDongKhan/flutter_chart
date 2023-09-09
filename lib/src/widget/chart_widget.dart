@@ -307,7 +307,7 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with SingleTickerPro
         _controller.resetTooltip();
         //缩放
         if (details.scale != 1) {
-          if (widget.chartCoordinateRender.zoomHorizontal || widget.chartCoordinateRender.zoomVertical) {
+          if (widget.chartCoordinateRender.canZoom()) {
             double minZoom = widget.chartCoordinateRender.minZoom ?? 0;
             double maxZoom = widget.chartCoordinateRender.maxZoom ?? double.infinity;
             double zoom = (_beforeZoom * details.scale).clamp(minZoom, maxZoom);

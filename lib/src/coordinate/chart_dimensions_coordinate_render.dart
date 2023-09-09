@@ -30,8 +30,6 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
     required this.xAxis,
     super.backgroundAnnotations,
     super.foregroundAnnotations,
-    super.zoomHorizontal,
-    super.zoomVertical = false,
     super.minZoom,
     super.maxZoom,
     super.safeArea,
@@ -39,8 +37,12 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
     super.animal,
     super.tooltipBuilder,
     this.crossHair = const CrossHairStyle(),
-  })  : assert(yAxis.isNotEmpty),
-        assert(zoomVertical == false, '暂不支持垂直方向缩放');
+  }) : assert(yAxis.isNotEmpty);
+
+  @override
+  bool canZoom() {
+    return xAxis.zoom;
+  }
 
   @override
   void paint(Canvas canvas, ChartParam param) {
@@ -393,6 +395,9 @@ class XAxis {
   ///每1个逻辑value代表多宽， 在绘制过程中如果使用Matrix4转换不便更为细腻的控制，所以设计出了密度的概念
   late double density;
 
+  ///固定的密度，不随缩放变动
+  late double fixedDensity;
+
   ///是否画格子线
   final bool drawGrid;
 
@@ -411,12 +416,16 @@ class XAxis {
   ///放大时单item下分隔数量
   final AxisDivideCountAtAmplify? divideCount;
 
+  //是否支持缩放
+  final bool zoom;
+
   XAxis({
     required this.count,
     this.formatter,
     this.interval = 1,
     this.drawLine = true,
     this.drawGrid = false,
+    this.zoom = false,
     this.lineColor = const Color(0x99cccccc),
     this.textStyle = const TextStyle(fontSize: 12, color: Colors.grey),
     this.drawDivider = false,
@@ -462,6 +471,9 @@ class YAxis {
   ///密度
   late double density;
 
+  ///固定的密度，不随缩放变动
+  late double fixedDensity;
+
   ///轴的偏移
   final AxisOffset? offset;
 
@@ -474,12 +486,16 @@ class YAxis {
   ///文字距左边的间隙
   final double left;
 
+  //是否支持缩放
+  final bool zoom;
+
   YAxis({
     required this.max,
     this.min = 0,
     this.enable = true,
     this.formatter,
     this.count = 5,
+    this.zoom = false,
     this.drawLine = true,
     this.drawGrid = false,
     this.lineColor = const Color(0x99cccccc),
@@ -487,7 +503,7 @@ class YAxis {
     this.drawDivider = true,
     this.offset,
     this.left = 0,
-  });
+  }) : assert(zoom == false, '暂不支持垂直方向缩放');
 
   ///缓存对应的信息
   final Map<int, Path> _gridLine = {};

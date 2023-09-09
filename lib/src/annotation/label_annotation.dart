@@ -67,7 +67,14 @@ class LabelAnnotation extends Annotation {
         assert(positions!.length == 2, 'positions must be two length');
         num xPo = positions![0];
         num yPo = positions![1];
-        double itemWidth = xPo * param.xAxis.density;
+
+        double density = 0;
+        if (scroll) {
+          density = param.xAxis.density;
+        } else {
+          density = param.xAxis.fixedDensity;
+        }
+        double itemWidth = xPo * density;
         double itemHeight = param.yAxis[yAxisPosition].relativeHeight(yPo);
         double left = param.transformUtils.transformX(
           itemWidth,
@@ -77,23 +84,20 @@ class LabelAnnotation extends Annotation {
           itemHeight,
           containPadding: true,
         );
+
         if (scroll) {
           left = param.transformUtils.withXOffset(left);
           top = param.transformUtils.withYOffset(top);
         } else {
           //不跟随缩放
-          if (param.zoomHorizontal) {
-            left = param.transformUtils.transformX(
-              itemWidth / param.zoom,
-              containPadding: true,
-            );
-          }
-          if (param.zoomVertical) {
-            top = param.transformUtils.transformY(
-              itemHeight / param.zoom,
-              containPadding: true,
-            );
-          }
+          left = param.transformUtils.transformX(
+            itemWidth,
+            containPadding: true,
+          );
+          top = param.transformUtils.transformY(
+            itemHeight,
+            containPadding: true,
+          );
         }
         ost = Offset(left, top).translate(offset.dx, offset.dy);
       } else {

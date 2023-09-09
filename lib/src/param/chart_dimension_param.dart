@@ -10,19 +10,13 @@ class ChartDimensionParam extends ChartParam {
   ///x坐标轴
   final XAxis xAxis;
 
-  ///缩放比例
-  final bool zoomHorizontal;
-  final bool zoomVertical;
-
   ChartDimensionParam.coordinate({
     super.outDraw,
     super.controlValue,
     required super.childrenState,
     required ChartDimensionsCoordinateRender coordinate,
   })  : yAxis = coordinate.yAxis,
-        xAxis = coordinate.xAxis,
-        zoomHorizontal = coordinate.zoomHorizontal,
-        zoomVertical = coordinate.zoomVertical;
+        xAxis = coordinate.xAxis;
 
   @override
   void init({required Size size, required EdgeInsets margin, required EdgeInsets padding}) {
@@ -33,12 +27,15 @@ class ChartDimensionParam extends ChartParam {
     int count = xAxis.count;
     //每格的宽度，用于控制一屏最多显示个数
     double density = (width - contentMargin.horizontal) / count / xAxis.interval;
+    xAxis.fixedDensity = density;
     //x轴密度 即1 value 等于多少尺寸
-    if (zoomHorizontal) {
+    if (xAxis.zoom) {
       xAxis.density = density * zoom;
     } else {
       xAxis.density = density;
     }
+
+    bool yZoom = false;
     for (YAxis yA in yAxis) {
       num max = yA.max;
       num min = yA.min;
@@ -46,10 +43,13 @@ class ChartDimensionParam extends ChartParam {
       //y轴密度  即1 value 等于多少尺寸
       double itemHeight = (height - margin.vertical) / yCount;
       double itemValue = (max - min) / yCount;
-      if (zoomVertical) {
-        yA.density = itemHeight / itemValue * zoom;
+      double density = itemHeight / itemValue;
+      yA.fixedDensity = density;
+      if (yA.zoom) {
+        yZoom = true;
+        yA.density = density * zoom;
       } else {
-        yA.density = itemHeight / itemValue;
+        yA.density = density;
       }
     }
 
@@ -59,8 +59,8 @@ class ChartDimensionParam extends ChartParam {
       zoom: zoom,
       offset: offset,
       size: size,
-      zoomVertical: zoomVertical,
-      zoomHorizontal: zoomHorizontal,
+      zoomVertical: xAxis.zoom,
+      zoomHorizontal: yZoom,
       padding: padding,
       reverseX: false,
       reverseY: true,

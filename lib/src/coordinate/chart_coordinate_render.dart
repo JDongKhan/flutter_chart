@@ -40,10 +40,6 @@ abstract class ChartCoordinateRender {
   ///图形内边距，用于控制坐标轴的内边距
   final EdgeInsets padding;
 
-  ///缩放比例
-  final bool zoomHorizontal;
-  final bool zoomVertical;
-
   ///最小缩放
   final double? minZoom;
 
@@ -76,8 +72,6 @@ abstract class ChartCoordinateRender {
     required this.padding,
     required this.charts,
     this.tooltipBuilder,
-    this.zoomHorizontal = false,
-    this.zoomVertical = false,
     this.minZoom,
     this.maxZoom,
     this.outDraw = false,
@@ -88,6 +82,8 @@ abstract class ChartCoordinateRender {
   });
 
   late ChartController controller;
+
+  bool canZoom();
 
   void paint(Canvas canvas, ChartParam param);
 }
