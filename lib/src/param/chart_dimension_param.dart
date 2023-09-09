@@ -16,6 +16,7 @@ class ChartDimensionParam extends ChartParam {
 
   ChartDimensionParam.coordinate({
     super.outDraw,
+    super.controlValue,
     required super.childrenState,
     required ChartDimensionsCoordinateRender coordinate,
   })  : yAxis = coordinate.yAxis,

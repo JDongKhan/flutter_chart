@@ -11,6 +11,9 @@ import 'chart_dimension_param.dart';
 typedef AnnotationTooltipWidgetBuilder = PreferredSizeWidget? Function(BuildContext context);
 
 abstract class ChartParam extends ChangeNotifier {
+  ///控制点
+  final double controlValue;
+
   ///点击的位置
   Offset? _localPosition;
   set localPosition(v) {
@@ -55,11 +58,13 @@ abstract class ChartParam extends ChangeNotifier {
 
   ChartParam({
     this.outDraw = false,
+    this.controlValue = 1,
     required this.childrenState,
   });
 
   factory ChartParam.coordinate({
     bool outDraw = false,
+    double controlValue = 1,
     required List<ChartLayoutParam> childrenState,
     required ChartCoordinateRender coordinate,
   }) {
@@ -68,12 +73,14 @@ abstract class ChartParam extends ChangeNotifier {
         outDraw: outDraw,
         childrenState: childrenState,
         coordinate: coordinate,
+        controlValue: controlValue,
       );
     }
     return ChartCircularParam.coordinate(
       outDraw: outDraw,
       childrenState: childrenState,
       coordinate: coordinate as ChartCircularCoordinateRender,
+      controlValue: controlValue,
     );
   }
 

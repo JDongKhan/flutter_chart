@@ -19,6 +19,7 @@ class ChartCircularParam extends ChartParam {
 
   ChartCircularParam.coordinate({
     super.outDraw,
+    super.controlValue,
     required super.childrenState,
     required ChartCircularCoordinateRender coordinate,
   })  : arcPosition = coordinate.arcPosition,

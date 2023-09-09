@@ -68,6 +68,9 @@ abstract class ChartCoordinateRender {
   ///不在屏幕内是否绘制 默认不绘制
   final bool outDraw;
 
+  ///是否动画
+  final bool animal;
+
   ChartCoordinateRender({
     required this.margin,
     required this.padding,
@@ -78,6 +81,7 @@ abstract class ChartCoordinateRender {
     this.minZoom,
     this.maxZoom,
     this.outDraw = false,
+    this.animal = false,
     this.backgroundAnnotations,
     this.foregroundAnnotations,
     this.safeArea,

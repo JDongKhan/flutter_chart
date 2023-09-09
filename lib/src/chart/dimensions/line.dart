@@ -121,7 +121,7 @@ class Line<T> extends ChartBodyRender<T> {
         }
         //计算点的位置
         num value = yvs[valueIndex];
-        double yPo = bottom - param.yAxis[yAxisPosition].relativeHeight(value);
+        double yPo = bottom - param.yAxis[yAxisPosition].relativeHeight(value) * param.controlValue;
         yPo = param.transformUtils.withYOffset(yPo);
         Offset currentPoint = Offset(xPo, yPo);
         //数据过滤

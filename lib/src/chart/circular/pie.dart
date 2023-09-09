@@ -132,7 +132,7 @@ class Pie<T> extends ChartBodyRender<T> {
       //直接读取
       num percent = _values[i] / _total;
       // 计算出每个数据所占的弧度值
-      final sweepAngle = percent * pi * 2 * (direction == RotateDirection.forward ? 1 : -1);
+      final sweepAngle = percent * pi * 2 * (direction == RotateDirection.forward ? 1 : -1) * param.controlValue;
       double rd = radius;
       //图形区域
       ChartLayoutParam shape = ChartLayoutParam.arc(
@@ -172,7 +172,7 @@ class Pie<T> extends ChartBodyRender<T> {
       String? legend = legendFormatter?.call(item);
 
       //绘制引导线
-      if (guideLine) {
+      if (guideLine && param.controlValue == 1) {
         _drawLineAndText(param, canvas, valueText, legend, index, rd, startAngle, sweepAngle);
       }
       //选中就绘制
@@ -183,7 +183,7 @@ class Pie<T> extends ChartBodyRender<T> {
       // baseChart.canvas.drawArc(
       //     newRect, startAngle, sweepAngle, true, paint..color = colors[i]);
       // _drawLegend(item, radius, startAngle, sweepAngle);
-      if (showValue) {
+      if (showValue && param.controlValue == 1) {
         _drawValue(param, canvas, valueText, radius, startAngle, sweepAngle);
       }
       //继续下一个

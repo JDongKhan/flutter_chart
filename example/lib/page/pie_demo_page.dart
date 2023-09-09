@@ -77,6 +77,7 @@ class _PieChartDemoPageState extends State<PieChartDemoPage> with SingleTickerPr
               child: ChartWidget(
                 coordinateRender: ChartCircularCoordinateRender(
                   margin: const EdgeInsets.all(30),
+                  animal: true,
                   charts: [
                     Pie(
                       data: dataList,
@@ -94,6 +95,7 @@ class _PieChartDemoPageState extends State<PieChartDemoPage> with SingleTickerPr
               child: ChartWidget(
                 coordinateRender: ChartCircularCoordinateRender(
                   margin: const EdgeInsets.all(30),
+                  animal: true,
                   charts: [
                     Pie(
                       guideLine: true,
@@ -131,6 +133,7 @@ class _PieChartDemoPageState extends State<PieChartDemoPage> with SingleTickerPr
                   ),
                   ChartWidget(
                     coordinateRender: ChartCircularCoordinateRender(
+                      animal: true,
                       margin: const EdgeInsets.only(bottom: 10),
                       strokeCap: StrokeCap.round,
                       borderColor: Colors.grey,

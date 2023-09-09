@@ -220,19 +220,27 @@ class _ChartCoreWidget extends StatefulWidget {
   State<_ChartCoreWidget> createState() => _ChartCoreWidgetState();
 }
 
-class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
+class _ChartCoreWidgetState extends State<_ChartCoreWidget> with SingleTickerProviderStateMixin {
   double _beforeZoom = 1.0;
   late Offset _lastOffset;
   late ChartParam _chartParam;
   get _controller => widget.chartCoordinateRender.controller;
   late List<ChartLayoutParam> allParams;
+  AnimationController? _animationController;
   @override
   void initState() {
+    if (widget.chartCoordinateRender.animal) {
+      _animationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 1000));
+      _animationController?.addListener(() {
+        setState(() {});
+      });
+    }
     _initState();
     super.initState();
   }
 
   void _initState() {
+    _animationController?.forward();
     allParams = [];
     List<ChartBodyRender> charts = widget.chartCoordinateRender.charts;
     //关联子状态
@@ -248,6 +256,7 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
 
   @override
   void dispose() {
+    _animationController?.dispose();
     super.dispose();
   }
 
@@ -268,6 +277,7 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> {
       outDraw: widget.chartCoordinateRender.outDraw,
       childrenState: allParams,
       coordinate: widget.chartCoordinateRender,
+      controlValue: _animationController?.value ?? 1,
     );
     return GestureDetector(
       behavior: HitTestBehavior.opaque,

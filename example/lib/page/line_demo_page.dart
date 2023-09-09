@@ -76,6 +76,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                       crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
                       margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
                       padding: const EdgeInsets.only(left: 0, right: 0),
+                      animal: true,
                       //提示的文案信息
                       tooltipBuilder: (BuildContext context, List<ChartLayoutParam> body) {
                         String text =

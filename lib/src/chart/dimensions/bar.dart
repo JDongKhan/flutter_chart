@@ -86,7 +86,7 @@ class Bar<T> extends ChartBodyRender<T> {
     left = param.transformUtils.withXOffset(left);
 
     double present = yPoV / param.yAxis[yAxisPosition].max;
-    double itemHeight = contentHeight * present;
+    double itemHeight = contentHeight * present * param.controlValue;
     double top = bottom - itemHeight;
     if (left > param.size.width || (left + itemWidth) < 0) {
       return ChartLayoutParam();
@@ -228,7 +228,7 @@ class StackBar<T> extends ChartBodyRender<T> {
     List<ChartLayoutParam> childrenLayoutParams = [];
     for (num v in vas) {
       double present = v / total;
-      double itemHeight = contentHeight * present;
+      double itemHeight = contentHeight * present * param.controlValue;
       double top = bottom - itemHeight;
       Rect rect = Rect.fromLTWH(left, top, itemWidth, itemHeight);
       ChartLayoutParam stackShape = ChartLayoutParam.rect(rect: rect);
@@ -263,7 +263,7 @@ class StackBar<T> extends ChartBodyRender<T> {
     List<ChartLayoutParam> childrenLayoutParams = [];
     for (num v in vas) {
       double present = v / total;
-      double itemHeight = contentHeight * present;
+      double itemHeight = contentHeight * present * param.controlValue;
       double top = bottom - itemHeight;
       Rect rect = Rect.fromLTWH(left, top, itemWidth, itemHeight);
       ChartLayoutParam stackShape = ChartLayoutParam.rect(rect: rect);
