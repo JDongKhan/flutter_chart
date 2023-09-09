@@ -98,8 +98,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                       },
                       yAxis: [YAxis(min: 0, max: 500)],
                       xAxis: XAxis(
-                        count: 7,
-                        max: 20,
+                        count: 9,
                         formatter: (index) => startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd'),
                       ),
                       charts: [
