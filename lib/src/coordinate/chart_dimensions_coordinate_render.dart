@@ -206,7 +206,7 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
       // }
       //先放一起，以免再次遍历
       if (xAxis.drawGrid) {
-        final Matrix4 matrix = Matrix4.identity()..translate(left, 0);
+        final Matrix4 matrix = Matrix4.identity()..translate(left, param.contentMargin.top);
         canvas.drawPath(xAxis.getDashPath(i, param.contentSize.height).transform(matrix.storage), xAxis.linePath);
       }
       //画底部线
