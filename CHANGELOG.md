@@ -1,3 +1,7 @@
+## 0.1.4
+
+* performance optimization for line chart
+
 ## 0.1.3
 
 * add tween animation 

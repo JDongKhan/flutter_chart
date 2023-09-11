@@ -175,18 +175,19 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
 
       double left = param.contentMargin.left + density * interval * i;
       left = param.transform.withXOffset(left);
-
+      //避免多余绘制，只绘制屏幕内容
       if (left < 0) {
         continue;
       }
-      if (left > size.width) {
+      String? text = xAxis.formatter?.call(i);
+      Offset? oft = Offset(left, 0);
+      if (text != null) {
+        oft = _drawXTextPaint(canvas, text, xAxis.textStyle, size, left, first: (i == 0) && padding.left == 0, end: (i == count) && padding.right == 0);
+      }
+      //根据调整过的位置再比较
+      if (oft.dx > size.width) {
         break;
       }
-      String? text = xAxis.formatter?.call(i);
-      if (text != null) {
-        _drawXTextPaint(canvas, text, xAxis.textStyle, size, left, first: (i == 0) && padding.left == 0, end: (i == count) && padding.right == 0);
-      }
-
       //处理放大时里面的内容
       if (xDivideCount != null && xDivideCount > 0) {
         for (int j = 1; j < xDivideCount; j++) {
@@ -221,7 +222,7 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
   }
 
   ///绘制x轴文本
-  void _drawXTextPaint(Canvas canvas, String text, TextStyle textStyle, Size size, double left, {bool first = false, bool end = false}) {
+  Offset _drawXTextPaint(Canvas canvas, String text, TextStyle textStyle, Size size, double left, {bool first = false, bool end = false}) {
     var textPainter = xAxis._textPainter[text];
     if (textPainter == null) {
       //layout耗性能，只做一次即可
@@ -236,13 +237,15 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
       textPainter.layout(); // 进行布局
       xAxis._textPainter[text] = textPainter;
     }
+    Offset offset = Offset(
+      end ? left - textPainter.width : (first ? left : left - textPainter.width / 2),
+      size.height - margin.bottom + 8,
+    );
     textPainter.paint(
       canvas,
-      Offset(
-        end ? left - textPainter.width : (first ? left : left - textPainter.width / 2),
-        size.height - margin.bottom + 8,
-      ),
+      offset,
     ); // 进行绘制
+    return offset;
   }
 
   ///绘制十字准星

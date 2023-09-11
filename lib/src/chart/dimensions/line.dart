@@ -73,6 +73,7 @@ class Line<T> extends ChartBodyRender<T> {
   @override
   void init(ChartParam param) {
     super.init(param);
+    //这里可以提前计算好数据
     if (filled == true) {
       _fullPaint = Paint()
         ..strokeWidth = strokeWidth
