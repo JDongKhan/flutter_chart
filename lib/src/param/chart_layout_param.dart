@@ -3,7 +3,7 @@ import 'dart:math';
 import 'dart:ui';
 
 /// @author jd
-const double _maxWidth = 20;
+const double _maxWidth = 15;
 
 @Deprecated('instead of  using [ChartLayoutParam]')
 typedef CharBodyState = ChartLayoutParam;
@@ -115,15 +115,15 @@ class ChartLayoutParam {
       if (reverse) {
         reverse = true;
         double diff = next.rect!.right - rect!.left;
-        if (diff > _maxWidth) {
-          diff = _maxWidth;
+        if (diff > _maxWidth * 2) {
+          diff = _maxWidth * 2;
         }
         l = rect!.left - diff / 2;
         r = rect!.right + _maxWidth;
       } else {
         double diff = next.rect!.left - rect!.right;
-        if (diff > _maxWidth) {
-          diff = _maxWidth;
+        if (diff > _maxWidth * 2) {
+          diff = _maxWidth * 2;
         }
         l = rect!.left - _maxWidth;
         r = rect!.right + diff / 2;
@@ -139,15 +139,15 @@ class ChartLayoutParam {
       if (reverse) {
         reverse = true;
         double diff = rect!.right - pre.rect!.left;
-        if (diff > _maxWidth) {
-          diff = _maxWidth;
+        if (diff > _maxWidth * 2) {
+          diff = _maxWidth * 2;
         }
         l = rect!.left - _maxWidth;
         r = rect!.right + diff / 2;
       } else {
         double diff = rect!.left - pre.rect!.right;
-        if (diff > _maxWidth) {
-          diff = _maxWidth;
+        if (diff > _maxWidth * 2) {
+          diff = _maxWidth * 2;
         }
         l = rect!.left - diff / 2;
         r = rect!.right + _maxWidth;
@@ -164,19 +164,19 @@ class ChartLayoutParam {
       if (reverse) {
         reverse = true;
         double diff = rect!.right - pre.rect!.left;
-        if (diff > _maxWidth) {
-          diff = _maxWidth;
+        if (diff > _maxWidth * 2) {
+          diff = _maxWidth * 2;
         }
         l = left!;
         r = rect!.right + diff / 2;
       } else {
         double diffLeft = rect!.left - pre.rect!.right;
         double diffRight = next.rect!.left - rect!.right;
-        if (diffLeft > _maxWidth) {
-          diffLeft = _maxWidth;
+        if (diffLeft > _maxWidth * 2) {
+          diffLeft = _maxWidth * 2;
         }
-        if (diffRight > _maxWidth) {
-          diffRight = _maxWidth;
+        if (diffRight > _maxWidth * 2) {
+          diffRight = _maxWidth * 2;
         }
         l = rect!.left - diffLeft / 2;
         r = rect!.right + diffRight / 2;

@@ -222,7 +222,7 @@ class Line<T> extends ChartBodyRender<T> {
         lineInfo.endPoint = currentPoint;
       }
 
-      Rect currentRect = Rect.fromLTRB(xPos, top, xPos + dotRadius * 2, bottom);
+      Rect currentRect = Rect.fromLTRB(xPos - dotRadius, top, xPos + dotRadius, bottom);
       currentPointLayout.setRect(currentRect);
       currentPointLayout.left = left;
       currentPointLayout.right = right;
