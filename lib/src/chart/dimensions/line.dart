@@ -255,13 +255,13 @@ class Line<T> extends ChartBodyRender<T> {
     }
     //最后画点  防止被挡住
     // print(lineInfo.pointList);
-    List<Color> dotColorList = dotColors ?? colors;
-    for (int index in pathMap.keys) {
-      LineInfo? lineInfo = pathMap[index];
-      if (lineInfo == null) {
-        continue;
-      }
-      if (dotRadius > 0) {
+    if (dotRadius > 0) {
+      List<Color> dotColorList = dotColors ?? colors;
+      for (int index in pathMap.keys) {
+        LineInfo? lineInfo = pathMap[index];
+        if (lineInfo == null) {
+          continue;
+        }
         for (ChartLayoutParam point in lineInfo.pointList) {
           if (!param.outDraw && point.rect!.center.dx < 0) {
             // debugPrint('1-第${lineInfo.pointList.indexOf(point) + 1} 个点 $point 超出去');

@@ -104,12 +104,9 @@ BarChart:
 SizedBox(
 height: 200,
 child: ChartWidget(
-    coordinateRender: LineBarChartCoordinateRender(
+    coordinateRender: ChartDimensionsCoordinateRender(
         yAxis: [
-          YAxis(
-            min: 0,
-            max: 500,
-          )
+          YAxis(min: 0,max: 500)
         ],
         margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
         xAxis: XAxis(
@@ -149,7 +146,7 @@ LineChart
 SizedBox(
 height: 200,
 child: ChartWidget(
-    coordinateRender: LineBarChartCoordinateRender(
+    coordinateRender: ChartDimensionsCoordinateRender(
         margin: const EdgeInsets.only(left: 40, top: 5, right: 30, bottom: 30),
         crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
         tooltipFormatter: (list) => TextSpan(
@@ -207,7 +204,7 @@ PieChart
 SizedBox(
   height: 200,
   child: ChartWidget(
-      coordinateRender: PieChartCoordinateRender(
+      coordinateRender: ChartCircularCoordinateRender(
           margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 10),
           charts: [
             Pie(
