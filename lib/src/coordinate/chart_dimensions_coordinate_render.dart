@@ -123,14 +123,6 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
     }
   }
 
-  ///该方法太耗性能，建议少用 未来背景可能使用单独一个canvas绘制
-  Path _dashPath(Offset p1, Offset p2) {
-    Path path = Path()
-      ..moveTo(p1.dx, p1.dy)
-      ..lineTo(p2.dx, p2.dy);
-    return dashPath(path, dashArray: CircularIntervalList([3, 3]), dashOffset: null);
-  }
-
   ///绘制Y轴文本
   void _drawYTextPaint(YAxis yAxis, Canvas canvas, String text, TextStyle textStyle, bool right, double left, double top, bool middle) {
     var textPainter = yAxis._textPainter[text];
@@ -160,11 +152,6 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
     Size size = param.size;
     double density = xAxis.density;
     num interval = xAxis.interval;
-    Paint paint = Paint()
-      ..color = xAxis.lineColor
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1;
-
     //实际要显示的数量
     int count = xAxis.max ~/ interval;
     //缩放时过滤逻辑
@@ -186,10 +173,16 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
         continue;
       }
 
-      String? text = xAxis.formatter?.call(i);
       double left = param.contentMargin.left + density * interval * i;
       left = param.transform.withXOffset(left);
 
+      if (left < 0) {
+        continue;
+      }
+      if (left > size.width) {
+        break;
+      }
+      String? text = xAxis.formatter?.call(i);
       if (text != null) {
         _drawXTextPaint(canvas, text, xAxis.textStyle, size, left, first: (i == 0) && padding.left == 0, end: (i == count) && padding.right == 0);
       }
@@ -212,22 +205,18 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
       // }
       //先放一起，以免再次遍历
       if (xAxis.drawGrid) {
-        Path? kDashPath = xAxis._gridLine[i];
-        if (kDashPath == null) {
-          kDashPath = _dashPath(Offset(left, margin.top), Offset(left, size.height - margin.bottom));
-          xAxis._gridLine[i] = kDashPath;
-        }
-        canvas.drawPath(kDashPath, paint);
+        final Matrix4 matrix = Matrix4.identity()..translate(left, 0);
+        canvas.drawPath(xAxis.getDashPath(i, param.contentSize.height).transform(matrix.storage), xAxis.linePath);
       }
       //画底部线
       if (xAxis.drawLine && xAxis.drawDivider) {
-        canvas.drawLine(Offset(left, size.height - margin.bottom), Offset(left, size.height - margin.bottom - 3), paint);
+        canvas.drawLine(Offset(left, size.height - margin.bottom), Offset(left, size.height - margin.bottom - 3), xAxis.linePath);
       }
     }
 
     //划线
     if (xAxis.drawLine) {
-      canvas.drawLine(Offset(margin.left, size.height - margin.bottom), Offset(size.width - margin.right, size.height - margin.bottom), paint);
+      canvas.drawLine(Offset(margin.left, size.height - margin.bottom), Offset(size.width - margin.right, size.height - margin.bottom), xAxis.linePath);
     }
   }
 
@@ -435,8 +424,22 @@ class XAxis {
     num? max,
   }) : max = max ?? count;
 
+  late final Paint linePath = Paint()
+    ..color = lineColor
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 1;
+
   num widthOf(num value) {
     return density * value;
+  }
+
+  Path getDashPath(int index, double height) {
+    Path? kDashPath = _gridLine[index];
+    if (kDashPath == null) {
+      kDashPath = _dashPath(const Offset(0, 0), Offset(0, height));
+      _gridLine[index] = kDashPath;
+    }
+    return kDashPath;
   }
 
   ///缓存对应的信息
@@ -527,4 +530,12 @@ class YAxis {
   double relativeHeight(num value) {
     return (value - min) * density;
   }
+}
+
+///该方法太耗性能，建议少用
+Path _dashPath(Offset p1, Offset p2) {
+  Path path = Path()
+    ..moveTo(p1.dx, p1.dy)
+    ..lineTo(p2.dx, p2.dy);
+  return dashPath(path, dashArray: CircularIntervalList([3, 3]), dashOffset: null);
 }

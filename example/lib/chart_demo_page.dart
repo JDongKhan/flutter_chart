@@ -3,6 +3,7 @@ import 'package:example/page/line_demo_page.dart';
 import 'package:example/page/pie_demo_page.dart';
 import 'package:flutter/material.dart';
 
+import 'page/big_data_demo_page.dart';
 import 'page/line_right_demo_page.dart';
 import 'page/line_scale_demo_page.dart';
 import 'page/radar_demo_page.dart';
@@ -100,6 +101,16 @@ class ChartDemoPage extends StatelessWidget {
               );
             },
             child: const Text('tween animal'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => BigDataChartDemoPage(),
+                ),
+              );
+            },
+            child: const Text('big data'),
           ),
         ],
       ),
