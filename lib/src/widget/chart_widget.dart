@@ -12,7 +12,6 @@ import '../coordinate/chart_coordinate_render.dart';
 
 /// @author JD
 ///
-typedef TooltipRenderer = void Function(Canvas, Size size, Offset anchor, List<ChartLayoutParam> indexs);
 typedef TooltipWidgetBuilder = PreferredSizeWidget? Function(BuildContext context, List<ChartLayoutParam>);
 // typedef ChartCoordinateRenderBuilder = ChartCoordinateRender Function();
 
