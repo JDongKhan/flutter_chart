@@ -35,7 +35,6 @@ class ChartDimensionParam extends ChartParam {
       xAxis.density = density;
     }
 
-    bool yZoom = false;
     for (YAxis yA in yAxis) {
       num max = yA.max;
       num min = yA.min;
@@ -46,7 +45,6 @@ class ChartDimensionParam extends ChartParam {
       double density = itemHeight / itemValue;
       yA.fixedDensity = density;
       if (yA.zoom) {
-        yZoom = true;
         yA.density = density * zoom;
       } else {
         yA.density = density;
@@ -56,11 +54,8 @@ class ChartDimensionParam extends ChartParam {
     //转换工具
     transformUtils = TransformUtils(
       anchor: Offset(margin.left, size.height - margin.bottom),
-      zoom: zoom,
       offset: offset,
       size: size,
-      zoomVertical: xAxis.zoom,
-      zoomHorizontal: yZoom,
       padding: padding,
       reverseX: false,
       reverseY: true,

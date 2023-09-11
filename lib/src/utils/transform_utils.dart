@@ -15,18 +15,12 @@ class TransformUtils {
 
   ///图形内边距，用于控制坐标轴的内边距
   final EdgeInsets padding;
-  final bool zoomHorizontal;
-  final bool zoomVertical;
-  final double zoom;
 
   TransformUtils({
     required this.anchor,
     required this.size,
     required this.offset,
-    required this.zoom,
     required this.padding,
-    required this.zoomVertical,
-    required this.zoomHorizontal,
     this.reverseX = false,
     this.reverseY = true,
   });
