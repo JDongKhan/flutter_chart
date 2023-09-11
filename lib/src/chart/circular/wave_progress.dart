@@ -29,7 +29,8 @@ class WaveProgress<T> extends ChartBodyRender<T> {
     this.colors = colors10,
   });
 
-  late TransformUtils _transformUtils;
+  late TransformUtils _transform;
+
   @override
   void init(ChartParam param) {
     super.init(param);
@@ -39,7 +40,7 @@ class WaveProgress<T> extends ChartBodyRender<T> {
     //处理圆形场景
     if (param.arcPosition == ArcPosition.none) {
       Offset progressCenter = Offset(center.dx, center.dy + radius);
-      _transformUtils = TransformUtils(
+      _transform = TransformUtils(
         anchor: progressCenter,
         size: param.size,
         offset: param.offset,
@@ -49,7 +50,7 @@ class WaveProgress<T> extends ChartBodyRender<T> {
       );
     } else {
       //半圆就不用特别处理了
-      _transformUtils = param.transformUtils;
+      _transform = param.transform;
     }
   }
 
@@ -73,7 +74,7 @@ class WaveProgress<T> extends ChartBodyRender<T> {
       Paint paint = Paint()
         ..color = colors[index]
         ..style = PaintingStyle.fill;
-      Path path = _createBezierPath(_transformUtils, radius, waterHeight);
+      Path path = _createBezierPath(_transform, radius, waterHeight);
       canvas.drawPath(path, paint);
       index++;
     }

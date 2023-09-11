@@ -21,6 +21,7 @@ abstract class ChartBodyRender<T> extends ChartRender {
 
   ///跟哪个y轴关联
   final int yAxisPosition;
+
   ChartBodyRender({
     required this.data,
     this.yAxisPosition = 0,

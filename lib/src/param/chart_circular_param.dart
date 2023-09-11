@@ -36,7 +36,7 @@ class ChartCircularParam extends ChartParam {
       radius = math.min(sw, sh) / 2 - borderWidth / 2;
       // 定义中心点
       center = size.center(Offset.zero);
-      transformUtils = TransformUtils(
+      transform = TransformUtils(
         anchor: center,
         size: size,
         padding: padding,
@@ -52,7 +52,7 @@ class ChartCircularParam extends ChartParam {
       center = size.center(Offset.zero);
       if (arcPosition == ArcPosition.up) {
         center = Offset(center.dx, size.height - contentMargin.bottom);
-        transformUtils = TransformUtils(
+        transform = TransformUtils(
           anchor: center,
           size: size,
           padding: padding,
@@ -62,7 +62,7 @@ class ChartCircularParam extends ChartParam {
         );
       } else if (arcPosition == ArcPosition.down) {
         center = Offset(center.dx, contentMargin.top);
-        transformUtils = TransformUtils(
+        transform = TransformUtils(
           anchor: center,
           size: size,
           padding: padding,

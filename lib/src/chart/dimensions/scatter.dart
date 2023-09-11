@@ -43,7 +43,7 @@ class Scatter<T> extends ChartBodyRender<T> {
     param as ChartDimensionParam;
     //offset.dx 滚动偏移  (src.zoom - 1) * (src.size.width / 2) 缩放
     double left = param.contentMargin.left;
-    left = param.transformUtils.withXOffset(left);
+    left = param.transform.withXOffset(left);
 
     // double right = param.size.width - param.contentMargin.right;
     // double top = param.contentMargin.top;
@@ -55,7 +55,7 @@ class Scatter<T> extends ChartBodyRender<T> {
       num yvs = value.call(itemData);
       double xPo = xvs * param.xAxis.density + left;
       double yPo = bottom - param.yAxis[yAxisPosition].relativeHeight(yvs);
-      yPo = param.transformUtils.withYOffset(yPo);
+      yPo = param.transform.withYOffset(yPo);
       ScatterStyle sy = style.call(itemData);
       //最后画点
       if (sy.radius > 0) {

@@ -63,10 +63,10 @@ class ImageAnnotation extends Annotation {
         num yPo = positions![1];
         double itemWidth = xPo * param.xAxis.density;
         double itemHeight = param.yAxis[yAxisPosition].relativeHeight(yPo);
-        ost = param.transformUtils.withOffset(
+        ost = param.transform.withOffset(
           Offset(
-            param.transformUtils.transformX(itemWidth, containPadding: true),
-            param.transformUtils.transformY(itemHeight, containPadding: true),
+            param.transform.transformX(itemWidth, containPadding: true),
+            param.transform.transformY(itemHeight, containPadding: true),
           ),
           scroll,
         );

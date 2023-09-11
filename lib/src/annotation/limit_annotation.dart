@@ -38,14 +38,14 @@ class LimitAnnotation extends Annotation {
       double itemHeight = param.yAxis[yAxisPosition].relativeHeight(po);
       Offset start = Offset(
         param.padding.left,
-        param.transformUtils.transformY(
+        param.transform.transformY(
           itemHeight,
           containPadding: true,
         ),
       );
       Offset end = Offset(
         param.size.width - param.padding.right,
-        param.transformUtils.transformY(
+        param.transform.transformY(
           itemHeight,
           containPadding: true,
         ),

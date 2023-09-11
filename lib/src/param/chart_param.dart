@@ -88,7 +88,7 @@ abstract class ChartParam extends ChangeNotifier {
   }
 
   ///坐标转换工具
-  late TransformUtils transformUtils;
+  late TransformUtils transform;
 
   late Size size;
   late EdgeInsets margin;

@@ -76,25 +76,25 @@ class LabelAnnotation extends Annotation {
         }
         double itemWidth = xPo * density;
         double itemHeight = param.yAxis[yAxisPosition].relativeHeight(yPo);
-        double left = param.transformUtils.transformX(
+        double left = param.transform.transformX(
           itemWidth,
           containPadding: true,
         );
-        double top = param.transformUtils.transformY(
+        double top = param.transform.transformY(
           itemHeight,
           containPadding: true,
         );
 
         if (scroll) {
-          left = param.transformUtils.withXOffset(left);
-          top = param.transformUtils.withYOffset(top);
+          left = param.transform.withXOffset(left);
+          top = param.transform.withYOffset(top);
         } else {
           //不跟随缩放
-          left = param.transformUtils.transformX(
+          left = param.transform.transformX(
             itemWidth,
             containPadding: true,
           );
-          top = param.transformUtils.transformY(
+          top = param.transform.transformY(
             itemHeight,
             containPadding: true,
           );

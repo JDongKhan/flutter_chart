@@ -39,10 +39,10 @@ class RegionAnnotation extends Annotation {
       assert(positions.length == 2, 'positions must be two length');
       num po1 = positions[0];
       num po2 = positions[1];
-      double start = param.transformUtils.transformX(po1 * param.xAxis.density);
-      start = param.transformUtils.withXOffset(start);
-      double end = param.transformUtils.transformX(po2 * param.xAxis.density);
-      end = param.transformUtils.withXOffset(end);
+      double start = param.transform.transformX(po1 * param.xAxis.density);
+      start = param.transform.withXOffset(start);
+      double end = param.transform.transformX(po2 * param.xAxis.density);
+      end = param.transform.withXOffset(end);
 
       double top = param.contentMargin.top;
       double bottom = param.size.height - param.contentMargin.bottom;

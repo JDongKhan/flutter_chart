@@ -52,7 +52,7 @@ class ChartDimensionParam extends ChartParam {
     }
 
     //转换工具
-    transformUtils = TransformUtils(
+    transform = TransformUtils(
       anchor: Offset(margin.left, size.height - margin.bottom),
       offset: offset,
       size: size,

@@ -95,7 +95,7 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
         }
         String text = yA.formatter?.call(i) ?? '${min + vv}';
         double top = size.height - param.contentMargin.bottom - vv * yA.density;
-        top = param.transformUtils.withYOffset(top);
+        top = param.transform.withYOffset(top);
         //绘制文本
         if (i == count) {
           _drawYTextPaint(yA, canvas, text, yA.textStyle, yAxisIndex > 0, left + yA.left, top, false);
@@ -188,7 +188,7 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
 
       String? text = xAxis.formatter?.call(i);
       double left = param.contentMargin.left + density * interval * i;
-      left = param.transformUtils.withXOffset(left);
+      left = param.transform.withXOffset(left);
 
       if (text != null) {
         _drawXTextPaint(canvas, text, xAxis.textStyle, size, left, first: (i == 0) && padding.left == 0, end: (i == count) && padding.right == 0);
@@ -200,7 +200,7 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
           num newValue = i + j * xAmplifyInterval!;
           String? newText = xAxis.formatter?.call(newValue);
           double left = param.contentMargin.left + density * interval * newValue;
-          left = param.transformUtils.withXOffset(left);
+          left = param.transform.withXOffset(left);
           if (newText != null) {
             _drawXTextPaint(canvas, newText, xAxis.textStyle, size, left);
           }

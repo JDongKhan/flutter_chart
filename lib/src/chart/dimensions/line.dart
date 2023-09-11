@@ -88,8 +88,6 @@ class Line<T> extends ChartBodyRender<T> {
     int index = 0;
     //offset.dx 滚动偏移  (src.zoom - 1) * (src.size.width / 2) 缩放
     double left = param.contentMargin.left;
-    left = param.transformUtils.withXOffset(left);
-
     double right = param.size.width - param.contentMargin.right;
     double top = param.contentMargin.top;
     double bottom = param.size.height - param.contentMargin.bottom;
@@ -124,6 +122,7 @@ class Line<T> extends ChartBodyRender<T> {
 
       //x轴位置
       double xPos = xValue * param.xAxis.density + left;
+      xPos = param.transform.withXOffset(xPos);
 
       //先判断是否选中，此场景是第一次渲染之后点击才有，所以用老数据即可
       List<ChartLayoutParam> childrenLayoutParams = layoutParam.children;
@@ -142,7 +141,7 @@ class Line<T> extends ChartBodyRender<T> {
         num yValue = yValues[valueIndex];
         //y轴位置
         double yPos = bottom - param.yAxis[yAxisPosition].relativeHeight(yValue);
-        yPos = param.transformUtils.withYOffset(yPos);
+        yPos = param.transform.withYOffset(yPos);
         Offset currentPoint = Offset(xPos, yPos);
         //数据过滤
         if (!param.outDraw && xPos < 0) {
