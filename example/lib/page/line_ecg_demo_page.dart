@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chart_plus/flutter_chart.dart';
 
 /// @author JD
-class LineChartRightDemoPage extends StatefulWidget {
-  const LineChartRightDemoPage({Key? key}) : super(key: key);
+class LineChartEcgDemoPage extends StatefulWidget {
+  const LineChartEcgDemoPage({Key? key}) : super(key: key);
 
   @override
-  State<LineChartRightDemoPage> createState() => _LineChartRightDemoPageState();
+  State<LineChartEcgDemoPage> createState() => _LineChartEcgDemoPageState();
 }
 
-class _LineChartRightDemoPageState extends State<LineChartRightDemoPage> {
+class _LineChartEcgDemoPageState extends State<LineChartEcgDemoPage> {
   final DateTime startTime = DateTime(2023, 1, 1);
   final int maxCount = 500;
   late List<Map> dataList = [

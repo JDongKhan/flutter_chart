@@ -23,15 +23,14 @@ class _BigDataChartDemoPageState extends State<BigDataChartDemoPage> {
   }
 
   void _changeData() {
-    double v = Random().nextInt(10) / 10;
     diffDay = 100000;
     dataList.clear();
     for (int i = 0; i < diffDay; i++) {
       dataList.add({
         'time': startTime.add(Duration(days: 1 + i)),
-        'value1': 100 * v + i % 100,
-        'value2': 200 * v + i % 100,
-        'value3': 300 * v + i % 100,
+        'value1': Random().nextInt(500),
+        'value2': Random().nextInt(500),
+        'value3': Random().nextInt(500),
       });
     }
     setState(() {});
@@ -60,7 +59,7 @@ class _BigDataChartDemoPageState extends State<BigDataChartDemoPage> {
             width: 300,
             child: Column(
               children: [
-                const Text('Line'),
+                const Text('100 thousand data for line'),
                 SizedBox(
                   height: 200,
                   child: ChartWidget(
@@ -68,7 +67,7 @@ class _BigDataChartDemoPageState extends State<BigDataChartDemoPage> {
                       crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
                       margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
                       padding: const EdgeInsets.only(left: 0, right: 0),
-                      animationDuration: const Duration(milliseconds: 500),
+                      // animationDuration: const Duration(milliseconds: 500),
                       yAxis: [
                         YAxis(
                           min: 0,
@@ -77,7 +76,8 @@ class _BigDataChartDemoPageState extends State<BigDataChartDemoPage> {
                         )
                       ],
                       xAxis: XAxis(
-                        count: 9,
+                        count: 7,
+                        interval: 100,
                         max: diffDay,
                         zoom: true,
                         drawGrid: true,

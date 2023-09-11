@@ -73,6 +73,7 @@ class Line<T> extends ChartBodyRender<T> {
   @override
   void init(ChartParam param) {
     super.init(param);
+    layoutParam.children = List.generate(data.length, (index) => ChartLayoutParam()).toList();
     //这里可以提前计算好数据
     if (filled == true) {
       _fullPaint = Paint()
@@ -84,7 +85,7 @@ class Line<T> extends ChartBodyRender<T> {
   @override
   void draw(Canvas canvas, ChartParam param) {
     param as ChartDimensionParam;
-    List<ChartLayoutParam> shapeList = [];
+    List<ChartLayoutParam> shapeList = layoutParam.children;
     List<ChartLayoutParam>? lastDataList = getLastData(param.animal);
     int index = 0;
     //offset.dx 滚动偏移  (src.zoom - 1) * (src.size.width / 2) 缩放
@@ -97,12 +98,20 @@ class Line<T> extends ChartBodyRender<T> {
     num? lastXValue;
     //遍历数据 处理数据信息
     for (T value in data) {
-      num xValue = position.call(value);
+      ChartLayoutParam currentPointLayout = shapeList[index];
+      num? xValue = currentPointLayout.xValue;
+      xValue ??= position.call(value);
       if (lastXValue != null) {
         assert(lastXValue < xValue, '虽然支持逆序，但是为了防止数据顺序混乱，还是强制要求必须是正序的数组');
       }
-      List<num> yValues = values.call(value);
-      List<ChartLayoutParam> shapes = [];
+      List<num>? yValues = currentPointLayout.yValues;
+      yValues ??= values.call(value);
+
+      //保存数据
+      currentPointLayout.xValue = xValue;
+      currentPointLayout.yValues = yValues;
+
+      /******* 动画 *********/
       assert(colors.length >= yValues.length, '颜色配置跟数据源不匹配');
       assert(shaders == null || shaders!.length >= yValues.length, '颜色配置跟数据源不匹配');
       //是否有动画
@@ -121,15 +130,15 @@ class Line<T> extends ChartBodyRender<T> {
         yValues = lerpList(lastYValue, yValues, param.controlValue) ?? yValues;
       }
 
-      //x轴位置
+      //先判断是否选中，此场景是第一次渲染之后点击才有，所以用老数据即可
+      if (param.localPosition != null && index < shapeList.length && (shapeList[index].hitTest(param.localPosition!) == true)) {
+        layoutParam.selectedIndex = index;
+      }
+
+      //计算x轴和y轴的物理位置
       double xPos = xValue * param.xAxis.density + left;
       xPos = param.transform.withXOffset(xPos);
 
-      //先判断是否选中，此场景是第一次渲染之后点击才有，所以用老数据即可
-      List<ChartLayoutParam> childrenLayoutParams = layoutParam.children;
-      if (param.localPosition != null && index < childrenLayoutParams.length && (childrenLayoutParams[index].hitTest(param.localPosition!) == true)) {
-        layoutParam.selectedIndex = index;
-      }
       //一组数据下可能多条线
       for (int valueIndex = 0; valueIndex < yValues.length; valueIndex++) {
         //每条线用map存放下，以便后面统一绘制
@@ -193,29 +202,34 @@ class Line<T> extends ChartBodyRender<T> {
             lineInfo.path?.lineTo(xPos, yPos);
           }
         }
+
+        //点的信息
+        ChartLayoutParam childLayoutParam;
+        if (valueIndex < currentPointLayout.children.length) {
+          childLayoutParam = currentPointLayout.children[valueIndex];
+        } else {
+          childLayoutParam = ChartLayoutParam();
+          currentPointLayout.children.add(childLayoutParam);
+        }
+
+        childLayoutParam.setRect(Rect.fromCenter(center: currentPoint, width: dotRadius, height: dotRadius));
+        childLayoutParam.index = index;
+        childLayoutParam.xValue = xValue;
+        childLayoutParam.yValue = yValue;
+
         //存放点的位置
-        ChartLayoutParam shape = ChartLayoutParam.rect(rect: Rect.fromCenter(center: currentPoint, width: dotRadius, height: dotRadius));
-        shape.index = index;
-        shapes.add(shape);
-        shape.xValue = xValue;
-        shape.yValue = yValue;
-        shape.userInfo = yValue;
-        lineInfo.pointList.add(shape);
+        lineInfo.pointList.add(childLayoutParam);
         lineInfo.endPoint = currentPoint;
       }
 
       Rect currentRect = Rect.fromLTRB(xPos, top, xPos + dotRadius * 2, bottom);
-      ChartLayoutParam shape = ChartLayoutParam.rect(rect: currentRect);
-      shape.left = left;
-      shape.right = right;
-      shape.xValue = xValue;
-      shape.children.addAll(shapes);
+      currentPointLayout.setRect(currentRect);
+      currentPointLayout.left = left;
+      currentPointLayout.right = right;
       //这里用链表解决查找附近节点的问题
-      shape.preShapeState = lastShape;
-      lastShape?.nextShapeState = shape;
-      shapeList.add(shape);
-
-      lastShape = shape;
+      currentPointLayout.preShapeState = lastShape;
+      lastShape?.nextShapeState = currentPointLayout;
+      lastShape = currentPointLayout;
       //放到最后
       index++;
       lastXValue = xValue;
@@ -240,7 +254,6 @@ class Line<T> extends ChartBodyRender<T> {
     // }
     //开始绘制了
     _drawLine(param, canvas, pathMap);
-    layoutParam.children = shapeList;
   }
 
   void _drawLine(ChartParam param, Canvas canvas, Map<int, LineInfo> pathMap) {

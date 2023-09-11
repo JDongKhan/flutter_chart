@@ -24,9 +24,6 @@ class ChartLayoutParam {
   ///数据所在数组的位置
   int? index;
 
-  ///存放额外信息
-  dynamic userInfo;
-
   //选中children的索引
   int? selectedIndex;
 
@@ -48,6 +45,9 @@ class ChartLayoutParam {
 
   ///对应数据y轴的原始值
   num? yValue;
+
+  ///对应数据y轴的原始值
+  List<num>? yValues;
 
   ///某条数据下 可能会有多条数据
   List<ChartLayoutParam> children = [];
@@ -87,6 +87,10 @@ class ChartLayoutParam {
       ..lineTo(q0.dx, q0.dy)
       ..arcToPoint(p0, radius: Radius.circular(r0), clockwise: !clockwise, largeArc: large);
     path = localPath.shift(center);
+  }
+
+  void setRect(Rect rect) {
+    this.rect = rect;
   }
 
   ///获取热区
@@ -206,6 +210,6 @@ class ChartLayoutParam {
 
   @override
   String toString() {
-    return '{index:$index userInfo:$userInfo}';
+    return '{index:$index xValue:$xValue,yValue:$yValue}';
   }
 }

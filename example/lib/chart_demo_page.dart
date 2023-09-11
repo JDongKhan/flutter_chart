@@ -4,7 +4,7 @@ import 'package:example/page/pie_demo_page.dart';
 import 'package:flutter/material.dart';
 
 import 'page/big_data_demo_page.dart';
-import 'page/line_right_demo_page.dart';
+import 'page/line_ecg_demo_page.dart';
 import 'page/line_scale_demo_page.dart';
 import 'page/radar_demo_page.dart';
 import 'page/scatter_demo_page.dart';
@@ -86,7 +86,7 @@ class ChartDemoPage extends StatelessWidget {
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (_) => const LineChartRightDemoPage(),
+                  builder: (_) => const LineChartEcgDemoPage(),
                 ),
               );
             },
