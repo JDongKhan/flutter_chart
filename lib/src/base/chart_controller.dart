@@ -21,8 +21,8 @@ class ChartController {
   ///根据位置缓存配置信息
   List<ChartLayoutParam> get chartParam => _param?.childrenState ?? [];
 
-  Offset? _tapPosition;
-  Offset? get tapPosition => _tapPosition;
+  Offset? _outTapLocation;
+  Offset? get outTapLocation => _outTapLocation;
   Offset? get localPosition => _param?.localPosition;
 
   ///重置提示框
@@ -32,8 +32,8 @@ class ChartController {
       _tooltipWidgetBuilder = null;
       needNotify = true;
     }
-    if (_tapPosition != null) {
-      _tapPosition = null;
+    if (_outTapLocation != null) {
+      _outTapLocation = null;
       needNotify = true;
     }
     if (_param?.localPosition != null) {
@@ -51,7 +51,7 @@ class ChartController {
   ///使用widget渲染tooltip
   void showTooltipBuilder({required AnnotationTooltipWidgetBuilder builder, required Offset position}) {
     _tooltipWidgetBuilder = builder;
-    _tapPosition = position;
+    _outTapLocation = position;
     notifyTooltip();
   }
 

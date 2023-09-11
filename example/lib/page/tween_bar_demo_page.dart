@@ -98,6 +98,7 @@ class _TweenBarChartDemoPageState extends State<TweenBarChartDemoPage> {
             width: 300,
             child: Column(
               children: [
+                const Text('Line'),
                 SizedBox(
                   height: 200,
                   child: ChartWidget(
@@ -124,11 +125,11 @@ class _TweenBarChartDemoPageState extends State<TweenBarChartDemoPage> {
                     ),
                   ),
                 ),
-                const Text('普通Bar'),
+                const Text('Bar'),
                 SizedBox(
                   height: 200,
                   child: ChartWidget(
-                    controller: _controller,
+                    // controller: _controller,
                     coordinateRender: ChartDimensionsCoordinateRender(
                       animationDuration: const Duration(milliseconds: 500),
                       margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),

@@ -89,9 +89,7 @@ class _ChartWidgetState extends State<ChartWidget> {
   @override
   void dispose() {
     super.dispose();
-    if (widget.controller == null) {
-      _controller.dispose();
-    }
+    _controller.dispose();
   }
 
   @override
@@ -146,7 +144,7 @@ class _ChartWidgetState extends State<ChartWidget> {
     return StatefulBuilder(
       builder: (BuildContext context, StateSetter setState) {
         _controller.bindTooltipStateSetter(setState);
-        Offset? point = _controller.tapPosition ?? _controller.localPosition;
+        Offset? point = _controller.outTapLocation ?? _controller.localPosition;
         if (point == null) {
           return const SizedBox.shrink();
         }
