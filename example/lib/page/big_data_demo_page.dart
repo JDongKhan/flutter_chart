@@ -77,7 +77,7 @@ class _BigDataChartDemoPageState extends State<BigDataChartDemoPage> {
                       ],
                       xAxis: XAxis(
                         count: 7,
-                        interval: 500,
+                        interval: 100,
                         max: diffDay,
                         zoom: true,
                         drawGrid: true,

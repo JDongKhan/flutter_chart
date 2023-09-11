@@ -159,7 +159,7 @@ class Line<T> extends ChartBodyRender<T> {
           // debugPrint('1-第${index + 1}个数据超出去');
           continue;
         }
-        lineInfo.startPoint ??= currentPoint;
+        lineInfo.startPoint = currentPoint;
 
         //点的信息
         ChartLayoutParam childLayoutParam;
@@ -175,7 +175,7 @@ class Line<T> extends ChartBodyRender<T> {
         childLayoutParam.xValue = xValue;
         childLayoutParam.yValue = yValue;
         //存放点的位置
-        lineInfo.pointList.add(childLayoutParam);
+        lineInfo.addPoint(childLayoutParam, isCurve);
       }
 
       Rect currentRect = Rect.fromLTRB(xPos - dotRadius, top, xPos + dotRadius, bottom);
@@ -218,52 +218,15 @@ class Line<T> extends ChartBodyRender<T> {
       Path? lastPath;
       for (int index in pathMap.keys) {
         LineInfo? lineInfo = pathMap[index];
-        if (lineInfo == null || lineInfo.pointList.isEmpty) {
+        if (lineInfo == null || lineInfo.path == null) {
           continue;
         }
-        Path path = Path();
-        path.moveTo(lineInfo.startPoint!.dx, lineInfo.startPoint!.dy);
-        ChartLayoutParam? lastShape;
-        for (int valueIndex = 0; valueIndex < lineInfo.pointList.length; valueIndex++) {
-          ChartLayoutParam point = lineInfo.pointList[valueIndex];
-          Offset currentPoint = point.rect!.center;
-          if (isCurve) {
-            double preX = lastShape!.rect!.center.dx;
-            double preY = lastShape.rect!.center.dy;
-            double xDiff = currentPoint.dx - preX;
-            double centerX1 = preX + xDiff / 2;
-            double centerY1 = preY;
-
-            double centerX2 = currentPoint.dx - xDiff / 2;
-            double centerY2 = currentPoint.dy;
-
-            // chart.canvas.drawCircle(
-            //     Offset(centerX1, centerY1), 2, Paint()..color = Colors.red);
-            //
-            // chart.canvas.drawCircle(
-            //     Offset(centerX2, centerY2), 2, Paint()..color = Colors.blue);
-
-            //绘制贝塞尔路径
-            path.cubicTo(
-              centerX1,
-              centerY1, // control point 1
-              centerX2,
-              centerY2, //  control point 2
-              currentPoint.dx,
-              currentPoint.dy,
-            );
-          } else {
-            path.lineTo(currentPoint.dx, currentPoint.dy);
-          }
-          lastShape = point;
-        }
-
         //先画线
         if (strokeWidth > 0) {
           if (shaders != null && filled == false) {
-            canvas.drawPath(path, paint..shader = shaders![index]);
+            canvas.drawPath(lineInfo.path!, paint..shader = shaders![index]);
           } else {
-            canvas.drawPath(path, paint..color = colors[index]);
+            canvas.drawPath(lineInfo.path!, paint..color = colors[index]);
           }
         }
 
@@ -271,7 +234,7 @@ class Line<T> extends ChartBodyRender<T> {
         if (filled == true) {
           Offset last = lineInfo.pointList.last.rect!.center;
           Offset first = lineInfo.pointList.first.rect!.center;
-          path
+          lineInfo.path!
             ..lineTo(last.dx, param.contentRect.bottom)
             ..lineTo(first.dx, param.contentRect.bottom);
           if (shaders != null) {
@@ -279,12 +242,12 @@ class Line<T> extends ChartBodyRender<T> {
           } else {
             _fullPaint?.color = colors[index];
           }
-          Path newPath = path;
+          Path newPath = lineInfo.path!;
           if (operation != null) {
             if (lastPath != null) {
               newPath = Path.combine(operation!, newPath, lastPath);
             }
-            lastPath = path;
+            lastPath = lineInfo.path!;
           }
           canvas.drawPath(newPath, _fullPaint!);
         }
@@ -325,7 +288,56 @@ class Line<T> extends ChartBodyRender<T> {
 }
 
 class LineInfo {
-  Offset? startPoint;
+  Offset? _startPoint;
+  set startPoint(v) {
+    if (_startPoint != null) {
+      return;
+    }
+    _startPoint = v;
+    path = Path();
+    path!.moveTo(v.dx, v.dy);
+  }
+
+  Path? path;
+
+  void addPoint(ChartLayoutParam point, bool isCurve) {
+    ChartLayoutParam? lastPoint;
+    if (pointList.isNotEmpty) {
+      lastPoint = pointList.last;
+    }
+    Offset currentPoint = point.rect!.center;
+    if (isCurve) {
+      double preX = lastPoint?.rect?.center.dx ?? _startPoint?.dx ?? 0;
+      double preY = lastPoint?.rect?.center.dy ?? _startPoint?.dy ?? 0;
+      double xDiff = currentPoint.dx - preX;
+      double centerX1 = preX + xDiff / 2;
+      double centerY1 = preY;
+
+      double centerX2 = currentPoint.dx - xDiff / 2;
+      double centerY2 = currentPoint.dy;
+
+      // chart.canvas.drawCircle(
+      //     Offset(centerX1, centerY1), 2, Paint()..color = Colors.red);
+      //
+      // chart.canvas.drawCircle(
+      //     Offset(centerX2, centerY2), 2, Paint()..color = Colors.blue);
+
+      //绘制贝塞尔路径
+      path?.cubicTo(
+        centerX1,
+        centerY1, // control point 1
+        centerX2,
+        centerY2, //  control point 2
+        currentPoint.dx,
+        currentPoint.dy,
+      );
+    } else {
+      path?.lineTo(currentPoint.dx, currentPoint.dy);
+    }
+
+    pointList.add(point);
+  }
+
   List<ChartLayoutParam> pointList = [];
   LineInfo();
 }
