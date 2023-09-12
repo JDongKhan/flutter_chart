@@ -1,63 +1,57 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 class MyCustomPainter extends CustomPainter {
   final double zoom;
   final Offset offset;
-  final List poitList = [
-    Offset(0, 200),
-    Offset(40, 100),
-    Offset(100, 120),
-    Offset(120, 100),
-    Offset(120, 150),
-    Offset(200, 100),
-    Offset(300, 150),
-  ];
-  final List<Path> pathList = [];
+  final List<Offset> pointList;
   MyCustomPainter({
     this.zoom = 1,
     this.offset = Offset.zero,
+    required this.pointList,
   });
+
+  // 绘制缩放后的 Path
+  Paint linePaint = Paint()
+    ..color = Colors.blue
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 1.0;
+
+  Paint pointPaint = Paint()
+    ..color = Colors.blue
+    ..style = PaintingStyle.fill
+    ..strokeWidth = 1.0;
+
+  Path? path;
+
   @override
   void paint(Canvas canvas, Size size) {
-    Path path = Path();
-    // 在 path 中添加绘制路径的逻辑
-    print(size);
-    int index = 0;
-    for (Offset point in poitList) {
-      if (index == 0) {
-        path.moveTo(point.dx, point.dy);
-      } else {
-        path.lineTo(point.dx, point.dy);
+    if (path == null) {
+      path = Path();
+      // 在 path 中添加绘制路径的逻辑
+      int index = 0;
+      for (Offset point in pointList) {
+        if (index == 0) {
+          path?.moveTo(point.dx, point.dy);
+        } else {
+          path?.lineTo(point.dx, point.dy);
+        }
+        index++;
       }
-      pathList.add(Path()..addOval(Rect.fromCenter(center: point, width: 2, height: 2)));
-      index++;
     }
-    print('zoom:$zoom');
-    print(offset);
+
     // 创建一个 Transform 来缩放 Path
-    final double scaleFactor = zoom; // 缩放因子
     final Offset center = Offset(offset.dx, 0); // 缩放中心点
     final Matrix4 matrix = Matrix4.identity()
       ..translate(-center.dx, 0)
       ..scale(zoom, 1);
 
-    path = path.transform(matrix.storage); // 应用缩放变换
+    Path newPath = path!.transform(matrix.storage); // 应用缩放变换
+    canvas.drawPath(newPath, linePaint);
 
-    // 绘制缩放后的 Path
-    Paint paint = Paint()
-      ..color = Colors.blue
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.0;
-
-    canvas.drawPath(path, paint);
-
-    paint.color = Colors.red;
-
-    final Matrix4 matrix2 = Matrix4.identity()..translate(-center.dx, 0);
-
-    for (var element in pathList) {
-      path = element.transform(matrix.storage); // 应用缩放变换
-      canvas.drawPath(path, paint);
+    for (var element in pointList) {
+      canvas.drawCircle(element.translate(-center.dx, 0), 2, pointPaint);
     }
   }
 
@@ -79,6 +73,8 @@ class _MyCustomWidgetState extends State<MyCustomWidget> {
   double _zoom = 1;
   late Offset _lastOffset;
   Offset _offset = Offset.zero;
+
+  late final List<Offset> pointList = List.generate(100000, (index) => Offset(index.toDouble(), Random().nextInt(300).toDouble()));
 
   @override
   Widget build(BuildContext context) {
@@ -116,6 +112,7 @@ class _MyCustomWidgetState extends State<MyCustomWidget> {
                 },
                 child: CustomPaint(
                   painter: MyCustomPainter(
+                    pointList: pointList,
                     zoom: _zoom,
                     offset: _offset,
                   ),
