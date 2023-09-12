@@ -52,6 +52,7 @@ class ChartCircularCoordinateRender extends ChartCoordinateRender {
     var index = 0;
     for (var element in charts) {
       element.indexAtChart = index;
+      element.controller = controller;
       if (!element.isInit) {
         element.init(param);
       }

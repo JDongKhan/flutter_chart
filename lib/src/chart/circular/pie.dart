@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
@@ -121,6 +122,7 @@ class Pie<T> extends ChartBodyRender<T> {
     Offset center = param.center;
     double radius = param.radius;
 
+    // List<ChartLayoutParam>? lastLayoutParams = getLastData(param.animal);
     //开始画扇形
     double startAngle = this.startAngle;
     List<ChartLayoutParam> childrenLayoutParams = [];
@@ -131,6 +133,18 @@ class Pie<T> extends ChartBodyRender<T> {
       T item = data[i];
       //直接读取
       num percent = _values[i] / _total;
+
+      //tween动画
+      // num? lastPercent;
+      // if (lastLayoutParams != null && index < lastLayoutParams.length) {
+      //   lastPercent = lastLayoutParams[i].yValue;
+      // }
+      // num currentPercent = percent;
+      // if (lastPercent != null) {
+      //   //初始动画x轴不动
+      //   currentPercent = lerpDouble(lastPercent, percent, param.controlValue) ?? percent;
+      // }
+
       // 计算出每个数据所占的弧度值
       final sweepAngle = percent * pi * 2 * (direction == RotateDirection.forward ? 1 : -1) * param.controlValue;
       double rd = radius;
@@ -142,6 +156,7 @@ class Pie<T> extends ChartBodyRender<T> {
         innerRadius: holeRadius,
         outRadius: rd,
       );
+      shape.yValue = percent;
       childrenLayoutParams.add(shape);
 
       //放大区域

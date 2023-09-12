@@ -185,6 +185,23 @@ class _TweenBarChartDemoPageState extends State<TweenBarChartDemoPage> {
                     ),
                   ),
                 ),
+                SizedBox(
+                  height: 200,
+                  child: ChartWidget(
+                    coordinateRender: ChartCircularCoordinateRender(
+                      margin: const EdgeInsets.all(30),
+                      animationDuration: const Duration(seconds: 1),
+                      charts: [
+                        Pie(
+                          data: dataList,
+                          showValue: true,
+                          position: (item) => (double.parse(item['value1'].toString())),
+                          valueFormatter: (item) => item['value1'].toString(),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
