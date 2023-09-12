@@ -32,7 +32,7 @@ class _RadarChartDemoPageState extends State<RadarChartDemoPage> with SingleTick
       },
       {
         'title': "穿衣",
-        'value1': 100,
+        'value1': 400,
         'value2': 200,
         'value3': 300,
       },
@@ -74,7 +74,31 @@ class _RadarChartDemoPageState extends State<RadarChartDemoPage> with SingleTick
                     Radar(
                       max: 600,
                       data: dataList,
-                      fillColors: colors10.map((e) => e.withOpacity(0.1)).toList(),
+                      fillColors: colors10.map((e) => e.withOpacity(0.2)).toList(),
+                      legendFormatter: () => dataList.map((e) => e['title']).toList(),
+                      valueFormatter: (item) => [
+                        item['value1'],
+                      ],
+                      values: (item) => [
+                        (double.parse(item['value1'].toString())),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              height: 200,
+              margin: const EdgeInsets.only(top: 20),
+              child: ChartWidget(
+                coordinateRender: ChartCircularCoordinateRender(
+                  margin: const EdgeInsets.all(12),
+                  charts: [
+                    Radar(
+                      max: 600,
+                      data: dataList,
+                      borderStyle: RadarBorderStyle.circle,
+                      fillColors: colors10.map((e) => e.withOpacity(0.2)).toList(),
                       legendFormatter: () => dataList.map((e) => e['title']).toList(),
                       valueFormatter: (item) => [
                         item['value1'],
@@ -98,7 +122,7 @@ class _RadarChartDemoPageState extends State<RadarChartDemoPage> with SingleTick
                     Radar(
                       max: 600,
                       data: dataList,
-                      fillColors: colors10.map((e) => e.withOpacity(0.1)).toList(),
+                      fillColors: colors10.map((e) => e.withOpacity(0.2)).toList(),
                       valueFormatter: (item) => [
                         item['value1'].toString(),
                         item['value2'].toString(),

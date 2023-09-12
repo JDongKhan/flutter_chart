@@ -4,6 +4,11 @@ typedef RadarChartValue<T> = List<num> Function(T);
 typedef RadarValueFormatter<T> = List<dynamic> Function(T);
 typedef RadarLegendFormatter = List<dynamic> Function();
 
+enum RadarBorderStyle {
+  polygon, //多边形
+  circle, //圆形
+}
+
 ///雷达图
 /// @author JD
 class Radar<T> extends ChartBodyRender<T> {
@@ -37,6 +42,11 @@ class Radar<T> extends ChartBodyRender<T> {
   ///开始弧度，可以调整起始位置
   final double startAngle;
 
+  ///分隔线的数量
+  final int count;
+
+  final RadarBorderStyle borderStyle;
+
   Radar({
     required super.data,
     required this.values,
@@ -48,7 +58,9 @@ class Radar<T> extends ChartBodyRender<T> {
     this.colors = colors10,
     this.startAngle = -math.pi / 2,
     this.fillColors,
-    this.legendTextStyle = const TextStyle(fontSize: 12, color: Colors.black, fontWeight: FontWeight.bold),
+    this.count = 5,
+    this.borderStyle = RadarBorderStyle.polygon,
+    this.legendTextStyle = const TextStyle(fontSize: 10, color: Colors.black, fontWeight: FontWeight.bold),
   });
 
   late double _sweepAngle;
@@ -84,6 +96,12 @@ class Radar<T> extends ChartBodyRender<T> {
     double radius = param.radius;
     //开始点
     double startAngle = this.startAngle;
+
+    if (borderStyle == RadarBorderStyle.polygon) {
+      _borderLinePaths = List.generate(count, (index) => Path());
+    }
+    double dividerRadius = param.radius / count;
+
     for (int i = 0; i < itemLength; i++) {
       T itemData = data[i];
       //画边框
@@ -92,10 +110,19 @@ class Radar<T> extends ChartBodyRender<T> {
       _linePathList.add(Path()
         ..moveTo(center.dx, center.dy)
         ..lineTo(x, y));
-      if (i == 0) {
-        _borderLinePath.moveTo(x, y);
-      } else {
-        _borderLinePath.lineTo(x, y);
+
+      //画分隔线
+      if (borderStyle == RadarBorderStyle.polygon) {
+        for (int ii = 0; ii < count; ii++) {
+          final r = dividerRadius * (ii + 1);
+          final x1 = math.cos(startAngle) * r + center.dx;
+          final y1 = math.sin(startAngle) * r + center.dy;
+          if (i == 0) {
+            _borderLinePaths[ii].moveTo(x1, y1);
+          } else {
+            _borderLinePaths[ii].lineTo(x1, y1);
+          }
+        }
       }
       if (legendList != null) {
         String legend = legendList[i].toString();
@@ -162,14 +189,19 @@ class Radar<T> extends ChartBodyRender<T> {
       //继续下一个
       startAngle = startAngle + _sweepAngle;
     }
-    _borderLinePath.close();
+
+    if (borderStyle == RadarBorderStyle.polygon) {
+      for (var element in _borderLinePaths) {
+        element.close();
+      }
+    }
   }
 
   ///由内向外的线
   final List<Path> _linePathList = [];
 
   ///外边框
-  final Path _borderLinePath = Path();
+  List<Path> _borderLinePaths = [];
 
   ///图例 和 value
   final List<RadarTextPainter> _textPainterList = [];
@@ -179,11 +211,23 @@ class Radar<T> extends ChartBodyRender<T> {
 
   @override
   void draw(Canvas canvas, ChartParam param) {
-    //画边框
+    param as _ChartCircularParam;
+    double dividerRadius = param.radius / count;
+    if (borderStyle == RadarBorderStyle.circle) {
+      for (int ii = 0; ii < count; ii++) {
+        canvas.drawCircle(param.center, dividerRadius * (ii + 1), _linePaint);
+      }
+    } else if (borderStyle == RadarBorderStyle.polygon) {
+      //画边框
+      for (var element in _borderLinePaths) {
+        canvas.drawPath(element, _linePaint);
+      }
+    }
+
     for (var element in _linePathList) {
       canvas.drawPath(element, _linePaint);
     }
-    canvas.drawPath(_borderLinePath, _linePaint);
+
     //画数据
     int index = 0;
     for (Path dataPath in _dataLinePathList.values) {
