@@ -159,7 +159,7 @@ class Line<T> extends ChartBodyRender<T> {
           // debugPrint('1-第${index + 1}个数据超出去');
           continue;
         }
-        lineInfo.startPoint = currentPoint;
+        lineInfo.startPoint ??= currentPoint;
 
         //点的信息
         ChartLayoutParam childLayoutParam;
@@ -176,6 +176,7 @@ class Line<T> extends ChartBodyRender<T> {
         childLayoutParam.yValue = yValue;
         //存放点的位置
         lineInfo.addPoint(childLayoutParam, isCurve);
+        lineInfo.endPoint = currentPoint;
       }
 
       Rect currentRect = Rect.fromLTRB(xPos - dotRadius, top, xPos + dotRadius, bottom);
@@ -189,7 +190,6 @@ class Line<T> extends ChartBodyRender<T> {
       //放到最后
       index++;
       lastXValue = xValue;
-
       //数据过滤
       if (!param.outDraw && xPos > param.size.width) {
         // debugPrint('2-第$index个数据超出去');
@@ -218,7 +218,7 @@ class Line<T> extends ChartBodyRender<T> {
       Path? lastPath;
       for (int index in pathMap.keys) {
         LineInfo? lineInfo = pathMap[index];
-        if (lineInfo == null || lineInfo.path == null) {
+        if (lineInfo == null || lineInfo.path == null || lineInfo.pointList.isEmpty) {
           continue;
         }
         //先画线
@@ -232,8 +232,8 @@ class Line<T> extends ChartBodyRender<T> {
 
         //然后填充颜色
         if (filled == true) {
-          Offset last = lineInfo.pointList.last.rect!.center;
-          Offset first = lineInfo.pointList.first.rect!.center;
+          Offset last = lineInfo.endPoint ?? Offset.zero;
+          Offset first = lineInfo.startPoint ?? Offset.zero;
           lineInfo.path!
             ..lineTo(last.dx, param.contentRect.bottom)
             ..lineTo(first.dx, param.contentRect.bottom);
@@ -289,10 +289,9 @@ class Line<T> extends ChartBodyRender<T> {
 
 class LineInfo {
   Offset? _startPoint;
+  Offset? get startPoint => _startPoint;
+  Offset? endPoint;
   set startPoint(v) {
-    if (_startPoint != null) {
-      return;
-    }
     _startPoint = v;
     path = Path();
     path!.moveTo(v.dx, v.dy);

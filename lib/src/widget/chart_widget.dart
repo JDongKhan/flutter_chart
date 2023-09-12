@@ -222,7 +222,7 @@ class _ChartCoreWidget extends StatefulWidget {
   State<_ChartCoreWidget> createState() => _ChartCoreWidgetState();
 }
 
-class _ChartCoreWidgetState extends State<_ChartCoreWidget> with SingleTickerProviderStateMixin {
+class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderStateMixin {
   double _beforeZoom = 1.0;
   late Offset _lastOffset;
   late ChartParam _chartParam;
@@ -332,6 +332,7 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with SingleTickerPro
       onScaleEnd: (ScaleEndDetails details) {
         //这里可以处理减速的操作
         // print(details.velocity);
+        _startDecelerationAnimation(details.velocity.pixelsPerSecond.dx);
       },
       child: RepaintBoundary(
         child: CustomPaint(
@@ -342,6 +343,34 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with SingleTickerPro
         ),
       ),
     );
+  }
+
+  AnimationController? _scrollAnimationController;
+
+  void _startDecelerationAnimation(double scrollVelocity) {
+    _scrollAnimationController?.stop();
+    _scrollAnimationController?.dispose();
+    _scrollAnimationController = null;
+    if (scrollVelocity == 0) {
+      return;
+    }
+    //0.2减速系数
+    final distanceToScroll = scrollVelocity * 0.2;
+    Duration duration = Duration(milliseconds: distanceToScroll.abs().toInt());
+    _scrollAnimationController = AnimationController(vsync: this, duration: duration);
+
+    Animation<double> animation = Tween<double>(
+      begin: _chartParam.offset.dx,
+      end: _chartParam.offset.dx - distanceToScroll,
+    ).animate(CurvedAnimation(
+      parent: _scrollAnimationController!,
+      curve: Curves.easeOutCubic,
+    ));
+
+    animation.addListener(() {
+      scroll(Offset(animation.value, 0));
+    });
+    _scrollAnimationController?.forward();
   }
 
   ///判断是否先处理Annotations

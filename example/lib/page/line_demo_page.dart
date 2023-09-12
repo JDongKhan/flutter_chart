@@ -275,7 +275,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                           filled: true,
                           operation: PathOperation.xor,
                           position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
-                          colors: [Colors.transparent, Colors.blue],
+                          colors: [Colors.red, Colors.blue],
                           dotColors: [Colors.black, Colors.black],
                           // shaders: [
                           //   ui.Gradient.linear(Offset.zero, Offset(1000, 1000), [
