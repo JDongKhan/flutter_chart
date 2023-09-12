@@ -1,7 +1,7 @@
 part of flutter_chart_plus;
 
 /// @author jd
-abstract class Annotation extends ChartRender {
+abstract class Annotation extends _ChartRender {
   ///是否跟随滚动
   final bool scroll;
 

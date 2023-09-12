@@ -3,8 +3,8 @@ part of flutter_chart_plus;
 /// @author jd
 
 ///图表里的渲染器父类，直接子类包括ChartBodyRender和Annotation
-abstract class ChartRender {
-  ChartRender();
+abstract class _ChartRender {
+  _ChartRender();
 
   bool isInit = false;
 

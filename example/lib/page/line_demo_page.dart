@@ -18,7 +18,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
 
   @override
   void initState() {
-    ImageAnnotation.getAssetImage('images/location.png', width: 20, height: 20).then((value) {
+    ImageAnnotation.getAssetImage('images/location.png', width: 15, height: 15).then((value) {
       setState(() {
         logoImage = value;
       });
