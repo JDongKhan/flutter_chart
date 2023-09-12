@@ -1,14 +1,4 @@
-import 'dart:ui' as ui;
-
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-
-import '../annotation/annotation.dart';
-import '../base/chart_body_render.dart';
-import '../base/chart_controller.dart';
-import '../param/chart_param.dart';
-import '../param/chart_layout_param.dart';
-import '../coordinate/chart_coordinate_render.dart';
+part of flutter_chart_plus;
 
 /// @author JD
 ///
@@ -105,7 +95,7 @@ class _ChartWidgetState extends State<ChartWidget> {
       child: LayoutBuilder(
         builder: (context, cs) {
           ChartCoordinateRender baseChart = widget.coordinateRender;
-          _controller.attach(baseChart);
+          _controller._attach(baseChart);
           Size size = Size(cs.maxWidth, cs.maxHeight);
           List<Widget> childrenWidget = [];
           //图表 chart
@@ -142,7 +132,7 @@ class _ChartWidgetState extends State<ChartWidget> {
   Widget _buildTooltipWidget(ChartCoordinateRender baseChart, Size size) {
     return StatefulBuilder(
       builder: (BuildContext context, StateSetter setState) {
-        _controller.bindTooltipStateSetter(setState);
+        _controller._bindTooltipStateSetter(setState);
         Offset? point = _controller.outTapLocation ?? _controller.localPosition;
         if (point == null) {
           return const SizedBox.shrink();
@@ -425,7 +415,7 @@ class _ChartPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    chart.controller.bindParam(param);
+    chart.controller._bindParam(param);
     for (var element in param.childrenState) {
       element.selectedIndex = null;
     }

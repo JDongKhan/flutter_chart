@@ -1,7 +1,4 @@
-import 'package:flutter/material.dart';
-import '../coordinate/chart_coordinate_render.dart';
-import '../param/chart_layout_param.dart';
-import '../param/chart_param.dart';
+part of flutter_chart_plus;
 
 /// @author jd
 
@@ -41,7 +38,7 @@ class ChartController {
       needNotify = true;
     }
     if (needNotify) {
-      notifyTooltip();
+      _notifyTooltip();
     }
   }
 
@@ -52,7 +49,7 @@ class ChartController {
   void showTooltipBuilder({required AnnotationTooltipWidgetBuilder builder, required Offset position}) {
     _tooltipWidgetBuilder = builder;
     _outTapLocation = position;
-    notifyTooltip();
+    _notifyTooltip();
   }
 
   void dispose() {
@@ -65,22 +62,22 @@ class ChartController {
   }
 }
 
-extension InnerFuncation on ChartController {
-  void attach(ChartCoordinateRender chartCoordinateRender) {
+extension _InnerFuncation on ChartController {
+  void _attach(ChartCoordinateRender chartCoordinateRender) {
     chartCoordinateRender.controller = this;
     _lastChartCoordinateRender = _chartCoordinateRender;
     _chartCoordinateRender = chartCoordinateRender;
   }
 
-  void bindParam(ChartParam p) {
+  void _bindParam(ChartParam p) {
     _param = p;
   }
 
-  void bindTooltipStateSetter(StateSetter? stateSetter) {
+  void _bindTooltipStateSetter(StateSetter? stateSetter) {
     _tooltipStateSetter = stateSetter;
   }
 
-  void notifyTooltip() {
+  void _notifyTooltip() {
     if (_tooltipStateSetter != null) {
       _tooltipStateSetter?.call(() {});
     }

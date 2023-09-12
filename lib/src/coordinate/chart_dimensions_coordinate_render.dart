@@ -1,11 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:path_drawing/path_drawing.dart';
-
-import '../annotation/annotation.dart';
-import '../param/chart_param.dart';
-import '../param/chart_layout_param.dart';
-import 'chart_coordinate_render.dart';
-import '../base/chart_controller.dart';
+part of flutter_chart_plus;
 
 /// @author JD
 
@@ -339,7 +332,7 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
     //用widget实现
     if (tooltipBuilder != null) {
       Future.microtask(() {
-        controller.notifyTooltip();
+        controller._notifyTooltip();
       });
       return;
     }

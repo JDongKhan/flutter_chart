@@ -1,5 +1,4 @@
-import 'dart:ui';
-import '../param/chart_param.dart';
+part of flutter_chart_plus;
 
 /// @author jd
 

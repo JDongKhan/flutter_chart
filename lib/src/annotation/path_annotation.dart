@@ -1,7 +1,4 @@
-import 'package:flutter/material.dart';
-
-import '../param/chart_param.dart';
-import 'annotation.dart';
+part of flutter_chart_plus;
 
 /// @author jd
 //路径

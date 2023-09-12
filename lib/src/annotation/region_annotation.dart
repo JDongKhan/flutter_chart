@@ -1,7 +1,4 @@
-import 'package:flutter/material.dart';
-import '../param/chart_dimension_param.dart';
-import '../param/chart_param.dart';
-import 'annotation.dart';
+part of flutter_chart_plus;
 
 /// @author jd
 //区间标注
@@ -35,7 +32,7 @@ class RegionAnnotation extends Annotation {
     if (!needDraw(param)) {
       return;
     }
-    if (param is ChartDimensionParam) {
+    if (param is _ChartDimensionParam) {
       assert(positions.length == 2, 'positions must be two length');
       num po1 = positions[0];
       num po2 = positions[1];

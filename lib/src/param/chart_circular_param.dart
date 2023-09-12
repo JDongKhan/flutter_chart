@@ -1,11 +1,6 @@
-import 'dart:math' as math;
+part of flutter_chart_plus;
 
-import 'package:flutter/widgets.dart';
-import 'chart_param.dart';
-import '../coordinate/chart_circular_coordinate_render.dart';
-import '../utils/transform_utils.dart';
-
-class ChartCircularParam extends ChartParam {
+class _ChartCircularParam extends ChartParam {
   ///半径
   late double radius;
 
@@ -17,7 +12,7 @@ class ChartCircularParam extends ChartParam {
 
   final ArcPosition arcPosition;
 
-  ChartCircularParam.coordinate({
+  _ChartCircularParam.coordinate({
     super.outDraw,
     super.controlValue,
     required super.childrenState,

@@ -1,12 +1,4 @@
-import 'dart:ui';
-
-import 'package:flutter/material.dart';
-
-import '../../param/chart_dimension_param.dart';
-import '../../param/chart_param.dart';
-import '../../utils/chart_utils.dart';
-import '../../base/chart_body_render.dart';
-import '../../param/chart_layout_param.dart';
+part of flutter_chart_plus;
 
 typedef BarPosition<T> = num Function(T);
 
@@ -67,9 +59,9 @@ class Bar<T> extends ChartBodyRender<T> {
           lastXValue = p.xValue;
         }
         if (lastXValue != null) {
-          xValue = lerpDouble(lastXValue, xValue, param.controlValue) ?? xValue;
+          xValue = ui.lerpDouble(lastXValue, xValue, param.controlValue) ?? xValue;
         }
-        yValue = lerpDouble(lastYValue, yValue, param.controlValue) ?? yValue;
+        yValue = ui.lerpDouble(lastYValue, yValue, param.controlValue) ?? yValue;
       }
       ChartLayoutParam p = _measureBarLayoutParam(param, xValue, yValue)..index = index;
       if (p.rect != null) {
@@ -94,7 +86,7 @@ class Bar<T> extends ChartBodyRender<T> {
 
   //可以重写 自定义特殊的图形
   ChartLayoutParam _measureBarLayoutParam(ChartParam param, num xValue, num yValue) {
-    param as ChartDimensionParam;
+    param as _ChartDimensionParam;
     double bottom = param.size.height - param.contentMargin.bottom;
     double contentHeight = param.size.height - param.contentMargin.vertical;
 
@@ -177,7 +169,7 @@ class StackBar<T> extends ChartBodyRender<T> {
 
   @override
   void draw(Canvas canvas, ChartParam param) {
-    param as ChartDimensionParam;
+    param as _ChartDimensionParam;
     List<ChartLayoutParam> childrenLayoutParams = [];
     List<ChartLayoutParam>? lastDataList = getLastData(param.animal);
 
@@ -200,7 +192,7 @@ class StackBar<T> extends ChartBodyRender<T> {
         }
         if (lastXValue != null) {
           //初始动画x轴不动
-          xValue = lerpDouble(lastXValue, xValue, param.controlValue) ?? xValue;
+          xValue = ui.lerpDouble(lastXValue, xValue, param.controlValue) ?? xValue;
         }
         yValues = lerpList(lastYPov, yValues, param.controlValue) ?? yValues;
       }
@@ -243,7 +235,7 @@ class StackBar<T> extends ChartBodyRender<T> {
   }
 
   ///水平排列图形
-  ChartLayoutParam _measureHorizontalBarLayoutParam(ChartDimensionParam param, num xValue, List<num> yValues) {
+  ChartLayoutParam _measureHorizontalBarLayoutParam(_ChartDimensionParam param, num xValue, List<num> yValues) {
     num total = param.yAxis[yAxisPosition].max;
     if (total == 0) {
       return ChartLayoutParam()..xValue = xValue;
@@ -282,7 +274,7 @@ class StackBar<T> extends ChartBodyRender<T> {
   }
 
   ///垂直排列图形
-  ChartLayoutParam _measureVerticalBarLayoutParam(ChartDimensionParam param, num xValue, List<num> yValues) {
+  ChartLayoutParam _measureVerticalBarLayoutParam(_ChartDimensionParam param, num xValue, List<num> yValues) {
     num total = param.yAxis[yAxisPosition].max;
     if (full) {
       total = yValues.fold(0, (previousValue, element) => previousValue + element);

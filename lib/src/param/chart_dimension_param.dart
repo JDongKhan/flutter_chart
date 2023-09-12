@@ -1,16 +1,15 @@
-import 'package:flutter/widgets.dart';
-import 'chart_param.dart';
-import '../coordinate/chart_dimensions_coordinate_render.dart';
-import '../utils/transform_utils.dart';
 
-class ChartDimensionParam extends ChartParam {
+part of flutter_chart_plus;
+
+
+class _ChartDimensionParam extends ChartParam {
   ///y坐标轴
   final List<YAxis> yAxis;
 
   ///x坐标轴
   final XAxis xAxis;
 
-  ChartDimensionParam.coordinate({
+  _ChartDimensionParam.coordinate({
     super.outDraw,
     super.controlValue,
     required super.childrenState,

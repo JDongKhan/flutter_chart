@@ -1,13 +1,4 @@
-import 'dart:math';
-import 'dart:ui';
-
-import 'package:flutter/material.dart';
-
-import '../../base/chart_body_render.dart';
-import '../../param/chart_circular_param.dart';
-import '../../param/chart_param.dart';
-import '../../param/chart_layout_param.dart';
-import '../../utils/chart_utils.dart';
+part of flutter_chart_plus;
 
 /// @author JD
 typedef ValueFormatter<T> = String Function(T);
@@ -118,7 +109,7 @@ class Pie<T> extends ChartBodyRender<T> {
     if (_total == 0) {
       return;
     }
-    param as ChartCircularParam;
+    param as _ChartCircularParam;
     Offset center = param.center;
     double radius = param.radius;
 
@@ -146,7 +137,7 @@ class Pie<T> extends ChartBodyRender<T> {
       // }
 
       // 计算出每个数据所占的弧度值
-      final sweepAngle = percent * pi * 2 * (direction == RotateDirection.forward ? 1 : -1) * param.controlValue;
+      final sweepAngle = percent * math.pi * 2 * (direction == RotateDirection.forward ? 1 : -1) * param.controlValue;
       double rd = radius;
       //图形区域
       ChartLayoutParam shape = ChartLayoutParam.arc(
@@ -209,17 +200,17 @@ class Pie<T> extends ChartBodyRender<T> {
   }
 
   ///画空隙线
-  void _drawSpaceLine(ChartCircularParam param, Canvas canvas, double radius, double startAngle, double sweepAngle) {
+  void _drawSpaceLine(_ChartCircularParam param, Canvas canvas, double radius, double startAngle, double sweepAngle) {
     if (spaceWidth == null) {
       return;
     }
     Offset center = param.center;
     //开始线
-    var start1X = cos(startAngle) * holeRadius + center.dx;
-    var start1Y = sin(startAngle) * holeRadius + center.dy;
+    var start1X = math.cos(startAngle) * holeRadius + center.dx;
+    var start1Y = math.sin(startAngle) * holeRadius + center.dy;
     Offset start1Offset = Offset(start1X, start1Y);
-    var end1X = cos(startAngle) * radius + center.dx;
-    var end1Y = sin(startAngle) * radius + center.dy;
+    var end1X = math.cos(startAngle) * radius + center.dx;
+    var end1Y = math.sin(startAngle) * radius + center.dy;
     Offset end1Offset = Offset(end1X, end1Y);
     Paint paint = Paint()
       ..style = PaintingStyle.fill
@@ -227,16 +218,16 @@ class Pie<T> extends ChartBodyRender<T> {
       ..strokeWidth = spaceWidth!;
     canvas.drawLine(start1Offset, end1Offset, paint);
     //结束线
-    var start2X = cos(startAngle + sweepAngle) * holeRadius + center.dx;
-    var start2Y = sin(startAngle + sweepAngle) * holeRadius + center.dy;
+    var start2X = math.cos(startAngle + sweepAngle) * holeRadius + center.dx;
+    var start2Y = math.sin(startAngle + sweepAngle) * holeRadius + center.dy;
     Offset start2Offset = Offset(start2X, start2Y);
-    var end2X = cos(startAngle + sweepAngle) * radius + center.dx;
-    var end2Y = sin(startAngle + sweepAngle) * radius + center.dy;
+    var end2X = math.cos(startAngle + sweepAngle) * radius + center.dx;
+    var end2Y = math.sin(startAngle + sweepAngle) * radius + center.dy;
     Offset end2Offset = Offset(end2X, end2Y);
     canvas.drawLine(start2Offset, end2Offset, paint);
   }
 
-  void _drawLineAndText(ChartCircularParam param, Canvas canvas, String? valueText, String? legend, int index, double radius, double startAngle, double sweepAngle) {
+  void _drawLineAndText(_ChartCircularParam param, Canvas canvas, String? valueText, String? legend, int index, double radius, double startAngle, double sweepAngle) {
     if (valueText == null && legend == null) {
       return;
     }
@@ -245,8 +236,8 @@ class Pie<T> extends ChartBodyRender<T> {
     final double radians = startAngle + sweepAngle / 2;
     double line1 = 10;
     double line2 = 40;
-    Offset point1 = Offset(cos(radians) * (radius), sin(radians) * (radius)).translate(center.dx, center.dy);
-    Offset point2 = Offset(cos(radians) * (radius + line1), sin(radians) * (radius + line1)).translate(center.dx, center.dy);
+    Offset point1 = Offset(math.cos(radians) * (radius), math.sin(radians) * (radius)).translate(center.dx, center.dy);
+    Offset point2 = Offset(math.cos(radians) * (radius + line1), math.sin(radians) * (radius + line1)).translate(center.dx, center.dy);
     Paint paint = Paint()
       ..style = PaintingStyle.fill
       ..color = lineColor
@@ -352,14 +343,14 @@ class Pie<T> extends ChartBodyRender<T> {
           maxWidth: param.size.width,
         );
       // 使用三角函数计算文字位置 并根据文字大小适配
-      double x = cos(radians) * (radius / 2 + valueTextOffset) + param.size.width / 2 - valueTextPainter.width / 2;
-      double y = sin(radians) * (radius / 2 + valueTextOffset) + param.size.height / 2 - valueTextPainter.height / 2;
+      double x = math.cos(radians) * (radius / 2 + valueTextOffset) + param.size.width / 2 - valueTextPainter.width / 2;
+      double y = math.sin(radians) * (radius / 2 + valueTextOffset) + param.size.height / 2 - valueTextPainter.height / 2;
       valueTextPainter.paint(canvas, Offset(x, y));
     }
   }
 
   ///绘制中间文案
-  void _drawCenterValue(ChartCircularParam param, Canvas canvas, String? valueText) {
+  void _drawCenterValue(_ChartCircularParam param, Canvas canvas, String? valueText) {
     //中心点文案
     if (centerTextStyle != null && valueText != null) {
       TextPainter valueTextPainter = TextPainter(

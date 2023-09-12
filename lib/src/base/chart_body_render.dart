@@ -1,8 +1,4 @@
-import 'dart:ui';
-
-import 'chart_controller.dart';
-import 'chart_render.dart';
-import '../param/chart_layout_param.dart';
+part of flutter_chart_plus;
 
 /// @author jd
 
@@ -45,12 +41,12 @@ abstract class ChartBodyRender<T> extends ChartRender {
       return null;
     }
     if (a == null || a.isEmpty) {
-      return b.map((e) => lerpDouble(null, e, t) as num).toList();
+      return b.map((e) => ui.lerpDouble(null, e, t) as num).toList();
     }
     List<num> l = [];
     int index = 0;
     for (var element in b) {
-      l.add(lerpDouble(a[index], element, t) as num);
+      l.add(ui.lerpDouble(a[index], element, t) as num);
       index++;
     }
     return l;

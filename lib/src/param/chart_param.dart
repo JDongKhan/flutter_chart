@@ -1,12 +1,4 @@
-import 'package:flutter/widgets.dart';
-
-import '../coordinate/chart_circular_coordinate_render.dart';
-import '../coordinate/chart_coordinate_render.dart';
-import '../coordinate/chart_dimensions_coordinate_render.dart';
-import 'chart_layout_param.dart';
-import '../utils/transform_utils.dart';
-import 'chart_circular_param.dart';
-import 'chart_dimension_param.dart';
+part of flutter_chart_plus;
 
 typedef AnnotationTooltipWidgetBuilder = PreferredSizeWidget? Function(BuildContext context);
 
@@ -72,14 +64,14 @@ abstract class ChartParam extends ChangeNotifier {
     required ChartCoordinateRender coordinate,
   }) {
     if (coordinate is ChartDimensionsCoordinateRender) {
-      return ChartDimensionParam.coordinate(
+      return _ChartDimensionParam.coordinate(
         outDraw: outDraw,
         childrenState: childrenState,
         coordinate: coordinate,
         controlValue: controlValue,
       )..animal = coordinate.animationDuration != null;
     }
-    return ChartCircularParam.coordinate(
+    return _ChartCircularParam.coordinate(
       outDraw: outDraw,
       childrenState: childrenState,
       coordinate: coordinate as ChartCircularCoordinateRender,

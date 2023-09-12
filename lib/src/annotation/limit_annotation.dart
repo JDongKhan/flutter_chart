@@ -1,9 +1,4 @@
-import 'package:flutter/material.dart';
-import '../param/chart_dimension_param.dart';
-import 'package:path_drawing/path_drawing.dart';
-
-import '../param/chart_param.dart';
-import 'annotation.dart';
+part of flutter_chart_plus;
 
 typedef AnnotationPosition<T> = num Function(T);
 
@@ -33,7 +28,7 @@ class LimitAnnotation extends Annotation {
   @override
   void init(ChartParam param) {
     super.init(param);
-    if (param is ChartDimensionParam) {
+    if (param is _ChartDimensionParam) {
       num po = limit;
       double itemHeight = param.yAxis[yAxisPosition].relativeHeight(po);
       Offset start = Offset(

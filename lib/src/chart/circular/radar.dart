@@ -1,11 +1,4 @@
-import 'dart:math' as math;
-
-import 'package:flutter/material.dart';
-import '../../param/chart_circular_param.dart';
-import '../../param/chart_param.dart';
-import '../../utils/chart_utils.dart';
-import '../../base/chart_body_render.dart';
-import 'pie.dart';
+part of flutter_chart_plus;
 
 typedef RadarChartValue<T> = List<num> Function(T);
 typedef RadarValueFormatter<T> = List<dynamic> Function(T);
@@ -72,7 +65,7 @@ class Radar<T> extends ChartBodyRender<T> {
 
   @override
   void init(ChartParam param) {
-    param as ChartCircularParam;
+    param as _ChartCircularParam;
     super.init(param);
     int itemLength = data.length;
     double percent = 1 / itemLength;

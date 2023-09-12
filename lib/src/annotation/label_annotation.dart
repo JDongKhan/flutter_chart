@@ -1,7 +1,4 @@
-import 'package:flutter/material.dart';
-import '../param/chart_dimension_param.dart';
-import '../param/chart_param.dart';
-import 'annotation.dart';
+part of flutter_chart_plus;
 
 /// @author jd
 class LabelAnnotation extends Annotation {
@@ -61,7 +58,7 @@ class LabelAnnotation extends Annotation {
       return;
     }
 
-    if (param is ChartDimensionParam) {
+    if (param is _ChartDimensionParam) {
       Offset ost;
       if (positions != null) {
         assert(positions!.length == 2, 'positions must be two length');

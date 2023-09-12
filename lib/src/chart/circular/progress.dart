@@ -1,11 +1,4 @@
-import 'dart:math';
-
-import 'package:flutter/material.dart';
-import '../../param/chart_circular_param.dart';
-import '../../param/chart_param.dart';
-import '../../utils/chart_utils.dart';
-import '../../base/chart_body_render.dart';
-import '../../coordinate/chart_circular_coordinate_render.dart';
+part of flutter_chart_plus;
 
 /// @author jd
 class Progress<T> extends ChartBodyRender<T> {
@@ -33,7 +26,7 @@ class Progress<T> extends ChartBodyRender<T> {
     required this.position,
     this.endPoint = false,
     this.colors = colors10,
-    this.startAngle = pi,
+    this.startAngle = math.pi,
     this.strokeWidth = 1,
     this.strokeCap,
   });
@@ -62,7 +55,7 @@ class Progress<T> extends ChartBodyRender<T> {
 
   @override
   void draw(Canvas canvas, ChartParam param) {
-    param as ChartCircularParam;
+    param as _ChartCircularParam;
     Offset center = param.center;
     double radius = param.radius;
 
@@ -70,12 +63,12 @@ class Progress<T> extends ChartBodyRender<T> {
     num? lastXvs;
 
     double startAngle = this.startAngle;
-    double fullSweepAngle = pi;
+    double fullSweepAngle = math.pi;
     //
     if (param.arcPosition == ArcPosition.none) {
-      fullSweepAngle = pi * 2;
+      fullSweepAngle = math.pi * 2;
     } else if (param.arcPosition == ArcPosition.up) {
-      fullSweepAngle = pi;
+      fullSweepAngle = math.pi;
     } else if (param.arcPosition == ArcPosition.down) {
       startAngle = 0;
     }
@@ -85,7 +78,6 @@ class Progress<T> extends ChartBodyRender<T> {
       if (lastXvs != null) {
         assert(lastXvs > po, '数据必须降序，否则会被挡住');
       }
-      print(param.controlValue);
       double sweepAngle = fullSweepAngle * po * param.controlValue;
       Path path = Path()
         ..addArc(
@@ -96,8 +88,8 @@ class Progress<T> extends ChartBodyRender<T> {
       canvas.drawPath(path, _paint..color = colors[index]);
       if (_endPaint != null && sweepAngle > 0) {
         double endAngle = startAngle + sweepAngle;
-        var startX = cos(endAngle) * radius + center.dx;
-        var startY = sin(endAngle) * radius + center.dy;
+        var startX = math.cos(endAngle) * radius + center.dx;
+        var startY = math.sin(endAngle) * radius + center.dy;
         canvas.drawCircle(Offset(startX, startY), strokeWidth / 2 - 2, _endPaint!);
       }
       index++;

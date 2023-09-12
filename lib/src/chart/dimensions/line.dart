@@ -1,11 +1,4 @@
-import 'dart:ui';
-
-import 'package:flutter/material.dart';
-import '../../param/chart_dimension_param.dart';
-import '../../param/chart_param.dart';
-import '../../utils/chart_utils.dart';
-import '../../base/chart_body_render.dart';
-import '../../param/chart_layout_param.dart';
+part of flutter_chart_plus;
 
 typedef LinePosition<T> = List<num> Function(T);
 
@@ -84,7 +77,7 @@ class Line<T> extends ChartBodyRender<T> {
 
   @override
   void draw(Canvas canvas, ChartParam param) {
-    param as ChartDimensionParam;
+    param as _ChartDimensionParam;
     List<ChartLayoutParam> shapeList = layoutParam.children;
     List<ChartLayoutParam>? lastDataList = getLastData(param.animal);
     int index = 0;
@@ -125,7 +118,7 @@ class Line<T> extends ChartBodyRender<T> {
         }
         if (lastXValue != null) {
           //初始动画x轴不动
-          xValue = lerpDouble(lastXValue, xValue, param.controlValue) ?? xValue;
+          xValue = ui.lerpDouble(lastXValue, xValue, param.controlValue) ?? xValue;
         }
         yValues = lerpList(lastYValue, yValues, param.controlValue) ?? yValues;
       }

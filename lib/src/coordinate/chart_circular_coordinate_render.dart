@@ -1,10 +1,4 @@
-import 'dart:math';
-
-import 'package:flutter/material.dart';
-
-import '../param/chart_circular_param.dart';
-import '../param/chart_param.dart';
-import 'chart_coordinate_render.dart';
+part of flutter_chart_plus;
 
 enum ArcPosition {
   none,
@@ -46,7 +40,7 @@ class ChartCircularCoordinateRender extends ChartCoordinateRender {
 
   @override
   void paint(Canvas canvas, ChartParam param) {
-    param as ChartCircularParam;
+    param as _ChartCircularParam;
     _drawCircle(param, canvas);
     _drawBackgroundAnnotations(param, canvas);
     var index = 0;
@@ -68,7 +62,7 @@ class ChartCircularCoordinateRender extends ChartCoordinateRender {
   }
 
   ///画背景圆
-  void _drawCircle(ChartCircularParam param, Canvas canvas) {
+  void _drawCircle(_ChartCircularParam param, Canvas canvas) {
     if (strokeCap != null) {
       _paint.strokeCap = strokeCap!;
     }
@@ -78,9 +72,9 @@ class ChartCircularCoordinateRender extends ChartCoordinateRender {
       canvas.drawCircle(param.center, param.radius, _paint);
     } else {
       double startAngle = 0;
-      double sweepAngle = pi;
+      double sweepAngle = math.pi;
       if (arcPosition == ArcPosition.up) {
-        startAngle = pi;
+        startAngle = math.pi;
       }
       Path path = Path()
         ..addArc(

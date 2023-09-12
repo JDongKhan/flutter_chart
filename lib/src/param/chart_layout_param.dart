@@ -1,6 +1,4 @@
-//存放每条数据对应的绘图信息
-import 'dart:math';
-import 'dart:ui';
+part of flutter_chart_plus;
 
 /// @author jd
 const double _maxWidth = 15;
@@ -72,12 +70,12 @@ class ChartLayoutParam {
 
     double r0 = innerRadius;
     double r1 = outRadius;
-    Offset p0 = Offset(cos(startRad) * r0, sin(startRad) * r0);
-    Offset p1 = Offset(cos(startRad) * r1, sin(startRad) * r1);
-    Offset q0 = Offset(cos(endRad) * r0, sin(endRad) * r0);
-    Offset q1 = Offset(cos(endRad) * r1, sin(endRad) * r1);
+    Offset p0 = Offset(math.cos(startRad) * r0, math.sin(startRad) * r0);
+    Offset p1 = Offset(math.cos(startRad) * r1, math.sin(startRad) * r1);
+    Offset q0 = Offset(math.cos(endRad) * r0, math.sin(endRad) * r0);
+    Offset q1 = Offset(math.cos(endRad) * r1, math.sin(endRad) * r1);
 
-    bool large = sweepAngle.abs() > pi;
+    bool large = sweepAngle.abs() > math.pi;
     bool clockwise = sweepAngle > 0;
 
     Path localPath = Path()

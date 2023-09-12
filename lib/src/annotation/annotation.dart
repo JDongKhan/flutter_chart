@@ -1,9 +1,4 @@
-import 'dart:ui';
-
-import 'package:flutter/foundation.dart';
-
-import '../param/chart_param.dart';
-import '../base/chart_render.dart';
+part of flutter_chart_plus;
 
 /// @author jd
 abstract class Annotation extends ChartRender {
