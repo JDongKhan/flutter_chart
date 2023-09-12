@@ -269,8 +269,8 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                         YAxis(min: 0, max: 500, drawGrid: true),
                       ],
                       xAxis: XAxis(
-                        count: 7,
-                        max: 20,
+                        count: 9,
+                        max: 9,
                         zoom: true,
                         drawGrid: true,
                         drawLine: true,
