@@ -175,8 +175,12 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
 
       double left = param.contentMargin.left + density * interval * i;
       left = param.transform.withXOffset(left);
-      //避免多余绘制，只绘制屏幕内容
-      if (left < 0) {
+
+      double nextLeft = param.contentMargin.left + density * interval * (i + 1);
+      nextLeft = param.transform.withXOffset(nextLeft);
+      // 判断下一个点是否超出，因为这个和下个点之间可能有文案要显示
+      // 避免多余绘制，只绘制屏幕内容
+      if (nextLeft < 0) {
         continue;
       }
       String? text = xAxis.formatter?.call(i);

@@ -331,8 +331,7 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderS
       },
       onScaleEnd: (ScaleEndDetails details) {
         //这里可以处理减速的操作
-        // print(details.velocity);
-        _startDecelerationAnimation(details.velocity.pixelsPerSecond.dx);
+        // _startDecelerationAnimation(details.velocity.pixelsPerSecond.dx);
       },
       child: RepaintBoundary(
         child: CustomPaint(

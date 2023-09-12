@@ -102,7 +102,7 @@ class Line<T> extends ChartBodyRender<T> {
       num? xValue = currentPointLayout.xValue;
       xValue ??= position.call(value);
       if (lastXValue != null) {
-        assert(lastXValue < xValue, '虽然支持逆序，但是为了防止数据顺序混乱，还是强制要求必须是正序的数组');
+        assert(lastXValue < xValue, '$xValue 必须大于 $lastXValue,（虽然可以支持逆序，但是为了防止数据顺序混乱，还是强制要求必须是正序的数组)');
       }
       List<num>? yValues = currentPointLayout.yValues;
       yValues ??= values.call(value);
