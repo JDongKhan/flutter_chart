@@ -72,6 +72,14 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                 SizedBox(
                   height: 200,
                   child: ChartWidget(
+                    foregroundWidget: const Positioned(
+                      right: 0,
+                      bottom: 40,
+                      child: Icon(
+                        Icons.ad_units,
+                        color: Colors.blue,
+                      ),
+                    ),
                     coordinateRender: ChartDimensionsCoordinateRender(
                       crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
                       margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),

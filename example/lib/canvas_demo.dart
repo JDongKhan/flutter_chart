@@ -99,7 +99,7 @@ class _MyCustomWidgetState extends State<MyCustomWidget> {
                   //缩放
                   if (details.scale != 1) {
                     double zoom = (_beforeZoom * details.scale);
-                    // double startOffset = centerV * render.xAxis.density - widget.chartCoordinateRender.size.width / 2;
+                    // double startOffset = centerV * render.xAxis.density - widget.chartcoordinate.size.width / 2;
                     //计算缩放和校准偏移
                     double startOffset = (_lastOffset.dx + size.width / 2) * zoom / _beforeZoom - size.width / 2;
                     _zoom = zoom;
