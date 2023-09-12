@@ -58,6 +58,10 @@ class ChartController {
   void dispose() {
     _chartCoordinateRender = null;
     _lastChartCoordinateRender = null;
+    _param = null;
+    _tooltipStateSetter = null;
+    _tooltipWidgetBuilder = null;
+    _outTapLocation = null;
   }
 }
 

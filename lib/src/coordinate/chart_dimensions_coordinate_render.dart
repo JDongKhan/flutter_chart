@@ -429,7 +429,7 @@ class XAxis {
     this.drawDivider = false,
     this.divideCount,
     num? max,
-  }) : max = max ?? count;
+  }) : max = max ?? count * interval;
 
   late final Paint linePath = Paint()
     ..color = lineColor
@@ -456,9 +456,6 @@ class XAxis {
 
 ///y轴配置
 class YAxis {
-  ///是否开启 暂时未启用
-  final bool enable;
-
   ///最小值
   final num min;
 
@@ -480,12 +477,6 @@ class YAxis {
   ///是否有分隔线
   final bool drawDivider;
 
-  ///密度
-  late double density;
-
-  ///固定的密度，不随缩放变动
-  late double fixedDensity;
-
   ///轴的偏移
   final AxisOffset? offset;
 
@@ -504,7 +495,6 @@ class YAxis {
   YAxis({
     required this.max,
     this.min = 0,
-    this.enable = true,
     this.formatter,
     this.count = 5,
     this.zoom = false,
@@ -516,6 +506,12 @@ class YAxis {
     this.offset,
     this.left = 0,
   }) : assert(zoom == false, '暂不支持垂直方向缩放');
+
+  ///密度
+  late double density;
+
+  ///固定的密度，不随缩放变动
+  late double fixedDensity;
 
   ///缓存对应的信息
   final Map<int, Path> _gridLine = {};
