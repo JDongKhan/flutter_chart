@@ -55,7 +55,7 @@ class BarChartDemoPage extends StatelessWidget {
                       animationDuration: const Duration(seconds: 1),
                       margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
                       yAxis: [
-                        YAxis(min: 0, max: 300),
+                        YAxis(min: 0, max: 600),
                       ],
                       xAxis: XAxis(
                         count: 7,
@@ -66,6 +66,7 @@ class BarChartDemoPage extends StatelessWidget {
                         Bar(
                           data: dataList,
                           position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
+                          valueFormatter: (item) => item['value1'].toString(),
                           value: (item) => item['value1'],
                         ),
                       ],
@@ -99,6 +100,7 @@ class BarChartDemoPage extends StatelessWidget {
                           position: (item) {
                             return parserDateTimeToDayValue(item['time'] as DateTime, startTime);
                           },
+                          valuesFormatter: (item) => [item['value1'].toString(), item['value2'].toString(), item['value3'].toString()],
                           values: (item) => [
                             double.parse(item['value1'].toString()),
                             double.parse(item['value2'].toString()),
@@ -133,6 +135,7 @@ class BarChartDemoPage extends StatelessWidget {
                           position: (item) {
                             return parserDateTimeToDayValue(item['time'] as DateTime, startTime);
                           },
+                          valuesFormatter: (item) => [item['value1'].toString(), item['value2'].toString(), item['value3'].toString()],
                           values: (item) => [
                             double.parse(item['value1'].toString()),
                             double.parse(item['value2'].toString()),
@@ -167,6 +170,7 @@ class BarChartDemoPage extends StatelessWidget {
                           direction: Axis.horizontal,
                           itemWidth: 10,
                           highlightColor: Colors.yellow,
+                          valuesFormatter: (item) => [item['value1'].toString(), item['value2'].toString(), item['value3'].toString()],
                           values: (item) => [
                             double.parse(item['value1'].toString()),
                             double.parse(item['value2'].toString()),

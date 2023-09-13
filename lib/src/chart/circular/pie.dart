@@ -1,7 +1,7 @@
 part of flutter_chart_plus;
 
 /// @author JD
-typedef ValueFormatter<T> = String Function(T);
+typedef PieValueFormatter<T> = String Function(T);
 
 enum RotateDirection {
   forward,
@@ -29,10 +29,10 @@ class Pie<T> extends ChartBodyRender<T> {
   final double valueTextOffset;
 
   ///值文案格式化 不要使用过于耗时的方法
-  final ValueFormatter? valueFormatter;
+  final PieValueFormatter? valueFormatter;
 
   ///图例文案格式化 不要使用过于耗时的方法
-  final ValueFormatter? legendFormatter;
+  final PieValueFormatter? legendFormatter;
 
   ///值文字样式
   final TextStyle textStyle;

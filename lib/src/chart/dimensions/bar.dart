@@ -1,6 +1,8 @@
 part of flutter_chart_plus;
 
 typedef BarPosition<T> = num Function(T);
+typedef BarValueFormatter<T> = String Function(T);
+typedef BarValuesFormatter<T> = List<String> Function(T);
 
 /// @author JD
 ///普通bar
@@ -24,10 +26,22 @@ class Bar<T> extends ChartBodyRender<T> {
   ///高亮颜色
   final Color highlightColor;
 
+  ///值文案格式化 不要使用过于耗时的方法
+  final BarValueFormatter? valueFormatter;
+
+  ///值文字样式
+  final TextStyle textStyle;
+
+  ///文案偏移
+  final Offset valueOffset;
+
   Bar({
     required super.data,
     required this.value,
     required this.position,
+    this.valueFormatter,
+    this.valueOffset = Offset.zero,
+    this.textStyle = const TextStyle(fontSize: 10, color: Colors.black),
     super.yAxisPosition,
     this.itemWidth = 20,
     this.color = Colors.blue,
@@ -78,10 +92,30 @@ class Bar<T> extends ChartBodyRender<T> {
         }
         //开始绘制，bar不同于line，在循环中就可以绘制
         canvas.drawRect(p.rect!, _paint);
+        //绘制文本
+        _drawText(canvas, param, item, p.rect!.topCenter);
       }
       childrenLayoutParams.add(p);
     }
     layoutParam.children = childrenLayoutParams;
+  }
+
+  void _drawText(Canvas canvas, ChartParam param, T item, Offset point) {
+    String? valueString = valueFormatter?.call(item);
+    if (valueString != null && valueString.isNotEmpty) {
+      TextPainter legendTextPainter = TextPainter(
+        textAlign: TextAlign.center,
+        text: TextSpan(
+          text: valueString,
+          style: textStyle,
+        ),
+        textDirection: TextDirection.ltr,
+      )..layout(
+          minWidth: 0,
+          maxWidth: param.size.width,
+        );
+      legendTextPainter.paint(canvas, point.translate(-legendTextPainter.width / 2 + valueOffset.dx, -legendTextPainter.height + valueOffset.dy));
+    }
   }
 
   //可以重写 自定义特殊的图形
@@ -146,6 +180,15 @@ class StackBar<T> extends ChartBodyRender<T> {
   ///两个bar之间的间距
   final double padding;
 
+  ///值文案格式化 不要使用过于耗时的方法
+  final BarValuesFormatter? valuesFormatter;
+
+  ///值文字样式
+  final TextStyle textStyle;
+
+  ///文案偏移
+  final Offset valueOffset;
+
   StackBar({
     required super.data,
     required this.position,
@@ -159,6 +202,9 @@ class StackBar<T> extends ChartBodyRender<T> {
     this.full = false,
     this.padding = 5,
     this.hotColor,
+    this.valuesFormatter,
+    this.textStyle = const TextStyle(fontSize: 10, color: Colors.black),
+    this.valueOffset = Offset.zero,
   });
 
   final Paint _paint = Paint()
@@ -204,6 +250,8 @@ class StackBar<T> extends ChartBodyRender<T> {
       }
       childrenLayoutParams.add(p..index = index);
 
+      List<String>? valueString = valuesFormatter?.call(item);
+
       int stackIndex = 0;
       for (ChartLayoutParam cp in p.children) {
         if (cp.rect != null) {
@@ -219,6 +267,14 @@ class StackBar<T> extends ChartBodyRender<T> {
           }
           //画图
           canvas.drawRect(cp.rect!, _paint);
+          //画文案
+          if (valueString != null && valueString.isNotEmpty) {
+            if (direction == Axis.horizontal) {
+              _drawTopText(canvas, param, valueString[stackIndex], cp.rect!.topCenter);
+            } else {
+              _drawCenterText(canvas, param, valueString[stackIndex], cp.rect!.center);
+            }
+          }
         }
         stackIndex++;
       }
@@ -309,5 +365,39 @@ class StackBar<T> extends ChartBodyRender<T> {
     shape.children = childrenLayoutParams;
     shape.xValue = xValue;
     return shape;
+  }
+
+  void _drawCenterText(Canvas canvas, ChartParam param, String? text, Offset point) {
+    if (text != null && text.isNotEmpty) {
+      TextPainter legendTextPainter = TextPainter(
+        textAlign: TextAlign.center,
+        text: TextSpan(
+          text: text,
+          style: textStyle,
+        ),
+        textDirection: TextDirection.ltr,
+      )..layout(
+          minWidth: 0,
+          maxWidth: param.size.width,
+        );
+      legendTextPainter.paint(canvas, point.translate(itemWidth / 2 + 2 + valueOffset.dx, -legendTextPainter.height / 2 + valueOffset.dy));
+    }
+  }
+
+  void _drawTopText(Canvas canvas, ChartParam param, String? text, Offset point) {
+    if (text != null) {
+      TextPainter legendTextPainter = TextPainter(
+        textAlign: TextAlign.center,
+        text: TextSpan(
+          text: text,
+          style: textStyle,
+        ),
+        textDirection: TextDirection.ltr,
+      )..layout(
+          minWidth: 0,
+          maxWidth: param.size.width,
+        );
+      legendTextPainter.paint(canvas, point.translate(-legendTextPainter.width / 2 + valueOffset.dx, -legendTextPainter.height + valueOffset.dy));
+    }
   }
 }
