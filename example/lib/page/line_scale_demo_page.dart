@@ -24,32 +24,62 @@ class _LineChartScaleDemoPageState extends State<LineChartScaleDemoPage> {
   Widget build(BuildContext context) {
     final List<Map> dataList = [
       {
-        'time': startTime.add(const Duration(days: 1)),
+        'time': startTime.add(const Duration(days: 0)),
         'value1': 100,
         'value2': 200,
         'value3': 300,
       },
       {
-        'time': startTime.add(const Duration(days: 3)),
+        'time': startTime.add(const Duration(days: 1)),
+        'value1': 110,
+        'value2': 200,
+        'value3': 300,
+      },
+      {
+        'time': startTime.add(const Duration(days: 2)),
         'value1': 150,
         'value2': 250,
         'value3': 300,
       },
       {
-        'time': startTime.add(const Duration(days: 5)),
+        'time': startTime.add(const Duration(days: 3)),
         'value1': 200,
         'value2': 280,
         'value3': 300,
       },
       {
-        'time': startTime.add(const Duration(days: 8)),
+        'time': startTime.add(const Duration(days: 4)),
         'value1': 300,
         'value2': 450,
         'value3': 300,
       },
       {
-        'time': startTime.add(const Duration(days: 9)),
+        'time': startTime.add(const Duration(days: 5)),
+        'value1': 200,
+        'value2': 450,
+        'value3': 300,
+      },
+      {
+        'time': startTime.add(const Duration(days: 6)),
+        'value1': 400,
+        'value2': 450,
+        'value3': 300,
+      },
+      {
+        'time': startTime.add(const Duration(days: 7)),
         'value1': 300,
+        'value2': 450,
+        'value3': 300,
+      },
+      {
+        'time': startTime.add(const Duration(days: 8)),
+        'value1': 200,
+        'value2': 450,
+        'value3': 300,
+      },
+      {
+        'time': startTime.add(const Duration(days: 9)),
+        'value1': 100,
         'value2': 450,
         'value3': 300,
       },
@@ -87,7 +117,7 @@ class _LineChartScaleDemoPageState extends State<LineChartScaleDemoPage> {
                 ],
                 xAxis: XAxis(
                   count: 7,
-                  max: 9,
+                  max: 15,
                   zoom: true,
                   drawDivider: true,
                   divideCount: (zoom) => zoom.toInt(),

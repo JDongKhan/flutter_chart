@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:path_drawing/path_drawing.dart';
 import 'dart:math' as math;
 import 'dart:ui' as ui;
+import 'src/utils/monotonex.dart';
 import 'src/utils/transform_utils.dart';
 import 'src/utils/chart_utils.dart';
 
