@@ -131,6 +131,7 @@ class _LineChartScaleDemoPageState extends State<LineChartScaleDemoPage> {
                 ],
                 charts: [
                   Line(
+                    isCurve: true,
                     data: dataList,
                     position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
                     values: (item) => [

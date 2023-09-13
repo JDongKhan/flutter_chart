@@ -2,6 +2,20 @@ part of flutter_chart_plus;
 
 typedef LinePosition<T> = List<num> Function(T);
 
+typedef LineCubic = List<Offset> Function(Offset start, Offset end);
+
+List<Offset> _lineToCubic(Offset start, Offset end) {
+  double xDiff = (end.dx - start.dx) / 2;
+  double yDiff = (end.dy - start.dy) / 2;
+  double t = 0.8;
+  double t1 = 0.2;
+  double controlX1 = start.dx + xDiff;
+  double controlY1 = start.dy + yDiff * t;
+  double controlX2 = end.dx - xDiff;
+  double controlY2 = end.dy - yDiff * t1;
+  return [Offset(controlX1, controlY1), Offset(controlX2, controlY2)];
+}
+
 /// @author JD
 class Line<T> extends ChartBodyRender<T> {
   ///不要使用过于耗时的方法
@@ -38,6 +52,9 @@ class Line<T> extends ChartBodyRender<T> {
   ///路径之间的处理规则
   final PathOperation? operation;
 
+  //曲线实现方法
+  final LineCubic cubic;
+
   Line({
     required super.data,
     required this.position,
@@ -52,6 +69,7 @@ class Line<T> extends ChartBodyRender<T> {
     this.filled = false,
     this.isCurve = false,
     this.operation,
+    this.cubic = _lineToCubic,
   });
 
   ///线 画笔
@@ -137,7 +155,7 @@ class Line<T> extends ChartBodyRender<T> {
         //每条线用map存放下，以便后面统一绘制
         LineInfo? lineInfo = pathMap[valueIndex];
         if (lineInfo == null) {
-          lineInfo = LineInfo();
+          lineInfo = LineInfo(cubic);
           pathMap[valueIndex] = lineInfo;
         }
         //计算点的位置
@@ -211,15 +229,19 @@ class Line<T> extends ChartBodyRender<T> {
       Path? lastPath;
       for (int index in pathMap.keys) {
         LineInfo? lineInfo = pathMap[index];
-        if (lineInfo == null || lineInfo.path == null || lineInfo.pointList.isEmpty) {
+        if (lineInfo == null || lineInfo.pointList.isEmpty) {
+          continue;
+        }
+        Path? path = lineInfo.path;
+        if (path == null) {
           continue;
         }
         //先画线
         if (strokeWidth > 0) {
           if (shaders != null && filled == false) {
-            canvas.drawPath(lineInfo.path!, paint..shader = shaders![index]);
+            canvas.drawPath(path, paint..shader = shaders![index]);
           } else {
-            canvas.drawPath(lineInfo.path!, paint..color = colors[index]);
+            canvas.drawPath(path, paint..color = colors[index]);
           }
         }
 
@@ -227,7 +249,7 @@ class Line<T> extends ChartBodyRender<T> {
         if (filled == true) {
           Offset last = lineInfo.endPoint ?? Offset.zero;
           Offset first = lineInfo.startPoint ?? Offset.zero;
-          lineInfo.path!
+          path
             ..lineTo(last.dx, param.contentRect.bottom)
             ..lineTo(first.dx, param.contentRect.bottom);
           if (shaders != null) {
@@ -255,12 +277,12 @@ class Line<T> extends ChartBodyRender<T> {
         if (lineInfo == null) {
           continue;
         }
-        for (ChartLayoutParam point in lineInfo.pointList) {
-          if (!param.outDraw && point.rect!.center.dx < 0) {
+        for (Offset point in lineInfo.pointList) {
+          if (!param.outDraw && point.dx < 0) {
             // debugPrint('1-第${lineInfo.pointList.indexOf(point) + 1} 个点 $point 超出去');
             continue;
           }
-          if (!param.outDraw && point.rect!.center.dx > param.size.width) {
+          if (!param.outDraw && point.dx > param.size.width) {
             // debugPrint('2-第${lineInfo.pointList.indexOf(point) + 1} 个点 $point超出去');
             break;
           }
@@ -268,12 +290,12 @@ class Line<T> extends ChartBodyRender<T> {
           if (isHollow) {
             //先用白色覆盖
             _dotPaint.style = PaintingStyle.fill;
-            canvas.drawCircle(point.rect!.center, dotRadius, _dotPaint..color = Colors.white);
+            canvas.drawCircle(point, dotRadius, _dotPaint..color = Colors.white);
             _dotPaint.style = PaintingStyle.stroke;
           } else {
             _dotPaint.style = PaintingStyle.fill;
           }
-          canvas.drawCircle(point.rect!.center, dotRadius, _dotPaint..color = dotColorList[index]);
+          canvas.drawCircle(point, dotRadius, _dotPaint..color = dotColorList[index]);
         }
       }
     }
@@ -284,6 +306,9 @@ class LineInfo {
   Offset? _startPoint;
   Offset? get startPoint => _startPoint;
   Offset? endPoint;
+  //曲线方法
+  final LineCubic cubic;
+
   set startPoint(v) {
     _startPoint = v;
     path = Path();
@@ -293,33 +318,24 @@ class LineInfo {
   Path? path;
 
   void addPoint(ChartLayoutParam point, bool isCurve) {
-    ChartLayoutParam? lastPoint;
+    Offset? lastPoint;
     if (pointList.isNotEmpty) {
       lastPoint = pointList.last;
     }
     Offset currentPoint = point.rect!.center;
     if (isCurve) {
-      double preX = lastPoint?.rect?.center.dx ?? _startPoint?.dx ?? 0;
-      double preY = lastPoint?.rect?.center.dy ?? _startPoint?.dy ?? 0;
-      double xDiff = currentPoint.dx - preX;
-      double centerX1 = preX + xDiff / 2;
-      double centerY1 = preY;
+      double preX = lastPoint?.dx ?? _startPoint?.dx ?? 0;
+      double preY = lastPoint?.dy ?? _startPoint?.dy ?? 0;
 
-      double centerX2 = currentPoint.dx - xDiff / 2;
-      double centerY2 = currentPoint.dy;
-
-      // chart.canvas.drawCircle(
-      //     Offset(centerX1, centerY1), 2, Paint()..color = Colors.red);
-      //
-      // chart.canvas.drawCircle(
-      //     Offset(centerX2, centerY2), 2, Paint()..color = Colors.blue);
-
+      List<Offset> controls = cubic(Offset(preX, preY), currentPoint);
+      Offset control1 = controls.first;
+      Offset control2 = controls.last;
       //绘制贝塞尔路径
       path?.cubicTo(
-        centerX1,
-        centerY1, // control point 1
-        centerX2,
-        centerY2, //  control point 2
+        control1.dx,
+        control1.dy, // control point 1
+        control2.dx,
+        control2.dy, //  control point 2
         currentPoint.dx,
         currentPoint.dy,
       );
@@ -327,9 +343,9 @@ class LineInfo {
       path?.lineTo(currentPoint.dx, currentPoint.dy);
     }
 
-    pointList.add(point);
+    pointList.add(Offset(point.rect!.center.dx, point.rect!.center.dy));
   }
 
-  List<ChartLayoutParam> pointList = [];
-  LineInfo();
+  List<Offset> pointList = [];
+  LineInfo(this.cubic);
 }
