@@ -68,13 +68,7 @@ class _BigDataChartDemoPageState extends State<BigDataChartDemoPage> {
                       margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
                       padding: const EdgeInsets.only(left: 0, right: 0),
                       // animationDuration: const Duration(milliseconds: 500),
-                      yAxis: [
-                        YAxis(
-                          min: 0,
-                          max: 500,
-                          drawGrid: true,
-                        )
-                      ],
+                      yAxis: [YAxis(min: 0, max: 500, drawGrid: true)],
                       xAxis: XAxis(
                         count: 7,
                         interval: 1000,
