@@ -17,8 +17,10 @@ class Bar<T> extends ChartBodyRender<T> {
   ///值格式化 不要使用过于耗时的方法
   final BarPosition value;
 
-  ///颜色
+  ///颜色 如果设置了colors 则color不会生效
   final Color color;
+  //bar 颜色
+  final List<Color>? colors;
 
   ///优先级高于color
   final Shader? shader;
@@ -45,6 +47,7 @@ class Bar<T> extends ChartBodyRender<T> {
     super.yAxisPosition,
     this.itemWidth = 20,
     this.color = Colors.blue,
+    this.colors,
     this.shader,
     this.highlightColor = Colors.yellow,
   });
@@ -87,7 +90,11 @@ class Bar<T> extends ChartBodyRender<T> {
           if (shader != null) {
             _paint.shader = shader;
           } else {
-            _paint.color = color;
+            Color cr = color;
+            if (colors != null) {
+              cr = colors![index];
+            }
+            _paint.color = cr;
           }
         }
         //开始绘制，bar不同于line，在循环中就可以绘制
