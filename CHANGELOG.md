@@ -1,6 +1,7 @@
 ## 0.1.4
 
 * performance optimization for line chart
+* add valueFormatter for bar
 
 ## 0.1.3
 

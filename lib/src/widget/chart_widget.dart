@@ -243,6 +243,8 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderS
       ChartLayoutParam c = ChartLayoutParam();
       c.left = 0;
       c.right = widget.size.width;
+      //还原状态
+      body.isInit = false;
       body.layoutParam = c;
       allParams.add(c);
     }
