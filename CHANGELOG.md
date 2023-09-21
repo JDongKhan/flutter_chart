@@ -1,3 +1,8 @@
+## 0.1.5
+
+* fix resize bug
+* fix axis gridline bug
+
 ## 0.1.4
 
 * performance optimization for line chart

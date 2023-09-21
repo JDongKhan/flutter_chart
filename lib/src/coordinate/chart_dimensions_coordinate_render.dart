@@ -41,12 +41,12 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
   @override
   void paint(Canvas canvas, ChartParam param) {
     Size size = param.size;
-    canvas.save();
+    // canvas.save();
     // 如果按坐标系切，就会面临坐标轴和里面的内容重复循环的问题，该组件的本意是尽可能减少无畏的循环，提高性能，如果
-    // 给y轴切出来，超出这个范围就隐藏
-    canvas.clipRect(Rect.fromLTWH(0, 0, margin.left, size.height));
+    // 给y轴切出来，超出这个范围就隐藏 这个会导致虚线绘制不出来 估注释掉
+    // canvas.clipRect(Rect.fromLTWH(0, 0, margin.left, size.height));
     _drawYAxis(param, canvas);
-    canvas.restore();
+    // canvas.restore();
 
     //防止超过y轴
     canvas.clipRect(Rect.fromLTWH(margin.left, 0, size.width - margin.horizontal, size.height));
