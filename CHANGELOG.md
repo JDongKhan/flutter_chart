@@ -1,3 +1,8 @@
+## 0.1.6
+
+* fix radar bug for  resize web
+
+
 ## 0.1.5
 
 * fix resize bug

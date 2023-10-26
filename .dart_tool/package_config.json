@@ -27,7 +27,7 @@
     },
     {
       "name": "collection",
-      "rootUri": "file:///Users/sn/.pub-cache/hosted/pub.flutter-io.cn/collection-1.17.1",
+      "rootUri": "file:///Users/sn/.pub-cache/hosted/pub.flutter-io.cn/collection-1.17.2",
       "packageUri": "lib/",
       "languageVersion": "2.18"
     },
@@ -39,7 +39,7 @@
     },
     {
       "name": "flutter",
-      "rootUri": "file:///Users/sn/fvm/versions/3.10.5/packages/flutter",
+      "rootUri": "file:///Users/sn/fvm/versions/3.13.6/packages/flutter",
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
@@ -51,15 +51,9 @@
     },
     {
       "name": "flutter_test",
-      "rootUri": "file:///Users/sn/fvm/versions/3.10.5/packages/flutter_test",
+      "rootUri": "file:///Users/sn/fvm/versions/3.13.6/packages/flutter_test",
       "packageUri": "lib/",
       "languageVersion": "3.0"
-    },
-    {
-      "name": "js",
-      "rootUri": "file:///Users/sn/.pub-cache/hosted/pub.flutter-io.cn/js-0.6.7",
-      "packageUri": "lib/",
-      "languageVersion": "2.19"
     },
     {
       "name": "lints",
@@ -69,15 +63,15 @@
     },
     {
       "name": "matcher",
-      "rootUri": "file:///Users/sn/.pub-cache/hosted/pub.flutter-io.cn/matcher-0.12.15",
+      "rootUri": "file:///Users/sn/.pub-cache/hosted/pub.flutter-io.cn/matcher-0.12.16",
       "packageUri": "lib/",
       "languageVersion": "2.18"
     },
     {
       "name": "material_color_utilities",
-      "rootUri": "file:///Users/sn/.pub-cache/hosted/pub.flutter-io.cn/material_color_utilities-0.2.0",
+      "rootUri": "file:///Users/sn/.pub-cache/hosted/pub.flutter-io.cn/material_color_utilities-0.5.0",
       "packageUri": "lib/",
-      "languageVersion": "2.13"
+      "languageVersion": "2.17"
     },
     {
       "name": "meta",
@@ -105,15 +99,15 @@
     },
     {
       "name": "sky_engine",
-      "rootUri": "file:///Users/sn/fvm/versions/3.10.5/bin/cache/pkg/sky_engine",
+      "rootUri": "file:///Users/sn/fvm/versions/3.13.6/bin/cache/pkg/sky_engine",
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
     {
       "name": "source_span",
-      "rootUri": "file:///Users/sn/.pub-cache/hosted/pub.flutter-io.cn/source_span-1.9.1",
+      "rootUri": "file:///Users/sn/.pub-cache/hosted/pub.flutter-io.cn/source_span-1.10.0",
       "packageUri": "lib/",
-      "languageVersion": "2.14"
+      "languageVersion": "2.18"
     },
     {
       "name": "stack_trace",
@@ -141,7 +135,7 @@
     },
     {
       "name": "test_api",
-      "rootUri": "file:///Users/sn/.pub-cache/hosted/pub.flutter-io.cn/test_api-0.5.1",
+      "rootUri": "file:///Users/sn/.pub-cache/hosted/pub.flutter-io.cn/test_api-0.6.0",
       "packageUri": "lib/",
       "languageVersion": "2.18"
     },
@@ -152,13 +146,19 @@
       "languageVersion": "2.14"
     },
     {
+      "name": "web",
+      "rootUri": "file:///Users/sn/.pub-cache/hosted/pub.flutter-io.cn/web-0.1.4-beta",
+      "packageUri": "lib/",
+      "languageVersion": "3.1"
+    },
+    {
       "name": "flutter_chart_plus",
       "rootUri": "../",
       "packageUri": "lib/",
       "languageVersion": "2.17"
     }
   ],
-  "generated": "2023-09-21T08:43:48.373776Z",
+  "generated": "2023-10-26T06:50:34.593888Z",
   "generator": "pub",
-  "generatorVersion": "3.0.5"
+  "generatorVersion": "3.1.3"
 }
