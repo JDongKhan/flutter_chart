@@ -79,6 +79,11 @@ class Radar<T> extends ChartBodyRender<T> {
   void init(ChartParam param) {
     param as _ChartCircularParam;
     super.init(param);
+    _linePathList.clear();
+    _borderLinePaths.clear();
+    _textPainterList.clear();
+    _dataLinePathList.clear();
+
     int itemLength = data.length;
     double percent = 1 / itemLength;
     // 计算出每个数据所占的弧度值
