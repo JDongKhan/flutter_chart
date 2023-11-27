@@ -19,14 +19,15 @@ class Bar<T> extends ChartBodyRender<T> {
 
   ///颜色 如果设置了colors 则color不会生效
   final Color color;
-  //bar 颜色
+
+  /// bar 颜色
   final List<Color>? colors;
 
   ///优先级高于color
   final Shader? shader;
 
   ///高亮颜色
-  final Color highlightColor;
+  final Color? highlightColor;
 
   ///值文案格式化 不要使用过于耗时的方法
   final BarValueFormatter? valueFormatter;
@@ -55,6 +56,25 @@ class Bar<T> extends ChartBodyRender<T> {
   final Paint _paint = Paint()
     ..strokeWidth = 1
     ..style = PaintingStyle.fill;
+
+  @visibleForTesting
+  Color paintColor({required int index, required bool selected}) {
+    if (selected) {
+      if (highlightColor != null) {
+        return highlightColor!;
+      } else if (colors != null) {
+        return colors![index];
+      } else {
+        return color;
+      }
+    } else {
+      if (colors != null) {
+        return colors![index];
+      } else {
+        return color;
+      }
+    }
+  }
 
   @override
   void draw(Canvas canvas, ChartParam param) {
@@ -85,16 +105,12 @@ class Bar<T> extends ChartBodyRender<T> {
         if (p.hitTest(param.localPosition)) {
           layoutParam.selectedIndex = index;
           _paint.shader = null;
-          _paint.color = highlightColor;
+          _paint.color = paintColor(index: index, selected: true);
         } else {
           if (shader != null) {
             _paint.shader = shader;
           } else {
-            Color cr = color;
-            if (colors != null) {
-              cr = colors![index];
-            }
-            _paint.color = cr;
+            _paint.color = paintColor(index: index, selected: false);
           }
         }
         //开始绘制，bar不同于line，在循环中就可以绘制
@@ -173,7 +189,7 @@ class StackBar<T> extends ChartBodyRender<T> {
   final List<Shader>? shaders;
 
   ///高亮颜色
-  final Color highlightColor;
+  final Color? highlightColor;
 
   ///方向
   final Axis direction;
@@ -270,7 +286,9 @@ class StackBar<T> extends ChartBodyRender<T> {
           if (cp.hitTest(param.localPosition)) {
             layoutParam.selectedIndex = index;
             _paint.shader = null;
-            _paint.color = highlightColor;
+            if (highlightColor != null) {
+              _paint.color = highlightColor!;
+            }
           }
           //画图
           canvas.drawRect(cp.rect!, _paint);
