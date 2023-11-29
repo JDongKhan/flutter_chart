@@ -22,6 +22,7 @@ part 'src/base/chart_body_render.dart';
 part 'src/coordinate/chart_coordinate_render.dart';
 part 'src/coordinate/chart_circular_coordinate_render.dart';
 part 'src/coordinate/chart_dimensions_coordinate_render.dart';
+part 'src/coordinate/axis.dart';
 
 part 'src/chart/dimensions/bar.dart';
 part 'src/chart/dimensions/line.dart';

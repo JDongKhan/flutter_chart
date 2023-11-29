@@ -391,7 +391,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                         YAxis(
                           min: 0,
                           max: 400,
-                          left: 5,
+                          padding: 5,
                           drawDivider: false,
                           offset: (size) => Offset(size.width - 70, 0),
                         ),

@@ -57,8 +57,8 @@ class Bar<T> extends ChartBodyRender<T> {
     ..strokeWidth = 1
     ..style = PaintingStyle.fill;
 
-  @visibleForTesting
-  Color paintColor({required int index, required bool selected}) {
+  //bar的颜色
+  Color _paintBarColor({required int index, required bool selected}) {
     if (selected) {
       if (highlightColor != null) {
         return highlightColor!;
@@ -78,6 +78,7 @@ class Bar<T> extends ChartBodyRender<T> {
 
   @override
   void draw(Canvas canvas, ChartParam param) {
+    param as _ChartDimensionParam;
     List<ChartLayoutParam> childrenLayoutParams = [];
 
     List<ChartLayoutParam>? lastDataList = getLastData(param.animal);
@@ -105,25 +106,25 @@ class Bar<T> extends ChartBodyRender<T> {
         if (p.hitTest(param.localPosition)) {
           layoutParam.selectedIndex = index;
           _paint.shader = null;
-          _paint.color = paintColor(index: index, selected: true);
+          _paint.color = _paintBarColor(index: index, selected: true);
         } else {
           if (shader != null) {
             _paint.shader = shader;
           } else {
-            _paint.color = paintColor(index: index, selected: false);
+            _paint.color = _paintBarColor(index: index, selected: false);
           }
         }
         //开始绘制，bar不同于line，在循环中就可以绘制
         canvas.drawRect(p.rect!, _paint);
         //绘制文本
-        _drawText(canvas, param, item, p.rect!.topCenter);
+        _drawText(canvas, param, item, p);
       }
       childrenLayoutParams.add(p);
     }
     layoutParam.children = childrenLayoutParams;
   }
 
-  void _drawText(Canvas canvas, ChartParam param, T item, Offset point) {
+  void _drawText(Canvas canvas, _ChartDimensionParam param, T item, ChartLayoutParam p) {
     String? valueString = valueFormatter?.call(item);
     if (valueString != null && valueString.isNotEmpty) {
       TextPainter legendTextPainter = TextPainter(
@@ -137,28 +138,50 @@ class Bar<T> extends ChartBodyRender<T> {
           minWidth: 0,
           maxWidth: param.size.width,
         );
-      legendTextPainter.paint(canvas, point.translate(-legendTextPainter.width / 2 + valueOffset.dx, -legendTextPainter.height + valueOffset.dy));
+      Offset offset = Offset.zero;
+      if (param.invert) {
+        offset = p.rect!.centerRight;
+        offset = offset.translate(valueOffset.dx, -legendTextPainter.height / 2 + valueOffset.dy);
+      } else {
+        offset = p.rect!.topCenter;
+        offset = offset.translate(-legendTextPainter.width / 2 + valueOffset.dx, -legendTextPainter.height + valueOffset.dy);
+      }
+      legendTextPainter.paint(canvas, offset);
     }
   }
 
   //可以重写 自定义特殊的图形
-  ChartLayoutParam _measureBarLayoutParam(ChartParam param, num xValue, num yValue) {
-    param as _ChartDimensionParam;
-    double bottom = param.size.height - param.contentMargin.bottom;
-    double contentHeight = param.size.height - param.contentMargin.vertical;
+  ChartLayoutParam _measureBarLayoutParam(_ChartDimensionParam param, num xValue, num yValue) {
+    Rect rect = Rect.zero;
+    if (param.invert) {
+      double contentWidth = param.size.width - param.contentMargin.horizontal;
+      double top = param.size.height - param.contentMargin.bottom - param.xAxis.density * xValue - itemWidth / 2;
 
-    double left = param.contentMargin.left + param.xAxis.density * xValue - itemWidth / 2;
-    left = param.transform.withXOffset(left);
-
-    double present = yValue / param.yAxis[yAxisPosition].max;
-    double itemHeight = contentHeight * present;
-    double top = bottom - itemHeight;
-    if (left > param.size.width || (left + itemWidth) < 0) {
-      return ChartLayoutParam()
-        ..xValue = xValue
-        ..yValue = yValue;
+      double present = yValue / param.yAxis[yAxisPosition].max;
+      double itemHeight = contentWidth * present;
+      double left = param.contentMargin.left;
+      if (top < 0) {
+        return ChartLayoutParam()
+          ..xValue = xValue
+          ..yValue = yValue;
+      }
+      rect = Rect.fromLTWH(left, top, itemHeight, itemWidth);
+    } else {
+      double bottom = param.size.height - param.contentMargin.bottom;
+      double contentHeight = param.size.height - param.contentMargin.vertical;
+      double left = param.contentMargin.left + param.xAxis.density * xValue - itemWidth / 2;
+      left = param.transform.withXOffset(left);
+      double present = yValue / param.yAxis[yAxisPosition].max;
+      double itemHeight = contentHeight * present;
+      double top = bottom - itemHeight;
+      if (left > param.size.width || (left + itemWidth) < 0) {
+        return ChartLayoutParam()
+          ..xValue = xValue
+          ..yValue = yValue;
+      }
+      rect = Rect.fromLTWH(left, top, itemWidth, itemHeight);
     }
-    Rect rect = Rect.fromLTWH(left, top, itemWidth, itemHeight);
+
     ChartLayoutParam shape = ChartLayoutParam.rect(
       rect: rect,
     )
@@ -295,9 +318,9 @@ class StackBar<T> extends ChartBodyRender<T> {
           //画文案
           if (valueString != null && valueString.isNotEmpty) {
             if (direction == Axis.horizontal) {
-              _drawTopText(canvas, param, valueString[stackIndex], cp.rect!.topCenter);
+              _drawTopText(canvas, param, valueString[stackIndex], cp);
             } else {
-              _drawCenterText(canvas, param, valueString[stackIndex], cp.rect!.center);
+              _drawCenterText(canvas, param, valueString[stackIndex], cp);
             }
           }
         }
@@ -321,36 +344,65 @@ class StackBar<T> extends ChartBodyRender<T> {
     if (total == 0) {
       return ChartLayoutParam()..xValue = xValue;
     }
-    double bottom = param.size.height - param.contentMargin.bottom;
-    double contentHeight = param.size.height - param.contentMargin.vertical;
+    ChartLayoutParam shape;
+    if (param.invert) {
+      double contentWidth = param.size.width - param.contentMargin.horizontal;
+      double center = yValues.length * itemWidth / 2;
+      double top = param.size.height - param.contentMargin.bottom - param.xAxis.density * xValue - center;
+      double left = param.contentMargin.left;
+      shape = ChartLayoutParam.rect(
+        rect: Rect.fromLTWH(
+          left,
+          top,
+          param.size.width - param.contentMargin.horizontal,
+          itemWidth * yValues.length + padding * (yValues.length - 1),
+        ),
+      );
+      List<ChartLayoutParam> childrenLayoutParams = [];
+      for (num yV in yValues) {
+        double present = yV / total;
+        double itemHeight = contentWidth * present;
+        Rect rect = Rect.fromLTWH(left, top, itemHeight, itemWidth);
+        ChartLayoutParam stackShape = ChartLayoutParam.rect(rect: rect);
+        top = top + itemWidth + padding;
+        stackShape.xValue = xValue;
+        stackShape.yValue = yV;
+        childrenLayoutParams.add(stackShape);
+      }
+      shape.xValue = xValue;
+      shape.children = childrenLayoutParams;
+    } else {
+      double bottom = param.size.height - param.contentMargin.bottom;
+      double contentHeight = param.size.height - param.contentMargin.vertical;
 
-    double center = yValues.length * itemWidth / 2;
+      double center = yValues.length * itemWidth / 2;
 
-    double left = param.contentMargin.left + param.xAxis.density * xValue - itemWidth / 2 - center;
-    left = param.transform.withXOffset(left);
+      double left = param.contentMargin.left + param.xAxis.density * xValue - itemWidth / 2 - center;
+      left = param.transform.withXOffset(left);
 
-    ChartLayoutParam shape = ChartLayoutParam.rect(
-      rect: Rect.fromLTWH(
-        left,
-        param.contentMargin.top,
-        itemWidth * yValues.length + padding * (yValues.length - 1),
-        param.size.height - param.contentMargin.vertical,
-      ),
-    );
-    List<ChartLayoutParam> childrenLayoutParams = [];
-    for (num yV in yValues) {
-      double present = yV / total;
-      double itemHeight = contentHeight * present;
-      double top = bottom - itemHeight;
-      Rect rect = Rect.fromLTWH(left, top, itemWidth, itemHeight);
-      ChartLayoutParam stackShape = ChartLayoutParam.rect(rect: rect);
-      left = left + itemWidth + padding;
-      stackShape.xValue = xValue;
-      stackShape.yValue = yV;
-      childrenLayoutParams.add(stackShape);
+      shape = ChartLayoutParam.rect(
+        rect: Rect.fromLTWH(
+          left,
+          param.contentMargin.top,
+          itemWidth * yValues.length + padding * (yValues.length - 1),
+          param.size.height - param.contentMargin.vertical,
+        ),
+      );
+      List<ChartLayoutParam> childrenLayoutParams = [];
+      for (num yV in yValues) {
+        double present = yV / total;
+        double itemHeight = contentHeight * present;
+        double top = bottom - itemHeight;
+        Rect rect = Rect.fromLTWH(left, top, itemWidth, itemHeight);
+        ChartLayoutParam stackShape = ChartLayoutParam.rect(rect: rect);
+        left = left + itemWidth + padding;
+        stackShape.xValue = xValue;
+        stackShape.yValue = yV;
+        childrenLayoutParams.add(stackShape);
+      }
+      shape.xValue = xValue;
+      shape.children = childrenLayoutParams;
     }
-    shape.xValue = xValue;
-    shape.children = childrenLayoutParams;
     return shape;
   }
 
@@ -363,36 +415,64 @@ class StackBar<T> extends ChartBodyRender<T> {
     if (total == 0) {
       return ChartLayoutParam()..xValue = xValue;
     }
-    double bottom = param.size.height - param.contentMargin.bottom;
-    double contentHeight = param.size.height - param.contentMargin.vertical;
-    double left = param.contentMargin.left + param.xAxis.density * xValue - itemWidth / 2;
-    left = param.transform.withXOffset(left);
-    ChartLayoutParam shape = ChartLayoutParam.rect(
-      rect: Rect.fromLTWH(
-        left,
-        param.contentMargin.top,
-        itemWidth,
-        param.size.height - param.contentMargin.vertical,
-      ),
-    );
-    List<ChartLayoutParam> childrenLayoutParams = [];
-    for (num yV in yValues) {
-      double present = yV / total;
-      double itemHeight = contentHeight * present;
-      double top = bottom - itemHeight;
-      Rect rect = Rect.fromLTWH(left, top, itemWidth, itemHeight);
-      ChartLayoutParam stackShape = ChartLayoutParam.rect(rect: rect);
-      stackShape.xValue = xValue;
-      stackShape.yValue = yV;
-      childrenLayoutParams.add(stackShape);
-      bottom = top;
+    ChartLayoutParam shape;
+    if (param.invert) {
+      double top = param.size.height - param.contentMargin.bottom - param.xAxis.density * xValue - itemWidth / 2;
+      double left = param.contentMargin.left;
+      double contentWidth = param.size.width - param.contentMargin.horizontal;
+      shape = ChartLayoutParam.rect(
+        rect: Rect.fromLTWH(
+          left,
+          top,
+          param.size.width - param.contentMargin.horizontal,
+          itemWidth,
+        ),
+      );
+      List<ChartLayoutParam> childrenLayoutParams = [];
+      for (num yV in yValues) {
+        double present = yV / total;
+        double itemHeight = contentWidth * present;
+        Rect rect = Rect.fromLTWH(left, top, itemHeight, itemWidth);
+        ChartLayoutParam stackShape = ChartLayoutParam.rect(rect: rect);
+        stackShape.xValue = xValue;
+        stackShape.yValue = yV;
+        childrenLayoutParams.add(stackShape);
+        left = left + itemHeight;
+      }
+      shape.children = childrenLayoutParams;
+      shape.xValue = xValue;
+    } else {
+      double bottom = param.size.height - param.contentMargin.bottom;
+      double contentHeight = param.size.height - param.contentMargin.vertical;
+      double left = param.contentMargin.left + param.xAxis.density * xValue - itemWidth / 2;
+      left = param.transform.withXOffset(left);
+      shape = ChartLayoutParam.rect(
+        rect: Rect.fromLTWH(
+          left,
+          param.contentMargin.top,
+          itemWidth,
+          param.size.height - param.contentMargin.vertical,
+        ),
+      );
+      List<ChartLayoutParam> childrenLayoutParams = [];
+      for (num yV in yValues) {
+        double present = yV / total;
+        double itemHeight = contentHeight * present;
+        double top = bottom - itemHeight;
+        Rect rect = Rect.fromLTWH(left, top, itemWidth, itemHeight);
+        ChartLayoutParam stackShape = ChartLayoutParam.rect(rect: rect);
+        stackShape.xValue = xValue;
+        stackShape.yValue = yV;
+        childrenLayoutParams.add(stackShape);
+        bottom = top;
+      }
+      shape.children = childrenLayoutParams;
+      shape.xValue = xValue;
     }
-    shape.children = childrenLayoutParams;
-    shape.xValue = xValue;
     return shape;
   }
 
-  void _drawCenterText(Canvas canvas, ChartParam param, String? text, Offset point) {
+  void _drawCenterText(Canvas canvas, _ChartDimensionParam param, String? text, ChartLayoutParam p) {
     if (text != null && text.isNotEmpty) {
       TextPainter legendTextPainter = TextPainter(
         textAlign: TextAlign.center,
@@ -405,11 +485,19 @@ class StackBar<T> extends ChartBodyRender<T> {
           minWidth: 0,
           maxWidth: param.size.width,
         );
-      legendTextPainter.paint(canvas, point.translate(itemWidth / 2 + 2 + valueOffset.dx, -legendTextPainter.height / 2 + valueOffset.dy));
+      Offset offset = Offset.zero;
+      if (param.invert) {
+        offset = p.rect!.center;
+        offset = offset.translate(-legendTextPainter.width / 2 + valueOffset.dx, -legendTextPainter.height / 2 + valueOffset.dy);
+      } else {
+        offset = p.rect!.center;
+        offset = offset.translate(itemWidth / 2 + 2 + valueOffset.dx, -legendTextPainter.height / 2 + valueOffset.dy);
+      }
+      legendTextPainter.paint(canvas, offset);
     }
   }
 
-  void _drawTopText(Canvas canvas, ChartParam param, String? text, Offset point) {
+  void _drawTopText(Canvas canvas, _ChartDimensionParam param, String? text, ChartLayoutParam p) {
     if (text != null) {
       TextPainter legendTextPainter = TextPainter(
         textAlign: TextAlign.center,
@@ -422,7 +510,15 @@ class StackBar<T> extends ChartBodyRender<T> {
           minWidth: 0,
           maxWidth: param.size.width,
         );
-      legendTextPainter.paint(canvas, point.translate(-legendTextPainter.width / 2 + valueOffset.dx, -legendTextPainter.height + valueOffset.dy));
+      Offset offset = Offset.zero;
+      if (param.invert) {
+        offset = p.rect!.centerRight;
+        offset = offset.translate(valueOffset.dx, -legendTextPainter.height / 2 + valueOffset.dy);
+      } else {
+        offset = p.rect!.topCenter;
+        offset = offset.translate(-legendTextPainter.width / 2 + valueOffset.dx, -legendTextPainter.height + valueOffset.dy);
+      }
+      legendTextPainter.paint(canvas, offset);
     }
   }
 }
