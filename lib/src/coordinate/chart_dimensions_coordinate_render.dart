@@ -411,8 +411,8 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
 
 /*************************************************************************************/
 /// 象限坐标系  x轴在左边 y轴在下面 ，后续可能会有 原点在右下角或者左上角等可能,所有通过子类化 减少逻辑复杂度。
-class ChartDimensionsInvertCoordinateRender extends ChartDimensionsCoordinateRender {
-  ChartDimensionsInvertCoordinateRender({
+class ChartInvertDimensionsCoordinateRender extends ChartDimensionsCoordinateRender {
+  ChartInvertDimensionsCoordinateRender({
     super.margin = const EdgeInsets.only(left: 25, top: 0, right: 0, bottom: 30),
     super.padding = const EdgeInsets.only(left: 0, top: 0, right: 0, bottom: 10),
     required super.charts,

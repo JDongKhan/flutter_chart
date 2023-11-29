@@ -17,7 +17,7 @@ class _ChartDimensionParam extends ChartParam {
     required ChartDimensionsCoordinateRender coordinate,
   })  : yAxis = coordinate.yAxis,
         xAxis = coordinate.xAxis,
-        invert = coordinate is ChartDimensionsInvertCoordinateRender;
+        invert = coordinate is ChartInvertDimensionsCoordinateRender;
 
   @override
   void init({required Size size, required EdgeInsets margin, required EdgeInsets padding}) {

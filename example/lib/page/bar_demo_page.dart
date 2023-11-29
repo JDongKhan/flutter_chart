@@ -219,7 +219,7 @@ class BarChartDemoPage extends StatelessWidget {
                 SizedBox(
                   height: 300,
                   child: ChartWidget(
-                    coordinateRender: ChartDimensionsInvertCoordinateRender(
+                    coordinateRender: ChartInvertDimensionsCoordinateRender(
                       animationDuration: const Duration(seconds: 1),
                       margin: const EdgeInsets.only(left: 20, top: 0, right: 0, bottom: 40),
                       yAxis: [YAxis(min: 0, max: 600)],
@@ -242,7 +242,7 @@ class BarChartDemoPage extends StatelessWidget {
                 SizedBox(
                   height: 300,
                   child: ChartWidget(
-                    coordinateRender: ChartDimensionsInvertCoordinateRender(
+                    coordinateRender: ChartInvertDimensionsCoordinateRender(
                       animationDuration: const Duration(seconds: 1),
                       margin: const EdgeInsets.only(left: 20, top: 0, right: 0, bottom: 30),
                       yAxis: [YAxis(min: 0, max: 1000)],
@@ -277,7 +277,7 @@ class BarChartDemoPage extends StatelessWidget {
                 SizedBox(
                   height: 300,
                   child: ChartWidget(
-                    coordinateRender: ChartDimensionsInvertCoordinateRender(
+                    coordinateRender: ChartInvertDimensionsCoordinateRender(
                       animationDuration: const Duration(seconds: 1),
                       yAxis: [YAxis(min: 0, max: 500, drawDivider: true, drawGrid: true)],
                       margin: const EdgeInsets.only(left: 20, top: 0, right: 0, bottom: 40),
