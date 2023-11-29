@@ -106,8 +106,7 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
         }
         //绘制分隔线
         if (yA.drawLine && yA.drawDivider) {
-          Offset endPoint = param.transform.transformOffset(Offset(5, yValue * yA.density), containPadding: false, adjustDirection: true);
-          canvas.drawLine(point, endPoint, yA.linePaint);
+          _drawYDivider(param, yA, canvas, point, yValue);
         }
       }
       //画实线
@@ -146,6 +145,12 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
         middle ? top - textPainter.height / 2 : top,
       ),
     ); // 进行绘制
+  }
+
+  ///绘制y轴指示器
+  void _drawYDivider(ChartParam param, YAxis yA, Canvas canvas, Offset point, num yValue) {
+    Offset endPoint = param.transform.transformOffset(Offset(5, yValue * yA.density), containPadding: false, adjustDirection: true, yOffset: true);
+    canvas.drawLine(point, endPoint, yA.linePaint);
   }
 
   ///绘制y轴line
@@ -230,16 +235,13 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
       }
       //画底部线
       if (xAxis.drawLine && xAxis.drawDivider) {
-        Offset endPoint = param.transform.transformOffset(Offset(xValue * xAxis.density, 5), containPadding: true, adjustDirection: true);
-        canvas.drawLine(point, endPoint, xAxis.linePaint);
+        _drawXDivider(param, canvas, point, xValue);
       }
     }
 
     //划线
     if (xAxis.drawLine) {
-      Offset startPoint = param.transform.transformOffset(const Offset(0, 0), containPadding: false, adjustDirection: true);
-      Offset endPoint = param.transform.transformOffset(Offset((xAxis.count + 1) * xAxis.density, 0), containPadding: false, adjustDirection: true);
-      canvas.drawLine(startPoint, endPoint, xAxis.linePaint);
+      _drawXLine(param, canvas);
     }
   }
 
@@ -247,6 +249,12 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
   void _drawXGridLine(ChartParam param, Canvas canvas, Offset point, int index) {
     final Matrix4 matrix = Matrix4.identity()..translate(point.dx, param.margin.top);
     canvas.drawPath(xAxis.getDashPath(index, Offset(0, param.size.height - param.margin.vertical)).transform(matrix.storage), xAxis.linePaint);
+  }
+
+  ///绘制指示器
+  void _drawXDivider(ChartParam param, Canvas canvas, Offset point, num xValue) {
+    Offset endPoint = param.transform.transformOffset(Offset(xValue * xAxis.density, 5), containPadding: true, adjustDirection: true, xOffset: true);
+    canvas.drawLine(point, endPoint, xAxis.linePaint);
   }
 
   ///绘制x轴文本
@@ -274,6 +282,13 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
       offset,
     ); // 进行绘制
     return offset;
+  }
+
+  ///绘制x轴line
+  void _drawXLine(ChartParam param, Canvas canvas) {
+    Offset startPoint = param.transform.transformOffset(const Offset(0, 0), containPadding: false, adjustDirection: true);
+    Offset endPoint = param.transform.transformOffset(Offset((xAxis.count + 1) * xAxis.density, 0), containPadding: false, adjustDirection: true);
+    canvas.drawLine(startPoint, endPoint, xAxis.linePaint);
   }
 
   ///绘制十字准星
