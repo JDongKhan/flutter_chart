@@ -217,17 +217,15 @@ class BarChartDemoPage extends StatelessWidget {
                 ),
                 const Text('横排Bar'),
                 SizedBox(
-                  height: 200,
+                  height: 300,
                   child: ChartWidget(
-                    coordinateRender: ChartDimensionsStyle1CoordinateRender(
+                    coordinateRender: ChartDimensionsInvertCoordinateRender(
                       animationDuration: const Duration(seconds: 1),
-                      margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
-                      yAxis: [
-                        YAxis(min: 0, max: 600),
-                      ],
+                      margin: const EdgeInsets.only(left: 20, top: 0, right: 0, bottom: 40),
+                      yAxis: [YAxis(min: 0, max: 600)],
                       xAxis: XAxis(
                         count: 7,
-                        max: 10,
+                        drawDivider: true,
                         formatter: (index) => startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd'),
                       ),
                       charts: [
@@ -244,13 +242,47 @@ class BarChartDemoPage extends StatelessWidget {
                 SizedBox(
                   height: 300,
                   child: ChartWidget(
-                    coordinateRender: ChartDimensionsStyle1CoordinateRender(
+                    coordinateRender: ChartDimensionsInvertCoordinateRender(
+                      animationDuration: const Duration(seconds: 1),
+                      margin: const EdgeInsets.only(left: 20, top: 0, right: 0, bottom: 30),
+                      yAxis: [YAxis(min: 0, max: 1000)],
+                      xAxis: XAxis(
+                        count: 7,
+                        zoom: true,
+                        drawDivider: true,
+                        formatter: (index) {
+                          return startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd');
+                        },
+                      ),
+                      charts: [
+                        StackBar(
+                          data: dataList,
+                          direction: Axis.vertical,
+                          itemWidth: 20,
+                          highlightColor: Colors.yellow,
+                          position: (item) {
+                            return parserDateTimeToDayValue(item['time'] as DateTime, startTime);
+                          },
+                          valuesFormatter: (item) => [item['value1'].toString(), item['value2'].toString(), item['value3'].toString()],
+                          values: (item) => [
+                            double.parse(item['value1'].toString()),
+                            double.parse(item['value2'].toString()),
+                            double.parse(item['value3'].toString()),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 300,
+                  child: ChartWidget(
+                    coordinateRender: ChartDimensionsInvertCoordinateRender(
                       animationDuration: const Duration(seconds: 1),
                       yAxis: [YAxis(min: 0, max: 500, drawDivider: true, drawGrid: true)],
                       margin: const EdgeInsets.only(left: 20, top: 0, right: 0, bottom: 40),
                       xAxis: XAxis(
                         count: 7,
-                        max: 7,
                         drawDivider: true,
                         drawGrid: true,
                         formatter: (index) {
@@ -272,43 +304,6 @@ class BarChartDemoPage extends StatelessWidget {
                             item['value2'].toString(),
                             item['value3'].toString(),
                           ],
-                          values: (item) => [
-                            double.parse(item['value1'].toString()),
-                            double.parse(item['value2'].toString()),
-                            double.parse(item['value3'].toString()),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 200,
-                  child: ChartWidget(
-                    coordinateRender: ChartDimensionsStyle1CoordinateRender(
-                      animationDuration: const Duration(seconds: 1),
-                      margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
-                      yAxis: [
-                        YAxis(min: 0, max: 1000),
-                      ],
-                      xAxis: XAxis(
-                        count: 7,
-                        max: 30,
-                        zoom: true,
-                        formatter: (index) {
-                          return startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd');
-                        },
-                      ),
-                      charts: [
-                        StackBar(
-                          data: dataList,
-                          direction: Axis.vertical,
-                          itemWidth: 20,
-                          highlightColor: Colors.yellow,
-                          position: (item) {
-                            return parserDateTimeToDayValue(item['time'] as DateTime, startTime);
-                          },
-                          valuesFormatter: (item) => [item['value1'].toString(), item['value2'].toString(), item['value3'].toString()],
                           values: (item) => [
                             double.parse(item['value1'].toString()),
                             double.parse(item['value2'].toString()),

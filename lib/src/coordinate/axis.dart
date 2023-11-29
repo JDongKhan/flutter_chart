@@ -156,12 +156,21 @@ class YAxis {
   final Map<String, TextPainter> _textPainter = {};
 
   Paint? _paint;
-  Paint get paint {
+  Paint get linePaint {
     _paint ??= Paint()
       ..color = lineColor
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1;
     return _paint!;
+  }
+
+  Path getDashPath(int index, Offset endPoint) {
+    Path? kDashPath = _gridLine[index];
+    if (kDashPath == null) {
+      kDashPath = _dashPath(const Offset(0, 0), endPoint);
+      _gridLine[index] = kDashPath;
+    }
+    return kDashPath;
   }
 
   num relativeValue(num value) {

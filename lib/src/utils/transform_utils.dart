@@ -10,6 +10,9 @@ class TransformUtils {
   final bool reverseX;
   final bool reverseY;
 
+  ///是否翻转轴
+  final bool reverseAxis;
+
   ///偏移
   final Offset offset;
 
@@ -21,48 +24,69 @@ class TransformUtils {
     required this.size,
     required this.offset,
     required this.padding,
+    this.reverseAxis = false,
     this.reverseX = false,
     this.reverseY = true,
   });
 
   ///将原点在左下角的逻辑坐标转换成物理坐标
   double transformX(double dx, {bool containPadding = true}) {
+    double startAnchor = anchor.dx;
+    double padRight = padding.right;
+    double padLeft = padding.left;
+    if (reverseAxis) {
+      startAnchor = anchor.dy;
+      padRight = padding.bottom;
+      padLeft = -padding.right;
+    }
     if (reverseX) {
-      double x = anchor.dx - dx;
+      double x = startAnchor - dx;
       if (containPadding) {
-        return x - padding.right;
+        return x - padRight;
       }
       return x;
     }
-    double x = anchor.dx + dx;
+    double x = startAnchor + dx;
     if (containPadding) {
-      return x + padding.left;
+      return x + padLeft;
     }
     return x;
   }
 
   ///将原点在左下角的逻辑坐标转换成物理坐标
   double transformY(double dy, {bool containPadding = true}) {
+    double startAnchor = anchor.dy;
+    double padRight = padding.bottom;
+    double padLeft = padding.top;
+    if (reverseAxis) {
+      startAnchor = anchor.dx;
+      padRight = -padding.left;
+      padLeft = padding.left;
+    }
+
     if (reverseY) {
-      double y = anchor.dy - dy;
+      double y = startAnchor - dy;
       if (containPadding) {
-        return y - padding.bottom;
+        return y - padRight;
       }
       return y;
     } else {
-      double y = anchor.dy + dy;
+      double y = startAnchor + dy;
       if (containPadding) {
-        return y + padding.top;
+        return y + padLeft;
       }
       return y;
     }
   }
 
   ///将逻辑坐标转换成物理坐标
-  Offset transformOffset(Offset offset, {bool containPadding = true}) {
-    double x = transformX(offset.dx, containPadding: containPadding);
-    double y = transformY(offset.dy, containPadding: containPadding);
-    return Offset(x, y);
+  Offset transformOffset(Offset point, {bool containPadding = true, bool adjustDirection = false, bool xOffset = false, bool yOffset = false}) {
+    double x = transformX(point.dx, containPadding: containPadding);
+    double y = transformY(point.dy, containPadding: containPadding);
+    if (adjustDirection && reverseAxis) {
+      return Offset(withXOffset(y, yOffset), withYOffset(x, xOffset));
+    }
+    return Offset(withXOffset(x, xOffset), withYOffset(y, yOffset));
   }
 
   Rect transformRect(Rect rect, {bool containPadding = true}) {
@@ -88,8 +112,20 @@ class TransformUtils {
   //
   double withYOffset(double dy, [bool scrollable = true]) {
     if (scrollable) {
+      if (reverseAxis) {
+        print(offset);
+        return dy + offset.dy;
+      }
       return dy - offset.dy;
     }
     return dy;
+  }
+
+  bool needAdjustFirst() {
+    return reverseAxis ? padding.bottom == 0 : padding.left == 0;
+  }
+
+  bool needAdjustLast() {
+    return reverseAxis ? padding.top == 0 : padding.right == 0;
   }
 }

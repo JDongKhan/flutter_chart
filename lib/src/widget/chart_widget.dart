@@ -315,10 +315,10 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderS
             //计算缩放和校准偏移  暂不支持垂直方向缩放，因为应该很少有这个需求
             double startOffset = (_lastOffset.dx + _chartParam.size.width / 2) * zoom / _beforeZoom - _chartParam.size.width / 2;
             _chartParam.zoom = zoom;
-            scroll(Offset(startOffset, 0));
+            _chartParam.scroll(Offset(startOffset, 0));
           }
         } else if (details.pointerCount == 1 && details.scale == 1) {
-          scrollByDelta(details.focalPointDelta);
+          _chartParam.scrollByDelta(details.focalPointDelta);
         }
       },
       onScaleEnd: (ScaleEndDetails details) {
@@ -359,7 +359,7 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderS
     ));
 
     animation.addListener(() {
-      scroll(Offset(animation.value, 0));
+      _chartParam.scroll(Offset(animation.value, 0));
     });
     _scrollAnimationController?.forward();
   }
@@ -377,15 +377,6 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderS
       }
     }
     return false;
-  }
-
-  void scrollByDelta(Offset delta) {
-    Offset newOffset = _chartParam.offset.translate(-delta.dx, -delta.dy);
-    scroll(newOffset);
-  }
-
-  void scroll(Offset offset) {
-    _chartParam.scroll(offset);
   }
 
   // void hitTest(Offset point) {

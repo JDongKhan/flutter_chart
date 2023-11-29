@@ -17,7 +17,7 @@ class _ChartDimensionParam extends ChartParam {
     required ChartDimensionsCoordinateRender coordinate,
   })  : yAxis = coordinate.yAxis,
         xAxis = coordinate.xAxis,
-        invert = coordinate is ChartDimensionsStyle1CoordinateRender;
+        invert = coordinate is ChartDimensionsInvertCoordinateRender;
 
   @override
   void init({required Size size, required EdgeInsets margin, required EdgeInsets padding}) {
@@ -58,19 +58,44 @@ class _ChartDimensionParam extends ChartParam {
       offset: offset,
       size: size,
       padding: padding,
-      reverseX: false,
-      reverseY: true,
+      reverseX: invert ? true : false,
+      reverseY: invert ? false : true,
+      reverseAxis: invert,
     );
+  }
+
+  @override
+  void scrollByDelta(Offset delta) {
+    Offset newOffset = offset.translate(-delta.dx, invert ? delta.dy : -delta.dy);
+    scroll(newOffset);
   }
 
   @override
   void scroll(Offset offset) {
     //校准偏移，不然缩小后可能起点都在中间了，或者无限滚动
+    double x = offset.dx;
+    // double y = newOffset.dy;
+    if (x < 0) {
+      x = 0;
+    }
+    //放大的场景  offset会受到zoom的影响，所以这里的宽度要先剔除zoom的影响再比较
+    double chartContentWidth = xAxis.density * xAxis.max;
+    double chartViewPortWidth = size.width - contentMargin.horizontal;
+    //处理成跟缩放无关的偏移
+    double maxOffset = (chartContentWidth - chartViewPortWidth);
+    if (maxOffset < 0) {
+      //内容小于0
+      x = 0;
+    } else if (x > maxOffset) {
+      x = maxOffset;
+    }
+
+    //y变化
+    double y = 0;
     if (invert) {
-      double x = offset.dy;
-      // double y = newOffset.dy;
-      if (x < 0) {
-        x = 0;
+      y = offset.dy;
+      if (y < 0) {
+        y = 0;
       }
       //放大的场景  offset会受到zoom的影响，所以这里的宽度要先剔除zoom的影响再比较
       double chartContentWidth = xAxis.density * xAxis.max;
@@ -79,29 +104,11 @@ class _ChartDimensionParam extends ChartParam {
       double maxOffset = (chartContentWidth - chartViewPortWidth);
       if (maxOffset < 0) {
         //内容小于0
-        x = 0;
-      } else if (x > maxOffset) {
-        x = maxOffset;
+        y = 0;
+      } else if (y > maxOffset) {
+        y = maxOffset;
       }
-      this.offset = Offset(x, 0);
-    } else {
-      double x = offset.dx;
-      // double y = newOffset.dy;
-      if (x < 0) {
-        x = 0;
-      }
-      //放大的场景  offset会受到zoom的影响，所以这里的宽度要先剔除zoom的影响再比较
-      double chartContentWidth = xAxis.density * xAxis.max;
-      double chartViewPortWidth = size.width - contentMargin.horizontal;
-      //处理成跟缩放无关的偏移
-      double maxOffset = (chartContentWidth - chartViewPortWidth);
-      if (maxOffset < 0) {
-        //内容小于0
-        x = 0;
-      } else if (x > maxOffset) {
-        x = maxOffset;
-      }
-      this.offset = Offset(x, 0);
     }
+    this.offset = Offset(x, y);
   }
 }

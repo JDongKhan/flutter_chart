@@ -70,5 +70,8 @@ class _ChartCircularParam extends ChartParam {
   }
 
   @override
+  void scrollByDelta(Offset delta) {}
+
+  @override
   void scroll(Offset offset) {}
 }

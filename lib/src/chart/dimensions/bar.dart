@@ -117,7 +117,9 @@ class Bar<T> extends ChartBodyRender<T> {
         //开始绘制，bar不同于line，在循环中就可以绘制
         canvas.drawRect(p.rect!, _paint);
         //绘制文本
-        _drawText(canvas, param, item, p);
+        if (param.controlValue == 1) {
+          _drawText(canvas, param, item, p);
+        }
       }
       childrenLayoutParams.add(p);
     }
@@ -156,7 +158,7 @@ class Bar<T> extends ChartBodyRender<T> {
     if (param.invert) {
       double contentWidth = param.size.width - param.contentMargin.horizontal;
       double top = param.size.height - param.contentMargin.bottom - param.xAxis.density * xValue - itemWidth / 2;
-
+      top = param.transform.withYOffset(top);
       double present = yValue / param.yAxis[yAxisPosition].max;
       double itemHeight = contentWidth * present;
       double left = param.contentMargin.left;
@@ -316,7 +318,7 @@ class StackBar<T> extends ChartBodyRender<T> {
           //画图
           canvas.drawRect(cp.rect!, _paint);
           //画文案
-          if (valueString != null && valueString.isNotEmpty) {
+          if (param.controlValue == 1 && valueString != null && valueString.isNotEmpty) {
             if (direction == Axis.horizontal) {
               _drawTopText(canvas, param, valueString[stackIndex], cp);
             } else {
@@ -349,6 +351,8 @@ class StackBar<T> extends ChartBodyRender<T> {
       double contentWidth = param.size.width - param.contentMargin.horizontal;
       double center = yValues.length * itemWidth / 2;
       double top = param.size.height - param.contentMargin.bottom - param.xAxis.density * xValue - center;
+      top = param.transform.withYOffset(top);
+
       double left = param.contentMargin.left;
       shape = ChartLayoutParam.rect(
         rect: Rect.fromLTWH(
@@ -418,6 +422,7 @@ class StackBar<T> extends ChartBodyRender<T> {
     ChartLayoutParam shape;
     if (param.invert) {
       double top = param.size.height - param.contentMargin.bottom - param.xAxis.density * xValue - itemWidth / 2;
+      top = param.transform.withYOffset(top);
       double left = param.contentMargin.left;
       double contentWidth = param.size.width - param.contentMargin.horizontal;
       shape = ChartLayoutParam.rect(

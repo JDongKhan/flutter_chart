@@ -101,6 +101,8 @@ abstract class ChartParam extends ChangeNotifier {
     contentMargin = EdgeInsets.fromLTRB(margin.left + padding.left, margin.top + padding.top, margin.right + padding.right, margin.bottom + padding.bottom);
   }
 
+  void scrollByDelta(Offset delta);
+
   void scroll(Offset offset);
 
   void scale(double zoom) {}
