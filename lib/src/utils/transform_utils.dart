@@ -10,7 +10,7 @@ class TransformUtils {
   final bool reverseX;
   final bool reverseY;
 
-  ///是否翻转轴
+  ///是否翻转两轴
   final bool reverseAxis;
 
   ///偏移
@@ -79,7 +79,7 @@ class TransformUtils {
     }
   }
 
-  ///将逻辑坐标转换成物理坐标
+  ///将逻辑坐标转换成物理坐标 xOffset/yOffset： 支持对应方向的滚动
   Offset transformOffset(Offset point, {bool containPadding = true, bool adjustDirection = false, bool xOffset = false, bool yOffset = false}) {
     double x = transformX(point.dx, containPadding: containPadding);
     double y = transformY(point.dy, containPadding: containPadding);
