@@ -113,7 +113,6 @@ class TransformUtils {
   double withYOffset(double dy, [bool scrollable = true]) {
     if (scrollable) {
       if (reverseAxis) {
-        print(offset);
         return dy + offset.dy;
       }
       return dy - offset.dy;
