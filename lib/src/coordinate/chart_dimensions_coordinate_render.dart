@@ -31,7 +31,8 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
     super.animationDuration,
     super.tooltipBuilder,
     this.crossHair = const CrossHairStyle(),
-  }) : assert(yAxis.isNotEmpty);
+  })  : assert(yAxis.isNotEmpty),
+        assert(padding.bottom == 0 && padding.top == 0, "暂不支持垂直方向的内间距");
 
   @override
   bool canZoom() {
@@ -156,7 +157,7 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
   ///绘制y轴line
   void _drawYLine(ChartParam param, YAxis yA, Canvas canvas) {
     Offset startPoint = param.transform.transformOffset(const Offset(0, 0), containPadding: false, adjustDirection: true);
-    Offset endPoint = param.transform.transformOffset(Offset(0, yA.max * yA.density), containPadding: false, adjustDirection: true);
+    Offset endPoint = param.transform.transformOffset(Offset(0, (yA.max - yA.min) * yA.density), containPadding: false, adjustDirection: true);
     canvas.drawLine(startPoint, endPoint, yA.linePaint);
   }
 

@@ -30,7 +30,7 @@ abstract class ChartCoordinateRender {
   ///图形外边距，用于控制坐标轴的外边距
   final EdgeInsets margin;
 
-  ///图形内边距，用于控制坐标轴的内边距
+  ///图形内边距，用于控制坐标轴的内边距  不支持垂直方向的padding
   final EdgeInsets padding;
 
   ///最小缩放

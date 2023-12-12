@@ -91,11 +91,15 @@ class _LineChartScaleDemoPageState extends State<LineChartScaleDemoPage> {
       ),
       body: Column(
         children: [
+          const SizedBox(
+            height: 10,
+          ),
           SizedBox(
             height: 200,
             child: ChartWidget(
               coordinateRender: ChartDimensionsCoordinateRender(
-                padding: const EdgeInsets.only(left: 30, top: 0, right: 20, bottom: 0),
+                margin: const EdgeInsets.only(left: 30, top: 10, right: 0, bottom: 25),
+                padding: const EdgeInsets.only(left: 30, top: 0, right: 0, bottom: 0),
                 // zoomVertical: true,
                 crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
                 //提示的文案信息
@@ -110,8 +114,8 @@ class _LineChartScaleDemoPageState extends State<LineChartScaleDemoPage> {
                 },
                 yAxis: [
                   YAxis(
-                    min: 0,
-                    max: 500,
+                    min: -600,
+                    max: 400,
                     drawGrid: true,
                   ),
                 ],
