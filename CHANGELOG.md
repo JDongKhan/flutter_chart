@@ -1,3 +1,7 @@
+## 0.1.7
+
+* support flip the x-axis and y-axis
+
 ## 0.1.6
 
 * fix radar bug for  resize web
