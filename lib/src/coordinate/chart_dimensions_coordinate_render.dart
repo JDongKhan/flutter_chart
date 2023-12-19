@@ -287,7 +287,7 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
   ///绘制x轴line
   void _drawXLine(ChartParam param, Canvas canvas) {
     Offset startPoint = param.transform.transformOffset(const Offset(0, 0), containPadding: false, adjustDirection: true);
-    Offset endPoint = param.transform.transformOffset(Offset((xAxis.count + 1) * xAxis.density, 0), containPadding: false, adjustDirection: true);
+    Offset endPoint = param.transform.transformOffset(Offset((xAxis.count * xAxis.interval + 1) * xAxis.density, 0), containPadding: false, adjustDirection: true);
     canvas.drawLine(startPoint, endPoint, xAxis.linePaint);
   }
 

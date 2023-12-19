@@ -71,7 +71,7 @@ class _BigDataChartDemoPageState extends State<BigDataChartDemoPage> {
                       yAxis: [YAxis(min: 0, max: 500, drawGrid: true)],
                       xAxis: XAxis(
                         count: 7,
-                        interval: 1000,
+                        interval: 100,
                         max: diffDay,
                         zoom: true,
                         drawGrid: true,
@@ -80,9 +80,9 @@ class _BigDataChartDemoPageState extends State<BigDataChartDemoPage> {
                         formatter: (index) => '$index',
                       ),
                       charts: [
-                        BigDataLine(
-                          strokeWidth: 0,
-                          dotRadius: 1,
+                        Line(
+                          strokeWidth: 1,
+                          dotRadius: 0,
                           data: dataList,
                           position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
                           values: (item) => [
