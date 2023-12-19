@@ -336,33 +336,33 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderS
     );
   }
 
-  AnimationController? _scrollAnimationController;
+  // AnimationController? _scrollAnimationController;
 
-  void _startDecelerationAnimation(double scrollVelocity) {
-    _scrollAnimationController?.stop();
-    _scrollAnimationController?.dispose();
-    _scrollAnimationController = null;
-    if (scrollVelocity == 0) {
-      return;
-    }
-    //0.2减速系数
-    final distanceToScroll = scrollVelocity * 0.2;
-    Duration duration = Duration(milliseconds: distanceToScroll.abs().toInt());
-    _scrollAnimationController = AnimationController(vsync: this, duration: duration);
-
-    Animation<double> animation = Tween<double>(
-      begin: _chartParam.offset.dx,
-      end: _chartParam.offset.dx - distanceToScroll,
-    ).animate(CurvedAnimation(
-      parent: _scrollAnimationController!,
-      curve: Curves.easeOutCubic,
-    ));
-
-    animation.addListener(() {
-      _chartParam.scroll(Offset(animation.value, 0));
-    });
-    _scrollAnimationController?.forward();
-  }
+  // void _startDecelerationAnimation(double scrollVelocity) {
+  //   _scrollAnimationController?.stop();
+  //   _scrollAnimationController?.dispose();
+  //   _scrollAnimationController = null;
+  //   if (scrollVelocity == 0) {
+  //     return;
+  //   }
+  //   //0.2减速系数
+  //   final distanceToScroll = scrollVelocity * 0.2;
+  //   Duration duration = Duration(milliseconds: distanceToScroll.abs().toInt());
+  //   _scrollAnimationController = AnimationController(vsync: this, duration: duration);
+  //
+  //   Animation<double> animation = Tween<double>(
+  //     begin: _chartParam.offset.dx,
+  //     end: _chartParam.offset.dx - distanceToScroll,
+  //   ).animate(CurvedAnimation(
+  //     parent: _scrollAnimationController!,
+  //     curve: Curves.easeOutCubic,
+  //   ));
+  //
+  //   animation.addListener(() {
+  //     _chartParam.scroll(Offset(animation.value, 0));
+  //   });
+  //   _scrollAnimationController?.forward();
+  // }
 
   ///判断是否先处理Annotations
   bool _checkForegroundAnnotationsEvent(Offset point) {

@@ -68,7 +68,7 @@ class BigDataLine<T> extends ChartBodyRender<T> {
 
   Map<int, LineInfo>? pathMap;
   @override
-  void init(ChartParam param) async {
+  void init(ChartParam param) {
     super.init(param);
     layoutParam.children = List.generate(data.length, (index) => ChartLayoutParam()).toList();
     //这里可以提前计算好数据
@@ -78,14 +78,14 @@ class BigDataLine<T> extends ChartBodyRender<T> {
         ..style = PaintingStyle.fill;
     }
     Future.delayed(const Duration(microseconds: 0), () {
-      return layout(param);
+      return asyncInit(param);
     }).then((value) {
       pathMap = value;
       param.redraw();
     });
   }
 
-  Future layout(ChartParam param) async {
+  Future asyncInit(ChartParam param) async {
     param as _ChartDimensionParam;
     List<ChartLayoutParam> shapeList = layoutParam.children;
     int index = 0;
@@ -168,17 +168,6 @@ class BigDataLine<T> extends ChartBodyRender<T> {
 
   @override
   void draw(Canvas canvas, ChartParam param) {
-    //开启后可查看热区是否正确
-    // int i = 0;
-    // for (var element in shapeList) {
-    //   Rect newRect = Rect.fromLTRB(element.getHotRect()!.left + 1, element.getHotRect()!.top + 1, element.getHotRect()!.right - 1, element.getHotRect()!.bottom);
-    //   Paint newPaint = Paint()
-    //     ..color = colors10[i % colors10.length]
-    //     ..strokeWidth = strokeWidth
-    //     ..style = PaintingStyle.stroke;
-    //   canvas.drawRect(newRect, newPaint);
-    //   i++;
-    // }
     //开始绘制了
     if (pathMap != null) {
       _drawLine(param, canvas, pathMap!);

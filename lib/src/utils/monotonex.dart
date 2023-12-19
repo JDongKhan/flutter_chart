@@ -19,7 +19,7 @@ class MonotoneX {
     double p = (s0 * h1 + s1 * h0) / (h0 + h1);
     var source = [s0.abs(), s1.abs(), 0.5 * p.abs()];
     source.sort();
-    return (_sign(s0) + _sign(s1)) * source.first ?? 0;
+    return (_sign(s0) + _sign(s1)) * source.first;
   }
 
   // According to https://en.wikipedia.org/wiki/Cubic_Hermite_spline#Representations
