@@ -25,6 +25,7 @@ abstract class ChartBodyRender<T> extends _ChartRender {
 
   late ChartController controller;
 
+  //上一次的数据
   List<ChartLayoutParam>? getLastData(bool animal) {
     if (!animal) {
       return null;

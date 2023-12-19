@@ -31,6 +31,7 @@ abstract class ChartCoordinateRender {
   final EdgeInsets margin;
 
   ///图形内边距，用于控制坐标轴的内边距  不支持垂直方向的padding
+  ///assert(padding.bottom == 0 && padding.top == 0, "暂不支持垂直方向的内间距")
   final EdgeInsets padding;
 
   ///最小缩放

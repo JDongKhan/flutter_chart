@@ -15,7 +15,7 @@ abstract class ChartParam extends ChangeNotifier {
     }
   }
 
-  get localPosition => _localPosition;
+  Offset? get localPosition => _localPosition;
 
   ///缩放级别
   double _zoom = 1;
@@ -26,7 +26,7 @@ abstract class ChartParam extends ChangeNotifier {
     }
   }
 
-  get zoom => _zoom;
+  double get zoom => _zoom;
 
   ///滚动偏移
   Offset _offset = Offset.zero;
@@ -37,7 +37,7 @@ abstract class ChartParam extends ChangeNotifier {
     }
   }
 
-  get offset => _offset;
+  Offset get offset => _offset;
 
   ///不在屏幕内是否绘制 默认不绘制
   final bool outDraw;
@@ -117,4 +117,8 @@ abstract class ChartParam extends ChangeNotifier {
 
   @override
   int get hashCode => Object.hash(runtimeType, _zoom, _offset, _localPosition);
+
+  void redraw() {
+    notifyListeners();
+  }
 }

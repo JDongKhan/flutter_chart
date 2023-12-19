@@ -31,8 +31,7 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
     super.animationDuration,
     super.tooltipBuilder,
     this.crossHair = const CrossHairStyle(),
-  })  : assert(yAxis.isNotEmpty),
-        assert(padding.bottom == 0 && padding.top == 0, "暂不支持垂直方向的内间距");
+  }) : assert(yAxis.isNotEmpty);
 
   @override
   bool canZoom() {
