@@ -1,3 +1,7 @@
+## 0.1.8
+
+* fix bug
+
 ## 0.1.7
 
 * support flip the x-axis and y-axis

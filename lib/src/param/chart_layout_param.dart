@@ -106,79 +106,51 @@ class ChartLayoutParam {
     } else if (preShapeState == null && nextShapeState != null) {
       //说明是第一个
       ChartLayoutParam next = nextShapeState!;
-      bool reverse = nextShapeState!.rect!.center.dx < rect!.center.dx;
       double l = rect!.left;
       double r = rect!.right;
-      //说明是逆序
-      if (reverse) {
-        reverse = true;
-        double diff = next.rect!.right - rect!.left;
-        if (diff > _maxWidth * 2) {
-          diff = _maxWidth * 2;
-        }
-        l = rect!.left - diff / 2;
-        r = rect!.right + _maxWidth;
-      } else {
-        double diff = next.rect!.left - rect!.right;
-        if (diff > _maxWidth * 2) {
-          diff = _maxWidth * 2;
-        }
-        l = rect!.left - _maxWidth;
-        r = rect!.right + diff / 2;
+      double diff = next.rect!.left - rect!.right;
+      if (diff > _maxWidth * 2) {
+        diff = _maxWidth * 2;
       }
+      l = rect!.left - _maxWidth;
+      r = rect!.right + diff / 2;
       return Rect.fromLTRB(l, rect!.top, r, rect!.bottom);
     } else if (preShapeState != null && nextShapeState == null) {
+      if (rect == null) {
+        return Rect.zero;
+      }
       //说明是最后一个
       ChartLayoutParam pre = preShapeState!;
-      bool reverse = preShapeState!.rect!.center.dx > rect!.center.dx;
       double l = rect!.left;
       double r = rect!.right;
       //说明是逆序
-      if (reverse) {
-        reverse = true;
-        double diff = rect!.right - pre.rect!.left;
-        if (diff > _maxWidth * 2) {
-          diff = _maxWidth * 2;
-        }
-        l = rect!.left - _maxWidth;
-        r = rect!.right + diff / 2;
-      } else {
-        double diff = rect!.left - pre.rect!.right;
-        if (diff > _maxWidth * 2) {
-          diff = _maxWidth * 2;
-        }
-        l = rect!.left - diff / 2;
-        r = rect!.right + _maxWidth;
+      double diff = rect!.left - pre.rect!.right;
+      if (diff > _maxWidth * 2) {
+        diff = _maxWidth * 2;
       }
+      l = rect!.left - diff / 2;
+      r = rect!.right + _maxWidth;
       return Rect.fromLTRB(l, rect!.top, r, rect!.bottom);
     } else if (preShapeState != null && nextShapeState != null) {
       //说明是中间点
       ChartLayoutParam next = nextShapeState!;
       ChartLayoutParam pre = preShapeState!;
-      bool reverse = nextShapeState!.rect!.center.dx < rect!.center.dx;
       double l = rect!.left;
       double r = rect!.right;
       //说明是逆序
-      if (reverse) {
-        reverse = true;
-        double diff = rect!.right - pre.rect!.left;
-        if (diff > _maxWidth * 2) {
-          diff = _maxWidth * 2;
-        }
-        l = left!;
-        r = rect!.right + diff / 2;
-      } else {
-        double diffLeft = rect!.left - pre.rect!.right;
-        double diffRight = next.rect!.left - rect!.right;
-        if (diffLeft > _maxWidth * 2) {
-          diffLeft = _maxWidth * 2;
-        }
-        if (diffRight > _maxWidth * 2) {
-          diffRight = _maxWidth * 2;
-        }
-        l = rect!.left - diffLeft / 2;
-        r = rect!.right + diffRight / 2;
+      double diffLeft = rect!.left - pre.rect!.right;
+      double diffRight = 0;
+      if (next.rect != null) {
+        diffRight = next.rect!.left - rect!.right;
       }
+      if (diffLeft > _maxWidth * 2) {
+        diffLeft = _maxWidth * 2;
+      }
+      if (diffRight > _maxWidth * 2) {
+        diffRight = _maxWidth * 2;
+      }
+      l = rect!.left - diffLeft / 2;
+      r = rect!.right + diffRight / 2;
       return Rect.fromLTRB(l, rect!.top, r, rect!.bottom);
     }
     return null;

@@ -80,7 +80,7 @@ class _BigDataChartDemoPageState extends State<BigDataChartDemoPage> {
                         formatter: (index) => '$index',
                       ),
                       charts: [
-                        Line(
+                        BigDataLine(
                           strokeWidth: 0,
                           dotRadius: 1,
                           data: dataList,
