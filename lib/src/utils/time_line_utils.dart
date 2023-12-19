@@ -1,25 +1,25 @@
 import 'package:flutter/foundation.dart';
 
-class TimeUtils {
+class TimeLineUtils {
   static final Map<String, TimeMode> _timeMap = {};
-  static TimeUtils instance = TimeUtils._();
-  TimeUtils._();
+  static TimeLineUtils instance = TimeLineUtils._();
+  TimeLineUtils._();
 
   void start(String tag) {
-    if (kDebugMode || kProfileMode) {
+    if (kDebugMode) {
       TimeMode timeMode = TimeMode()..start(tag);
       _timeMap[tag] = timeMode;
     }
   }
 
   void next(String tag) {
-    if (kDebugMode || kProfileMode) {
+    if (kDebugMode) {
       _timeMap[tag]?.next();
     }
   }
 
   void end(String tag) {
-    if (kDebugMode || kProfileMode) {
+    if (kDebugMode) {
       _timeMap[tag]?.end();
     }
   }
