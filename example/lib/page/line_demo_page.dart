@@ -80,8 +80,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                       animationDuration: const Duration(seconds: 1),
                       //提示的文案信息
                       tooltipBuilder: (BuildContext context, List<ChartLayoutParam> body) {
-                        String text =
-                            'adfaskfnsaknfasfnfasnfsakfna\nsjfnadfaskfnsaknfasfnfas\nnfsakfnasjfnadfaskfnsaknfasfnfasn\nfsakfnasjfnadfaskf\nnsaknfasfnfasnfsakfna\nsjfnadfaskfnsaknfasfnfasnfsa\nkfnasjfnadfaskfnsaknfa\nsfnfasnfsakfnasjfnadfaskfn\nsaknfasfnfasnfsakfnasjfnad\nfaskfnsaknfasfnfasn\nfsakfnasjfn';
+                        String text = '我可以滚动我可以滚动\n我可以滚动我可以滚动\n我可以滚动我可以滚动\n我可以滚动我可以滚动';
                         return PreferredSize(
                           preferredSize: const Size(60, 100),
                           child: SizedBox(

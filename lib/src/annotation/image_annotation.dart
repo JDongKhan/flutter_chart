@@ -69,12 +69,13 @@ class ImageAnnotation extends Annotation {
       }
       Paint paint = Paint()..isAntiAlias = true;
       canvas.drawImage(
-          image,
-          ost.translate(
-            offset.dx - image.width / 2,
-            offset.dy - image.height / 2,
-          ),
-          paint);
+        image,
+        ost.translate(
+          offset.dx - image.width / 2,
+          offset.dy - image.height / 2,
+        ),
+        paint,
+      );
       Rect rect = Rect.fromCenter(
         center: Offset(ost.dx, ost.dy),
         width: image.width.toDouble(),
