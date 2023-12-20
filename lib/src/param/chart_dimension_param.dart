@@ -27,11 +27,11 @@ class _ChartDimensionParam extends ChartParam {
     double height = size.height;
     int count = xAxis.count;
     //每格的宽度，用于控制一屏最多显示个数
-    double density = invert ? (height - contentMargin.vertical) / count / xAxis.interval : (width - contentMargin.horizontal) / count / xAxis.interval;
+    double density = invert ? (height - layout.contentMargin.vertical) / count / xAxis.interval : (width - layout.contentMargin.horizontal) / count / xAxis.interval;
     xAxis.fixedDensity = density;
     //x轴密度 即1 value 等于多少尺寸
     if (xAxis.zoom) {
-      xAxis.density = density * zoom;
+      xAxis.density = density * layout.zoom;
     } else {
       xAxis.density = density;
     }
@@ -46,16 +46,16 @@ class _ChartDimensionParam extends ChartParam {
       double density = itemHeight / itemValue;
       yA.fixedDensity = density;
       if (yA.zoom) {
-        yA.density = density * zoom;
+        yA.density = density * layout.zoom;
       } else {
         yA.density = density;
       }
     }
 
     //转换工具
-    transform = TransformUtils(
+    layout.transform = TransformUtils(
       anchor: Offset(margin.left, size.height - margin.bottom),
-      offset: offset,
+      offset: layout.offset,
       size: size,
       padding: padding,
       reverseX: invert ? true : false,
@@ -66,7 +66,7 @@ class _ChartDimensionParam extends ChartParam {
 
   @override
   void scrollByDelta(Offset delta) {
-    Offset newOffset = offset.translate(-delta.dx, invert ? delta.dy : -delta.dy);
+    Offset newOffset = layout.offset.translate(-delta.dx, invert ? delta.dy : -delta.dy);
     scroll(newOffset);
   }
 
@@ -80,7 +80,7 @@ class _ChartDimensionParam extends ChartParam {
     }
     //放大的场景  offset会受到zoom的影响，所以这里的宽度要先剔除zoom的影响再比较
     double chartContentWidth = xAxis.density * xAxis.max;
-    double chartViewPortWidth = size.width - contentMargin.horizontal;
+    double chartViewPortWidth = layout.size.width - layout.contentMargin.horizontal;
     //处理成跟缩放无关的偏移
     double maxOffset = (chartContentWidth - chartViewPortWidth);
     if (maxOffset < 0) {
@@ -99,7 +99,7 @@ class _ChartDimensionParam extends ChartParam {
       }
       //放大的场景  offset会受到zoom的影响，所以这里的宽度要先剔除zoom的影响再比较
       double chartContentWidth = xAxis.density * xAxis.max;
-      double chartViewPortWidth = size.height - contentMargin.vertical;
+      double chartViewPortWidth = layout.size.height - layout.contentMargin.vertical;
       //处理成跟缩放无关的偏移
       double maxOffset = (chartContentWidth - chartViewPortWidth);
       if (maxOffset < 0) {

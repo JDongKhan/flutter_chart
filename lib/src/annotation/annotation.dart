@@ -45,10 +45,10 @@ abstract class Annotation extends _ChartRender {
   }
 
   bool needDraw(ChartParam param) {
-    if (minZoomVisible != null && param.zoom < minZoomVisible!) {
+    if (minZoomVisible != null && param.layout.zoom < minZoomVisible!) {
       return false;
     }
-    if (maxZoomVisible != null && param.zoom > maxZoomVisible!) {
+    if (maxZoomVisible != null && param.layout.zoom > maxZoomVisible!) {
       return false;
     }
     return true;

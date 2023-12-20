@@ -23,19 +23,19 @@ class _ChartCircularParam extends ChartParam {
   @override
   void init({required Size size, required EdgeInsets margin, required EdgeInsets padding}) {
     super.init(size: size, margin: margin, padding: padding);
-    final sw = size.width - contentMargin.horizontal;
-    final sh = size.height - contentMargin.vertical;
+    final sw = size.width - layout.contentMargin.horizontal;
+    final sh = size.height - layout.contentMargin.vertical;
     //满圆
     if (arcPosition == ArcPosition.none) {
       // 确定圆的半径
       radius = math.min(sw, sh) / 2 - borderWidth / 2;
       // 定义中心点
       center = size.center(Offset.zero);
-      transform = TransformUtils(
+      layout.transform = TransformUtils(
         anchor: center,
         size: size,
         padding: padding,
-        offset: offset,
+        offset: layout.offset,
         reverseX: false,
         reverseY: false,
       );
@@ -46,22 +46,22 @@ class _ChartCircularParam extends ChartParam {
       radius = math.min(maxSize / 2, minSize) - borderWidth / 2;
       center = size.center(Offset.zero);
       if (arcPosition == ArcPosition.up) {
-        center = Offset(center.dx, size.height - contentMargin.bottom);
-        transform = TransformUtils(
+        center = Offset(center.dx, size.height - layout.contentMargin.bottom);
+        layout.transform = TransformUtils(
           anchor: center,
           size: size,
           padding: padding,
-          offset: offset,
+          offset: layout.offset,
           reverseX: false,
           reverseY: true,
         );
       } else if (arcPosition == ArcPosition.down) {
-        center = Offset(center.dx, contentMargin.top);
-        transform = TransformUtils(
+        center = Offset(center.dx, layout.contentMargin.top);
+        layout.transform = TransformUtils(
           anchor: center,
           size: size,
           padding: padding,
-          offset: offset,
+          offset: layout.offset,
           reverseX: false,
           reverseY: false,
         );

@@ -38,12 +38,12 @@ class Scatter<T> extends ChartBodyRender<T> {
   void draw(Canvas canvas, ChartParam param) {
     param as _ChartDimensionParam;
     //offset.dx 滚动偏移  (src.zoom - 1) * (src.size.width / 2) 缩放
-    double left = param.contentMargin.left;
-    left = param.transform.withXOffset(left);
+    double left = param.layout.contentMargin.left;
+    left = param.layout.transform.withXOffset(left);
 
     // double right = param.size.width - param.contentMargin.right;
     // double top = param.contentMargin.top;
-    double bottom = param.size.height - param.contentMargin.bottom;
+    double bottom = param.layout.size.height - param.layout.contentMargin.bottom;
 
     //遍历数据 处理数据信息
     for (T itemData in data) {
@@ -51,7 +51,7 @@ class Scatter<T> extends ChartBodyRender<T> {
       num yvs = value.call(itemData);
       double xPo = xvs * param.xAxis.density + left;
       double yPo = bottom - param.yAxis[yAxisPosition].relativeHeight(yvs);
-      yPo = param.transform.withYOffset(yPo);
+      yPo = param.layout.transform.withYOffset(yPo);
       ScatterStyle sy = style.call(itemData);
       //最后画点
       if (sy.radius > 0) {

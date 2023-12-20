@@ -78,7 +78,7 @@ class Progress<T> extends ChartBodyRender<T> {
       if (lastXvs != null) {
         assert(lastXvs > po, '数据必须降序，否则会被挡住');
       }
-      double sweepAngle = fullSweepAngle * po * param.controlValue;
+      double sweepAngle = fullSweepAngle * po * param.layout.controlValue;
       Path path = Path()
         ..addArc(
           Rect.fromCenter(center: center, width: radius * 2, height: radius * 2),

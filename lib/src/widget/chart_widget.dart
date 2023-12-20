@@ -281,7 +281,6 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderS
       coordinate: widget.chartCoordinateRender,
       controlValue: _animationController?.value ?? 1,
     );
-    _chartParam._isHasTooltip = widget.chartCoordinateRender.tooltipBuilder != null;
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTapUp: (TapUpDetails details) {
@@ -295,8 +294,8 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderS
         }
       },
       onScaleStart: (ScaleStartDetails details) {
-        _beforeZoom = _chartParam.zoom;
-        _lastOffset = _chartParam.offset;
+        _beforeZoom = _chartParam.layout.zoom;
+        _lastOffset = _chartParam.layout.offset;
         // if (widget.chartCoordinateRender is DimensionsChartCoordinateRender) {
         //   DimensionsChartCoordinateRender render = widget.chartCoordinateRender as DimensionsChartCoordinateRender;
         //   //计算中间值 用于根据手势
@@ -314,7 +313,7 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderS
 
             // double startOffset = centerV * render.xAxis.density - widget.chartCoordinateRender.size.width / 2;
             //计算缩放和校准偏移  暂不支持垂直方向缩放，因为应该很少有这个需求
-            double startOffset = (_lastOffset.dx + _chartParam.size.width / 2) * zoom / _beforeZoom - _chartParam.size.width / 2;
+            double startOffset = (_lastOffset.dx + _chartParam.layout.size.width / 2) * zoom / _beforeZoom - _chartParam.layout.size.width / 2;
             _chartParam.zoom = zoom;
             _chartParam.scroll(Offset(startOffset, 0));
           }

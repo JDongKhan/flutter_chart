@@ -6,6 +6,7 @@ part of flutter_chart_plus;
 class ChartController {
   ///
   ChartCoordinateRender? _chartCoordinateRender;
+  //上一次的坐标信息 用于做插值动画
   ChartCoordinateRender? _lastChartCoordinateRender;
   ChartCoordinateRender? get lastCoordinate => _lastChartCoordinateRender;
 
@@ -20,7 +21,7 @@ class ChartController {
 
   Offset? _outTapLocation;
   Offset? get outTapLocation => _outTapLocation;
-  Offset? get localPosition => _param?.localPosition;
+  Offset? get localPosition => _param?.layout.localPosition;
 
   ///重置提示框
   void resetTooltip() {
@@ -33,7 +34,7 @@ class ChartController {
       _outTapLocation = null;
       needNotify = true;
     }
-    if (_param?.localPosition != null) {
+    if (_param?.layout.localPosition != null) {
       _param?.localPosition = null;
       needNotify = true;
     }
@@ -65,7 +66,9 @@ class ChartController {
 extension _InnerFuncation on ChartController {
   void _attach(ChartCoordinateRender chartCoordinateRender) {
     chartCoordinateRender.controller = this;
-    _lastChartCoordinateRender = _chartCoordinateRender;
+    if (chartCoordinateRender.animationDuration != null) {
+      _lastChartCoordinateRender = _chartCoordinateRender;
+    }
     _chartCoordinateRender = chartCoordinateRender;
   }
 

@@ -3,41 +3,29 @@ part of flutter_chart_plus;
 typedef AnnotationTooltipWidgetBuilder = PreferredSizeWidget? Function(BuildContext context);
 
 abstract class ChartParam extends ChangeNotifier {
-  ///控制点
-  final double controlValue;
+  final ChartLayoutInfo _layout = ChartLayoutInfo();
+  ChartLayoutInfo get layout => _layout;
 
-  ///点击的位置
-  Offset? _localPosition;
   set localPosition(v) {
-    if (v != _localPosition) {
-      _localPosition = v;
+    if (v != layout.localPosition) {
+      layout.localPosition = v;
       notifyListeners();
     }
   }
 
-  Offset? get localPosition => _localPosition;
-
-  ///缩放级别
-  double _zoom = 1;
   set zoom(v) {
-    if (v != _zoom) {
-      _zoom = v;
+    if (v != layout.zoom) {
+      layout.zoom = v;
       notifyListeners();
     }
   }
 
-  double get zoom => _zoom;
-
-  ///滚动偏移
-  Offset _offset = Offset.zero;
   set offset(v) {
-    if (v != _offset) {
-      _offset = v;
+    if (v != layout.offset) {
+      layout.offset = v;
       notifyListeners();
     }
   }
-
-  Offset get offset => _offset;
 
   ///不在屏幕内是否绘制 默认不绘制
   final bool outDraw;
@@ -53,9 +41,11 @@ abstract class ChartParam extends ChangeNotifier {
 
   ChartParam({
     this.outDraw = false,
-    this.controlValue = 1,
+    double controlValue = 1,
     required this.childrenState,
-  });
+  }) {
+    _layout.controlValue = controlValue;
+  }
 
   factory ChartParam.coordinate({
     bool outDraw = false,
@@ -79,29 +69,11 @@ abstract class ChartParam extends ChangeNotifier {
     )..animal = coordinate.animationDuration != null;
   }
 
-  ///坐标转换工具
-  late TransformUtils transform;
-
-  late Size size;
-  late EdgeInsets margin;
-  late EdgeInsets padding;
-
-  //是否需要显示工具条
-  late bool _isHasTooltip;
-
-  Size get contentSize => contentRect.size;
-
-  ///图形内容的外边距信息
-  late EdgeInsets contentMargin;
-
-  ///未处理的坐标  原点在左上角
-  Rect get contentRect => Rect.fromLTRB(contentMargin.left, contentMargin.top, size.width - contentMargin.left, size.height - contentMargin.bottom);
-
   void init({required Size size, required EdgeInsets margin, required EdgeInsets padding}) {
-    this.size = size;
-    this.margin = margin;
-    this.padding = padding;
-    contentMargin = EdgeInsets.fromLTRB(margin.left + padding.left, margin.top + padding.top, margin.right + padding.right, margin.bottom + padding.bottom);
+    _layout.size = size;
+    _layout.margin = margin;
+    _layout.padding = padding;
+    _layout.contentMargin = EdgeInsets.fromLTRB(margin.left + padding.left, margin.top + padding.top, margin.right + padding.right, margin.bottom + padding.bottom);
   }
 
   void scrollByDelta(Offset delta);
@@ -113,15 +85,51 @@ abstract class ChartParam extends ChangeNotifier {
   @override
   bool operator ==(Object other) {
     if (other is ChartParam) {
-      return super == other && zoom == other.zoom && localPosition == other.localPosition && offset == other.offset;
+      return super == other && _layout.zoom == other._layout.zoom && _layout.localPosition == other._layout.localPosition && _layout.offset == other._layout.offset;
     }
     return super == other;
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, _zoom, _offset, _localPosition);
+  int get hashCode => Object.hash(runtimeType, _layout.zoom, _layout.offset, _layout.localPosition);
 
   void needDraw() {
     notifyListeners();
   }
+}
+
+///坐标系布局信息
+class ChartLayoutInfo {
+  ///控制点
+  double controlValue = 1;
+
+  ///点击的位置
+  Offset? localPosition;
+
+  ///缩放级别
+  double zoom = 1;
+
+  ///滚动偏移
+  Offset offset = Offset.zero;
+
+  ///尺寸
+  late Size size;
+
+  ///外间隙
+  late EdgeInsets margin;
+
+  ///内间隙
+  late EdgeInsets padding;
+
+  ///坐标转换工具
+  late TransformUtils transform;
+  Size get contentSize => contentRect.size;
+
+  ///未处理的坐标  原点在左上角
+  Rect get contentRect => Rect.fromLTRB(contentMargin.left, contentMargin.top, size.width - contentMargin.left, size.height - contentMargin.bottom);
+
+  ///图形内容的外边距信息
+  late EdgeInsets contentMargin;
+
+  ChartLayoutInfo();
 }

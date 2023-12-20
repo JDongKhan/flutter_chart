@@ -33,7 +33,7 @@ class PathAnnotation extends Annotation {
 
     _path = path;
     if (anchor != null) {
-      Offset ost = anchor!(param.size);
+      Offset ost = anchor!(param.layout.size);
       final matrix = Matrix4.identity()..leftTranslate(ost.dx, ost.dy);
       _path = path.transform(matrix.storage);
     }

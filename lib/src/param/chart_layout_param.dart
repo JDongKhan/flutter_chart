@@ -3,21 +3,15 @@ part of flutter_chart_plus;
 /// @author jd
 const double _maxWidth = 15;
 
-@Deprecated('instead of  using [ChartLayoutParam]')
-typedef CharBodyState = ChartLayoutParam;
-
 ///每个图形(点/柱状图/扇形)的状态
 class ChartLayoutParam {
   ///图形的区域
-  Rect? rect;
+  Rect? originRect;
 
   ///形成图形的path
   Path? path;
 
-  ChartLayoutParam({
-    this.rect,
-    this.path,
-  });
+  ChartLayoutParam();
 
   ///数据所在数组的位置
   int? index;
@@ -44,14 +38,19 @@ class ChartLayoutParam {
   ///对应数据y轴的原始值
   num? yValue;
 
+  int yAxisPosition = 0;
+
   ///对应数据y轴的原始值
   List<num>? yValues;
+
+  ///布局信息
+  ChartLayoutInfo? layout;
 
   ///某条数据下 可能会有多条数据
   List<ChartLayoutParam> children = [];
 
   ///矩形
-  ChartLayoutParam.rect({required this.rect});
+  ChartLayoutParam.rect({required this.originRect});
 
   ///路径
   ChartLayoutParam.path({required this.path});
@@ -64,7 +63,7 @@ class ChartLayoutParam {
     required double startAngle,
     required double sweepAngle,
   }) {
-    rect = null;
+    originRect = null;
     double startRad = startAngle;
     double endRad = startAngle + sweepAngle;
 
@@ -87,71 +86,82 @@ class ChartLayoutParam {
     path = localPath.shift(center);
   }
 
-  void setRect(Rect rect) {
-    this.rect = rect;
+  void setOriginRect(Rect rect) {
+    originRect = rect;
+  }
+
+  Rect? getRealRect() {
+    ChartLayoutInfo? layout = this.layout;
+    if (layout == null) {
+      return originRect;
+    }
+    if (this is ChartLineLayoutParam) {
+      double left = layout.contentMargin.left;
+      double top = layout.contentMargin.top;
+      double bottom = layout.size.height - layout.contentMargin.bottom;
+      ChartLineLayoutParam p = this as ChartLineLayoutParam;
+      double dotRadius = originRect!.width / 2;
+      double xPos = xValue! * p.xAxis.density + left;
+      xPos = layout.transform.withXOffset(xPos);
+      if (yValue != null) {
+        double yPos = bottom - p.yAxis[yAxisPosition].relativeHeight(yValue!);
+        Offset currentPoint = Offset(xPos, yPos);
+        return Rect.fromCenter(center: currentPoint, width: dotRadius, height: dotRadius);
+      } else {
+        return Rect.fromLTRB(xPos - dotRadius, top, xPos + dotRadius, bottom);
+      }
+    }
+    return originRect;
   }
 
   ///获取热区
   Rect? getHotRect() {
+    Rect? currentRect = getRealRect();
+    if (currentRect == null) {
+      return Rect.zero;
+    }
+    Rect? preRect = preShapeState?.getRealRect();
+    Rect? nextRect = nextShapeState?.getRealRect();
+
+    double l = currentRect.left;
+    double r = currentRect.right;
+    double t = currentRect.top;
+    double b = currentRect.bottom;
     //处理前后关联热区
-    if (preShapeState == null && nextShapeState == null) {
+    if (preRect == null && nextRect == null) {
       //都为空有两种情况
       //1、数据只有一条
       //2、该图不需要处理热区
       if (left != null && right != null) {
         //说明是第一种情况
-        return Rect.fromLTRB(rect!.left - _maxWidth, rect!.top, rect!.right + _maxWidth, rect!.bottom);
+        return Rect.fromLTRB(l - _maxWidth, t, r + _maxWidth, b);
       }
       return null;
-    } else if (preShapeState == null && nextShapeState != null) {
+    } else if (preRect == null && nextRect != null) {
       //说明是第一个
-      ChartLayoutParam next = nextShapeState!;
-      double l = rect!.left;
-      double r = rect!.right;
-      double diff = next.rect!.left - rect!.right;
+      double diff = nextRect.left - r;
       if (diff > _maxWidth * 2) {
         diff = _maxWidth * 2;
       }
-      l = rect!.left - _maxWidth;
-      r = rect!.right + diff / 2;
-      return Rect.fromLTRB(l, rect!.top, r, rect!.bottom);
-    } else if (preShapeState != null && nextShapeState == null) {
-      if (rect == null) {
-        return Rect.zero;
-      }
+      return Rect.fromLTRB(l - _maxWidth, t, r + diff / 2, b);
+    } else if (preRect != null && nextRect == null) {
       //说明是最后一个
-      ChartLayoutParam pre = preShapeState!;
-      double l = rect!.left;
-      double r = rect!.right;
-      //说明是逆序
-      double diff = rect!.left - pre.rect!.right;
+      double diff = l - preRect.right;
       if (diff > _maxWidth * 2) {
         diff = _maxWidth * 2;
       }
-      l = rect!.left - diff / 2;
-      r = rect!.right + _maxWidth;
-      return Rect.fromLTRB(l, rect!.top, r, rect!.bottom);
-    } else if (preShapeState != null && nextShapeState != null) {
+      return Rect.fromLTRB(l - diff / 2, t, r + _maxWidth, b);
+    } else if (preRect != null && nextRect != null) {
       //说明是中间点
-      ChartLayoutParam next = nextShapeState!;
-      ChartLayoutParam pre = preShapeState!;
-      double l = rect!.left;
-      double r = rect!.right;
-      //说明是逆序
-      double diffLeft = rect!.left - pre.rect!.right;
-      double diffRight = 0;
-      if (next.rect != null) {
-        diffRight = next.rect!.left - rect!.right;
-      }
+      double diffLeft = l - preRect.right;
+      double diffRight = nextRect.left - r;
       if (diffLeft > _maxWidth * 2) {
         diffLeft = _maxWidth * 2;
       }
       if (diffRight > _maxWidth * 2) {
         diffRight = _maxWidth * 2;
       }
-      l = rect!.left - diffLeft / 2;
-      r = rect!.right + diffRight / 2;
-      return Rect.fromLTRB(l, rect!.top, r, rect!.bottom);
+      return Rect.fromLTRB(l - diffLeft / 2, t, r + diffRight / 2, b);
     }
     return null;
   }
@@ -162,7 +172,7 @@ class ChartLayoutParam {
       return false;
     }
 
-    if (rect?.contains(anchor) == true) {
+    if (originRect?.contains(anchor) == true) {
       return true;
     }
 
@@ -182,4 +192,12 @@ class ChartLayoutParam {
   String toString() {
     return '{index:$index xValue:$xValue,yValue:$yValue}';
   }
+}
+
+class ChartLineLayoutParam extends ChartLayoutParam {
+  ///y坐标轴
+  late List<YAxis> yAxis;
+
+  ///x坐标轴
+  late XAxis xAxis;
 }

@@ -137,7 +137,7 @@ class Pie<T> extends ChartBodyRender<T> {
       // }
 
       // 计算出每个数据所占的弧度值
-      final sweepAngle = percent * math.pi * 2 * (direction == RotateDirection.forward ? 1 : -1) * param.controlValue;
+      final sweepAngle = percent * math.pi * 2 * (direction == RotateDirection.forward ? 1 : -1) * param.layout.controlValue;
       double rd = radius;
       //图形区域
       ChartLayoutParam shape = ChartLayoutParam.arc(
@@ -153,7 +153,7 @@ class Pie<T> extends ChartBodyRender<T> {
       //放大区域
       ChartLayoutParam tapShape = shape;
       //判断是否选中
-      bool selected = enableTap && shape.hitTest(param.localPosition);
+      bool selected = enableTap && shape.hitTest(param.layout.localPosition);
       if (selected) {
         rd = radius + 2;
         layoutParam.selectedIndex = i;
@@ -178,7 +178,7 @@ class Pie<T> extends ChartBodyRender<T> {
       String? legend = legendFormatter?.call(item);
 
       //绘制引导线
-      if (guideLine && param.controlValue == 1) {
+      if (guideLine && param.layout.controlValue == 1) {
         _drawLineAndText(param, canvas, valueText, legend, index, rd, startAngle, sweepAngle);
       }
       //选中就绘制
@@ -189,7 +189,7 @@ class Pie<T> extends ChartBodyRender<T> {
       // baseChart.canvas.drawArc(
       //     newRect, startAngle, sweepAngle, true, paint..color = colors[i]);
       // _drawLegend(item, radius, startAngle, sweepAngle);
-      if (showValue && param.controlValue == 1) {
+      if (showValue && param.layout.controlValue == 1) {
         _drawValue(param, canvas, valueText, radius, startAngle, sweepAngle);
       }
       //继续下一个
@@ -267,7 +267,7 @@ class Pie<T> extends ChartBodyRender<T> {
         textDirection: TextDirection.ltr,
       )..layout(
           minWidth: 0,
-          maxWidth: param.size.width,
+          maxWidth: param.layout.size.width,
         );
       // 使用三角函数计算文字位置 并根据文字大小适配
       Offset textOffset = Offset(isLeft ? point3.dx : point3.dx - legendTextPainter.width, point3.dy - legendTextPainter.height);
@@ -290,7 +290,7 @@ class Pie<T> extends ChartBodyRender<T> {
         textDirection: TextDirection.ltr,
       )..layout(
           minWidth: 0,
-          maxWidth: param.size.width,
+          maxWidth: param.layout.size.width,
         );
       // 使用三角函数计算文字位置 并根据文字大小适配
       Offset textOffset = Offset(isLeft ? point3.dx : point3.dx - valueTextPainter.width, point3.dy);
@@ -340,11 +340,11 @@ class Pie<T> extends ChartBodyRender<T> {
         textDirection: TextDirection.ltr,
       )..layout(
           minWidth: 0,
-          maxWidth: param.size.width,
+          maxWidth: param.layout.size.width,
         );
       // 使用三角函数计算文字位置 并根据文字大小适配
-      double x = math.cos(radians) * (radius / 2 + valueTextOffset) + param.size.width / 2 - valueTextPainter.width / 2;
-      double y = math.sin(radians) * (radius / 2 + valueTextOffset) + param.size.height / 2 - valueTextPainter.height / 2;
+      double x = math.cos(radians) * (radius / 2 + valueTextOffset) + param.layout.size.width / 2 - valueTextPainter.width / 2;
+      double y = math.sin(radians) * (radius / 2 + valueTextOffset) + param.layout.size.height / 2 - valueTextPainter.height / 2;
       valueTextPainter.paint(canvas, Offset(x, y));
     }
   }
@@ -362,7 +362,7 @@ class Pie<T> extends ChartBodyRender<T> {
         textDirection: TextDirection.ltr,
       )..layout(
           minWidth: 0,
-          maxWidth: param.size.width,
+          maxWidth: param.layout.size.width,
         );
       valueTextPainter.paint(canvas, param.center.translate(-valueTextPainter.width / 2, -valueTextPainter.height / 2));
     }

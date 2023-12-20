@@ -81,6 +81,7 @@ class _BigDataChartDemoPageState extends State<BigDataChartDemoPage> {
                       ),
                       charts: [
                         Line(
+                          async: true,
                           strokeWidth: 1,
                           dotRadius: 0,
                           data: dataList,

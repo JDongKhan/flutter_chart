@@ -140,7 +140,7 @@ class Radar<T> extends ChartBodyRender<T> {
           textDirection: TextDirection.ltr,
         )..layout(
             minWidth: 0,
-            maxWidth: param.size.width,
+            maxWidth: param.layout.size.width,
           );
         bool isLeft = x < center.dx;
         bool isBottom = y >= center.dy;
@@ -182,7 +182,7 @@ class Radar<T> extends ChartBodyRender<T> {
             textDirection: TextDirection.ltr,
           )..layout(
               minWidth: 0,
-              maxWidth: param.size.width,
+              maxWidth: param.layout.size.width,
             );
           bool isLeft = dataX < center.dx;
           bool isTop = dataY <= (center.dy - radius) && legendList != null;

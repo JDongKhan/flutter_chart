@@ -48,7 +48,7 @@ class LabelAnnotation extends Annotation {
       textDirection: TextDirection.ltr,
     )..layout(
         minWidth: 0,
-        maxWidth: param.size.width,
+        maxWidth: param.layout.size.width,
       );
   }
 
@@ -73,32 +73,32 @@ class LabelAnnotation extends Annotation {
         }
         double itemWidth = xPo * density;
         double itemHeight = param.yAxis[yAxisPosition].relativeHeight(yPo);
-        double left = param.transform.transformX(
+        double left = param.layout.transform.transformX(
           itemWidth,
           containPadding: true,
         );
-        double top = param.transform.transformY(
+        double top = param.layout.transform.transformY(
           itemHeight,
           containPadding: true,
         );
 
         if (scroll) {
-          left = param.transform.withXOffset(left);
-          top = param.transform.withYOffset(top);
+          left = param.layout.transform.withXOffset(left);
+          top = param.layout.transform.withYOffset(top);
         } else {
           //不跟随缩放
-          left = param.transform.transformX(
+          left = param.layout.transform.transformX(
             itemWidth,
             containPadding: true,
           );
-          top = param.transform.transformY(
+          top = param.layout.transform.transformY(
             itemHeight,
             containPadding: true,
           );
         }
         ost = Offset(left, top).translate(offset.dx, offset.dy);
       } else {
-        ost = anchor!(param.size);
+        ost = anchor!(param.layout.size);
       }
 
       if (textAlign == TextAlign.end) {

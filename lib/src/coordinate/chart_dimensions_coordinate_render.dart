@@ -45,7 +45,7 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
 
   @override
   void paint(Canvas canvas, ChartParam param) {
-    Size size = param.size;
+    Size size = param.layout.size;
     // canvas.save();
     // 如果按坐标系切，就会面临坐标轴和里面的内容重复循环的问题，该组件的本意是尽可能减少无畏的循环，提高性能，如果
     // 给y轴切出来，超出这个范围就隐藏 这个会导致虚线绘制不出来 估注释掉
@@ -73,7 +73,7 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
 
   ///绘制y轴
   void _drawYAxis(ChartParam param, Canvas canvas) {
-    Size size = param.size;
+    Size size = param.layout.size;
     int yAxisIndex = 0;
     for (YAxis yA in yAxis) {
       Offset offset = yA.offset?.call(size) ?? Offset.zero;
@@ -90,7 +90,7 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
           vv = vv.toInt();
         }
         num yValue = vv;
-        Offset point = param.transform.transformOffset(Offset(xStartValue * xAxis.density + offset.dx, yValue * yA.density), containPadding: false, adjustDirection: true);
+        Offset point = param.layout.transform.transformOffset(Offset(xStartValue * xAxis.density + offset.dx, yValue * yA.density), containPadding: false, adjustDirection: true);
         //绘制文本
         if (yA.drawLabel) {
           String text = yA.formatter?.call(i) ?? '${min + vv}';
@@ -120,7 +120,7 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
   ///绘制虚线
   void _drawYGridLine(ChartParam param, YAxis yA, Canvas canvas, Offset point, int index) {
     final Matrix4 matrix = Matrix4.identity()..translate(point.dx, point.dy);
-    canvas.drawPath(yA.getDashPath(index, Offset(param.size.width - param.margin.horizontal, 0)).transform(matrix.storage), yA.linePaint);
+    canvas.drawPath(yA.getDashPath(index, Offset(param.layout.size.width - param.layout.margin.horizontal, 0)).transform(matrix.storage), yA.linePaint);
   }
 
   ///绘制Y轴文本
@@ -149,30 +149,30 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
 
   ///绘制y轴指示器
   void _drawYDivider(ChartParam param, YAxis yA, Canvas canvas, Offset point, num yValue) {
-    Offset endPoint = param.transform.transformOffset(Offset(5, yValue * yA.density), containPadding: false, adjustDirection: true, yOffset: true);
+    Offset endPoint = param.layout.transform.transformOffset(Offset(5, yValue * yA.density), containPadding: false, adjustDirection: true, yOffset: true);
     canvas.drawLine(point, endPoint, yA.linePaint);
   }
 
   ///绘制y轴line
   void _drawYLine(ChartParam param, YAxis yA, Canvas canvas) {
-    Offset startPoint = param.transform.transformOffset(const Offset(0, 0), containPadding: false, adjustDirection: true);
-    Offset endPoint = param.transform.transformOffset(Offset(0, (yA.max - yA.min) * yA.density), containPadding: false, adjustDirection: true);
+    Offset startPoint = param.layout.transform.transformOffset(const Offset(0, 0), containPadding: false, adjustDirection: true);
+    Offset endPoint = param.layout.transform.transformOffset(Offset(0, (yA.max - yA.min) * yA.density), containPadding: false, adjustDirection: true);
     canvas.drawLine(startPoint, endPoint, yA.linePaint);
   }
 
   ///绘制x轴
   void _drawXAxis(ChartParam param, Canvas canvas) {
-    Size size = param.size;
+    Size size = param.layout.size;
     double density = xAxis.density;
     num interval = xAxis.interval;
     //实际要显示的数量
     int count = xAxis.max ~/ interval;
     //缩放时过滤逻辑
-    double xFilterZoom = 1 / param.zoom;
+    double xFilterZoom = 1 / param.layout.zoom;
     //缩小时的策略
     int xReduceInterval = (xFilterZoom < 1 ? 1 : xFilterZoom).round();
     //放大后的策略
-    int? xDivideCount = xAxis.divideCount?.call(param.zoom);
+    int? xDivideCount = xAxis.divideCount?.call(param.layout.zoom);
     double? xAmplifyInterval;
     if (xDivideCount != null && xDivideCount > 0) {
       xAmplifyInterval = interval / xDivideCount;
@@ -187,8 +187,8 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
       }
       num xValue = interval * i;
 
-      Offset point = param.transform.transformOffset(Offset(xValue * xAxis.density, 0), containPadding: true, adjustDirection: true, xOffset: true);
-      Offset nextPoint = param.transform.transformOffset(Offset(interval * (i + 1) * xAxis.density, 0), containPadding: true, adjustDirection: true, xOffset: true);
+      Offset point = param.layout.transform.transformOffset(Offset(xValue * xAxis.density, 0), containPadding: true, adjustDirection: true, xOffset: true);
+      Offset nextPoint = param.layout.transform.transformOffset(Offset(interval * (i + 1) * xAxis.density, 0), containPadding: true, adjustDirection: true, xOffset: true);
       // // 判断下一个点是否超出，因为这个和下个点之间可能有文案要显示
       // // 避免多余绘制，只绘制屏幕内容
       if (nextPoint.dx < 0) {
@@ -199,7 +199,7 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
         String? text = xAxis.formatter?.call(i);
         if (text != null) {
           oft = _drawXTextPaint(xAxis, canvas, text, size, point.dx, point.dy,
-              first: (i == 0) && param.transform.needAdjustFirst(), end: (i == count) && param.transform.needAdjustLast());
+              first: (i == 0) && param.layout.transform.needAdjustFirst(), end: (i == count) && param.layout.transform.needAdjustLast());
         }
       }
       //根据调整过的位置再比较
@@ -211,8 +211,8 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
         for (int j = 1; j < xDivideCount; j++) {
           num newValue = i + j * xAmplifyInterval!;
           String? newText = xAxis.formatter?.call(newValue);
-          double left = param.contentMargin.left + density * interval * newValue;
-          left = param.transform.withXOffset(left);
+          double left = param.layout.contentMargin.left + density * interval * newValue;
+          left = param.layout.transform.withXOffset(left);
           if (newText != null) {
             _drawXTextPaint(xAxis, canvas, newText, size, left, point.dy);
           }
@@ -247,13 +247,13 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
 
   ///绘制虚线
   void _drawXGridLine(ChartParam param, Canvas canvas, Offset point, int index) {
-    final Matrix4 matrix = Matrix4.identity()..translate(point.dx, param.margin.top);
-    canvas.drawPath(xAxis.getDashPath(index, Offset(0, param.size.height - param.margin.vertical)).transform(matrix.storage), xAxis.linePaint);
+    final Matrix4 matrix = Matrix4.identity()..translate(point.dx, param.layout.margin.top);
+    canvas.drawPath(xAxis.getDashPath(index, Offset(0, param.layout.size.height - param.layout.margin.vertical)).transform(matrix.storage), xAxis.linePaint);
   }
 
   ///绘制指示器
   void _drawXDivider(ChartParam param, Canvas canvas, Offset point, num xValue) {
-    Offset endPoint = param.transform.transformOffset(Offset(xValue * xAxis.density, 5), containPadding: true, adjustDirection: true, xOffset: true);
+    Offset endPoint = param.layout.transform.transformOffset(Offset(xValue * xAxis.density, 5), containPadding: true, adjustDirection: true, xOffset: true);
     canvas.drawLine(point, endPoint, xAxis.linePaint);
   }
 
@@ -286,14 +286,14 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
 
   ///绘制x轴line
   void _drawXLine(ChartParam param, Canvas canvas) {
-    Offset startPoint = param.transform.transformOffset(const Offset(0, 0), containPadding: false, adjustDirection: true);
-    Offset endPoint = param.transform.transformOffset(Offset((xAxis.count * xAxis.interval + 1) * xAxis.density, 0), containPadding: false, adjustDirection: true);
+    Offset startPoint = param.layout.transform.transformOffset(const Offset(0, 0), containPadding: false, adjustDirection: true);
+    Offset endPoint = param.layout.transform.transformOffset(Offset((xAxis.count * xAxis.interval + 1) * xAxis.density, 0), containPadding: false, adjustDirection: true);
     canvas.drawLine(startPoint, endPoint, xAxis.linePaint);
   }
 
   ///绘制十字准星
   void _drawCrosshair(ChartParam param, Canvas canvas, Size size) {
-    Offset? anchor = param.localPosition;
+    Offset? anchor = param.layout.localPosition;
     if (anchor == null) {
       return;
     }
@@ -318,15 +318,16 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
       ChartLayoutParam shape = entry.children[index];
       //用于找哪个子图更适合
       for (ChartLayoutParam childShape in shape.children) {
-        if (childShape.rect != null) {
-          double cTop = childShape.rect!.center.dy;
+        Rect? realRect = childShape.getRealRect();
+        if (realRect != null) {
+          double cTop = realRect.center.dy;
           double topDiffAbs = (cTop - anchor.dy).abs();
           if (diffTop == 0 || topDiffAbs < diffTop) {
             top = cTop;
             diffTop = topDiffAbs;
           }
 
-          double cLeft = childShape.rect!.center.dx;
+          double cLeft = realRect.center.dx;
           double leftDiffAbs = (cLeft - anchor.dx).abs();
           if (diffLeft == 0 || leftDiffAbs < diffLeft) {
             left = cLeft;
@@ -371,7 +372,7 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
 
   ///提示文案
   void _drawTooltip(ChartParam param, Canvas canvas, Size size) {
-    Offset? anchor = param.localPosition;
+    Offset? anchor = param.layout.localPosition;
     if (anchor == null) {
       return;
     }
@@ -438,8 +439,8 @@ class ChartInvertDimensionsCoordinateRender extends ChartDimensionsCoordinateRen
   ///绘制虚线
   @override
   void _drawYGridLine(ChartParam param, YAxis yA, Canvas canvas, Offset point, int index) {
-    final Matrix4 matrix = Matrix4.identity()..translate(point.dx, param.margin.top);
-    canvas.drawPath(yA.getDashPath(index, Offset(0, param.size.height - param.margin.vertical)).transform(matrix.storage), yA.linePaint);
+    final Matrix4 matrix = Matrix4.identity()..translate(point.dx, param.layout.margin.top);
+    canvas.drawPath(yA.getDashPath(index, Offset(0, param.layout.size.height - param.layout.margin.vertical)).transform(matrix.storage), yA.linePaint);
   }
 
   ///绘制Y轴文本
@@ -468,7 +469,7 @@ class ChartInvertDimensionsCoordinateRender extends ChartDimensionsCoordinateRen
   @override
   void _drawXGridLine(ChartParam param, Canvas canvas, Offset point, int index) {
     final Matrix4 matrix = Matrix4.identity()..translate(point.dx, point.dy);
-    canvas.drawPath(xAxis.getDashPath(index, Offset(param.size.width, 0)).transform(matrix.storage), xAxis.linePaint);
+    canvas.drawPath(xAxis.getDashPath(index, Offset(param.layout.size.width, 0)).transform(matrix.storage), xAxis.linePaint);
   }
 
   ///绘制x轴文本

@@ -36,15 +36,15 @@ class WaveProgress<T> extends ChartBodyRender<T> {
       Offset progressCenter = Offset(center.dx, center.dy + radius);
       _transform = TransformUtils(
         anchor: progressCenter,
-        size: param.size,
-        offset: param.offset,
-        padding: param.padding,
+        size: param.layout.size,
+        offset: param.layout.offset,
+        padding: param.layout.padding,
         reverseX: false,
         reverseY: true,
       );
     } else {
       //半圆就不用特别处理了
-      _transform = param.transform;
+      _transform = param.layout.transform;
     }
   }
 
