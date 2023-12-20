@@ -1,6 +1,17 @@
+import 'dart:isolate';
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
+class PointInfo {
+  Point? point;
+
+  @override
+  String toString() {
+    return "point:$point";
+  }
+}
 
 class MyCustomPainter extends CustomPainter {
   final double zoom;
@@ -76,6 +87,36 @@ class _MyCustomWidgetState extends State<MyCustomWidget> {
   Offset _offset = Offset.zero;
 
   late final List<Offset> pointList = List.generate(100000, (index) => Offset(index.toDouble(), Random().nextInt(300).toDouble()));
+
+  @override
+  initState() {
+    super.initState();
+    initWithIsolate();
+  }
+
+  Future<void> initWithIsolate() async {
+    var receivePort = ReceivePort();
+    PointInfo pointInfo = PointInfo();
+    await Isolate.spawn(runMyIsolate, [receivePort.sendPort, pointInfo]);
+    print(await receivePort.first);
+
+    PointInfo newPoint = await compute((message) {
+      print(message);
+      message.point = const Point(100, 100);
+      return message;
+    }, pointInfo);
+
+    print(newPoint);
+  }
+
+  // We declare a static function here for an isolated callback function
+  static void runMyIsolate(List<dynamic> args) {
+    var sendPort = args[0] as SendPort;
+    PointInfo info = args[1] as PointInfo;
+    info.point = const Point(100, 100);
+    print("In runMyIsolate ");
+    Isolate.exit(sendPort, info);
+  }
 
   @override
   Widget build(BuildContext context) {
