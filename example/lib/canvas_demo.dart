@@ -27,6 +27,7 @@ class MyCustomPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    canvas.clipRect(Offset.zero & size);
     if (path == null) {
       path = Path();
       // 在 path 中添加绘制路径的逻辑

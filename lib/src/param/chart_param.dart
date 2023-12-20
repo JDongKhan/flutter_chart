@@ -86,6 +86,9 @@ abstract class ChartParam extends ChangeNotifier {
   late EdgeInsets margin;
   late EdgeInsets padding;
 
+  //是否需要显示工具条
+  late bool _isHasTooltip;
+
   Size get contentSize => contentRect.size;
 
   ///图形内容的外边距信息
@@ -118,7 +121,7 @@ abstract class ChartParam extends ChangeNotifier {
   @override
   int get hashCode => Object.hash(runtimeType, _zoom, _offset, _localPosition);
 
-  void redraw() {
+  void needDraw() {
     notifyListeners();
   }
 }

@@ -94,7 +94,7 @@ class _LineChartDiyDemoPageState extends State<BigDataChartDemo2Page> {
                         interval: sampleInterval,
                       ),
                       charts: [
-                        BigDataLine(
+                        Line(
                           data: snapshot.data!,
                           position: (item) => item["Time"] as num,
                           values: (item) => [
@@ -127,7 +127,7 @@ class _LineChartDiyDemoPageState extends State<BigDataChartDemo2Page> {
                         interval: sampleInterval,
                       ),
                       charts: [
-                        BigDataLine(
+                        Line(
                           data: snapshot.data!,
                           position: (item) => item["Time"] as num,
                           values: (item) => [
@@ -160,7 +160,7 @@ class _LineChartDiyDemoPageState extends State<BigDataChartDemo2Page> {
                         interval: sampleInterval,
                       ),
                       charts: [
-                        BigDataLine(
+                        Line(
                           data: snapshot.data!,
                           position: (item) => item["Time"] as num,
                           values: (item) => [
@@ -193,7 +193,7 @@ class _LineChartDiyDemoPageState extends State<BigDataChartDemo2Page> {
                         interval: sampleInterval,
                       ),
                       charts: [
-                        BigDataLine(
+                        Line(
                           data: snapshot.data!,
                           position: (item) => item["Time"] as num,
                           values: (item) => [

@@ -103,8 +103,7 @@ class Bar<T> extends ChartBodyRender<T> {
       }
       ChartLayoutParam p = _measureBarLayoutParam(param, xValue, yValue)..index = index;
       if (p.rect != null) {
-        if (p.hitTest(param.localPosition)) {
-          layoutParam.selectedIndex = index;
+        if (layoutParam.selectedIndex == index) {
           _paint.shader = null;
           _paint.color = _paintBarColor(index: index, selected: true);
         } else {
@@ -309,7 +308,7 @@ class StackBar<T> extends ChartBodyRender<T> {
             _paint.color = colors[stackIndex];
           }
           if (cp.hitTest(param.localPosition)) {
-            layoutParam.selectedIndex = index;
+            cp.selectedIndex = stackIndex;
             _paint.shader = null;
             if (highlightColor != null) {
               _paint.color = highlightColor!;

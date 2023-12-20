@@ -79,10 +79,19 @@ class _BigDataChartDemoPageState extends State<BigDataChartDemoPage> {
                         drawDivider: true,
                         formatter: (index) => '$index',
                       ),
+                      tooltipBuilder: (BuildContext context, List<ChartLayoutParam> body) {
+                        return PreferredSize(
+                          preferredSize: const Size(60, 60),
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            child: Text(body.map((e) => e.selectedIndex).toString()),
+                          ),
+                        );
+                      },
                       charts: [
                         Line(
                           strokeWidth: 1,
-                          dotRadius: 0,
+                          dotRadius: 2,
                           data: dataList,
                           position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
                           values: (item) => [

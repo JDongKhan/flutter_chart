@@ -26,7 +26,6 @@ part 'src/coordinate/axis.dart';
 
 part 'src/chart/dimensions/bar.dart';
 part 'src/chart/dimensions/line.dart';
-part 'src/chart/dimensions/big_data_line.dart';
 part 'src/chart/dimensions/scatter.dart';
 part 'src/chart/circular/pie.dart';
 part 'src/chart/circular/radar.dart';

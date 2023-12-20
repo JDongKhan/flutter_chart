@@ -281,17 +281,18 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderS
       coordinate: widget.chartCoordinateRender,
       controlValue: _animationController?.value ?? 1,
     );
+    _chartParam._isHasTooltip = widget.chartCoordinateRender.tooltipBuilder != null;
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTapUp: (TapUpDetails details) {
         _controller.resetTooltip();
-        Offset? localPosition;
         if (!_checkForegroundAnnotationsEvent(details.localPosition)) {
-          localPosition = details.localPosition;
+          Offset localPosition = details.localPosition;
+          hitTest(localPosition);
+          _chartParam.localPosition = localPosition;
         } else {
-          localPosition = null;
+          _chartParam.localPosition = null;
         }
-        _chartParam.localPosition = localPosition;
       },
       onScaleStart: (ScaleStartDetails details) {
         _beforeZoom = _chartParam.zoom;
@@ -379,22 +380,25 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderS
     return false;
   }
 
-  // void hitTest(Offset point) {
-  //   List<ChartBodyRender> charts = widget.chartCoordinateRender.charts;
-  //   //关联子状态
-  //   for (int i = 0; i < charts.length; i++) {
-  //     ChartBodyRender body = charts[i];
-  //     //先判断是否选中，此场景是第一次渲染之后点击才有，所以用老数据即可
-  //     ChartShapeLayoutParam layoutParam = body.layoutParam;
-  //     layoutParam.selectedIndex = null;
-  //     List<ChartShapeLayoutParam> childrenLayoutParams = body.layoutParam.children;
-  //     for (int index = 0; index < childrenLayoutParams.length; index++) {
-  //       if ((childrenLayoutParams[index].hitTest(point) == true)) {
-  //         layoutParam.selectedIndex = index;
-  //       }
-  //     }
-  //   }
-  // }
+  void hitTest(Offset point) {
+    List<ChartBodyRender> charts = widget.chartCoordinateRender.charts;
+    //关联子状态
+    for (int i = 0; i < charts.length; i++) {
+      ChartBodyRender body = charts[i];
+      //先判断是否选中，此场景是第一次渲染之后点击才有，所以用老数据即可
+      ChartLayoutParam layoutParam = body.layoutParam;
+      layoutParam.selectedIndex = null;
+      List<ChartLayoutParam> childrenLayoutParams = body.layoutParam.children;
+      for (int index = 0; index < childrenLayoutParams.length; index++) {
+        ChartLayoutParam child = childrenLayoutParams[index];
+        if (child.hitTest(point)) {
+          layoutParam.selectedIndex = index;
+          // debugPrint("选中了$index");
+          break;
+        }
+      }
+    }
+  }
 }
 
 ///画图
@@ -409,9 +413,6 @@ class _ChartPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     chart.controller._bindParam(param);
-    for (var element in param.childrenState) {
-      element.selectedIndex = null;
-    }
     Rect clipRect = Offset.zero & size;
     canvas.clipRect(clipRect);
     param.init(size: size, margin: chart.margin, padding: chart.padding);
