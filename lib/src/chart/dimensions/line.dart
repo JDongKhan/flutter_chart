@@ -494,11 +494,11 @@ class Line<T> extends ChartBodyRender<T> {
         Rect currentRect = Rect.fromLTRB(xPos - dotRadius, top, xPos + dotRadius, bottom);
         shape.setRect(currentRect);
         if (!param.outDraw && xPos < 0) {
-          // debugPrint('1-第${lineInfo.pointList.indexOf(point) + 1} 个点 $point 超出去');
+          // debugPrint('1-第${shape.index ?? 0 + 1} 个点$currentRect超出去 不需要处理');
           continue;
         }
         if (!param.outDraw && xPos > param.size.width) {
-          // debugPrint('2-第${lineInfo.pointList.indexOf(point) + 1} 个点 $point超出去');
+          // debugPrint('2-第${shape.index ?? 0 + 1} 个点 $currentRect超出去 停止渲染');
           break;
         }
 
