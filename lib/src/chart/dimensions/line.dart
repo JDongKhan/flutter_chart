@@ -488,7 +488,7 @@ class Line<T> extends ChartBodyRender<T> {
           if (param.layout.zoom != 1) {
             scaleMatrix.scale(param.layout.zoom, 1);
           }
-          Path filledPath = path.transform(scaleMatrix.storage);
+          Path filledPath = newPath.transform(scaleMatrix.storage);
           canvas.drawPath(filledPath, _fullPaint!);
         }
       }
