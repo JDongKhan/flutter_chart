@@ -13,8 +13,8 @@ import 'src/utils/chart_utils.dart';
 export 'src/utils/chart_utils.dart';
 
 part 'src/base/chart_controller.dart';
-part 'src/param/chart_layout_param.dart';
-part 'src/param/chart_param.dart';
+part 'src/state/chart_layout_param.dart';
+part 'src/state/chart_state.dart';
 
 part 'src/base/chart_render.dart';
 part 'src/base/chart_body_render.dart';
@@ -41,5 +41,5 @@ part 'src/annotation/path_annotation.dart';
 part 'src/annotation/region_annotation.dart';
 
 //内部使用
-part 'src/param/chart_circular_param.dart';
-part 'src/param/chart_dimension_param.dart';
+part 'src/state/chart_circular_state.dart';
+part 'src/state/chart_dimension_state.dart';

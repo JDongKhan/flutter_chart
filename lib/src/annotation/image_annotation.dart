@@ -44,20 +44,20 @@ class ImageAnnotation extends Annotation {
   }
 
   @override
-  void draw(Canvas canvas, ChartsParam param) {
+  void draw(Canvas canvas, ChartsState param) {
     if (!isNeedDraw(param)) {
       return;
     }
-
-    if (param is _ChartDimensionParam) {
+    ChartCoordinateParam layout = param.layout;
+    if (layout is _ChartDimensionCoordinateParam) {
       Offset ost;
       if (positions != null) {
         assert(positions!.length == 2, 'positions must be two length');
         num xValue = positions![0];
         num yPo = positions![1];
-        double xPos = param.xAxis.getItemWidth(xValue, fixed);
-        double yPos = param.yAxis[yAxisPosition].getItemHeight(yPo, fixed);
-        ost = param.layout.transform.transformPoint(Offset(xPos, yPos), containPadding: true, xOffset: !fixed, yOffset: !fixed);
+        double xPos = layout.xAxis.getItemWidth(xValue, fixed);
+        double yPos = layout.yAxis[yAxisPosition].getItemHeight(yPo, fixed);
+        ost = layout.transform.transformPoint(Offset(xPos, yPos), containPadding: true, xOffset: !fixed, yOffset: !fixed);
       } else {
         ost = anchor!(param.layout.size);
       }

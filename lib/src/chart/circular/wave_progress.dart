@@ -26,13 +26,13 @@ class WaveProgress<T> extends ChartBodyRender<T> {
   late TransformUtils _transform;
 
   @override
-  void init(ChartsParam param) {
+  void init(ChartsState param) {
     super.init(param);
-    param as _ChartCircularParam;
-    Offset center = param.center;
-    double radius = param.radius;
+    _ChartCircularCoordinateParam layout = param.layout as _ChartCircularCoordinateParam;
+    Offset center = layout.center;
+    double radius = layout.radius;
     //处理圆形场景
-    if (param.arcPosition == ArcPosition.none) {
+    if (layout.arcPosition == ArcPosition.none) {
       Offset progressCenter = Offset(center.dx, center.dy + radius);
       _transform = TransformUtils(
         anchor: progressCenter,
@@ -49,17 +49,17 @@ class WaveProgress<T> extends ChartBodyRender<T> {
   }
 
   @override
-  void draw(Canvas canvas, ChartsParam param) {
-    param as _ChartCircularParam;
-    Offset center = param.center;
-    double radius = param.radius;
+  void draw(Canvas canvas, ChartsState param) {
+    _ChartCircularCoordinateParam layout = param.layout as _ChartCircularCoordinateParam;
+    Offset center = layout.center;
+    double radius = layout.radius;
     canvas.clipPath(Path()..addOval(Rect.fromCircle(center: center, radius: radius)));
 
     var index = 0;
     for (T item in data) {
       num po = position.call(item);
       double height = radius * 2;
-      if (param.arcPosition == ArcPosition.none) {
+      if (layout.arcPosition == ArcPosition.none) {
         height = radius * 2;
       } else {
         height = radius;

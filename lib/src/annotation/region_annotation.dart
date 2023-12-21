@@ -19,7 +19,7 @@ class RegionAnnotation extends Annotation {
 
   Paint? _paint;
   @override
-  void init(ChartsParam param) {
+  void init(ChartsState param) {
     super.init(param);
     _paint = Paint()
       ..color = color
@@ -28,24 +28,25 @@ class RegionAnnotation extends Annotation {
   }
 
   @override
-  void draw(Canvas canvas, ChartsParam param) {
+  void draw(Canvas canvas, ChartsState param) {
     if (!isNeedDraw(param)) {
       return;
     }
-    if (param is _ChartDimensionParam) {
+    ChartCoordinateParam layout = param.layout;
+    if (layout is _ChartDimensionCoordinateParam) {
       assert(positions.length == 2, 'positions must be two length');
       num startValue = positions[0];
       num endValue = positions[1];
       //区间start
-      double startPos = param.xAxis.getItemWidth(startValue, fixed);
-      startPos = param.layout.transform.transformX(startPos);
-      startPos = param.layout.transform.withXScroll(startPos);
+      double startPos = layout.xAxis.getItemWidth(startValue, fixed);
+      startPos = layout.transform.transformX(startPos);
+      startPos = layout.transform.withXScroll(startPos);
       //区间end
-      double endPos = param.xAxis.getItemWidth(endValue, fixed);
-      endPos = param.layout.transform.transformX(endPos);
-      endPos = param.layout.transform.withXScroll(endPos);
-      double top = param.layout.top;
-      double bottom = param.layout.bottom;
+      double endPos = layout.xAxis.getItemWidth(endValue, fixed);
+      endPos = layout.transform.transformX(endPos);
+      endPos = layout.transform.withXScroll(endPos);
+      double top = layout.top;
+      double bottom = layout.bottom;
       if (_paint != null) {
         canvas.drawRect(Rect.fromLTRB(startPos, top, endPos, bottom), _paint!);
       }

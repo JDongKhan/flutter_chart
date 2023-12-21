@@ -26,14 +26,15 @@ class LimitAnnotation extends Annotation {
   Path? _path;
 
   @override
-  void init(ChartsParam param) {
+  void init(ChartsState param) {
     super.init(param);
-    if (param is _ChartDimensionParam) {
+    ChartCoordinateParam layout = param.layout;
+    if (layout is _ChartDimensionCoordinateParam) {
       num yValue = limit;
-      double yPos = param.yAxis[yAxisPosition].getItemHeight(yValue, fixed);
-      yPos = param.layout.transform.transformY(yPos, containPadding: true);
-      Offset start = Offset(param.layout.padding.left, yPos);
-      Offset end = Offset(param.layout.size.width - param.layout.padding.right, yPos);
+      double yPos = layout.yAxis[yAxisPosition].getItemHeight(yValue, fixed);
+      yPos = layout.transform.transformY(yPos, containPadding: true);
+      Offset start = Offset(layout.padding.left, yPos);
+      Offset end = Offset(layout.size.width - layout.padding.right, yPos);
       _paint = Paint()
         ..color = color
         ..style = PaintingStyle.stroke
@@ -47,7 +48,7 @@ class LimitAnnotation extends Annotation {
   }
 
   @override
-  void draw(Canvas canvas, ChartsParam param) {
+  void draw(Canvas canvas, ChartsState param) {
     if (!isNeedDraw(param)) {
       return;
     }

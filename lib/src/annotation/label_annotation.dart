@@ -38,28 +38,29 @@ class LabelAnnotation extends Annotation {
   TextPainter? _textPainter;
 
   @override
-  void init(ChartsParam param) {
+  void init(ChartsState param) {
     super.init(param);
     _textPainter = TextPainter(text: TextSpan(text: text, style: textStyle), textDirection: TextDirection.ltr)..layout(minWidth: 0, maxWidth: param.layout.size.width);
   }
 
   @override
-  void draw(Canvas canvas, ChartsParam param) {
+  void draw(Canvas canvas, ChartsState param) {
     if (!isNeedDraw(param)) {
       return;
     }
-    if (param is _ChartDimensionParam) {
+    ChartCoordinateParam layout = param.layout;
+    if (layout is _ChartDimensionCoordinateParam) {
       Offset ost;
       if (positions != null) {
         assert(positions!.length == 2, 'positions must be two length');
         num xValue = positions![0];
         num yValue = positions![1];
-        double xPos = param.xAxis.getItemWidth(xValue, fixed);
-        double yPos = param.yAxis[yAxisPosition].getItemHeight(yValue, fixed);
-        Offset point = param.layout.transform.transformPoint(Offset(xPos, yPos), containPadding: true, xOffset: !fixed, yOffset: !fixed);
+        double xPos = layout.xAxis.getItemWidth(xValue, fixed);
+        double yPos = layout.yAxis[yAxisPosition].getItemHeight(yValue, fixed);
+        Offset point = layout.transform.transformPoint(Offset(xPos, yPos), containPadding: true, xOffset: !fixed, yOffset: !fixed);
         ost = point.translate(offset.dx, offset.dy);
       } else {
-        ost = anchor!(param.layout.size);
+        ost = anchor!(layout.size);
       }
       if (textAlign == TextAlign.end) {
         ost = ost.translate(-_textPainter!.width, 0);

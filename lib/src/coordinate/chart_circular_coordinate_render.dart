@@ -39,9 +39,9 @@ class ChartCircularCoordinateRender extends ChartCoordinateRender {
     ..strokeWidth = borderWidth;
 
   @override
-  void paint(Canvas canvas, ChartsParam param) {
-    param as _ChartCircularParam;
-    _drawCircle(param, canvas);
+  void paint(Canvas canvas, ChartsState param) {
+    _ChartCircularCoordinateParam layout = param.layout as _ChartCircularCoordinateParam;
+    _drawCircle(layout, canvas);
     _drawBackgroundAnnotations(param, canvas);
     var index = 0;
     for (var element in charts) {
@@ -62,14 +62,14 @@ class ChartCircularCoordinateRender extends ChartCoordinateRender {
   }
 
   ///画背景圆
-  void _drawCircle(_ChartCircularParam param, Canvas canvas) {
+  void _drawCircle(_ChartCircularCoordinateParam layout, Canvas canvas) {
     if (strokeCap != null) {
       _paint.strokeCap = strokeCap!;
     }
     //满圆
     if (arcPosition == ArcPosition.none) {
       // 使用 Canvas 的 drawCircle 绘制
-      canvas.drawCircle(param.center, param.radius, _paint);
+      canvas.drawCircle(layout.center, layout.radius, _paint);
     } else {
       double startAngle = 0;
       double sweepAngle = math.pi;
@@ -79,9 +79,9 @@ class ChartCircularCoordinateRender extends ChartCoordinateRender {
       Path path = Path()
         ..addArc(
           Rect.fromCenter(
-            center: param.center,
-            width: param.radius * 2,
-            height: param.radius * 2,
+            center: layout.center,
+            width: layout.radius * 2,
+            height: layout.radius * 2,
           ),
           startAngle,
           sweepAngle,
@@ -91,7 +91,7 @@ class ChartCircularCoordinateRender extends ChartCoordinateRender {
   }
 
   ///背景
-  void _drawBackgroundAnnotations(ChartsParam param, Canvas canvas) {
+  void _drawBackgroundAnnotations(ChartsState param, Canvas canvas) {
     backgroundAnnotations?.forEach((element) {
       if (!element.isInit) {
         element.init(param);
@@ -101,7 +101,7 @@ class ChartCircularCoordinateRender extends ChartCoordinateRender {
   }
 
   ///前景
-  void _drawForegroundAnnotations(ChartsParam param, Canvas canvas) {
+  void _drawForegroundAnnotations(ChartsState param, Canvas canvas) {
     foregroundAnnotations?.forEach((element) {
       if (!element.isInit) {
         element.init(param);

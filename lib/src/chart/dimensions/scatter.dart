@@ -29,29 +29,29 @@ class Scatter<T> extends ChartBodyRender<T> {
 
   late Paint _dotPaint;
   @override
-  void init(ChartsParam param) {
+  void init(ChartsState param) {
     super.init(param);
     _dotPaint = Paint()..strokeWidth = 1;
   }
 
   @override
-  void draw(Canvas canvas, ChartsParam param) {
-    param as _ChartDimensionParam;
+  void draw(Canvas canvas, ChartsState param) {
+    _ChartDimensionCoordinateParam layout = param.layout as _ChartDimensionCoordinateParam;
     //offset.dx 滚动偏移  (src.zoom - 1) * (src.size.width / 2) 缩放
-    double left = param.layout.left;
-    left = param.layout.transform.withXScroll(left);
+    double left = layout.left;
+    left = layout.transform.withXScroll(left);
 
     // double right = param.size.width - param.contentMargin.right;
     // double top = param.contentMargin.top;
-    double bottom = param.layout.size.height - param.layout.bottom;
+    double bottom = layout.size.height - layout.bottom;
 
     //遍历数据 处理数据信息
     for (T itemData in data) {
       num xvs = position.call(itemData);
       num yvs = value.call(itemData);
-      double xPo = xvs * param.xAxis.density + left;
-      double yPo = bottom - param.yAxis[yAxisPosition].getItemHeight(yvs);
-      yPo = param.layout.transform.withYScroll(yPo);
+      double xPo = xvs * layout.xAxis.density + left;
+      double yPo = bottom - layout.yAxis[yAxisPosition].getItemHeight(yvs);
+      yPo = layout.transform.withYScroll(yPo);
       ScatterStyle sy = style.call(itemData);
       //最后画点
       if (sy.radius > 0) {

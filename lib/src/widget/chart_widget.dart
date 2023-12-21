@@ -2,7 +2,7 @@ part of flutter_chart_plus;
 
 /// @author JD
 ///
-typedef TooltipWidgetBuilder = PreferredSizeWidget? Function(BuildContext context, List<ChartLayoutParam>);
+typedef TooltipWidgetBuilder = PreferredSizeWidget? Function(BuildContext context, List<ChartLayoutParam> list);
 // typedef ChartCoordinateRenderBuilder = ChartCoordinateRender Function();
 
 ///本widget只是起到提供Canvas的功能，不支持任何传参，避免参数来回传递导致难以维护以及混乱，需要自定义可自行去对应渲染器
@@ -136,7 +136,7 @@ class _ChartWidgetState extends State<ChartWidget> {
     return StatefulBuilder(
       builder: (BuildContext context, StateSetter setState) {
         _controller._bindTooltipStateSetter(setState);
-        Offset? point = _controller.outTapLocation ?? _controller.localPosition;
+        Offset? point = _controller.outLocation ?? _controller.localPosition;
         if (point == null) {
           return const SizedBox.shrink();
         }
@@ -144,7 +144,7 @@ class _ChartWidgetState extends State<ChartWidget> {
 
         PreferredSizeWidget? widget = _controller.tooltipWidgetBuilder?.call(context);
         TooltipWidgetBuilder? tooltipBuilder = baseChart.tooltipBuilder;
-        widget ??= tooltipBuilder?.call(context, _controller.chartParam);
+        widget ??= tooltipBuilder?.call(context, _controller.chartsParamList);
 
         if (widget == null) {
           return const SizedBox.shrink();
@@ -218,7 +218,7 @@ class _ChartCoreWidget extends StatefulWidget {
 class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderStateMixin {
   double _beforeZoom = 1.0;
   late Offset _lastOffset;
-  late ChartsParam _chartParam;
+  late ChartsState _chartParam;
   get _controller => widget.chartCoordinateRender.controller;
   late List<ChartLayoutParam> allParams;
   AnimationController? _animationController;
@@ -249,7 +249,7 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderS
       c.right = widget.size.width;
       //还原状态
       body.isInit = false;
-      body.layout = c;
+      body.state = c;
       allParams.add(c);
     }
   }
@@ -279,7 +279,10 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderS
 
   @override
   Widget build(BuildContext context) {
-    _chartParam = ChartsParam.coordinate(
+    _chartParam = ChartsState.coordinate(
+      size: widget.size,
+      margin: widget.chartCoordinateRender.margin,
+      padding: widget.chartCoordinateRender.padding,
       outDraw: widget.chartCoordinateRender.outDraw,
       childrenState: allParams,
       coordinate: widget.chartCoordinateRender,
@@ -389,9 +392,9 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderS
     for (int i = 0; i < charts.length; i++) {
       ChartBodyRender body = charts[i];
       //先判断是否选中，此场景是第一次渲染之后点击才有，所以用老数据即可
-      ChartLayoutParam layoutParam = body.layout;
+      ChartLayoutParam layoutParam = body.state;
       layoutParam.selectedIndex = null;
-      List<ChartItemLayoutParam> childrenLayoutParams = body.layout.children;
+      List<ChartItemLayoutParam> childrenLayoutParams = body.state.children;
       for (int index = 0; index < childrenLayoutParams.length; index++) {
         ChartItemLayoutParam child = childrenLayoutParams[index];
         if (child.hitTest(point)) {
@@ -407,7 +410,7 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderS
 ///画图
 class _ChartPainter extends CustomPainter {
   final ChartCoordinateRender chart;
-  final ChartsParam param;
+  final ChartsState param;
   _ChartPainter({
     required this.chart,
     required this.param,
@@ -418,7 +421,7 @@ class _ChartPainter extends CustomPainter {
     chart.controller._bindParam(param);
     Rect clipRect = Offset.zero & size;
     canvas.clipRect(clipRect);
-    param.init(size: size, margin: chart.margin, padding: chart.padding);
+    param.init();
     chart.paint(canvas, param);
   }
 
@@ -427,8 +430,8 @@ class _ChartPainter extends CustomPainter {
     if (oldDelegate.chart != chart) {
       return true;
     }
-    ChartsParam chartParam = oldDelegate.param;
-    ChartsParam newChartParam = param;
+    ChartsState chartParam = oldDelegate.param;
+    ChartsState newChartParam = param;
     if (chartParam != newChartParam) {
       return true;
     }

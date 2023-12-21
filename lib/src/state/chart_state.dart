@@ -2,28 +2,28 @@ part of flutter_chart_plus;
 
 typedef AnnotationTooltipWidgetBuilder = PreferredSizeWidget? Function(BuildContext context);
 
-abstract class ChartsParam extends ChangeNotifier {
+abstract class ChartsState extends ChangeNotifier {
   ///布局信息
-  final ChartCoordinateParam _layout = ChartCoordinateParam();
+  late ChartCoordinateParam _layout;
   ChartCoordinateParam get layout => _layout;
 
   set localPosition(v) {
-    if (v != layout.localPosition) {
-      layout.localPosition = v;
+    if (v != _layout.localPosition) {
+      _layout.localPosition = v;
       notifyListeners();
     }
   }
 
   set zoom(v) {
-    if (v != layout.zoom) {
-      layout.zoom = v;
+    if (v != _layout.zoom) {
+      _layout.zoom = v;
       notifyListeners();
     }
   }
 
   set offset(v) {
-    if (v != layout.offset) {
-      layout.offset = v;
+    if (v != _layout.offset) {
+      _layout.offset = v;
       notifyListeners();
     }
   }
@@ -40,29 +40,35 @@ abstract class ChartsParam extends ChangeNotifier {
   ///获取所在位置的布局信息
   ChartLayoutParam paramAt(index) => childrenState[index];
 
-  ChartsParam({
+  ChartsState({
     this.outDraw = false,
-    double controlValue = 1,
     required this.childrenState,
-  }) {
-    _layout.controlValue = controlValue;
-  }
+  });
 
-  factory ChartsParam.coordinate({
+  factory ChartsState.coordinate({
     bool outDraw = false,
     double controlValue = 1,
+    required Size size,
+    required EdgeInsets margin,
+    required EdgeInsets padding,
     required List<ChartLayoutParam> childrenState,
     required ChartCoordinateRender coordinate,
   }) {
     if (coordinate is ChartDimensionsCoordinateRender) {
-      return _ChartDimensionParam.coordinate(
+      return _ChartDimensionState.coordinate(
+        size: size,
+        margin: margin,
+        padding: padding,
         outDraw: outDraw,
         childrenState: childrenState,
         coordinate: coordinate,
         controlValue: controlValue,
       )..animal = coordinate.animationDuration != null;
     }
-    return _ChartCircularParam.coordinate(
+    return _ChartCircularState.coordinate(
+      size: size,
+      margin: margin,
+      padding: padding,
       outDraw: outDraw,
       childrenState: childrenState,
       coordinate: coordinate as ChartCircularCoordinateRender,
@@ -70,12 +76,7 @@ abstract class ChartsParam extends ChangeNotifier {
     )..animal = coordinate.animationDuration != null;
   }
 
-  void init({required Size size, required EdgeInsets margin, required EdgeInsets padding}) {
-    _layout.size = size;
-    _layout.margin = margin;
-    _layout.padding = padding;
-    _layout.content = margin + padding;
-  }
+  void init();
 
   void scrollByDelta(Offset delta);
 
@@ -85,7 +86,7 @@ abstract class ChartsParam extends ChangeNotifier {
 
   @override
   bool operator ==(Object other) {
-    if (other is ChartsParam) {
+    if (other is ChartsState) {
       return super == other && _layout.zoom == other._layout.zoom && _layout.localPosition == other._layout.localPosition && _layout.offset == other._layout.offset;
     }
     return super == other;

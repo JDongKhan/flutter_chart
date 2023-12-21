@@ -76,8 +76,9 @@ class Radar<T> extends ChartBodyRender<T> {
   Paint? _fillDataLinePaint;
 
   @override
-  void init(ChartsParam param) {
-    param as _ChartCircularParam;
+  void init(ChartsState param) {
+    _ChartCircularCoordinateParam layout = param.layout as _ChartCircularCoordinateParam;
+
     super.init(param);
     _linePathList.clear();
     _borderLinePaths.clear();
@@ -97,15 +98,15 @@ class Radar<T> extends ChartBodyRender<T> {
 
     //图例
     List<dynamic>? legendList = legendFormatter?.call();
-    Offset center = param.center;
-    double radius = param.radius;
+    Offset center = layout.center;
+    double radius = layout.radius;
     //开始点
     double startAngle = this.startAngle;
 
     if (borderStyle == RadarBorderStyle.polygon) {
       _borderLinePaths = List.generate(count, (index) => Path());
     }
-    double dividerRadius = param.radius / count;
+    double dividerRadius = layout.radius / count;
 
     for (int i = 0; i < itemLength; i++) {
       T itemData = data[i];
@@ -215,12 +216,12 @@ class Radar<T> extends ChartBodyRender<T> {
   final Map<int, Path> _dataLinePathList = {};
 
   @override
-  void draw(Canvas canvas, ChartsParam param) {
-    param as _ChartCircularParam;
-    double dividerRadius = param.radius / count;
+  void draw(Canvas canvas, ChartsState param) {
+    _ChartCircularCoordinateParam layout = param.layout as _ChartCircularCoordinateParam;
+    double dividerRadius = layout.radius / count;
     if (borderStyle == RadarBorderStyle.circle) {
       for (int ii = 0; ii < count; ii++) {
-        canvas.drawCircle(param.center, dividerRadius * (ii + 1), _linePaint);
+        canvas.drawCircle(layout.center, dividerRadius * (ii + 1), _linePaint);
       }
     } else if (borderStyle == RadarBorderStyle.polygon) {
       //画边框

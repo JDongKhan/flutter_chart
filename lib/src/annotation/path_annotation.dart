@@ -24,7 +24,7 @@ class PathAnnotation extends Annotation {
   Paint? _paint;
   Path? _path;
   @override
-  void init(ChartsParam param) {
+  void init(ChartsState param) {
     super.init(param);
     _paint = Paint()
       ..color = color
@@ -40,7 +40,7 @@ class PathAnnotation extends Annotation {
   }
 
   @override
-  void draw(Canvas canvas, ChartsParam param) {
+  void draw(Canvas canvas, ChartsState param) {
     if (!isNeedDraw(param)) {
       return;
     }

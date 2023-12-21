@@ -38,7 +38,7 @@ class Progress<T> extends ChartBodyRender<T> {
   Paint? _endPaint;
 
   @override
-  void init(ChartsParam param) {
+  void init(ChartsState param) {
     super.init(param);
 
     if (strokeCap != null) {
@@ -54,22 +54,20 @@ class Progress<T> extends ChartBodyRender<T> {
   }
 
   @override
-  void draw(Canvas canvas, ChartsParam param) {
-    param as _ChartCircularParam;
-    Offset center = param.center;
-    double radius = param.radius;
-
+  void draw(Canvas canvas, ChartsState param) {
+    _ChartCircularCoordinateParam layout = param.layout as _ChartCircularCoordinateParam;
+    Offset center = layout.center;
+    double radius = layout.radius;
     int index = 0;
     num? lastXvs;
-
     double startAngle = this.startAngle;
     double fullSweepAngle = math.pi;
     //
-    if (param.arcPosition == ArcPosition.none) {
+    if (layout.arcPosition == ArcPosition.none) {
       fullSweepAngle = math.pi * 2;
-    } else if (param.arcPosition == ArcPosition.up) {
+    } else if (layout.arcPosition == ArcPosition.up) {
       fullSweepAngle = math.pi;
-    } else if (param.arcPosition == ArcPosition.down) {
+    } else if (layout.arcPosition == ArcPosition.down) {
       startAngle = 0;
     }
 

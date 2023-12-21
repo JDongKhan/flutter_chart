@@ -4,9 +4,27 @@ part of flutter_chart_plus;
 const double _maxWidth = 15;
 
 ///坐标系布局信息
-class ChartCoordinateParam {
+abstract class ChartCoordinateParam {
+  ///尺寸
+  final Size size;
+
+  ///外间隙
+  final EdgeInsets margin;
+
+  ///内间隙
+  final EdgeInsets padding;
+
   ///控制点
-  double controlValue = 1;
+  final double controlValue;
+
+  ChartCoordinateParam({
+    required this.size,
+    required this.margin,
+    required this.padding,
+    required this.controlValue,
+  }) {
+    content = margin + padding;
+  }
 
   ///点击的位置
   Offset? localPosition;
@@ -16,15 +34,6 @@ class ChartCoordinateParam {
 
   ///滚动偏移
   Offset offset = Offset.zero;
-
-  ///尺寸
-  late Size size;
-
-  ///外间隙
-  late EdgeInsets margin;
-
-  ///内间隙
-  late EdgeInsets padding;
 
   ///坐标转换工具
   late TransformUtils transform;
@@ -50,8 +59,6 @@ class ChartCoordinateParam {
   late double contentWidth;
   late double contentHeight;
 
-  ChartCoordinateParam();
-
   double getPosForX(double position, [bool withOffset = false]) {
     double xPos = position + left;
     if (withOffset) {
@@ -64,6 +71,8 @@ class ChartCoordinateParam {
     double yPos = bottom - position;
     return yPos;
   }
+
+  void init();
 }
 
 ///每个图形(点/柱状图/扇形)的状态
