@@ -4,6 +4,7 @@ class _ChartCircularCoordinateParam extends ChartCoordinateParam {
   //边框宽度
   final double borderWidth;
 
+  ///弧口方向
   final ArcPosition arcPosition;
 
   _ChartCircularCoordinateParam({

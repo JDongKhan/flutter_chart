@@ -43,3 +43,4 @@ part 'src/annotation/region_annotation.dart';
 //内部使用
 part 'src/state/chart_circular_state.dart';
 part 'src/state/chart_dimension_state.dart';
+part 'src/state/chart_coordinate_param.dart';
