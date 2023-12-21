@@ -307,7 +307,7 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
     double diffLeft = 0;
 
     //查找更贴近点击的那条数据
-    for (ChartLayoutParam entry in param.childrenState) {
+    for (ChartLayoutParam entry in param.chartsState) {
       int? index = entry.selectedIndex;
       if (index == null) {
         continue;

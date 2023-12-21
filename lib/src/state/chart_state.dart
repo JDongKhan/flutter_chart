@@ -35,14 +35,14 @@ abstract class ChartsState extends ChangeNotifier {
   late bool animal;
 
   ///根据位置缓存配置信息
-  List<ChartLayoutParam> childrenState = [];
+  List<ChartLayoutParam> chartsState = [];
 
   ///获取所在位置的布局信息
-  ChartLayoutParam paramAt(index) => childrenState[index];
+  ChartLayoutParam paramAt(index) => chartsState[index];
 
   ChartsState({
     this.outDraw = false,
-    required this.childrenState,
+    required this.chartsState,
   });
 
   factory ChartsState.coordinate({
@@ -51,7 +51,7 @@ abstract class ChartsState extends ChangeNotifier {
     required Size size,
     required EdgeInsets margin,
     required EdgeInsets padding,
-    required List<ChartLayoutParam> childrenState,
+    required List<ChartLayoutParam> chartsState,
     required ChartCoordinateRender coordinate,
   }) {
     if (coordinate is ChartDimensionsCoordinateRender) {
@@ -60,7 +60,7 @@ abstract class ChartsState extends ChangeNotifier {
         margin: margin,
         padding: padding,
         outDraw: outDraw,
-        childrenState: childrenState,
+        chartsState: chartsState,
         coordinate: coordinate,
         controlValue: controlValue,
       )..animal = coordinate.animationDuration != null;
@@ -70,7 +70,7 @@ abstract class ChartsState extends ChangeNotifier {
       margin: margin,
       padding: padding,
       outDraw: outDraw,
-      childrenState: childrenState,
+      chartsState: chartsState,
       coordinate: coordinate as ChartCircularCoordinateRender,
       controlValue: controlValue,
     )..animal = coordinate.animationDuration != null;
@@ -81,8 +81,6 @@ abstract class ChartsState extends ChangeNotifier {
   void scrollByDelta(Offset delta);
 
   void scroll(Offset offset);
-
-  void scale(double zoom) {}
 
   @override
   bool operator ==(Object other) {

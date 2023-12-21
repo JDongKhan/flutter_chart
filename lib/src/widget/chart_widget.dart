@@ -220,7 +220,9 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderS
   late Offset _lastOffset;
   late ChartsState _chartParam;
   get _controller => widget.chartCoordinateRender.controller;
-  late List<ChartLayoutParam> allParams;
+
+  ///缓存所有chart的状态
+  late List<ChartLayoutParam> _allChartState;
   AnimationController? _animationController;
   @override
   void initState() {
@@ -238,7 +240,7 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderS
   }
 
   void _initState() {
-    allParams = [];
+    _allChartState = [];
     List<ChartBodyRender> charts = widget.chartCoordinateRender.charts;
     //关联子状态
     for (int i = 0; i < charts.length; i++) {
@@ -250,7 +252,7 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderS
       //还原状态
       body.isInit = false;
       body.state = c;
-      allParams.add(c);
+      _allChartState.add(c);
     }
   }
 
@@ -284,7 +286,7 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderS
       margin: widget.chartCoordinateRender.margin,
       padding: widget.chartCoordinateRender.padding,
       outDraw: widget.chartCoordinateRender.outDraw,
-      childrenState: allParams,
+      chartsState: _allChartState,
       coordinate: widget.chartCoordinateRender,
       controlValue: _animationController?.value ?? 1,
     );
@@ -336,7 +338,7 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderS
         child: CustomPaint(
           painter: _ChartPainter(
             chart: widget.chartCoordinateRender,
-            param: _chartParam,
+            state: _chartParam,
           ),
         ),
       ),
@@ -410,19 +412,19 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderS
 ///画图
 class _ChartPainter extends CustomPainter {
   final ChartCoordinateRender chart;
-  final ChartsState param;
+  final ChartsState state;
   _ChartPainter({
     required this.chart,
-    required this.param,
-  }) : super(repaint: param);
+    required this.state,
+  }) : super(repaint: state);
 
   @override
   void paint(Canvas canvas, Size size) {
-    chart.controller._bindParam(param);
+    chart.controller._bindState(state);
     Rect clipRect = Offset.zero & size;
     canvas.clipRect(clipRect);
-    param.init();
-    chart.paint(canvas, param);
+    state.init();
+    chart.paint(canvas, state);
   }
 
   @override
@@ -430,8 +432,8 @@ class _ChartPainter extends CustomPainter {
     if (oldDelegate.chart != chart) {
       return true;
     }
-    ChartsState chartParam = oldDelegate.param;
-    ChartsState newChartParam = param;
+    ChartsState chartParam = oldDelegate.state;
+    ChartsState newChartParam = state;
     if (chartParam != newChartParam) {
       return true;
     }

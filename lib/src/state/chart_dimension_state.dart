@@ -71,7 +71,7 @@ class _ChartDimensionState extends ChartsState {
     required EdgeInsets margin,
     required EdgeInsets padding,
     super.outDraw,
-    required super.childrenState,
+    required super.chartsState,
     required ChartDimensionsCoordinateRender coordinate,
     double controlValue = 1,
   }) {

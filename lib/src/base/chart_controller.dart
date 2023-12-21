@@ -16,15 +16,15 @@ class ChartController {
   StateSetter? _tooltipStateSetter;
 
   ///chart 图形参数
-  ChartsState? _param;
+  ChartsState? _state;
 
   ///根据位置缓存配置信息
-  List<ChartLayoutParam> get chartsParamList => _param?.childrenState ?? [];
+  List<ChartLayoutParam> get chartsParamList => _state?.chartsState ?? [];
 
   //外部设置的弹框位置，与点击的位置有区别
   Offset? _outLocation;
   Offset? get outLocation => _outLocation;
-  Offset? get localPosition => _param?.layout.localPosition;
+  Offset? get localPosition => _state?.layout.localPosition;
 
   ///重置提示框
   void resetTooltip() {
@@ -37,8 +37,8 @@ class ChartController {
       _outLocation = null;
       needNotify = true;
     }
-    if (_param?.layout.localPosition != null) {
-      _param?.localPosition = null;
+    if (_state?.layout.localPosition != null) {
+      _state?.localPosition = null;
       needNotify = true;
     }
     if (needNotify) {
@@ -59,7 +59,7 @@ class ChartController {
   void dispose() {
     _chartCoordinateRender = null;
     _lastChartCoordinateRender = null;
-    _param = null;
+    _state = null;
     _tooltipStateSetter = null;
     _tooltipWidgetBuilder = null;
     _outLocation = null;
@@ -76,8 +76,8 @@ extension _InnerFuncation on ChartController {
     _chartCoordinateRender = chartCoordinateRender;
   }
 
-  void _bindParam(ChartsState p) {
-    _param = p;
+  void _bindState(ChartsState p) {
+    _state = p;
   }
 
   void _bindTooltipStateSetter(StateSetter? stateSetter) {

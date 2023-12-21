@@ -77,7 +77,7 @@ class _ChartCircularState extends ChartsState {
     required Size size,
     required EdgeInsets margin,
     required EdgeInsets padding,
-    required super.childrenState,
+    required super.chartsState,
     required ChartCircularCoordinateRender coordinate,
     double controlValue = 1,
   }) {
