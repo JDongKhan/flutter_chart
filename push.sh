@@ -22,5 +22,5 @@ sed -i "" "s/^version: .*/version: $version/" pubspec.yaml
 
 export http_proxy=http://127.0.0.1:53740;
 export https_proxy=http://127.0.0.1:53740;
-flutter packages pub publish --dry-run
+#flutter packages pub publish --dry-run
 flutter packages pub publish --server=https://pub.dartlang.org
