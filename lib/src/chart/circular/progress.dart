@@ -38,7 +38,7 @@ class Progress<T> extends ChartBodyRender<T> {
   Paint? _endPaint;
 
   @override
-  void init(ChartParam param) {
+  void init(ChartsParam param) {
     super.init(param);
 
     if (strokeCap != null) {
@@ -54,7 +54,7 @@ class Progress<T> extends ChartBodyRender<T> {
   }
 
   @override
-  void draw(Canvas canvas, ChartParam param) {
+  void draw(Canvas canvas, ChartsParam param) {
     param as _ChartCircularParam;
     Offset center = param.center;
     double radius = param.radius;

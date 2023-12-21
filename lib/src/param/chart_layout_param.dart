@@ -3,6 +3,69 @@ part of flutter_chart_plus;
 /// @author jd
 const double _maxWidth = 15;
 
+///坐标系布局信息
+class ChartCoordinateParam {
+  ///控制点
+  double controlValue = 1;
+
+  ///点击的位置
+  Offset? localPosition;
+
+  ///缩放级别
+  double zoom = 1;
+
+  ///滚动偏移
+  Offset offset = Offset.zero;
+
+  ///尺寸
+  late Size size;
+
+  ///外间隙
+  late EdgeInsets margin;
+
+  ///内间隙
+  late EdgeInsets padding;
+
+  ///坐标转换工具
+  late TransformUtils transform;
+
+  ///图形内容的外边距信息
+  late EdgeInsets _content;
+  set content(EdgeInsets v) {
+    _content = v;
+    left = v.left;
+    right = size.width - v.right;
+    top = v.top;
+    bottom = size.height - v.bottom;
+    contentWidth = size.width - v.horizontal;
+    contentHeight = size.height - v.vertical;
+  }
+
+  EdgeInsets get content => _content;
+
+  late double left;
+  late double right;
+  late double top;
+  late double bottom;
+  late double contentWidth;
+  late double contentHeight;
+
+  ChartCoordinateParam();
+
+  double getPosForX(double position, [bool withOffset = false]) {
+    double xPos = position + left;
+    if (withOffset) {
+      xPos = transform.withXScroll(xPos);
+    }
+    return xPos;
+  }
+
+  double getPosForY(double position) {
+    double yPos = bottom - position;
+    return yPos;
+  }
+}
+
 ///每个图形(点/柱状图/扇形)的状态
 class ChartLayoutParam {
   ChartLayoutParam();
@@ -48,7 +111,7 @@ class ChartItemLayoutParam extends ChartLayoutParam {
   num? yValue;
 
   ///布局信息 方便热区计算
-  ChartLayoutInfo? layout;
+  ChartCoordinateParam? layout;
 
   ChartItemLayoutParam();
 
@@ -96,7 +159,7 @@ class ChartItemLayoutParam extends ChartLayoutParam {
 
   ///偏移/放大操作后，计算其真实位置
   Rect? getRealRect() {
-    ChartLayoutInfo? layout = this.layout;
+    ChartCoordinateParam? layout = this.layout;
     if (layout == null) {
       return originRect;
     }
@@ -107,7 +170,7 @@ class ChartItemLayoutParam extends ChartLayoutParam {
       final ChartLineLayoutParam p = this as ChartLineLayoutParam;
       final double dotRadius = originRect!.width / 2;
       double xPos = xValue! * p.xAxis.density + left;
-      xPos = layout.transform.withXOffset(xPos);
+      xPos = layout.transform.withXScroll(xPos);
       if (yValue != null) {
         double yPos = bottom - p.yAxis[p.yAxisPosition].getItemHeight(yValue!);
         Offset currentPoint = Offset(xPos, yPos);

@@ -76,7 +76,7 @@ class Radar<T> extends ChartBodyRender<T> {
   Paint? _fillDataLinePaint;
 
   @override
-  void init(ChartParam param) {
+  void init(ChartsParam param) {
     param as _ChartCircularParam;
     super.init(param);
     _linePathList.clear();
@@ -215,7 +215,7 @@ class Radar<T> extends ChartBodyRender<T> {
   final Map<int, Path> _dataLinePathList = {};
 
   @override
-  void draw(Canvas canvas, ChartParam param) {
+  void draw(Canvas canvas, ChartsParam param) {
     param as _ChartCircularParam;
     double dividerRadius = param.radius / count;
     if (borderStyle == RadarBorderStyle.circle) {

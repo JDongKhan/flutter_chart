@@ -90,7 +90,7 @@ class Pie<T> extends ChartBodyRender<T> {
     ..style = PaintingStyle.fill;
 
   @override
-  void init(ChartParam param) {
+  void init(ChartsParam param) {
     super.init(param);
     //先计算比例
     _values = [];
@@ -105,7 +105,7 @@ class Pie<T> extends ChartBodyRender<T> {
   }
 
   @override
-  void draw(Canvas canvas, ChartParam param) {
+  void draw(Canvas canvas, ChartsParam param) {
     if (_total == 0) {
       return;
     }
@@ -155,7 +155,7 @@ class Pie<T> extends ChartBodyRender<T> {
       bool selected = enableTap && shape.hitTest(param.layout.localPosition);
       if (selected) {
         rd = radius + 2;
-        layoutParam.selectedIndex = i;
+        layout.selectedIndex = i;
         tapShape = ChartItemLayoutParam.arc(
           center: center,
           startAngle: startAngle,
@@ -195,7 +195,7 @@ class Pie<T> extends ChartBodyRender<T> {
       startAngle = startAngle + sweepAngle;
       index++;
     }
-    layoutParam.children = childrenLayoutParams;
+    layout.children = childrenLayoutParams;
   }
 
   ///画空隙线
@@ -324,7 +324,7 @@ class Pie<T> extends ChartBodyRender<T> {
   //   }
   // }
   //
-  void _drawValue(ChartParam param, Canvas canvas, String? valueText, double radius, double startAngle, double sweepAngle) {
+  void _drawValue(ChartsParam param, Canvas canvas, String? valueText, double radius, double startAngle, double sweepAngle) {
     //中心弧度
     final double radians = startAngle + sweepAngle / 2;
     //画value

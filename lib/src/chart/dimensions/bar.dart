@@ -77,7 +77,7 @@ class Bar<T> extends ChartBodyRender<T> {
   }
 
   @override
-  void draw(Canvas canvas, ChartParam param) {
+  void draw(Canvas canvas, ChartsParam param) {
     param as _ChartDimensionParam;
     List<ChartItemLayoutParam> childrenLayoutParams = [];
 
@@ -103,7 +103,7 @@ class Bar<T> extends ChartBodyRender<T> {
       }
       ChartItemLayoutParam p = _measureBarLayoutParam(param, xValue, yValue)..index = index;
       if (p.originRect != null) {
-        if (layoutParam.selectedIndex == index) {
+        if (layout.selectedIndex == index) {
           _paint.shader = null;
           _paint.color = _paintBarColor(index: index, selected: true);
         } else {
@@ -122,7 +122,7 @@ class Bar<T> extends ChartBodyRender<T> {
       }
       childrenLayoutParams.add(p);
     }
-    layoutParam.children = childrenLayoutParams;
+    layout.children = childrenLayoutParams;
   }
 
   void _drawText(Canvas canvas, _ChartDimensionParam param, T item, ChartItemLayoutParam p) {
@@ -151,7 +151,7 @@ class Bar<T> extends ChartBodyRender<T> {
     if (param.invert) {
       double contentWidth = param.layout.contentWidth;
       double top = param.layout.bottom - param.xAxis.density * xValue - itemWidth / 2;
-      top = param.layout.transform.withYOffset(top);
+      top = param.layout.transform.withYScroll(top);
       double present = yValue / param.yAxis[yAxisPosition].max;
       double itemHeight = contentWidth * present;
       double left = param.layout.left;
@@ -165,7 +165,7 @@ class Bar<T> extends ChartBodyRender<T> {
       double bottom = param.layout.bottom;
       double contentHeight = param.layout.contentHeight;
       double left = param.layout.left + param.xAxis.density * xValue - itemWidth / 2;
-      left = param.layout.transform.withXOffset(left);
+      left = param.layout.transform.withXScroll(left);
       double present = yValue / param.yAxis[yAxisPosition].max;
       double itemHeight = contentHeight * present;
       double top = bottom - itemHeight;
@@ -253,7 +253,7 @@ class StackBar<T> extends ChartBodyRender<T> {
   late final Paint _hotPaint = Paint()..style = PaintingStyle.fill;
 
   @override
-  void draw(Canvas canvas, ChartParam param) {
+  void draw(Canvas canvas, ChartsParam param) {
     param as _ChartDimensionParam;
     List<ChartItemLayoutParam> childrenLayoutParams = [];
     List<ChartItemLayoutParam>? lastDataList = getLastData(param.animal && param.layout.controlValue < 1);
@@ -325,7 +325,7 @@ class StackBar<T> extends ChartBodyRender<T> {
         canvas.drawRect(p.originRect!, _hotPaint..color = hotColor!);
       }
     }
-    layoutParam.children = childrenLayoutParams;
+    layout.children = childrenLayoutParams;
   }
 
   ///水平排列图形
@@ -339,7 +339,7 @@ class StackBar<T> extends ChartBodyRender<T> {
       double contentWidth = param.layout.contentWidth;
       double center = yValues.length * itemWidth / 2;
       double top = param.layout.bottom - param.xAxis.density * xValue - center;
-      top = param.layout.transform.withYOffset(top);
+      top = param.layout.transform.withYScroll(top);
 
       double left = param.layout.left;
       shape = ChartItemLayoutParam.rect(
@@ -365,7 +365,7 @@ class StackBar<T> extends ChartBodyRender<T> {
       double center = yValues.length * itemWidth / 2;
 
       double left = param.layout.left + param.xAxis.density * xValue - itemWidth / 2 - center;
-      left = param.layout.transform.withXOffset(left);
+      left = param.layout.transform.withXScroll(left);
 
       shape = ChartItemLayoutParam.rect(
         originRect: Rect.fromLTWH(left, param.layout.top, itemWidth * yValues.length + padding * (yValues.length - 1), contentHeight),
@@ -400,7 +400,7 @@ class StackBar<T> extends ChartBodyRender<T> {
     ChartItemLayoutParam shape;
     if (param.invert) {
       double top = param.layout.bottom - param.xAxis.density * xValue - itemWidth / 2;
-      top = param.layout.transform.withYOffset(top);
+      top = param.layout.transform.withYScroll(top);
       double left = param.layout.left;
       double contentWidth = param.layout.contentWidth;
       shape = ChartItemLayoutParam.rect(
@@ -423,7 +423,7 @@ class StackBar<T> extends ChartBodyRender<T> {
       double bottom = param.layout.bottom;
       double contentHeight = param.layout.contentHeight;
       double left = param.layout.left + param.xAxis.density * xValue - itemWidth / 2;
-      left = param.layout.transform.withXOffset(left);
+      left = param.layout.transform.withXScroll(left);
       shape = ChartItemLayoutParam.rect(
         originRect: Rect.fromLTWH(left, param.layout.top, itemWidth, contentHeight),
       );

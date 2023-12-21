@@ -26,7 +26,7 @@ class WaveProgress<T> extends ChartBodyRender<T> {
   late TransformUtils _transform;
 
   @override
-  void init(ChartParam param) {
+  void init(ChartsParam param) {
     super.init(param);
     param as _ChartCircularParam;
     Offset center = param.center;
@@ -49,7 +49,7 @@ class WaveProgress<T> extends ChartBodyRender<T> {
   }
 
   @override
-  void draw(Canvas canvas, ChartParam param) {
+  void draw(Canvas canvas, ChartsParam param) {
     param as _ChartCircularParam;
     Offset center = param.center;
     double radius = param.radius;

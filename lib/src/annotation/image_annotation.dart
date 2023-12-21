@@ -44,7 +44,7 @@ class ImageAnnotation extends Annotation {
   }
 
   @override
-  void draw(Canvas canvas, ChartParam param) {
+  void draw(Canvas canvas, ChartsParam param) {
     if (!isNeedDraw(param)) {
       return;
     }

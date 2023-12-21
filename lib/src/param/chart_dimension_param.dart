@@ -1,6 +1,6 @@
 part of flutter_chart_plus;
 
-class _ChartDimensionParam extends ChartParam {
+class _ChartDimensionParam extends ChartsParam {
   ///y坐标轴
   final List<YAxis> yAxis;
 

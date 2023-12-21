@@ -41,7 +41,7 @@ abstract class Annotation extends _ChartRender {
   }
 
   ///是否需要绘制
-  bool isNeedDraw(ChartParam param) {
+  bool isNeedDraw(ChartsParam param) {
     if (minZoomVisible != null && param.layout.zoom < minZoomVisible!) {
       return false;
     }

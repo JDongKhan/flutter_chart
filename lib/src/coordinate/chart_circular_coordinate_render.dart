@@ -39,7 +39,7 @@ class ChartCircularCoordinateRender extends ChartCoordinateRender {
     ..strokeWidth = borderWidth;
 
   @override
-  void paint(Canvas canvas, ChartParam param) {
+  void paint(Canvas canvas, ChartsParam param) {
     param as _ChartCircularParam;
     _drawCircle(param, canvas);
     _drawBackgroundAnnotations(param, canvas);
@@ -91,7 +91,7 @@ class ChartCircularCoordinateRender extends ChartCoordinateRender {
   }
 
   ///背景
-  void _drawBackgroundAnnotations(ChartParam param, Canvas canvas) {
+  void _drawBackgroundAnnotations(ChartsParam param, Canvas canvas) {
     backgroundAnnotations?.forEach((element) {
       if (!element.isInit) {
         element.init(param);
@@ -101,7 +101,7 @@ class ChartCircularCoordinateRender extends ChartCoordinateRender {
   }
 
   ///前景
-  void _drawForegroundAnnotations(ChartParam param, Canvas canvas) {
+  void _drawForegroundAnnotations(ChartsParam param, Canvas canvas) {
     foregroundAnnotations?.forEach((element) {
       if (!element.isInit) {
         element.init(param);

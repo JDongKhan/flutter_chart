@@ -29,17 +29,17 @@ class Scatter<T> extends ChartBodyRender<T> {
 
   late Paint _dotPaint;
   @override
-  void init(ChartParam param) {
+  void init(ChartsParam param) {
     super.init(param);
     _dotPaint = Paint()..strokeWidth = 1;
   }
 
   @override
-  void draw(Canvas canvas, ChartParam param) {
+  void draw(Canvas canvas, ChartsParam param) {
     param as _ChartDimensionParam;
     //offset.dx 滚动偏移  (src.zoom - 1) * (src.size.width / 2) 缩放
     double left = param.layout.left;
-    left = param.layout.transform.withXOffset(left);
+    left = param.layout.transform.withXScroll(left);
 
     // double right = param.size.width - param.contentMargin.right;
     // double top = param.contentMargin.top;
@@ -51,7 +51,7 @@ class Scatter<T> extends ChartBodyRender<T> {
       num yvs = value.call(itemData);
       double xPo = xvs * param.xAxis.density + left;
       double yPo = bottom - param.yAxis[yAxisPosition].getItemHeight(yvs);
-      yPo = param.layout.transform.withYOffset(yPo);
+      yPo = param.layout.transform.withYScroll(yPo);
       ScatterStyle sy = style.call(itemData);
       //最后画点
       if (sy.radius > 0) {

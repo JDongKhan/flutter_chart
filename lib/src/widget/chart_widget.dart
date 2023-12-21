@@ -218,7 +218,7 @@ class _ChartCoreWidget extends StatefulWidget {
 class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderStateMixin {
   double _beforeZoom = 1.0;
   late Offset _lastOffset;
-  late ChartParam _chartParam;
+  late ChartsParam _chartParam;
   get _controller => widget.chartCoordinateRender.controller;
   late List<ChartLayoutParam> allParams;
   AnimationController? _animationController;
@@ -249,7 +249,7 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderS
       c.right = widget.size.width;
       //还原状态
       body.isInit = false;
-      body.layoutParam = c;
+      body.layout = c;
       allParams.add(c);
     }
   }
@@ -279,7 +279,7 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderS
 
   @override
   Widget build(BuildContext context) {
-    _chartParam = ChartParam.coordinate(
+    _chartParam = ChartsParam.coordinate(
       outDraw: widget.chartCoordinateRender.outDraw,
       childrenState: allParams,
       coordinate: widget.chartCoordinateRender,
@@ -389,9 +389,9 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderS
     for (int i = 0; i < charts.length; i++) {
       ChartBodyRender body = charts[i];
       //先判断是否选中，此场景是第一次渲染之后点击才有，所以用老数据即可
-      ChartLayoutParam layoutParam = body.layoutParam;
+      ChartLayoutParam layoutParam = body.layout;
       layoutParam.selectedIndex = null;
-      List<ChartItemLayoutParam> childrenLayoutParams = body.layoutParam.children;
+      List<ChartItemLayoutParam> childrenLayoutParams = body.layout.children;
       for (int index = 0; index < childrenLayoutParams.length; index++) {
         ChartItemLayoutParam child = childrenLayoutParams[index];
         if (child.hitTest(point)) {
@@ -407,7 +407,7 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderS
 ///画图
 class _ChartPainter extends CustomPainter {
   final ChartCoordinateRender chart;
-  final ChartParam param;
+  final ChartsParam param;
   _ChartPainter({
     required this.chart,
     required this.param,
@@ -427,8 +427,8 @@ class _ChartPainter extends CustomPainter {
     if (oldDelegate.chart != chart) {
       return true;
     }
-    ChartParam chartParam = oldDelegate.param;
-    ChartParam newChartParam = param;
+    ChartsParam chartParam = oldDelegate.param;
+    ChartsParam newChartParam = param;
     if (chartParam != newChartParam) {
       return true;
     }

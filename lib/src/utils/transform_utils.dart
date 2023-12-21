@@ -84,9 +84,9 @@ class TransformUtils {
     double x = transformX(point.dx, containPadding: containPadding);
     double y = transformY(point.dy, containPadding: containPadding);
     if (adjustDirection && reverseAxis) {
-      return Offset(withXOffset(y, yOffset), withYOffset(x, xOffset));
+      return Offset(withXScroll(y, yOffset), withYScroll(x, xOffset));
     }
-    return Offset(withXOffset(x, xOffset), withYOffset(y, yOffset));
+    return Offset(withXScroll(x, xOffset), withYScroll(y, yOffset));
   }
 
   Rect transformRect(Rect rect, {bool containPadding = true}) {
@@ -95,14 +95,14 @@ class TransformUtils {
     return Rect.fromLTWH(x, y, rect.width, rect.height);
   }
 
-  Offset withOffset(Offset point, [bool scrollable = true]) {
+  Offset withScroll(Offset point, [bool scrollable = true]) {
     if (scrollable) {
       return Offset(point.dx - offset.dx, point.dy - offset.dy);
     }
     return point;
   }
 
-  double withXOffset(double dx, [bool scrollable = true]) {
+  double withXScroll(double dx, [bool scrollable = true]) {
     if (scrollable) {
       return dx - offset.dx;
     }
@@ -110,7 +110,7 @@ class TransformUtils {
   }
 
   //
-  double withYOffset(double dy, [bool scrollable = true]) {
+  double withYScroll(double dy, [bool scrollable = true]) {
     if (scrollable) {
       if (reverseAxis) {
         return dy + offset.dy;

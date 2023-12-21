@@ -38,13 +38,13 @@ class LabelAnnotation extends Annotation {
   TextPainter? _textPainter;
 
   @override
-  void init(ChartParam param) {
+  void init(ChartsParam param) {
     super.init(param);
     _textPainter = TextPainter(text: TextSpan(text: text, style: textStyle), textDirection: TextDirection.ltr)..layout(minWidth: 0, maxWidth: param.layout.size.width);
   }
 
   @override
-  void draw(Canvas canvas, ChartParam param) {
+  void draw(Canvas canvas, ChartsParam param) {
     if (!isNeedDraw(param)) {
       return;
     }

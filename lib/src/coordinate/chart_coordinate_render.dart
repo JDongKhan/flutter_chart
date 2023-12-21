@@ -94,5 +94,5 @@ abstract class ChartCoordinateRender {
 
   bool canZoom();
 
-  void paint(Canvas canvas, ChartParam param);
+  void paint(Canvas canvas, ChartsParam param);
 }

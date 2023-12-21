@@ -14,7 +14,7 @@ class ChartController {
   StateSetter? _tooltipStateSetter;
 
   ///chart 图形参数
-  ChartParam? _param;
+  ChartsParam? _param;
 
   ///根据位置缓存配置信息
   List<ChartLayoutParam> get chartParam => _param?.childrenState ?? [];
@@ -72,7 +72,7 @@ extension _InnerFuncation on ChartController {
     _chartCoordinateRender = chartCoordinateRender;
   }
 
-  void _bindParam(ChartParam p) {
+  void _bindParam(ChartsParam p) {
     _param = p;
   }
 

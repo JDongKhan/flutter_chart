@@ -1,6 +1,6 @@
 part of flutter_chart_plus;
 
-class _ChartCircularParam extends ChartParam {
+class _ChartCircularParam extends ChartsParam {
   ///半径
   late double radius;
 

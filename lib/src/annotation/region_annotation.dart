@@ -19,7 +19,7 @@ class RegionAnnotation extends Annotation {
 
   Paint? _paint;
   @override
-  void init(ChartParam param) {
+  void init(ChartsParam param) {
     super.init(param);
     _paint = Paint()
       ..color = color
@@ -28,7 +28,7 @@ class RegionAnnotation extends Annotation {
   }
 
   @override
-  void draw(Canvas canvas, ChartParam param) {
+  void draw(Canvas canvas, ChartsParam param) {
     if (!isNeedDraw(param)) {
       return;
     }
@@ -39,11 +39,11 @@ class RegionAnnotation extends Annotation {
       //区间start
       double startPos = param.xAxis.getItemWidth(startValue, fixed);
       startPos = param.layout.transform.transformX(startPos);
-      startPos = param.layout.transform.withXOffset(startPos);
+      startPos = param.layout.transform.withXScroll(startPos);
       //区间end
       double endPos = param.xAxis.getItemWidth(endValue, fixed);
       endPos = param.layout.transform.transformX(endPos);
-      endPos = param.layout.transform.withXOffset(endPos);
+      endPos = param.layout.transform.withXScroll(endPos);
       double top = param.layout.top;
       double bottom = param.layout.bottom;
       if (_paint != null) {

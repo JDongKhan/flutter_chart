@@ -10,7 +10,7 @@ abstract class ChartBodyRender<T> extends _ChartRender {
   final List<T> data;
 
   ///图表的布局状态
-  late ChartLayoutParam layoutParam;
+  late ChartLayoutParam layout;
 
   ///在图表中的位置
   late int indexAtChart;
@@ -34,7 +34,7 @@ abstract class ChartBodyRender<T> extends _ChartRender {
     if (e == null) {
       return null;
     }
-    return e.layoutParam.children;
+    return e.layout.children;
   }
 
   List<num>? lerpList(List<num>? a, List<num>? b, double t) {

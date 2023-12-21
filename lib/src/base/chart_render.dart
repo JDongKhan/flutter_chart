@@ -9,9 +9,9 @@ abstract class _ChartRender {
   bool isInit = false;
 
   ///初始化  耗时的方法都可以放到这里
-  void init(ChartParam param) {
+  void init(ChartsParam param) {
     isInit = true;
   }
 
-  void draw(Canvas canvas, ChartParam param);
+  void draw(Canvas canvas, ChartsParam param);
 }

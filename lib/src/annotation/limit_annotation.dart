@@ -26,7 +26,7 @@ class LimitAnnotation extends Annotation {
   Path? _path;
 
   @override
-  void init(ChartParam param) {
+  void init(ChartsParam param) {
     super.init(param);
     if (param is _ChartDimensionParam) {
       num yValue = limit;
@@ -47,7 +47,7 @@ class LimitAnnotation extends Annotation {
   }
 
   @override
-  void draw(Canvas canvas, ChartParam param) {
+  void draw(Canvas canvas, ChartsParam param) {
     if (!isNeedDraw(param)) {
       return;
     }
