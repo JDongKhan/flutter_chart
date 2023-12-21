@@ -90,7 +90,7 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
           vv = vv.toInt();
         }
         num yValue = vv;
-        Offset point = param.layout.transform.transformOffset(Offset(xStartValue * xAxis.density + offset.dx, yValue * yA.density), containPadding: false, adjustDirection: true);
+        Offset point = param.layout.transform.transformPoint(Offset(xStartValue * xAxis.density + offset.dx, yValue * yA.density), containPadding: false, adjustDirection: true);
         //绘制文本
         if (yA.drawLabel) {
           String text = yA.formatter?.call(i) ?? '${min + vv}';
@@ -149,14 +149,14 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
 
   ///绘制y轴指示器
   void _drawYDivider(ChartParam param, YAxis yA, Canvas canvas, Offset point, num yValue) {
-    Offset endPoint = param.layout.transform.transformOffset(Offset(5, yValue * yA.density), containPadding: false, adjustDirection: true, yOffset: true);
+    Offset endPoint = param.layout.transform.transformPoint(Offset(5, yValue * yA.density), containPadding: false, adjustDirection: true, yOffset: true);
     canvas.drawLine(point, endPoint, yA.linePaint);
   }
 
   ///绘制y轴line
   void _drawYLine(ChartParam param, YAxis yA, Canvas canvas) {
-    Offset startPoint = param.layout.transform.transformOffset(const Offset(0, 0), containPadding: false, adjustDirection: true);
-    Offset endPoint = param.layout.transform.transformOffset(Offset(0, (yA.max - yA.min) * yA.density), containPadding: false, adjustDirection: true);
+    Offset startPoint = param.layout.transform.transformPoint(const Offset(0, 0), containPadding: false, adjustDirection: true);
+    Offset endPoint = param.layout.transform.transformPoint(Offset(0, (yA.max - yA.min) * yA.density), containPadding: false, adjustDirection: true);
     canvas.drawLine(startPoint, endPoint, yA.linePaint);
   }
 
@@ -187,8 +187,8 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
       }
       num xValue = interval * i;
 
-      Offset point = param.layout.transform.transformOffset(Offset(xValue * xAxis.density, 0), containPadding: true, adjustDirection: true, xOffset: true);
-      Offset nextPoint = param.layout.transform.transformOffset(Offset(interval * (i + 1) * xAxis.density, 0), containPadding: true, adjustDirection: true, xOffset: true);
+      Offset point = param.layout.transform.transformPoint(Offset(xValue * xAxis.density, 0), containPadding: true, adjustDirection: true, xOffset: true);
+      Offset nextPoint = param.layout.transform.transformPoint(Offset(interval * (i + 1) * xAxis.density, 0), containPadding: true, adjustDirection: true, xOffset: true);
       // // 判断下一个点是否超出，因为这个和下个点之间可能有文案要显示
       // // 避免多余绘制，只绘制屏幕内容
       if (nextPoint.dx < 0) {
@@ -253,7 +253,7 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
 
   ///绘制指示器
   void _drawXDivider(ChartParam param, Canvas canvas, Offset point, num xValue) {
-    Offset endPoint = param.layout.transform.transformOffset(Offset(xValue * xAxis.density, 5), containPadding: true, adjustDirection: true, xOffset: true);
+    Offset endPoint = param.layout.transform.transformPoint(Offset(xValue * xAxis.density, 5), containPadding: true, adjustDirection: true, xOffset: true);
     canvas.drawLine(point, endPoint, xAxis.linePaint);
   }
 
@@ -286,8 +286,8 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
 
   ///绘制x轴line
   void _drawXLine(ChartParam param, Canvas canvas) {
-    Offset startPoint = param.layout.transform.transformOffset(const Offset(0, 0), containPadding: false, adjustDirection: true);
-    Offset endPoint = param.layout.transform.transformOffset(Offset((xAxis.count * xAxis.interval + 1) * xAxis.density, 0), containPadding: false, adjustDirection: true);
+    Offset startPoint = param.layout.transform.transformPoint(const Offset(0, 0), containPadding: false, adjustDirection: true);
+    Offset endPoint = param.layout.transform.transformPoint(Offset((xAxis.count * xAxis.interval + 1) * xAxis.density, 0), containPadding: false, adjustDirection: true);
     canvas.drawLine(startPoint, endPoint, xAxis.linePaint);
   }
 

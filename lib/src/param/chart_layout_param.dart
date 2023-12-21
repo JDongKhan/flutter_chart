@@ -109,7 +109,7 @@ class ChartItemLayoutParam extends ChartLayoutParam {
       double xPos = xValue! * p.xAxis.density + left;
       xPos = layout.transform.withXOffset(xPos);
       if (yValue != null) {
-        double yPos = bottom - p.yAxis[p.yAxisPosition].relativeHeight(yValue!);
+        double yPos = bottom - p.yAxis[p.yAxisPosition].getItemHeight(yValue!);
         Offset currentPoint = Offset(xPos, yPos);
         return Rect.fromCenter(center: currentPoint, width: dotRadius, height: dotRadius);
       } else {

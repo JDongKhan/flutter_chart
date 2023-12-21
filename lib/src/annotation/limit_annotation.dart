@@ -14,7 +14,7 @@ class LimitAnnotation extends Annotation {
   final double strokeWidth;
 
   LimitAnnotation({
-    super.scroll = false,
+    super.fixed = true,
     super.yAxisPosition = 0,
     super.minZoomVisible,
     super.maxZoomVisible,
@@ -29,32 +29,18 @@ class LimitAnnotation extends Annotation {
   void init(ChartParam param) {
     super.init(param);
     if (param is _ChartDimensionParam) {
-      num po = limit;
-      double itemHeight = param.yAxis[yAxisPosition].relativeHeight(po);
-      Offset start = Offset(
-        param.layout.padding.left,
-        param.layout.transform.transformY(
-          itemHeight,
-          containPadding: true,
-        ),
-      );
-      Offset end = Offset(
-        param.layout.size.width - param.layout.padding.right,
-        param.layout.transform.transformY(
-          itemHeight,
-          containPadding: true,
-        ),
-      );
-
+      num yValue = limit;
+      double yPos = param.yAxis[yAxisPosition].getItemHeight(yValue, fixed);
+      yPos = param.layout.transform.transformY(yPos, containPadding: true);
+      Offset start = Offset(param.layout.padding.left, yPos);
+      Offset end = Offset(param.layout.size.width - param.layout.padding.right, yPos);
       _paint = Paint()
         ..color = color
         ..style = PaintingStyle.stroke
         ..strokeWidth = strokeWidth;
-
       Path path = Path()
         ..moveTo(start.dx, start.dy)
         ..lineTo(end.dx, end.dy);
-
       Path kDashPath = dashPath(path, dashArray: CircularIntervalList([3, 3]), dashOffset: null);
       _path = kDashPath;
     }
@@ -62,7 +48,7 @@ class LimitAnnotation extends Annotation {
 
   @override
   void draw(Canvas canvas, ChartParam param) {
-    if (!needDraw(param)) {
+    if (!isNeedDraw(param)) {
       return;
     }
     if (_path != null && _paint != null) {

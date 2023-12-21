@@ -105,7 +105,7 @@ class Line<T> extends ChartBodyRender<T> {
       Future.delayed(const Duration(microseconds: 0), () {
         return _asyncInitWithAnimal();
       }).then((value) {
-        param.needDraw();
+        param.setNeedsDraw();
       });
     } else {
       //少量数据为了体验好就不异步了
@@ -203,7 +203,7 @@ class Line<T> extends ChartBodyRender<T> {
         //计算点的位置
         num yValue = yValues[valueIndex];
         //y轴位置
-        double yPos = param.layout.getPositionForY(param.yAxis[yAxisPosition].relativeHeight(yValue));
+        double yPos = param.layout.getPositionForY(param.yAxis[yAxisPosition].getItemHeight(yValue));
         yPos = param.layout.transform.withYOffset(yPos);
         Offset currentPoint = Offset(xPos, yPos);
         //数据过滤
@@ -345,7 +345,7 @@ class Line<T> extends ChartBodyRender<T> {
         return asyncInitWithOutAnimal(param);
       }).then((value) {
         pathMap = value;
-        param.needDraw();
+        param.setNeedsDraw();
       });
     } else {
       pathMap = asyncInitWithOutAnimal(param);
@@ -401,7 +401,7 @@ class Line<T> extends ChartBodyRender<T> {
         //计算点的位置
         num yValue = yValues[valueIndex];
         //y轴位置
-        double yPos = bottom - param.yAxis[yAxisPosition].relativeHeight(yValue);
+        double yPos = bottom - param.yAxis[yAxisPosition].getItemHeight(yValue);
         Offset currentPoint = Offset(xPos, yPos);
         lineInfo.startPoint ??= currentPoint;
 
@@ -522,7 +522,7 @@ class Line<T> extends ChartBodyRender<T> {
           break;
         }
         for (ChartItemLayoutParam childLayoutParam in children) {
-          double yPos = param.layout.getPositionForY(param.yAxis[yAxisPosition].relativeHeight(childLayoutParam.yValue!));
+          double yPos = param.layout.getPositionForY(param.yAxis[yAxisPosition].getItemHeight(childLayoutParam.yValue!));
           Offset currentPoint = Offset(xPos, yPos);
           childLayoutParam.setOriginRect(Rect.fromCenter(center: currentPoint, width: dotRadius, height: dotRadius));
           //画点

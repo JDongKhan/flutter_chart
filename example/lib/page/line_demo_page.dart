@@ -139,12 +139,12 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                                     ),
                                   );
                                 },
-                                position: ann.location!,
+                                position: ann.rect!.bottomCenter,
                               );
                             },
                             positions: [1, 200],
                           ),
-                        LabelAnnotation(positions: [6, 380], text: '380', scroll: false),
+                        LabelAnnotation(positions: [6, 380], text: '380', fixed: true),
                       ],
                       backgroundAnnotations: [
                         RegionAnnotation(positions: [2.4, 3.3]),

@@ -13,7 +13,7 @@ class PathAnnotation extends Annotation {
   final Offset Function(Size)? anchor;
 
   PathAnnotation({
-    super.scroll = true,
+    super.fixed = false,
     super.minZoomVisible,
     super.maxZoomVisible,
     required this.path,
@@ -41,10 +41,17 @@ class PathAnnotation extends Annotation {
 
   @override
   void draw(Canvas canvas, ChartParam param) {
-    if (!needDraw(param)) {
+    if (!isNeedDraw(param)) {
       return;
     }
     if (_paint != null && _path != null) {
+      if (!fixed) {
+        final scaleMatrix = Matrix4.identity();
+        scaleMatrix.translate(-(param.layout.offset.dx - param.layout.left), 0);
+        if (param.layout.zoom != 1) {
+          scaleMatrix.scale(param.layout.zoom, 1);
+        }
+      }
       canvas.drawPath(_path!, _paint!);
     }
   }

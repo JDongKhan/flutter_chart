@@ -2,8 +2,8 @@ part of flutter_chart_plus;
 
 /// @author jd
 abstract class Annotation extends _ChartRender {
-  ///是否跟随滚动
-  final bool scroll;
+  ///是否滚动
+  final bool fixed;
 
   ///跟哪个y轴关联
   final int yAxisPosition;
@@ -20,14 +20,11 @@ abstract class Annotation extends _ChartRender {
   ///标注可以点击
   final ValueChanged<Annotation>? onTap;
 
-  ///所在的位置（左上角的点）
-  Offset? location;
-
-  ///标注的尺寸
-  Size? size;
+  ///所在的区域
+  Rect? rect;
 
   Annotation({
-    this.scroll = false,
+    this.fixed = false,
     this.yAxisPosition = 0,
     this.userInfo,
     this.onTap,
@@ -37,14 +34,14 @@ abstract class Annotation extends _ChartRender {
 
   ///判断point是否在此Annotation范围内
   bool isRange(Offset point) {
-    if (location == null || size == null) {
+    if (rect == null) {
       return false;
     }
-    Rect rect = location! & size!;
-    return rect.contains(point);
+    return rect!.contains(point);
   }
 
-  bool needDraw(ChartParam param) {
+  ///是否需要绘制
+  bool isNeedDraw(ChartParam param) {
     if (minZoomVisible != null && param.layout.zoom < minZoomVisible!) {
       return false;
     }

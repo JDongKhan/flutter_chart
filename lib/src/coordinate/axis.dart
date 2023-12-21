@@ -65,15 +65,21 @@ class XAxis {
     num? max,
   }) : max = max ?? count * interval;
 
+  ///根据元数据计算出对应的宽带
+  double getItemWidth(num value, [bool fixed = false]) {
+    if (fixed) {
+      return value * fixedDensity;
+    }
+    return value * density;
+  }
+
+  ///轴线
   late final Paint linePaint = Paint()
     ..color = lineColor
     ..style = PaintingStyle.stroke
     ..strokeWidth = 1;
 
-  num widthOf(num value) {
-    return density * value;
-  }
-
+  ///x轴的虚线
   Path getDashPath(int index, Offset endPoint) {
     Path? kDashPath = _gridLine[index];
     if (kDashPath == null) {
@@ -148,13 +154,14 @@ class YAxis {
   ///密度
   late double density;
 
-  ///固定的密度，不随缩放变动
+  ///固定的密度，也就是原始密度，不随缩放变动
   late double fixedDensity;
 
   ///缓存对应的信息
   final Map<int, Path> _gridLine = {};
   final Map<String, TextPainter> _textPainter = {};
 
+  ///y轴线
   Paint? _paint;
   Paint get linePaint {
     _paint ??= Paint()
@@ -164,6 +171,7 @@ class YAxis {
     return _paint!;
   }
 
+  ///y轴对应的虚线
   Path getDashPath(int index, Offset endPoint) {
     Path? kDashPath = _gridLine[index];
     if (kDashPath == null) {
@@ -173,11 +181,11 @@ class YAxis {
     return kDashPath;
   }
 
-  num relativeValue(num value) {
-    return value - min;
-  }
-
-  double relativeHeight(num value) {
+  ///根据元数据计算出对应的高度
+  double getItemHeight(num value, [bool fixed = false]) {
+    if (fixed) {
+      return (value - min) * fixedDensity;
+    }
     return (value - min) * density;
   }
 }

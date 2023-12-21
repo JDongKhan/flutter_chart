@@ -10,7 +10,7 @@ class RegionAnnotation extends Annotation {
   final Color color;
 
   RegionAnnotation({
-    super.scroll = true,
+    super.fixed = false,
     super.minZoomVisible,
     super.maxZoomVisible,
     required this.positions,
@@ -29,22 +29,25 @@ class RegionAnnotation extends Annotation {
 
   @override
   void draw(Canvas canvas, ChartParam param) {
-    if (!needDraw(param)) {
+    if (!isNeedDraw(param)) {
       return;
     }
     if (param is _ChartDimensionParam) {
       assert(positions.length == 2, 'positions must be two length');
-      num po1 = positions[0];
-      num po2 = positions[1];
-      double start = param.layout.transform.transformX(po1 * param.xAxis.density);
-      start = param.layout.transform.withXOffset(start);
-      double end = param.layout.transform.transformX(po2 * param.xAxis.density);
-      end = param.layout.transform.withXOffset(end);
-
+      num startValue = positions[0];
+      num endValue = positions[1];
+      //区间start
+      double startPos = param.xAxis.getItemWidth(startValue, fixed);
+      startPos = param.layout.transform.transformX(startPos);
+      startPos = param.layout.transform.withXOffset(startPos);
+      //区间end
+      double endPos = param.xAxis.getItemWidth(endValue, fixed);
+      endPos = param.layout.transform.transformX(endPos);
+      endPos = param.layout.transform.withXOffset(endPos);
       double top = param.layout.top;
       double bottom = param.layout.bottom;
       if (_paint != null) {
-        canvas.drawRect(Rect.fromLTRB(start, top, end, bottom), _paint!);
+        canvas.drawRect(Rect.fromLTRB(startPos, top, endPos, bottom), _paint!);
       }
     }
   }

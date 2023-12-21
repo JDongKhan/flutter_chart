@@ -50,7 +50,7 @@ class Scatter<T> extends ChartBodyRender<T> {
       num xvs = position.call(itemData);
       num yvs = value.call(itemData);
       double xPo = xvs * param.xAxis.density + left;
-      double yPo = bottom - param.yAxis[yAxisPosition].relativeHeight(yvs);
+      double yPo = bottom - param.yAxis[yAxisPosition].getItemHeight(yvs);
       yPo = param.layout.transform.withYOffset(yPo);
       ScatterStyle sy = style.call(itemData);
       //最后画点

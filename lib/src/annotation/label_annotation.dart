@@ -23,7 +23,7 @@ class LabelAnnotation extends Annotation {
   LabelAnnotation({
     super.userInfo,
     super.onTap,
-    super.scroll = true,
+    super.fixed = false,
     super.yAxisPosition = 0,
     super.minZoomVisible,
     super.maxZoomVisible,
@@ -40,74 +40,33 @@ class LabelAnnotation extends Annotation {
   @override
   void init(ChartParam param) {
     super.init(param);
-    _textPainter = TextPainter(
-      text: TextSpan(
-        text: text,
-        style: textStyle,
-      ),
-      textDirection: TextDirection.ltr,
-    )..layout(
-        minWidth: 0,
-        maxWidth: param.layout.size.width,
-      );
+    _textPainter = TextPainter(text: TextSpan(text: text, style: textStyle), textDirection: TextDirection.ltr)..layout(minWidth: 0, maxWidth: param.layout.size.width);
   }
 
   @override
   void draw(Canvas canvas, ChartParam param) {
-    if (!needDraw(param)) {
+    if (!isNeedDraw(param)) {
       return;
     }
-
     if (param is _ChartDimensionParam) {
       Offset ost;
       if (positions != null) {
         assert(positions!.length == 2, 'positions must be two length');
-        num xPo = positions![0];
-        num yPo = positions![1];
-
-        double density = 0;
-        if (scroll) {
-          density = param.xAxis.density;
-        } else {
-          density = param.xAxis.fixedDensity;
-        }
-        double itemWidth = xPo * density;
-        double itemHeight = param.yAxis[yAxisPosition].relativeHeight(yPo);
-        double left = param.layout.transform.transformX(
-          itemWidth,
-          containPadding: true,
-        );
-        double top = param.layout.transform.transformY(
-          itemHeight,
-          containPadding: true,
-        );
-
-        if (scroll) {
-          left = param.layout.transform.withXOffset(left);
-          top = param.layout.transform.withYOffset(top);
-        } else {
-          //不跟随缩放
-          left = param.layout.transform.transformX(
-            itemWidth,
-            containPadding: true,
-          );
-          top = param.layout.transform.transformY(
-            itemHeight,
-            containPadding: true,
-          );
-        }
-        ost = Offset(left, top).translate(offset.dx, offset.dy);
+        num xValue = positions![0];
+        num yValue = positions![1];
+        double xPos = param.xAxis.getItemWidth(xValue, fixed);
+        double yPos = param.yAxis[yAxisPosition].getItemHeight(yValue, fixed);
+        Offset point = param.layout.transform.transformPoint(Offset(xPos, yPos), containPadding: true, xOffset: !fixed, yOffset: !fixed);
+        ost = point.translate(offset.dx, offset.dy);
       } else {
         ost = anchor!(param.layout.size);
       }
-
       if (textAlign == TextAlign.end) {
         ost = ost.translate(-_textPainter!.width, 0);
       } else if (textAlign == TextAlign.center) {
         ost = ost.translate(-_textPainter!.width / 2, 0);
       }
-      super.location = ost;
-      super.size = _textPainter!.size;
+      super.rect = ost & _textPainter!.size;
       _textPainter!.paint(canvas, ost);
     }
   }

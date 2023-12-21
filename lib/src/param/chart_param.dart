@@ -3,6 +3,7 @@ part of flutter_chart_plus;
 typedef AnnotationTooltipWidgetBuilder = PreferredSizeWidget? Function(BuildContext context);
 
 abstract class ChartParam extends ChangeNotifier {
+  ///布局信息
   final ChartLayoutInfo _layout = ChartLayoutInfo();
   ChartLayoutInfo get layout => _layout;
 
@@ -93,7 +94,8 @@ abstract class ChartParam extends ChangeNotifier {
   @override
   int get hashCode => Object.hash(runtimeType, _layout.zoom, _layout.offset, _layout.localPosition);
 
-  void needDraw() {
+  ///刷新布局
+  void setNeedsDraw() {
     notifyListeners();
   }
 }

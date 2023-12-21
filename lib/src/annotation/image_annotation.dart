@@ -17,7 +17,7 @@ class ImageAnnotation extends Annotation {
   ImageAnnotation({
     super.userInfo,
     super.onTap,
-    super.scroll = true,
+    super.fixed = false,
     super.yAxisPosition = 0,
     super.minZoomVisible,
     super.maxZoomVisible,
@@ -45,7 +45,7 @@ class ImageAnnotation extends Annotation {
 
   @override
   void draw(Canvas canvas, ChartParam param) {
-    if (!needDraw(param)) {
+    if (!isNeedDraw(param)) {
       return;
     }
 
@@ -53,36 +53,18 @@ class ImageAnnotation extends Annotation {
       Offset ost;
       if (positions != null) {
         assert(positions!.length == 2, 'positions must be two length');
-        num xPo = positions![0];
+        num xValue = positions![0];
         num yPo = positions![1];
-        double itemWidth = xPo * param.xAxis.density;
-        double itemHeight = param.yAxis[yAxisPosition].relativeHeight(yPo);
-        ost = param.layout.transform.withOffset(
-          Offset(
-            param.layout.transform.transformX(itemWidth, containPadding: true),
-            param.layout.transform.transformY(itemHeight, containPadding: true),
-          ),
-          scroll,
-        );
+        double xPos = param.xAxis.getItemWidth(xValue, fixed);
+        double yPos = param.yAxis[yAxisPosition].getItemHeight(yPo, fixed);
+        ost = param.layout.transform.transformPoint(Offset(xPos, yPos), containPadding: true, xOffset: !fixed, yOffset: !fixed);
       } else {
         ost = anchor!(param.layout.size);
       }
       Paint paint = Paint()..isAntiAlias = true;
-      canvas.drawImage(
-        image,
-        ost.translate(
-          offset.dx - image.width / 2,
-          offset.dy - image.height / 2,
-        ),
-        paint,
-      );
-      Rect rect = Rect.fromCenter(
-        center: Offset(ost.dx, ost.dy),
-        width: image.width.toDouble(),
-        height: image.height.toDouble(),
-      );
-      super.location = rect.topLeft;
-      super.size = rect.size;
+      canvas.drawImage(image, ost.translate(offset.dx - image.width / 2, offset.dy - image.height / 2), paint);
+      Rect rect = Rect.fromCenter(center: Offset(ost.dx, ost.dy), width: image.width.toDouble(), height: image.height.toDouble());
+      super.rect = rect;
     }
   }
 }

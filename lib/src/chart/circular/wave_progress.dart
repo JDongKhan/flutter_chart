@@ -78,8 +78,8 @@ class WaveProgress<T> extends ChartBodyRender<T> {
     double ofst = radius * controlOffset;
 
     Path path = Path();
-    Offset first = transformUtils.transformOffset(Offset(-radius * 2 + ofst, waterHeight));
-    Offset last = transformUtils.transformOffset(Offset(radius + ofst, waterHeight));
+    Offset first = transformUtils.transformPoint(Offset(-radius * 2 + ofst, waterHeight));
+    Offset last = transformUtils.transformPoint(Offset(radius + ofst, waterHeight));
     path.moveTo(first.dx, first.dy);
 
     Offset start = first;
@@ -97,8 +97,8 @@ class WaveProgress<T> extends ChartBodyRender<T> {
       path.cubicTo(po1x, po1Y, po2x, po2y, end.dx, end.dy);
       start = end;
     }
-    Offset end1 = transformUtils.transformOffset(Offset(radius, 0));
-    Offset end2 = transformUtils.transformOffset(Offset(-radius, 0));
+    Offset end1 = transformUtils.transformPoint(Offset(radius, 0));
+    Offset end2 = transformUtils.transformPoint(Offset(-radius, 0));
     path.lineTo(end1.dx, end1.dy);
     path.lineTo(end2.dx, end2.dy);
     // path.lineTo(end.dx, end.dy);
