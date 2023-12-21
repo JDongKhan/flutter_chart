@@ -5,12 +5,6 @@ const double _maxWidth = 15;
 
 ///每个图形(点/柱状图/扇形)的状态
 class ChartLayoutParam {
-  ///图形的区域
-  Rect? originRect;
-
-  ///形成图形的path
-  Path? path;
-
   ChartLayoutParam();
 
   ///数据所在数组的位置
@@ -19,44 +13,53 @@ class ChartLayoutParam {
   //选中children的索引
   int? selectedIndex;
 
-  ///此处用链表来解决查找附近其他图形的逻辑
-  ///前面一个图形的信息 目的为了解决图形之间的关联信息
-  ChartLayoutParam? preShapeState;
-
-  ///下一个图形的信息
-  ChartLayoutParam? nextShapeState;
-
   ///坐标系最左边
   double? left;
 
   ///坐标系最右边
   double? right;
 
+  ///某条数据下 可能会有多条数据
+  List<ChartItemLayoutParam> children = [];
+}
+
+/// 每x坐标对应的布局信息
+class ChartItemLayoutParam extends ChartLayoutParam {
+  ///图形的区域  和  path 代表同一个图形，只不过用Rect方便计算。
+  Rect? originRect;
+
+  ///形成图形的path  比如单个柱状图 单个扇形
+  Path? path;
+
+  ///此处用链表来解决查找附近其他图形的逻辑
+  ///前面一个图形的信息 目的为了解决图形之间的关联信息
+  ChartItemLayoutParam? preShapeState;
+
+  ///下一个图形的信息
+  ChartItemLayoutParam? nextShapeState;
+
   ///对应数据x轴的原始值
   num? xValue;
 
-  ///对应数据y轴的原始值
-  num? yValue;
-
-  int yAxisPosition = 0;
-
-  ///对应数据y轴的原始值
+  ///对应数据y轴的原始值  可能对应多个
   List<num>? yValues;
 
-  ///布局信息
+  ///对应数据y轴的原始值  yValues里面的其中一个 ，因是树结构，所以位于含有yValues节点的下面
+  num? yValue;
+
+  ///布局信息 方便热区计算
   ChartLayoutInfo? layout;
 
-  ///某条数据下 可能会有多条数据
-  List<ChartLayoutParam> children = [];
+  ChartItemLayoutParam();
 
   ///矩形
-  ChartLayoutParam.rect({required this.originRect});
+  ChartItemLayoutParam.rect({required this.originRect});
 
   ///路径
-  ChartLayoutParam.path({required this.path});
+  ChartItemLayoutParam.path({required this.path});
 
   ///弧 用path保存 path不便于计算
-  ChartLayoutParam.arc({
+  ChartItemLayoutParam.arc({
     required Offset center, // 中心点
     required double innerRadius, // 小圆半径
     required double outRadius, // 大圆半径
@@ -86,25 +89,27 @@ class ChartLayoutParam {
     path = localPath.shift(center);
   }
 
+  ///修改区域信息
   void setOriginRect(Rect rect) {
     originRect = rect;
   }
 
+  ///偏移/放大操作后，计算其真实位置
   Rect? getRealRect() {
     ChartLayoutInfo? layout = this.layout;
     if (layout == null) {
       return originRect;
     }
     if (this is ChartLineLayoutParam) {
-      double left = layout.contentMargin.left;
-      double top = layout.contentMargin.top;
-      double bottom = layout.size.height - layout.contentMargin.bottom;
-      ChartLineLayoutParam p = this as ChartLineLayoutParam;
-      double dotRadius = originRect!.width / 2;
+      final double left = layout.left;
+      final double top = layout.top;
+      final double bottom = layout.bottom;
+      final ChartLineLayoutParam p = this as ChartLineLayoutParam;
+      final double dotRadius = originRect!.width / 2;
       double xPos = xValue! * p.xAxis.density + left;
       xPos = layout.transform.withXOffset(xPos);
       if (yValue != null) {
-        double yPos = bottom - p.yAxis[yAxisPosition].relativeHeight(yValue!);
+        double yPos = bottom - p.yAxis[p.yAxisPosition].relativeHeight(yValue!);
         Offset currentPoint = Offset(xPos, yPos);
         return Rect.fromCenter(center: currentPoint, width: dotRadius, height: dotRadius);
       } else {
@@ -194,9 +199,13 @@ class ChartLayoutParam {
   }
 }
 
-class ChartLineLayoutParam extends ChartLayoutParam {
+///象限坐标系的布局信息
+class ChartLineLayoutParam extends ChartItemLayoutParam {
   ///y坐标轴
   late List<YAxis> yAxis;
+
+  ///y轴关联轴的位置
+  int yAxisPosition = 0;
 
   ///x坐标轴
   late XAxis xAxis;

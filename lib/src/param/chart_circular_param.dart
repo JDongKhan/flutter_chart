@@ -23,8 +23,8 @@ class _ChartCircularParam extends ChartParam {
   @override
   void init({required Size size, required EdgeInsets margin, required EdgeInsets padding}) {
     super.init(size: size, margin: margin, padding: padding);
-    final sw = size.width - layout.contentMargin.horizontal;
-    final sh = size.height - layout.contentMargin.vertical;
+    final sw = size.width - layout.content.horizontal;
+    final sh = size.height - layout.content.vertical;
     //满圆
     if (arcPosition == ArcPosition.none) {
       // 确定圆的半径
@@ -46,7 +46,7 @@ class _ChartCircularParam extends ChartParam {
       radius = math.min(maxSize / 2, minSize) - borderWidth / 2;
       center = size.center(Offset.zero);
       if (arcPosition == ArcPosition.up) {
-        center = Offset(center.dx, size.height - layout.contentMargin.bottom);
+        center = Offset(center.dx, layout.bottom);
         layout.transform = TransformUtils(
           anchor: center,
           size: size,
@@ -56,7 +56,7 @@ class _ChartCircularParam extends ChartParam {
           reverseY: true,
         );
       } else if (arcPosition == ArcPosition.down) {
-        center = Offset(center.dx, layout.contentMargin.top);
+        center = Offset(center.dx, layout.top);
         layout.transform = TransformUtils(
           anchor: center,
           size: size,

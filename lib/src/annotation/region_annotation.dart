@@ -41,8 +41,8 @@ class RegionAnnotation extends Annotation {
       double end = param.layout.transform.transformX(po2 * param.xAxis.density);
       end = param.layout.transform.withXOffset(end);
 
-      double top = param.layout.contentMargin.top;
-      double bottom = param.layout.size.height - param.layout.contentMargin.bottom;
+      double top = param.layout.top;
+      double bottom = param.layout.bottom;
       if (_paint != null) {
         canvas.drawRect(Rect.fromLTRB(start, top, end, bottom), _paint!);
       }

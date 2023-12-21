@@ -211,7 +211,7 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
         for (int j = 1; j < xDivideCount; j++) {
           num newValue = i + j * xAmplifyInterval!;
           String? newText = xAxis.formatter?.call(newValue);
-          double left = param.layout.contentMargin.left + density * interval * newValue;
+          double left = param.layout.left + density * interval * newValue;
           left = param.layout.transform.withXOffset(left);
           if (newText != null) {
             _drawXTextPaint(xAxis, canvas, newText, size, left, point.dy);
@@ -317,7 +317,7 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
       }
       ChartLayoutParam shape = entry.children[index];
       //用于找哪个子图更适合
-      for (ChartLayoutParam childShape in shape.children) {
+      for (ChartItemLayoutParam childShape in shape.children) {
         Rect? realRect = childShape.getRealRect();
         if (realRect != null) {
           double cTop = realRect.center.dy;

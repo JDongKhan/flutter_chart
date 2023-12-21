@@ -113,10 +113,10 @@ class Pie<T> extends ChartBodyRender<T> {
     Offset center = param.center;
     double radius = param.radius;
 
-    List<ChartLayoutParam>? lastLayoutParams = getLastData(param.animal && param.layout.controlValue < 1);
+    List<ChartItemLayoutParam>? lastLayoutParams = getLastData(param.animal && param.layout.controlValue < 1);
     //开始画扇形
     double startAngle = this.startAngle;
-    List<ChartLayoutParam> childrenLayoutParams = [];
+    List<ChartItemLayoutParam> childrenLayoutParams = [];
     assert(colors.length >= data.length);
     assert(shaders == null || shaders!.length >= data.length);
     int index = 0;
@@ -139,7 +139,7 @@ class Pie<T> extends ChartBodyRender<T> {
       final sweepAngle = currentPercent * math.pi * 2 * (direction == RotateDirection.forward ? 1 : -1);
       double rd = radius;
       //图形区域
-      ChartLayoutParam shape = ChartLayoutParam.arc(
+      ChartItemLayoutParam shape = ChartItemLayoutParam.arc(
         center: center,
         startAngle: startAngle,
         sweepAngle: sweepAngle,
@@ -150,13 +150,13 @@ class Pie<T> extends ChartBodyRender<T> {
       childrenLayoutParams.add(shape);
 
       //放大区域
-      ChartLayoutParam tapShape = shape;
+      ChartItemLayoutParam tapShape = shape;
       //判断是否选中
       bool selected = enableTap && shape.hitTest(param.layout.localPosition);
       if (selected) {
         rd = radius + 2;
         layoutParam.selectedIndex = i;
-        tapShape = ChartLayoutParam.arc(
+        tapShape = ChartItemLayoutParam.arc(
           center: center,
           startAngle: startAngle,
           sweepAngle: sweepAngle,

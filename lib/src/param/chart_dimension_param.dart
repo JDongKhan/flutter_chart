@@ -27,7 +27,7 @@ class _ChartDimensionParam extends ChartParam {
     double height = size.height;
     int count = xAxis.count;
     //每格的宽度，用于控制一屏最多显示个数
-    double density = invert ? (height - layout.contentMargin.vertical) / count / xAxis.interval : (width - layout.contentMargin.horizontal) / count / xAxis.interval;
+    double density = invert ? (height - layout.content.vertical) / count / xAxis.interval : (width - layout.content.horizontal) / count / xAxis.interval;
     xAxis.fixedDensity = density;
     //x轴密度 即1 value 等于多少尺寸
     if (xAxis.zoom) {
@@ -80,7 +80,7 @@ class _ChartDimensionParam extends ChartParam {
     }
     //放大的场景  offset会受到zoom的影响，所以这里的宽度要先剔除zoom的影响再比较
     double chartContentWidth = xAxis.density * xAxis.max;
-    double chartViewPortWidth = layout.size.width - layout.contentMargin.horizontal;
+    double chartViewPortWidth = layout.size.width - layout.content.horizontal;
     //处理成跟缩放无关的偏移
     double maxOffset = (chartContentWidth - chartViewPortWidth);
     if (maxOffset < 0) {
@@ -99,7 +99,7 @@ class _ChartDimensionParam extends ChartParam {
       }
       //放大的场景  offset会受到zoom的影响，所以这里的宽度要先剔除zoom的影响再比较
       double chartContentWidth = xAxis.density * xAxis.max;
-      double chartViewPortWidth = layout.size.height - layout.contentMargin.vertical;
+      double chartViewPortWidth = layout.size.height - layout.content.vertical;
       //处理成跟缩放无关的偏移
       double maxOffset = (chartContentWidth - chartViewPortWidth);
       if (maxOffset < 0) {

@@ -77,7 +77,6 @@ class _PieChartDemoPageState extends State<PieChartDemoPage> with SingleTickerPr
               child: ChartWidget(
                 coordinateRender: ChartCircularCoordinateRender(
                   margin: const EdgeInsets.all(30),
-                  animationDuration: const Duration(seconds: 1),
                   charts: [
                     Pie(
                       data: dataList,
@@ -95,7 +94,6 @@ class _PieChartDemoPageState extends State<PieChartDemoPage> with SingleTickerPr
               child: ChartWidget(
                 coordinateRender: ChartCircularCoordinateRender(
                   margin: const EdgeInsets.all(30),
-                  animationDuration: const Duration(seconds: 1),
                   charts: [
                     Pie(
                       guideLine: true,
@@ -119,12 +117,12 @@ class _PieChartDemoPageState extends State<PieChartDemoPage> with SingleTickerPr
               height: 200,
               child: Stack(
                 children: [
-                  Positioned.fill(
+                  const Positioned.fill(
                     top: 100,
                     child: Center(
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
-                        children: const [
+                        children: [
                           Text('5%', style: TextStyle(fontSize: 24, color: Colors.black)),
                           Text('完成度', style: TextStyle(fontSize: 30, color: Colors.black)),
                         ],

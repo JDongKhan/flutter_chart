@@ -73,7 +73,7 @@ abstract class ChartParam extends ChangeNotifier {
     _layout.size = size;
     _layout.margin = margin;
     _layout.padding = padding;
-    _layout.contentMargin = EdgeInsets.fromLTRB(margin.left + padding.left, margin.top + padding.top, margin.right + padding.right, margin.bottom + padding.bottom);
+    _layout.content = EdgeInsets.fromLTRB(margin.left + padding.left, margin.top + padding.top, margin.right + padding.right, margin.bottom + padding.bottom);
   }
 
   void scrollByDelta(Offset delta);
@@ -123,13 +123,36 @@ class ChartLayoutInfo {
 
   ///坐标转换工具
   late TransformUtils transform;
-  Size get contentSize => contentRect.size;
-
-  ///未处理的坐标  原点在左上角
-  Rect get contentRect => Rect.fromLTRB(contentMargin.left, contentMargin.top, size.width - contentMargin.left, size.height - contentMargin.bottom);
 
   ///图形内容的外边距信息
-  late EdgeInsets contentMargin;
+  late EdgeInsets _content;
+  set content(EdgeInsets v) {
+    _content = v;
+    left = v.left;
+    right = size.width - v.right;
+    top = v.top;
+    bottom = size.height - v.bottom;
+  }
+
+  EdgeInsets get content => _content;
+
+  late double left;
+  late double right;
+  late double top;
+  late double bottom;
 
   ChartLayoutInfo();
+
+  double getPositionForX(double position, [bool withOffset = false]) {
+    double xPos = position + left;
+    if (withOffset) {
+      xPos = transform.withXOffset(xPos);
+    }
+    return xPos;
+  }
+
+  double getPositionForY(double position) {
+    double yPos = bottom - position;
+    return yPos;
+  }
 }

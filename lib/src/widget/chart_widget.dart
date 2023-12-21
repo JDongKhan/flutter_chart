@@ -245,6 +245,7 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderS
       ChartBodyRender body = charts[i];
       ChartLayoutParam c = ChartLayoutParam();
       c.left = 0;
+      c.index = i;
       c.right = widget.size.width;
       //还原状态
       body.isInit = false;
@@ -390,9 +391,9 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderS
       //先判断是否选中，此场景是第一次渲染之后点击才有，所以用老数据即可
       ChartLayoutParam layoutParam = body.layoutParam;
       layoutParam.selectedIndex = null;
-      List<ChartLayoutParam> childrenLayoutParams = body.layoutParam.children;
+      List<ChartItemLayoutParam> childrenLayoutParams = body.layoutParam.children;
       for (int index = 0; index < childrenLayoutParams.length; index++) {
-        ChartLayoutParam child = childrenLayoutParams[index];
+        ChartItemLayoutParam child = childrenLayoutParams[index];
         if (child.hitTest(point)) {
           layoutParam.selectedIndex = index;
           // debugPrint("选中了$index");
