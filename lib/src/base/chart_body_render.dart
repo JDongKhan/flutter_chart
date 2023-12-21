@@ -13,7 +13,7 @@ abstract class ChartBodyRender<T> extends _ChartRender {
   late ChartLayoutParam layout;
 
   ///在图表中的位置
-  late int indexAtChart;
+  late int index;
 
   ///跟哪个y轴关联
   final int yAxisPosition;
@@ -30,7 +30,7 @@ abstract class ChartBodyRender<T> extends _ChartRender {
     if (!need) {
       return null;
     }
-    ChartBodyRender? e = controller.lastCoordinate?.charts[indexAtChart];
+    ChartBodyRender? e = controller.lastCoordinate?.charts[index];
     if (e == null) {
       return null;
     }

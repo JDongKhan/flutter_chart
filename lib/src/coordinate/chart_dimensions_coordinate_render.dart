@@ -58,7 +58,7 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
     //绘图
     var index = 0;
     for (var element in charts) {
-      element.indexAtChart = index;
+      element.index = index;
       element.controller = controller;
       if (!element.isInit) {
         element.init(param);
