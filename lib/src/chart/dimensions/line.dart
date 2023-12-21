@@ -163,7 +163,7 @@ class Line<T> extends ChartBodyRender<T> {
   void drawWithAnimal(Canvas canvas, ChartParam param) {
     param as _ChartDimensionParam;
     List<ChartLayoutParam> shapeList = layoutParam.children;
-    List<ChartLayoutParam>? lastDataList = getLastData(param.animal);
+    List<ChartLayoutParam>? lastDataList = getLastData(param.animal && param.layout.controlValue < 1);
     //offset.dx 滚动偏移  (src.zoom - 1) * (src.size.width / 2) 缩放
     double left = param.layout.contentMargin.left;
     double right = param.layout.size.width - param.layout.contentMargin.right;

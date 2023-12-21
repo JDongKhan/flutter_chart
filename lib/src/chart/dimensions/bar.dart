@@ -81,7 +81,7 @@ class Bar<T> extends ChartBodyRender<T> {
     param as _ChartDimensionParam;
     List<ChartLayoutParam> childrenLayoutParams = [];
 
-    List<ChartLayoutParam>? lastDataList = getLastData(param.animal);
+    List<ChartLayoutParam>? lastDataList = getLastData(param.animal && param.layout.controlValue < 1);
 
     for (int index = 0; index < data.length; index++) {
       T item = data[index];
@@ -262,7 +262,7 @@ class StackBar<T> extends ChartBodyRender<T> {
   void draw(Canvas canvas, ChartParam param) {
     param as _ChartDimensionParam;
     List<ChartLayoutParam> childrenLayoutParams = [];
-    List<ChartLayoutParam>? lastDataList = getLastData(param.animal);
+    List<ChartLayoutParam>? lastDataList = getLastData(param.animal && param.layout.controlValue < 1);
 
     for (int index = 0; index < data.length; index++) {
       T item = data[index];

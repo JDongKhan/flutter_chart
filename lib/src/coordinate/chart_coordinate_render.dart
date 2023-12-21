@@ -77,6 +77,21 @@ abstract class ChartCoordinateRender {
 
   late ChartController controller;
 
+  ///判断图表数量和类型是否发生改变  未改变就做tween动画  改变了就重置 防止数据错乱
+  bool hasChange(ChartCoordinateRender other) {
+    bool change = other.runtimeType != runtimeType || other.charts.length != charts.length;
+    if (!change) {
+      for (int i = 0; i < charts.length; i++) {
+        ChartBodyRender chart = charts[i];
+        ChartBodyRender otherChart = other.charts[i];
+        if (chart.runtimeType != otherChart.runtimeType) {
+          change = true;
+        }
+      }
+    }
+    return change;
+  }
+
   bool canZoom();
 
   void paint(Canvas canvas, ChartParam param);

@@ -26,8 +26,8 @@ abstract class ChartBodyRender<T> extends _ChartRender {
   late ChartController controller;
 
   //上一次的数据
-  List<ChartLayoutParam>? getLastData(bool animal) {
-    if (!animal) {
+  List<ChartLayoutParam>? getLastData(bool need) {
+    if (!need) {
       return null;
     }
     ChartBodyRender? e = controller.lastCoordinate?.charts[indexAtChart];

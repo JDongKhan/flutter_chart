@@ -72,6 +72,9 @@ class _ChartWidgetState extends State<ChartWidget> {
     super.didUpdateWidget(oldWidget);
     if (widget.controller != null) {
       _controller = widget.controller!;
+    } else if (widget.coordinateRender.hasChange(oldWidget.coordinateRender)) {
+      //因外部动态布局，因缓存的问题，可能会导致state被重用，所以发现类型不一样就重置  如果类型一样，但是图表数量不一样了 也重置，
+      _controller = ChartController();
     }
   }
 

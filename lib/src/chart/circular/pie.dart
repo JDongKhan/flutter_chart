@@ -113,7 +113,7 @@ class Pie<T> extends ChartBodyRender<T> {
     Offset center = param.center;
     double radius = param.radius;
 
-    // List<ChartLayoutParam>? lastLayoutParams = getLastData(param.animal);
+    List<ChartLayoutParam>? lastLayoutParams = getLastData(param.animal && param.layout.controlValue < 1);
     //开始画扇形
     double startAngle = this.startAngle;
     List<ChartLayoutParam> childrenLayoutParams = [];
@@ -124,20 +124,19 @@ class Pie<T> extends ChartBodyRender<T> {
       T item = data[i];
       //直接读取
       num percent = _values[i] / _total;
-
+      num currentPercent = percent;
       //tween动画
-      // num? lastPercent;
-      // if (lastLayoutParams != null && index < lastLayoutParams.length) {
-      //   lastPercent = lastLayoutParams[i].yValue;
-      // }
-      // num currentPercent = percent;
-      // if (lastPercent != null) {
-      //   //初始动画x轴不动
-      //   currentPercent = lerpDouble(lastPercent, percent, param.controlValue) ?? percent;
-      // }
+      if (param.animal && param.layout.controlValue < 1) {
+        num? lastPercent;
+        if (lastLayoutParams != null && index < lastLayoutParams.length) {
+          lastPercent = lastLayoutParams[i].yValue;
+        }
+        //初始动画x轴不动
+        currentPercent = ui.lerpDouble(lastPercent, percent, param.layout.controlValue) ?? 0;
+      }
 
       // 计算出每个数据所占的弧度值
-      final sweepAngle = percent * math.pi * 2 * (direction == RotateDirection.forward ? 1 : -1) * param.layout.controlValue;
+      final sweepAngle = currentPercent * math.pi * 2 * (direction == RotateDirection.forward ? 1 : -1);
       double rd = radius;
       //图形区域
       ChartLayoutParam shape = ChartLayoutParam.arc(

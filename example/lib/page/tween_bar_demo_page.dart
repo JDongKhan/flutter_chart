@@ -49,7 +49,7 @@ class _TweenBarChartDemoPageState extends State<TweenBarChartDemoPage> {
     dataList = [
       {
         'time': startTime.add(Duration(days: 1 + diffDay)),
-        'value1': 100 * v,
+        'value1': Random().nextInt(10) + 100 * v,
         'value2': 200 * v,
         'value3': 300 * v,
       },
