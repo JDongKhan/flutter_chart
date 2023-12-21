@@ -167,10 +167,6 @@ class Line<T> extends ChartBodyRender<T> {
     List<ChartItemLayoutParam> shapeList = layoutParam.children;
     List<ChartItemLayoutParam>? lastDataList = getLastData(param.animal && param.layout.controlValue < 1);
     //offset.dx 滚动偏移  (src.zoom - 1) * (src.size.width / 2) 缩放
-    double left = param.layout.left;
-    double right = param.layout.right;
-    double top = param.layout.top;
-    double bottom = param.layout.bottom;
     Map<int, LineInfo> pathMap = {};
     //遍历数据 处理数据信息
     for (int index = 0; index < shapeList.length; index++) {
@@ -194,8 +190,7 @@ class Line<T> extends ChartBodyRender<T> {
       }
 
       //计算x轴和y轴的物理位置  这里也会处理缩放
-      double xPos = xValue * param.xAxis.density + left;
-      xPos = param.layout.transform.withXOffset(xPos);
+      double xPos = param.layout.getPositionForX(xValue * param.xAxis.density);
 
       //一组数据下可能多条线
       for (int valueIndex = 0; valueIndex < yValues.length; valueIndex++) {
@@ -208,7 +203,7 @@ class Line<T> extends ChartBodyRender<T> {
         //计算点的位置
         num yValue = yValues[valueIndex];
         //y轴位置
-        double yPos = bottom - param.yAxis[yAxisPosition].relativeHeight(yValue);
+        double yPos = param.layout.getPositionForY(param.yAxis[yAxisPosition].relativeHeight(yValue));
         yPos = param.layout.transform.withYOffset(yPos);
         Offset currentPoint = Offset(xPos, yPos);
         //数据过滤
@@ -230,10 +225,10 @@ class Line<T> extends ChartBodyRender<T> {
         lineInfo.appendPoint(childLayoutParam);
       }
 
-      Rect currentRect = Rect.fromLTRB(xPos - dotRadius, top, xPos + dotRadius, bottom);
+      Rect currentRect = Rect.fromLTRB(xPos - dotRadius, param.layout.top, xPos + dotRadius, param.layout.bottom);
       currentPointLayout.setOriginRect(currentRect);
-      currentPointLayout.left = left;
-      currentPointLayout.right = right;
+      currentPointLayout.left = param.layout.left;
+      currentPointLayout.right = param.layout.right;
       //数据过滤
       if (!param.outDraw && xPos > param.layout.size.width) {
         // debugPrint('2-第$index个数据超出去');
@@ -262,13 +257,8 @@ class Line<T> extends ChartBodyRender<T> {
         }
         //先画线
         if (strokeWidth > 0) {
-          if (shaders != null && filled == false) {
-            canvas.drawPath(path, _linePaint..shader = shaders![index]);
-          } else {
-            canvas.drawPath(path, _linePaint..color = colors[index]);
-          }
+          _drawLine(canvas, path, index);
         }
-
         //然后填充颜色
         if (filled == true) {
           Offset last = lineInfo.endPoint ?? Offset.zero;
@@ -276,11 +266,7 @@ class Line<T> extends ChartBodyRender<T> {
           path
             ..lineTo(last.dx, param.layout.bottom)
             ..lineTo(first.dx, param.layout.bottom);
-          if (shaders != null) {
-            _fullPaint?.shader = shaders![index];
-          } else {
-            _fullPaint?.color = colors[index];
-          }
+
           Path newPath = lineInfo.path!;
           if (operation != null) {
             if (lastPath != null) {
@@ -288,7 +274,8 @@ class Line<T> extends ChartBodyRender<T> {
             }
             lastPath = lineInfo.path!;
           }
-          canvas.drawPath(newPath, _fullPaint!);
+          //绘制填充
+          _drawFill(canvas, newPath, index);
         }
       }
     }
@@ -315,6 +302,24 @@ class Line<T> extends ChartBodyRender<T> {
         }
       }
     }
+  }
+
+  ///画线
+  void _drawLine(Canvas canvas, Path path, int index) {
+    if (shaders != null && filled == false) {
+      canvas.drawPath(path, _linePaint..shader = shaders![index]);
+    } else {
+      canvas.drawPath(path, _linePaint..color = colors[index]);
+    }
+  }
+
+  void _drawFill(Canvas canvas, Path path, int index) {
+    if (shaders != null) {
+      _fullPaint?.shader = shaders![index];
+    } else {
+      _fullPaint?.color = colors[index];
+    }
+    canvas.drawPath(path, _fullPaint!);
   }
 
   ///画点
@@ -465,40 +470,35 @@ class Line<T> extends ChartBodyRender<T> {
           if (param.layout.zoom != 1 || param.animal) {
             scaleMatrix.scale(param.layout.zoom, yScale);
           }
-
           Path linePath = path.transform(scaleMatrix.storage);
-          if (shaders != null && filled == false) {
-            canvas.drawPath(linePath, _linePaint..shader = shaders![index]);
-          } else {
-            canvas.drawPath(linePath, _linePaint..color = colors[index]);
-          }
+          //画线
+          _drawLine(canvas, linePath, index);
         }
 
         //然后填充颜色
         if (filled == true) {
+          Path copyPath = path.shift(Offset.zero);
           Offset last = lineInfo.endPoint ?? Offset.zero;
           Offset first = lineInfo.startPoint ?? Offset.zero;
-          path
+          copyPath
             ..lineTo(last.dx, param.layout.bottom)
             ..lineTo(first.dx, param.layout.bottom);
-          if (shaders != null) {
-            _fullPaint?.shader = shaders![index];
-          } else {
-            _fullPaint?.color = colors[index];
-          }
-          Path newPath = lineInfo.path!;
+
+          Path filledPath = copyPath;
           if (operation != null) {
             if (lastPath != null) {
-              newPath = Path.combine(operation!, newPath, lastPath);
+              filledPath = Path.combine(operation!, copyPath, lastPath);
             }
-            lastPath = lineInfo.path!;
+            lastPath = copyPath;
           }
-          final scaleMatrix = Matrix4.identity()..translate(-(param.layout.offset.dx - param.layout.left), 0);
+          final scaleMatrix = Matrix4.identity();
+          scaleMatrix.translate(-(param.layout.offset.dx - param.layout.left), 0);
           if (param.layout.zoom != 1) {
             scaleMatrix.scale(param.layout.zoom, 1);
           }
-          Path filledPath = newPath.transform(scaleMatrix.storage);
-          canvas.drawPath(filledPath, _fullPaint!);
+          filledPath = filledPath.transform(scaleMatrix.storage);
+          //画填充
+          _drawFill(canvas, filledPath, index);
         }
       }
     }
@@ -552,6 +552,20 @@ class Line<T> extends ChartBodyRender<T> {
       }
       i++;
     }
+  }
+
+  ///合并path
+  Path combinePath(ChartParam param, Path path, Offset first, Offset last, Path? lastPath) {
+    path
+      ..lineTo(last.dx, param.layout.bottom)
+      ..lineTo(first.dx, param.layout.bottom);
+    Path newPath = path;
+    if (operation != null) {
+      if (lastPath != null) {
+        newPath = Path.combine(operation!, newPath, lastPath);
+      }
+    }
+    return newPath;
   }
 }
 

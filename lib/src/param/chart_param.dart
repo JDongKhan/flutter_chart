@@ -73,7 +73,7 @@ abstract class ChartParam extends ChangeNotifier {
     _layout.size = size;
     _layout.margin = margin;
     _layout.padding = padding;
-    _layout.content = EdgeInsets.fromLTRB(margin.left + padding.left, margin.top + padding.top, margin.right + padding.right, margin.bottom + padding.bottom);
+    _layout.content = margin + padding;
   }
 
   void scrollByDelta(Offset delta);
@@ -132,6 +132,8 @@ class ChartLayoutInfo {
     right = size.width - v.right;
     top = v.top;
     bottom = size.height - v.bottom;
+    contentWidth = size.width - v.horizontal;
+    contentHeight = size.height - v.vertical;
   }
 
   EdgeInsets get content => _content;
@@ -140,6 +142,8 @@ class ChartLayoutInfo {
   late double right;
   late double top;
   late double bottom;
+  late double contentWidth;
+  late double contentHeight;
 
   ChartLayoutInfo();
 

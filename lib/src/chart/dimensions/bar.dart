@@ -130,15 +130,9 @@ class Bar<T> extends ChartBodyRender<T> {
     if (valueString != null && valueString.isNotEmpty) {
       TextPainter legendTextPainter = TextPainter(
         textAlign: TextAlign.center,
-        text: TextSpan(
-          text: valueString,
-          style: textStyle,
-        ),
+        text: TextSpan(text: valueString, style: textStyle),
         textDirection: TextDirection.ltr,
-      )..layout(
-          minWidth: 0,
-          maxWidth: param.layout.size.width,
-        );
+      )..layout(minWidth: 0, maxWidth: param.layout.size.width);
       Offset offset = Offset.zero;
       if (param.invert) {
         offset = p.originRect!.centerRight;
@@ -155,7 +149,7 @@ class Bar<T> extends ChartBodyRender<T> {
   ChartItemLayoutParam _measureBarLayoutParam(_ChartDimensionParam param, num xValue, num yValue) {
     Rect rect = Rect.zero;
     if (param.invert) {
-      double contentWidth = param.layout.size.width - param.layout.content.horizontal;
+      double contentWidth = param.layout.contentWidth;
       double top = param.layout.bottom - param.xAxis.density * xValue - itemWidth / 2;
       top = param.layout.transform.withYOffset(top);
       double present = yValue / param.yAxis[yAxisPosition].max;
@@ -169,7 +163,7 @@ class Bar<T> extends ChartBodyRender<T> {
       rect = Rect.fromLTWH(left, top, itemHeight, itemWidth);
     } else {
       double bottom = param.layout.bottom;
-      double contentHeight = param.layout.size.height - param.layout.content.vertical;
+      double contentHeight = param.layout.contentHeight;
       double left = param.layout.left + param.xAxis.density * xValue - itemWidth / 2;
       left = param.layout.transform.withXOffset(left);
       double present = yValue / param.yAxis[yAxisPosition].max;
@@ -328,10 +322,7 @@ class StackBar<T> extends ChartBodyRender<T> {
 
       //绘制热区
       if (hotColor != null && p.originRect != null && param.layout.controlValue == 1) {
-        canvas.drawRect(
-          p.originRect!,
-          _hotPaint..color = hotColor!,
-        );
+        canvas.drawRect(p.originRect!, _hotPaint..color = hotColor!);
       }
     }
     layoutParam.children = childrenLayoutParams;
@@ -345,19 +336,14 @@ class StackBar<T> extends ChartBodyRender<T> {
     }
     ChartItemLayoutParam shape;
     if (param.invert) {
-      double contentWidth = param.layout.size.width - param.layout.content.horizontal;
+      double contentWidth = param.layout.contentWidth;
       double center = yValues.length * itemWidth / 2;
       double top = param.layout.bottom - param.xAxis.density * xValue - center;
       top = param.layout.transform.withYOffset(top);
 
       double left = param.layout.left;
       shape = ChartItemLayoutParam.rect(
-        originRect: Rect.fromLTWH(
-          left,
-          top,
-          param.layout.size.width - param.layout.content.horizontal,
-          itemWidth * yValues.length + padding * (yValues.length - 1),
-        ),
+        originRect: Rect.fromLTWH(left, top, contentWidth, itemWidth * yValues.length + padding * (yValues.length - 1)),
       );
       List<ChartItemLayoutParam> childrenLayoutParams = [];
       for (num yV in yValues) {
@@ -374,7 +360,7 @@ class StackBar<T> extends ChartBodyRender<T> {
       shape.children = childrenLayoutParams;
     } else {
       double bottom = param.layout.bottom;
-      double contentHeight = param.layout.size.height - param.layout.content.vertical;
+      double contentHeight = param.layout.contentHeight;
 
       double center = yValues.length * itemWidth / 2;
 
@@ -382,12 +368,7 @@ class StackBar<T> extends ChartBodyRender<T> {
       left = param.layout.transform.withXOffset(left);
 
       shape = ChartItemLayoutParam.rect(
-        originRect: Rect.fromLTWH(
-          left,
-          param.layout.top,
-          itemWidth * yValues.length + padding * (yValues.length - 1),
-          param.layout.size.height - param.layout.content.vertical,
-        ),
+        originRect: Rect.fromLTWH(left, param.layout.top, itemWidth * yValues.length + padding * (yValues.length - 1), contentHeight),
       );
       List<ChartItemLayoutParam> childrenLayoutParams = [];
       for (num yV in yValues) {
@@ -421,14 +402,9 @@ class StackBar<T> extends ChartBodyRender<T> {
       double top = param.layout.bottom - param.xAxis.density * xValue - itemWidth / 2;
       top = param.layout.transform.withYOffset(top);
       double left = param.layout.left;
-      double contentWidth = param.layout.size.width - param.layout.content.horizontal;
+      double contentWidth = param.layout.contentWidth;
       shape = ChartItemLayoutParam.rect(
-        originRect: Rect.fromLTWH(
-          left,
-          top,
-          param.layout.size.width - param.layout.content.horizontal,
-          itemWidth,
-        ),
+        originRect: Rect.fromLTWH(left, top, contentWidth, itemWidth),
       );
       List<ChartItemLayoutParam> childrenLayoutParams = [];
       for (num yV in yValues) {
@@ -445,16 +421,11 @@ class StackBar<T> extends ChartBodyRender<T> {
       shape.xValue = xValue;
     } else {
       double bottom = param.layout.bottom;
-      double contentHeight = param.layout.size.height - param.layout.content.vertical;
+      double contentHeight = param.layout.contentHeight;
       double left = param.layout.left + param.xAxis.density * xValue - itemWidth / 2;
       left = param.layout.transform.withXOffset(left);
       shape = ChartItemLayoutParam.rect(
-        originRect: Rect.fromLTWH(
-          left,
-          param.layout.top,
-          itemWidth,
-          param.layout.size.height - param.layout.content.vertical,
-        ),
+        originRect: Rect.fromLTWH(left, param.layout.top, itemWidth, contentHeight),
       );
       List<ChartItemLayoutParam> childrenLayoutParams = [];
       for (num yV in yValues) {
@@ -478,15 +449,9 @@ class StackBar<T> extends ChartBodyRender<T> {
     if (text != null && text.isNotEmpty) {
       TextPainter legendTextPainter = TextPainter(
         textAlign: TextAlign.center,
-        text: TextSpan(
-          text: text,
-          style: textStyle,
-        ),
+        text: TextSpan(text: text, style: textStyle),
         textDirection: TextDirection.ltr,
-      )..layout(
-          minWidth: 0,
-          maxWidth: param.layout.size.width,
-        );
+      )..layout(minWidth: 0, maxWidth: param.layout.size.width);
       Offset offset = Offset.zero;
       if (param.invert) {
         offset = p.originRect!.center;
@@ -503,15 +468,9 @@ class StackBar<T> extends ChartBodyRender<T> {
     if (text != null) {
       TextPainter legendTextPainter = TextPainter(
         textAlign: TextAlign.center,
-        text: TextSpan(
-          text: text,
-          style: textStyle,
-        ),
+        text: TextSpan(text: text, style: textStyle),
         textDirection: TextDirection.ltr,
-      )..layout(
-          minWidth: 0,
-          maxWidth: param.layout.size.width,
-        );
+      )..layout(minWidth: 0, maxWidth: param.layout.size.width);
       Offset offset = Offset.zero;
       if (param.invert) {
         offset = p.originRect!.centerRight;
