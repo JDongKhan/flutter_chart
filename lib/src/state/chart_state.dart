@@ -3,9 +3,9 @@ part of flutter_chart_plus;
 typedef AnnotationTooltipWidgetBuilder = PreferredSizeWidget? Function(BuildContext context);
 
 abstract class ChartsState extends ChangeNotifier {
-  ///布局信息
-  late ChartCoordinateParam _layout;
-  ChartCoordinateParam get layout => _layout;
+  ///布局参数，方便后续计算使用
+  late ChartCoordinateState _layout;
+  ChartCoordinateState get layout => _layout;
 
   set localPosition(v) {
     if (v != _layout.localPosition) {
@@ -35,10 +35,7 @@ abstract class ChartsState extends ChangeNotifier {
   late bool animal;
 
   ///根据位置缓存配置信息
-  List<ChartLayoutParam> chartsState = [];
-
-  ///获取所在位置的布局信息
-  ChartLayoutParam paramAt(index) => chartsState[index];
+  List<ChartLayoutState> chartsState = [];
 
   ChartsState({
     this.outDraw = false,
@@ -51,7 +48,7 @@ abstract class ChartsState extends ChangeNotifier {
     required Size size,
     required EdgeInsets margin,
     required EdgeInsets padding,
-    required List<ChartLayoutParam> chartsState,
+    required List<ChartLayoutState> chartsState,
     required ChartCoordinateRender coordinate,
   }) {
     if (coordinate is ChartDimensionsCoordinateRender) {

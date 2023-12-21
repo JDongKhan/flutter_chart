@@ -39,21 +39,21 @@ class ChartCircularCoordinateRender extends ChartCoordinateRender {
     ..strokeWidth = borderWidth;
 
   @override
-  void paint(Canvas canvas, ChartsState param) {
-    _ChartCircularCoordinateParam layout = param.layout as _ChartCircularCoordinateParam;
+  void paint(Canvas canvas, ChartsState state) {
+    _ChartCircularCoordinateState layout = state.layout as _ChartCircularCoordinateState;
     _drawCircle(layout, canvas);
-    _drawBackgroundAnnotations(param, canvas);
+    _drawBackgroundAnnotations(state, canvas);
     var index = 0;
     for (var element in charts) {
       element.index = index;
       element.controller = controller;
       if (!element.isInit) {
-        element.init(param);
+        element.init(state);
       }
-      element.draw(canvas, param);
+      element.draw(canvas, state);
       index++;
     }
-    _drawForegroundAnnotations(param, canvas);
+    _drawForegroundAnnotations(state, canvas);
   }
 
   @override
@@ -62,7 +62,7 @@ class ChartCircularCoordinateRender extends ChartCoordinateRender {
   }
 
   ///画背景圆
-  void _drawCircle(_ChartCircularCoordinateParam layout, Canvas canvas) {
+  void _drawCircle(_ChartCircularCoordinateState layout, Canvas canvas) {
     if (strokeCap != null) {
       _paint.strokeCap = strokeCap!;
     }
@@ -91,22 +91,22 @@ class ChartCircularCoordinateRender extends ChartCoordinateRender {
   }
 
   ///背景
-  void _drawBackgroundAnnotations(ChartsState param, Canvas canvas) {
+  void _drawBackgroundAnnotations(ChartsState state, Canvas canvas) {
     backgroundAnnotations?.forEach((element) {
       if (!element.isInit) {
-        element.init(param);
+        element.init(state);
       }
-      element.draw(canvas, param);
+      element.draw(canvas, state);
     });
   }
 
   ///前景
-  void _drawForegroundAnnotations(ChartsState param, Canvas canvas) {
+  void _drawForegroundAnnotations(ChartsState state, Canvas canvas) {
     foregroundAnnotations?.forEach((element) {
       if (!element.isInit) {
-        element.init(param);
+        element.init(state);
       }
-      element.draw(canvas, param);
+      element.draw(canvas, state);
     });
   }
 }

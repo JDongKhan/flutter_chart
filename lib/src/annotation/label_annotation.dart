@@ -38,18 +38,18 @@ class LabelAnnotation extends Annotation {
   TextPainter? _textPainter;
 
   @override
-  void init(ChartsState param) {
-    super.init(param);
-    _textPainter = TextPainter(text: TextSpan(text: text, style: textStyle), textDirection: TextDirection.ltr)..layout(minWidth: 0, maxWidth: param.layout.size.width);
+  void init(ChartsState state) {
+    super.init(state);
+    _textPainter = TextPainter(text: TextSpan(text: text, style: textStyle), textDirection: TextDirection.ltr)..layout(minWidth: 0, maxWidth: state.layout.size.width);
   }
 
   @override
-  void draw(Canvas canvas, ChartsState param) {
-    if (!isNeedDraw(param)) {
+  void draw(Canvas canvas, ChartsState state) {
+    if (!isNeedDraw(state)) {
       return;
     }
-    ChartCoordinateParam layout = param.layout;
-    if (layout is _ChartDimensionCoordinateParam) {
+    ChartCoordinateState layout = state.layout;
+    if (layout is _ChartDimensionCoordinateState) {
       Offset ost;
       if (positions != null) {
         assert(positions!.length == 2, 'positions must be two length');

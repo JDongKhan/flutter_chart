@@ -26,10 +26,10 @@ class LimitAnnotation extends Annotation {
   Path? _path;
 
   @override
-  void init(ChartsState param) {
-    super.init(param);
-    ChartCoordinateParam layout = param.layout;
-    if (layout is _ChartDimensionCoordinateParam) {
+  void init(ChartsState state) {
+    super.init(state);
+    ChartCoordinateState layout = state.layout;
+    if (layout is _ChartDimensionCoordinateState) {
       num yValue = limit;
       double yPos = layout.yAxis[yAxisPosition].getItemHeight(yValue, fixed);
       yPos = layout.transform.transformY(yPos, containPadding: true);
@@ -48,8 +48,8 @@ class LimitAnnotation extends Annotation {
   }
 
   @override
-  void draw(Canvas canvas, ChartsState param) {
-    if (!isNeedDraw(param)) {
+  void draw(Canvas canvas, ChartsState state) {
+    if (!isNeedDraw(state)) {
       return;
     }
     if (_path != null && _paint != null) {

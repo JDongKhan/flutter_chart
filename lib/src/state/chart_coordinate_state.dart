@@ -1,7 +1,7 @@
 part of flutter_chart_plus;
 
 ///坐标系布局信息
-abstract class ChartCoordinateParam {
+abstract class ChartCoordinateState {
   ///尺寸
   final Size size;
 
@@ -14,7 +14,7 @@ abstract class ChartCoordinateParam {
   ///控制点
   final double controlValue;
 
-  ChartCoordinateParam({
+  ChartCoordinateState({
     required this.size,
     required this.margin,
     required this.padding,

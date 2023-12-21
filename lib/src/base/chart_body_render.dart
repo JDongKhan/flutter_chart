@@ -10,7 +10,7 @@ abstract class ChartBodyRender<T> extends _ChartRender {
   final List<T> data;
 
   ///图表的布局状态
-  late ChartLayoutParam state;
+  late ChartLayoutState chartState;
 
   ///在图表中的位置
   late int index;
@@ -26,7 +26,7 @@ abstract class ChartBodyRender<T> extends _ChartRender {
   late ChartController controller;
 
   //上一次的数据
-  List<ChartItemLayoutParam>? getLastData(bool need) {
+  List<ChartItemLayoutState>? getLastData(bool need) {
     if (!need) {
       return null;
     }
@@ -34,7 +34,7 @@ abstract class ChartBodyRender<T> extends _ChartRender {
     if (e == null) {
       return null;
     }
-    return e.state.children;
+    return e.chartState.children;
   }
 
   List<num>? lerpList(List<num>? a, List<num>? b, double t) {

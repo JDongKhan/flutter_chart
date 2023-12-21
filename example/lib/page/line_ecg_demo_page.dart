@@ -73,7 +73,7 @@ class _LineChartEcgDemoPageState extends State<LineChartEcgDemoPage> {
                 // zoomVertical: true,
                 crossHair: const CrossHairStyle(verticalShow: false, horizontalShow: false),
                 //提示的文案信息
-                tooltipBuilder: (BuildContext context, List<ChartLayoutParam> body) {
+                tooltipBuilder: (BuildContext context, List<ChartLayoutState> body) {
                   return PreferredSize(
                     preferredSize: const Size(60, 60),
                     child: Container(

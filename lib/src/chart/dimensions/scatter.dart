@@ -29,20 +29,17 @@ class Scatter<T> extends ChartBodyRender<T> {
 
   late Paint _dotPaint;
   @override
-  void init(ChartsState param) {
-    super.init(param);
+  void init(ChartsState state) {
+    super.init(state);
     _dotPaint = Paint()..strokeWidth = 1;
   }
 
   @override
-  void draw(Canvas canvas, ChartsState param) {
-    _ChartDimensionCoordinateParam layout = param.layout as _ChartDimensionCoordinateParam;
+  void draw(Canvas canvas, ChartsState state) {
+    _ChartDimensionCoordinateState layout = state.layout as _ChartDimensionCoordinateState;
     //offset.dx 滚动偏移  (src.zoom - 1) * (src.size.width / 2) 缩放
     double left = layout.left;
     left = layout.transform.withXScroll(left);
-
-    // double right = param.size.width - param.contentMargin.right;
-    // double top = param.contentMargin.top;
     double bottom = layout.size.height - layout.bottom;
 
     //遍历数据 处理数据信息

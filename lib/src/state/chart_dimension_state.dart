@@ -1,6 +1,6 @@
 part of flutter_chart_plus;
 
-class _ChartDimensionCoordinateParam extends ChartCoordinateParam {
+class _ChartDimensionCoordinateState extends ChartCoordinateState {
   ///y坐标轴
   final List<YAxis> yAxis;
 
@@ -10,7 +10,7 @@ class _ChartDimensionCoordinateParam extends ChartCoordinateParam {
   ///是否反转
   final bool invert;
 
-  _ChartDimensionCoordinateParam({
+  _ChartDimensionCoordinateState({
     required super.size,
     required super.margin,
     required super.padding,
@@ -75,7 +75,7 @@ class _ChartDimensionState extends ChartsState {
     required ChartDimensionsCoordinateRender coordinate,
     double controlValue = 1,
   }) {
-    super._layout = _ChartDimensionCoordinateParam(
+    super._layout = _ChartDimensionCoordinateState(
       size: size,
       margin: margin,
       padding: padding,
@@ -93,14 +93,14 @@ class _ChartDimensionState extends ChartsState {
 
   @override
   void scrollByDelta(Offset delta) {
-    _ChartDimensionCoordinateParam param = super.layout as _ChartDimensionCoordinateParam;
-    Offset newOffset = layout.offset.translate(-delta.dx, param.invert ? delta.dy : -delta.dy);
+    _ChartDimensionCoordinateState layout = super.layout as _ChartDimensionCoordinateState;
+    Offset newOffset = layout.offset.translate(-delta.dx, layout.invert ? delta.dy : -delta.dy);
     scroll(newOffset);
   }
 
   @override
   void scroll(Offset offset) {
-    _ChartDimensionCoordinateParam param = super.layout as _ChartDimensionCoordinateParam;
+    _ChartDimensionCoordinateState layout = super.layout as _ChartDimensionCoordinateState;
     //校准偏移，不然缩小后可能起点都在中间了，或者无限滚动
     double x = offset.dx;
     // double y = newOffset.dy;
@@ -108,7 +108,7 @@ class _ChartDimensionState extends ChartsState {
       x = 0;
     }
     //放大的场景  offset会受到zoom的影响，所以这里的宽度要先剔除zoom的影响再比较
-    double chartContentWidth = param.xAxis.density * param.xAxis.max;
+    double chartContentWidth = layout.xAxis.density * layout.xAxis.max;
     double chartViewPortWidth = layout.size.width - layout.content.horizontal;
     //处理成跟缩放无关的偏移
     double maxOffset = (chartContentWidth - chartViewPortWidth);
@@ -121,13 +121,13 @@ class _ChartDimensionState extends ChartsState {
 
     //y变化
     double y = 0;
-    if (param.invert) {
+    if (layout.invert) {
       y = offset.dy;
       if (y < 0) {
         y = 0;
       }
       //放大的场景  offset会受到zoom的影响，所以这里的宽度要先剔除zoom的影响再比较
-      double chartContentWidth = param.xAxis.density * param.xAxis.max;
+      double chartContentWidth = layout.xAxis.density * layout.xAxis.max;
       double chartViewPortWidth = layout.size.height - layout.content.vertical;
       //处理成跟缩放无关的偏移
       double maxOffset = (chartContentWidth - chartViewPortWidth);

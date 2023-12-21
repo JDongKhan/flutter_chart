@@ -2,7 +2,7 @@ part of flutter_chart_plus;
 
 /// @author JD
 ///
-typedef TooltipWidgetBuilder = PreferredSizeWidget? Function(BuildContext context, List<ChartLayoutParam> list);
+typedef TooltipWidgetBuilder = PreferredSizeWidget? Function(BuildContext context, List<ChartLayoutState> list);
 // typedef ChartCoordinateRenderBuilder = ChartCoordinateRender Function();
 
 ///本widget只是起到提供Canvas的功能，不支持任何传参，避免参数来回传递导致难以维护以及混乱，需要自定义可自行去对应渲染器
@@ -144,7 +144,7 @@ class _ChartWidgetState extends State<ChartWidget> {
 
         PreferredSizeWidget? widget = _controller.tooltipWidgetBuilder?.call(context);
         TooltipWidgetBuilder? tooltipBuilder = baseChart.tooltipBuilder;
-        widget ??= tooltipBuilder?.call(context, _controller.chartsParamList);
+        widget ??= tooltipBuilder?.call(context, _controller.chartsStateList);
 
         if (widget == null) {
           return const SizedBox.shrink();
@@ -218,11 +218,11 @@ class _ChartCoreWidget extends StatefulWidget {
 class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderStateMixin {
   double _beforeZoom = 1.0;
   late Offset _lastOffset;
-  late ChartsState _chartParam;
+  late ChartsState _chartState;
   get _controller => widget.chartCoordinateRender.controller;
 
   ///缓存所有chart的状态
-  late List<ChartLayoutParam> _allChartState;
+  late List<ChartLayoutState> _allChartState;
   AnimationController? _animationController;
   @override
   void initState() {
@@ -245,13 +245,13 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderS
     //关联子状态
     for (int i = 0; i < charts.length; i++) {
       ChartBodyRender body = charts[i];
-      ChartLayoutParam c = ChartLayoutParam();
+      ChartLayoutState c = ChartLayoutState();
       c.left = 0;
       c.index = i;
       c.right = widget.size.width;
       //还原状态
       body.isInit = false;
-      body.state = c;
+      body.chartState = c;
       _allChartState.add(c);
     }
   }
@@ -281,7 +281,7 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderS
 
   @override
   Widget build(BuildContext context) {
-    _chartParam = ChartsState.coordinate(
+    _chartState = ChartsState.coordinate(
       size: widget.size,
       margin: widget.chartCoordinateRender.margin,
       padding: widget.chartCoordinateRender.padding,
@@ -297,14 +297,14 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderS
         if (!_checkForegroundAnnotationsEvent(details.localPosition)) {
           Offset localPosition = details.localPosition;
           hitTest(localPosition);
-          _chartParam.localPosition = localPosition;
+          _chartState.localPosition = localPosition;
         } else {
-          _chartParam.localPosition = null;
+          _chartState.localPosition = null;
         }
       },
       onScaleStart: (ScaleStartDetails details) {
-        _beforeZoom = _chartParam.layout.zoom;
-        _lastOffset = _chartParam.layout.offset;
+        _beforeZoom = _chartState.layout.zoom;
+        _lastOffset = _chartState.layout.offset;
         // if (widget.chartCoordinateRender is DimensionsChartCoordinateRender) {
         //   DimensionsChartCoordinateRender render = widget.chartCoordinateRender as DimensionsChartCoordinateRender;
         //   //计算中间值 用于根据手势
@@ -322,12 +322,12 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderS
 
             // double startOffset = centerV * render.xAxis.density - widget.chartCoordinateRender.size.width / 2;
             //计算缩放和校准偏移  暂不支持垂直方向缩放，因为应该很少有这个需求
-            double startOffset = (_lastOffset.dx + _chartParam.layout.size.width / 2) * zoom / _beforeZoom - _chartParam.layout.size.width / 2;
-            _chartParam.zoom = zoom;
-            _chartParam.scroll(Offset(startOffset, 0));
+            double startOffset = (_lastOffset.dx + _chartState.layout.size.width / 2) * zoom / _beforeZoom - _chartState.layout.size.width / 2;
+            _chartState.zoom = zoom;
+            _chartState.scroll(Offset(startOffset, 0));
           }
         } else if (details.pointerCount == 1 && details.scale == 1) {
-          _chartParam.scrollByDelta(details.focalPointDelta);
+          _chartState.scrollByDelta(details.focalPointDelta);
         }
       },
       onScaleEnd: (ScaleEndDetails details) {
@@ -338,7 +338,7 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderS
         child: CustomPaint(
           painter: _ChartPainter(
             chart: widget.chartCoordinateRender,
-            state: _chartParam,
+            state: _chartState,
           ),
         ),
       ),
@@ -360,15 +360,15 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderS
   //   _scrollAnimationController = AnimationController(vsync: this, duration: duration);
   //
   //   Animation<double> animation = Tween<double>(
-  //     begin: _chartParam.offset.dx,
-  //     end: _chartParam.offset.dx - distanceToScroll,
+  //     begin: _chartState.offset.dx,
+  //     end: _chartState.offset.dx - distanceToScroll,
   //   ).animate(CurvedAnimation(
   //     parent: _scrollAnimationController!,
   //     curve: Curves.easeOutCubic,
   //   ));
   //
   //   animation.addListener(() {
-  //     _chartParam.scroll(Offset(animation.value, 0));
+  //     _chartState.scroll(Offset(animation.value, 0));
   //   });
   //   _scrollAnimationController?.forward();
   // }
@@ -394,13 +394,13 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderS
     for (int i = 0; i < charts.length; i++) {
       ChartBodyRender body = charts[i];
       //先判断是否选中，此场景是第一次渲染之后点击才有，所以用老数据即可
-      ChartLayoutParam layoutParam = body.state;
-      layoutParam.selectedIndex = null;
-      List<ChartItemLayoutParam> childrenLayoutParams = body.state.children;
-      for (int index = 0; index < childrenLayoutParams.length; index++) {
-        ChartItemLayoutParam child = childrenLayoutParams[index];
+      ChartLayoutState layoutState = body.chartState;
+      layoutState.selectedIndex = null;
+      List<ChartItemLayoutState> childrenLayoutState = layoutState.children;
+      for (int index = 0; index < childrenLayoutState.length; index++) {
+        ChartItemLayoutState child = childrenLayoutState[index];
         if (child.hitTest(point)) {
-          layoutParam.selectedIndex = index;
+          layoutState.selectedIndex = index;
           // debugPrint("选中了$index");
           break;
         }
@@ -432,9 +432,9 @@ class _ChartPainter extends CustomPainter {
     if (oldDelegate.chart != chart) {
       return true;
     }
-    ChartsState chartParam = oldDelegate.state;
-    ChartsState newChartParam = state;
-    if (chartParam != newChartParam) {
+    ChartsState chartState = oldDelegate.state;
+    ChartsState newChartState = state;
+    if (chartState != newChartState) {
       return true;
     }
     return false;

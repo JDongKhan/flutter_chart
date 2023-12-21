@@ -1,13 +1,13 @@
 part of flutter_chart_plus;
 
-class _ChartCircularCoordinateParam extends ChartCoordinateParam {
+class _ChartCircularCoordinateState extends ChartCoordinateState {
   //边框宽度
   final double borderWidth;
 
   ///弧口方向
   final ArcPosition arcPosition;
 
-  _ChartCircularCoordinateParam({
+  _ChartCircularCoordinateState({
     required super.size,
     required super.margin,
     required super.padding,
@@ -81,7 +81,7 @@ class _ChartCircularState extends ChartsState {
     required ChartCircularCoordinateRender coordinate,
     double controlValue = 1,
   }) {
-    super._layout = _ChartCircularCoordinateParam(
+    super._layout = _ChartCircularCoordinateState(
       size: size,
       margin: margin,
       padding: padding,

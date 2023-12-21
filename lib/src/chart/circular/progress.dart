@@ -38,8 +38,8 @@ class Progress<T> extends ChartBodyRender<T> {
   Paint? _endPaint;
 
   @override
-  void init(ChartsState param) {
-    super.init(param);
+  void init(ChartsState state) {
+    super.init(state);
 
     if (strokeCap != null) {
       _paint.strokeCap = strokeCap!;
@@ -54,8 +54,8 @@ class Progress<T> extends ChartBodyRender<T> {
   }
 
   @override
-  void draw(Canvas canvas, ChartsState param) {
-    _ChartCircularCoordinateParam layout = param.layout as _ChartCircularCoordinateParam;
+  void draw(Canvas canvas, ChartsState state) {
+    _ChartCircularCoordinateState layout = state.layout as _ChartCircularCoordinateState;
     Offset center = layout.center;
     double radius = layout.radius;
     int index = 0;
@@ -76,7 +76,7 @@ class Progress<T> extends ChartBodyRender<T> {
       if (lastXvs != null) {
         assert(lastXvs > po, '数据必须降序，否则会被挡住');
       }
-      double sweepAngle = fullSweepAngle * po * param.layout.controlValue;
+      double sweepAngle = fullSweepAngle * po * layout.controlValue;
       Path path = Path()
         ..addArc(
           Rect.fromCenter(center: center, width: radius * 2, height: radius * 2),

@@ -23,7 +23,7 @@ class CrossHairStyle {
   });
 }
 
-typedef ChartTooltipFormatter = InlineSpan? Function(List<ChartLayoutParam>);
+typedef ChartTooltipFormatter = InlineSpan? Function(List<ChartLayoutState>);
 
 ///坐标渲染器， 每次刷新会重新构造，切忌不要存放状态数据，数据都在state里面
 abstract class ChartCoordinateRender {
@@ -94,5 +94,5 @@ abstract class ChartCoordinateRender {
 
   bool canZoom();
 
-  void paint(Canvas canvas, ChartsState param);
+  void paint(Canvas canvas, ChartsState state);
 }

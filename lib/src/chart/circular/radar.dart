@@ -76,10 +76,10 @@ class Radar<T> extends ChartBodyRender<T> {
   Paint? _fillDataLinePaint;
 
   @override
-  void init(ChartsState param) {
-    _ChartCircularCoordinateParam layout = param.layout as _ChartCircularCoordinateParam;
+  void init(ChartsState state) {
+    _ChartCircularCoordinateState layout = state.layout as _ChartCircularCoordinateState;
 
-    super.init(param);
+    super.init(state);
     _linePathList.clear();
     _borderLinePaths.clear();
     _textPainterList.clear();
@@ -141,7 +141,7 @@ class Radar<T> extends ChartBodyRender<T> {
           textDirection: TextDirection.ltr,
         )..layout(
             minWidth: 0,
-            maxWidth: param.layout.size.width,
+            maxWidth: layout.size.width,
           );
         bool isLeft = x < center.dx;
         bool isBottom = y >= center.dy;
@@ -183,7 +183,7 @@ class Radar<T> extends ChartBodyRender<T> {
             textDirection: TextDirection.ltr,
           )..layout(
               minWidth: 0,
-              maxWidth: param.layout.size.width,
+              maxWidth: layout.size.width,
             );
           bool isLeft = dataX < center.dx;
           bool isTop = dataY <= (center.dy - radius) && legendList != null;
@@ -216,8 +216,8 @@ class Radar<T> extends ChartBodyRender<T> {
   final Map<int, Path> _dataLinePathList = {};
 
   @override
-  void draw(Canvas canvas, ChartsState param) {
-    _ChartCircularCoordinateParam layout = param.layout as _ChartCircularCoordinateParam;
+  void draw(Canvas canvas, ChartsState state) {
+    _ChartCircularCoordinateState layout = state.layout as _ChartCircularCoordinateState;
     double dividerRadius = layout.radius / count;
     if (borderStyle == RadarBorderStyle.circle) {
       for (int ii = 0; ii < count; ii++) {

@@ -3,9 +3,11 @@ part of flutter_chart_plus;
 /// @author jd
 const double _maxWidth = 15;
 
+typedef ChartLayoutParam = ChartLayoutState;
+
 ///每个图形(点/柱状图/扇形)的状态
-class ChartLayoutParam {
-  ChartLayoutParam();
+class ChartLayoutState {
+  ChartLayoutState();
 
   ///数据所在数组的位置
   int? index;
@@ -20,11 +22,11 @@ class ChartLayoutParam {
   double? right;
 
   ///某条数据下 可能会有多条数据
-  List<ChartItemLayoutParam> children = [];
+  List<ChartItemLayoutState> children = [];
 }
 
 /// 每x坐标对应的布局信息
-class ChartItemLayoutParam extends ChartLayoutParam {
+class ChartItemLayoutState extends ChartLayoutState {
   ///图形的区域  和  path 代表同一个图形，只不过用Rect方便计算。
   Rect? originRect;
 
@@ -33,10 +35,10 @@ class ChartItemLayoutParam extends ChartLayoutParam {
 
   ///此处用链表来解决查找附近其他图形的逻辑
   ///前面一个图形的信息 目的为了解决图形之间的关联信息
-  ChartItemLayoutParam? preShapeState;
+  ChartItemLayoutState? preShapeState;
 
   ///下一个图形的信息
-  ChartItemLayoutParam? nextShapeState;
+  ChartItemLayoutState? nextShapeState;
 
   ///对应数据x轴的原始值
   num? xValue;
@@ -48,18 +50,18 @@ class ChartItemLayoutParam extends ChartLayoutParam {
   num? yValue;
 
   ///布局信息 方便热区计算
-  ChartCoordinateParam? layout;
+  ChartCoordinateState? layout;
 
-  ChartItemLayoutParam();
+  ChartItemLayoutState();
 
   ///矩形
-  ChartItemLayoutParam.rect({required this.originRect});
+  ChartItemLayoutState.rect({required this.originRect});
 
   ///路径
-  ChartItemLayoutParam.path({required this.path});
+  ChartItemLayoutState.path({required this.path});
 
   ///弧 用path保存 path不便于计算
-  ChartItemLayoutParam.arc({
+  ChartItemLayoutState.arc({
     required Offset center, // 中心点
     required double innerRadius, // 小圆半径
     required double outRadius, // 大圆半径
@@ -96,15 +98,15 @@ class ChartItemLayoutParam extends ChartLayoutParam {
 
   ///偏移/放大操作后，计算其真实位置
   Rect? getRealRect() {
-    ChartCoordinateParam? layout = this.layout;
+    ChartCoordinateState? layout = this.layout;
     if (layout == null) {
       return originRect;
     }
-    if (this is ChartLineLayoutParam) {
+    if (this is ChartLineLayoutState) {
       final double left = layout.left;
       final double top = layout.top;
       final double bottom = layout.bottom;
-      final ChartLineLayoutParam p = this as ChartLineLayoutParam;
+      final ChartLineLayoutState p = this as ChartLineLayoutState;
       final double dotRadius = originRect!.width / 2;
       double xPos = xValue! * p.xAxis.density + left;
       xPos = layout.transform.withXScroll(xPos);
@@ -200,7 +202,7 @@ class ChartItemLayoutParam extends ChartLayoutParam {
 }
 
 ///象限坐标系的布局信息
-class ChartLineLayoutParam extends ChartItemLayoutParam {
+class ChartLineLayoutState extends ChartItemLayoutState {
   ///y坐标轴
   late List<YAxis> yAxis;
 

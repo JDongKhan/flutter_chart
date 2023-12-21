@@ -19,7 +19,7 @@ class ChartController {
   ChartsState? _state;
 
   ///根据位置缓存配置信息
-  List<ChartLayoutParam> get chartsParamList => _state?.chartsState ?? [];
+  List<ChartLayoutState> get chartsStateList => _state?.chartsState ?? [];
 
   //外部设置的弹框位置，与点击的位置有区别
   Offset? _outLocation;

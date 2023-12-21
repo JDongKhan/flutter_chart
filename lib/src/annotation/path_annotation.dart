@@ -24,8 +24,8 @@ class PathAnnotation extends Annotation {
   Paint? _paint;
   Path? _path;
   @override
-  void init(ChartsState param) {
-    super.init(param);
+  void init(ChartsState state) {
+    super.init(state);
     _paint = Paint()
       ..color = color
       ..style = PaintingStyle.fill
@@ -33,23 +33,23 @@ class PathAnnotation extends Annotation {
 
     _path = path;
     if (anchor != null) {
-      Offset ost = anchor!(param.layout.size);
+      Offset ost = anchor!(state.layout.size);
       final matrix = Matrix4.identity()..leftTranslate(ost.dx, ost.dy);
       _path = path.transform(matrix.storage);
     }
   }
 
   @override
-  void draw(Canvas canvas, ChartsState param) {
-    if (!isNeedDraw(param)) {
+  void draw(Canvas canvas, ChartsState state) {
+    if (!isNeedDraw(state)) {
       return;
     }
     if (_paint != null && _path != null) {
       if (!fixed) {
         final scaleMatrix = Matrix4.identity();
-        scaleMatrix.translate(-(param.layout.offset.dx - param.layout.left), 0);
-        if (param.layout.zoom != 1) {
-          scaleMatrix.scale(param.layout.zoom, 1);
+        scaleMatrix.translate(-(state.layout.offset.dx - state.layout.left), 0);
+        if (state.layout.zoom != 1) {
+          scaleMatrix.scale(state.layout.zoom, 1);
         }
       }
       canvas.drawPath(_path!, _paint!);

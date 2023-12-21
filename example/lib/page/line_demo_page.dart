@@ -79,7 +79,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                       padding: const EdgeInsets.only(left: 0, right: 0),
                       animationDuration: const Duration(seconds: 1),
                       //提示的文案信息
-                      tooltipBuilder: (BuildContext context, List<ChartLayoutParam> body) {
+                      tooltipBuilder: (BuildContext context, List<ChartLayoutState> body) {
                         String text = '我可以滚动我可以滚动\n我可以滚动我可以滚动\n我可以滚动我可以滚动\n我可以滚动我可以滚动';
                         return PreferredSize(
                           preferredSize: const Size(60, 100),
@@ -153,7 +153,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                       margin: const EdgeInsets.only(left: 40, top: 5, right: 0, bottom: 30),
                       //提示的文案信息
                       crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
-                      tooltipBuilder: (BuildContext context, List<ChartLayoutParam> body) {
+                      tooltipBuilder: (BuildContext context, List<ChartLayoutState> body) {
                         return PreferredSize(
                           preferredSize: const Size(60, 60),
                           child: Container(
@@ -194,7 +194,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                       margin: const EdgeInsets.only(left: 40, top: 5, right: 0, bottom: 30),
                       //提示的文案信息
                       crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
-                      tooltipBuilder: (BuildContext context, List<ChartLayoutParam> body) {
+                      tooltipBuilder: (BuildContext context, List<ChartLayoutState> body) {
                         return PreferredSize(
                           preferredSize: const Size(60, 60),
                           child: Container(
@@ -248,7 +248,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                       margin: const EdgeInsets.only(left: 40, top: 5, right: 0, bottom: 30),
                       //提示的文案信息
                       crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
-                      tooltipBuilder: (BuildContext context, List<ChartLayoutParam> body) {
+                      tooltipBuilder: (BuildContext context, List<ChartLayoutState> body) {
                         return PreferredSize(
                           preferredSize: const Size(60, 60),
                           child: Container(
@@ -305,7 +305,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                         margin: const EdgeInsets.only(left: 40, top: 5, right: 0, bottom: 30),
                         //提示的文案信息
                         crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
-                        tooltipBuilder: (BuildContext context, List<ChartLayoutParam> body) {
+                        tooltipBuilder: (BuildContext context, List<ChartLayoutState> body) {
                           return PreferredSize(
                             preferredSize: const Size(60, 60),
                             child: Container(
@@ -369,7 +369,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                       margin: const EdgeInsets.only(left: 40, top: 5, right: 30, bottom: 30),
                       //提示的文案信息
                       crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
-                      tooltipBuilder: (BuildContext context, List<ChartLayoutParam> body) {
+                      tooltipBuilder: (BuildContext context, List<ChartLayoutState> body) {
                         return PreferredSize(
                           preferredSize: const Size(60, 60),
                           child: Container(

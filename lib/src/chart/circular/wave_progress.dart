@@ -26,9 +26,9 @@ class WaveProgress<T> extends ChartBodyRender<T> {
   late TransformUtils _transform;
 
   @override
-  void init(ChartsState param) {
-    super.init(param);
-    _ChartCircularCoordinateParam layout = param.layout as _ChartCircularCoordinateParam;
+  void init(ChartsState state) {
+    super.init(state);
+    _ChartCircularCoordinateState layout = state.layout as _ChartCircularCoordinateState;
     Offset center = layout.center;
     double radius = layout.radius;
     //处理圆形场景
@@ -36,21 +36,21 @@ class WaveProgress<T> extends ChartBodyRender<T> {
       Offset progressCenter = Offset(center.dx, center.dy + radius);
       _transform = TransformUtils(
         anchor: progressCenter,
-        size: param.layout.size,
-        offset: param.layout.offset,
-        padding: param.layout.padding,
+        size: layout.size,
+        offset: layout.offset,
+        padding: layout.padding,
         reverseX: false,
         reverseY: true,
       );
     } else {
       //半圆就不用特别处理了
-      _transform = param.layout.transform;
+      _transform = layout.transform;
     }
   }
 
   @override
-  void draw(Canvas canvas, ChartsState param) {
-    _ChartCircularCoordinateParam layout = param.layout as _ChartCircularCoordinateParam;
+  void draw(Canvas canvas, ChartsState state) {
+    _ChartCircularCoordinateState layout = state.layout as _ChartCircularCoordinateState;
     Offset center = layout.center;
     double radius = layout.radius;
     canvas.clipPath(Path()..addOval(Rect.fromCircle(center: center, radius: radius)));

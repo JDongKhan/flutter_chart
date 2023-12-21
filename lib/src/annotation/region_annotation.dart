@@ -19,8 +19,8 @@ class RegionAnnotation extends Annotation {
 
   Paint? _paint;
   @override
-  void init(ChartsState param) {
-    super.init(param);
+  void init(ChartsState state) {
+    super.init(state);
     _paint = Paint()
       ..color = color
       ..style = PaintingStyle.fill
@@ -28,12 +28,12 @@ class RegionAnnotation extends Annotation {
   }
 
   @override
-  void draw(Canvas canvas, ChartsState param) {
-    if (!isNeedDraw(param)) {
+  void draw(Canvas canvas, ChartsState state) {
+    if (!isNeedDraw(state)) {
       return;
     }
-    ChartCoordinateParam layout = param.layout;
-    if (layout is _ChartDimensionCoordinateParam) {
+    ChartCoordinateState layout = state.layout;
+    if (layout is _ChartDimensionCoordinateState) {
       assert(positions.length == 2, 'positions must be two length');
       num startValue = positions[0];
       num endValue = positions[1];
