@@ -31,7 +31,7 @@ class LimitAnnotation extends Annotation {
     ChartCoordinateState layout = state.layout;
     if (layout is ChartDimensionCoordinateState) {
       num yValue = limit;
-      double yPos = layout.yAxis[yAxisPosition].getItemHeight(yValue, fixed);
+      double yPos = layout.yAxis[yAxisPosition].getHeight(yValue, fixed);
       yPos = layout.transform.transformY(yPos, containPadding: true);
       Offset start = Offset(layout.padding.left, yPos);
       Offset end = Offset(layout.size.width - layout.padding.right, yPos);

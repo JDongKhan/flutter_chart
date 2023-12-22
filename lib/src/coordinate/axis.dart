@@ -66,7 +66,7 @@ class XAxis {
   }) : max = max ?? count * interval;
 
   ///根据元数据计算出对应的宽带
-  double getItemWidth(num value, [bool fixed = false]) {
+  double getWidth(num value, [bool fixed = false]) {
     if (fixed) {
       return value * fixedDensity;
     }
@@ -182,7 +182,7 @@ class YAxis {
   }
 
   ///根据元数据计算出对应的高度
-  double getItemHeight(num value, [bool fixed = false]) {
+  double getHeight(num value, [bool fixed = false]) {
     if (fixed) {
       return (value - min) * fixedDensity;
     }

@@ -38,11 +38,11 @@ class RegionAnnotation extends Annotation {
       num startValue = positions[0];
       num endValue = positions[1];
       //区间start
-      double startPos = layout.xAxis.getItemWidth(startValue, fixed);
+      double startPos = layout.xAxis.getWidth(startValue, fixed);
       startPos = layout.transform.transformX(startPos);
       startPos = layout.transform.withXScroll(startPos);
       //区间end
-      double endPos = layout.xAxis.getItemWidth(endValue, fixed);
+      double endPos = layout.xAxis.getWidth(endValue, fixed);
       endPos = layout.transform.transformX(endPos);
       endPos = layout.transform.withXScroll(endPos);
       double top = layout.top;

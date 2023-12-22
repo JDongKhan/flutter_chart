@@ -112,7 +112,7 @@ class ChartItemLayoutState extends ChartLayoutState {
       double xPos = xValue! * p.xAxis.density + left;
       xPos = layout.transform.withXScroll(xPos);
       if (yValue != null) {
-        double yPos = bottom - p.yAxis[p.yAxisPosition].getItemHeight(yValue!);
+        double yPos = bottom - p.yAxis[p.yAxisPosition].getHeight(yValue!);
         Offset currentPoint = Offset(xPos, yPos);
         return Rect.fromCenter(center: currentPoint, width: dotRadius, height: dotRadius);
       } else {

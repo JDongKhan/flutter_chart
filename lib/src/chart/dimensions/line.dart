@@ -230,7 +230,7 @@ mixin NormalLineMixin<T> on ChartBodyRender<T> {
         //计算点的位置
         num yValue = yValues[valueIndex];
         //y轴位置
-        double yPos = bottom - layout.yAxis[yAxisPosition].getItemHeight(yValue);
+        double yPos = bottom - layout.yAxis[yAxisPosition].getHeight(yValue);
         Offset currentPoint = Offset(xPos, yPos);
         lineInfo.startPoint ??= currentPoint;
 
@@ -346,7 +346,7 @@ mixin NormalLineMixin<T> on ChartBodyRender<T> {
           break;
         }
         for (ChartItemLayoutState childLayoutState in children) {
-          double yPos = layout.getPosForY(layout.yAxis[yAxisPosition].getItemHeight(childLayoutState.yValue!));
+          double yPos = layout.getPosForY(layout.yAxis[yAxisPosition].getHeight(childLayoutState.yValue!));
           Offset currentPoint = Offset(xPos, yPos);
           childLayoutState.setOriginRect(Rect.fromCenter(center: currentPoint, width: _instance.dotRadius, height: _instance.dotRadius));
           //画点
@@ -485,7 +485,7 @@ mixin AnimalLineMixin<T> on ChartBodyRender<T> {
         //计算点的位置
         num yValue = yValues[valueIndex];
         //y轴位置
-        double yPos = layout.getPosForY(layout.yAxis[yAxisPosition].getItemHeight(yValue));
+        double yPos = layout.getPosForY(layout.yAxis[yAxisPosition].getHeight(yValue));
         yPos = layout.transform.withYScroll(yPos);
         Offset currentPoint = Offset(xPos, yPos);
         //数据过滤
