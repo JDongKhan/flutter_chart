@@ -3,9 +3,10 @@ part of flutter_chart_plus;
 /// @author jd
 const double _maxWidth = 15;
 
+@Deprecated('instead of  using [ChartLayoutState]')
 typedef ChartLayoutParam = ChartLayoutState;
 
-///每个图形(点/柱状图/扇形)的状态
+///每个图形折线/bar的状态
 class ChartLayoutState {
   ChartLayoutState();
 
