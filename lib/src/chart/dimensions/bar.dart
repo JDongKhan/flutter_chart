@@ -283,7 +283,7 @@ class StackBar<T> extends ChartBodyRender<T> with BarHorizontalMinx<T>, BarVerti
         yValues = lerpList(lastYPov, yValues, layout.controlValue) ?? yValues;
       }
 
-      p = layoutStackBar(layout, xValue, yValues);
+      p = _measureStackBar(layout, xValue, yValues);
 
       childrenLayoutState.add(p..index = index);
 
@@ -308,7 +308,7 @@ class StackBar<T> extends ChartBodyRender<T> with BarHorizontalMinx<T>, BarVerti
           canvas.drawRect(cp.originRect!, _paint);
           //画文案
           if (layout.controlValue == 1 && valueString != null && valueString.isNotEmpty) {
-            drawText(canvas, layout, valueString[stackIndex], cp);
+            _drawText(canvas, layout, valueString[stackIndex], cp);
           }
         }
         stackIndex++;
@@ -327,7 +327,7 @@ mixin BarHorizontalMinx<T> on ChartBodyRender<T> {
   late StackBar<T> _instance;
 
   ///水平排列图形
-  ChartItemLayoutState layoutStackBar(ChartDimensionCoordinateState layout, num xValue, List<num> yValues) {
+  ChartItemLayoutState _measureStackBar(ChartDimensionCoordinateState layout, num xValue, List<num> yValues) {
     if (_instance.direction == Axis.vertical) {
       return ChartItemLayoutState()..xValue = xValue;
     }
@@ -389,7 +389,7 @@ mixin BarHorizontalMinx<T> on ChartBodyRender<T> {
     return shape;
   }
 
-  void drawText(Canvas canvas, ChartDimensionCoordinateState layout, String? text, ChartItemLayoutState p) {
+  void _drawText(Canvas canvas, ChartDimensionCoordinateState layout, String? text, ChartItemLayoutState p) {
     if (_instance.direction == Axis.vertical) {
       return;
     }
@@ -415,9 +415,9 @@ mixin BarHorizontalMinx<T> on ChartBodyRender<T> {
 mixin BarVerticalBarMinx<T> on ChartBodyRender<T>, BarHorizontalMinx<T> {
   ///垂直排列图形
   @override
-  ChartItemLayoutState layoutStackBar(ChartDimensionCoordinateState layout, num xValue, List<num> yValues) {
+  ChartItemLayoutState _measureStackBar(ChartDimensionCoordinateState layout, num xValue, List<num> yValues) {
     if (_instance.direction == Axis.horizontal) {
-      return super.layoutStackBar(layout, xValue, yValues);
+      return super._measureStackBar(layout, xValue, yValues);
     }
     num total = layout.yAxis[yAxisPosition].max;
     if (_instance.full) {
@@ -475,9 +475,9 @@ mixin BarVerticalBarMinx<T> on ChartBodyRender<T>, BarHorizontalMinx<T> {
   }
 
   @override
-  void drawText(Canvas canvas, ChartDimensionCoordinateState layout, String? text, ChartItemLayoutState p) {
+  void _drawText(Canvas canvas, ChartDimensionCoordinateState layout, String? text, ChartItemLayoutState p) {
     if (_instance.direction == Axis.horizontal) {
-      return super.drawText(canvas, layout, text, p);
+      return super._drawText(canvas, layout, text, p);
     }
     if (text != null && text.isNotEmpty) {
       TextPainter legendTextPainter = TextPainter(
