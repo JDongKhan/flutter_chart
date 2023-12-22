@@ -13,5 +13,7 @@ class _ChartRender {
     isInit = true;
   }
 
-  void draw(Canvas canvas, ChartsState state) {}
+  void draw(Canvas canvas, ChartsState state) {
+    // debugPrint("此处绘制代码");
+  }
 }

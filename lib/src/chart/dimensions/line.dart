@@ -148,7 +148,7 @@ class Line<T> extends ChartBodyRender<T> with NormalLineMixin<T>, AnimalLineMixi
 
 ///正常模式下绘图操作  基于path做transform变换，但是不好做差值动画
 mixin NormalLineMixin<T> on ChartBodyRender<T> {
-  Map<int, LineInfo>? pathMap;
+  Map<int, LineInfo>? _pathMap;
 
   late Line<T> _instance;
 
@@ -173,11 +173,11 @@ mixin NormalLineMixin<T> on ChartBodyRender<T> {
       Future.delayed(const Duration(microseconds: 0), () {
         return asyncInitWithOutAnimal(state);
       }).then((value) {
-        pathMap = value;
+        _pathMap = value;
         state.setNeedsDraw();
       });
     } else {
-      pathMap = asyncInitWithOutAnimal(state);
+      _pathMap = asyncInitWithOutAnimal(state);
     }
   }
 
@@ -272,8 +272,8 @@ mixin NormalLineMixin<T> on ChartBodyRender<T> {
 
   void _drawWithOutAnimal(Canvas canvas, ChartsState state) {
     //开始绘制了
-    if (pathMap != null) {
-      _drawLineWithOut(state, canvas, pathMap!);
+    if (_pathMap != null) {
+      _drawLineWithOut(state, canvas, _pathMap!);
     }
   }
 
