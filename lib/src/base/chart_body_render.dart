@@ -5,7 +5,7 @@ part of flutter_chart_plus;
 typedef ChartPosition<T> = num Function(T);
 
 ///图表主体
-abstract class ChartBodyRender<T> extends _ChartRender {
+class ChartBodyRender<T> extends _ChartRender {
   ///数据源
   final List<T> data;
 

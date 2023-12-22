@@ -3,7 +3,7 @@ part of flutter_chart_plus;
 /// @author jd
 
 ///图表里的渲染器父类，直接子类包括ChartBodyRender和Annotation
-abstract class _ChartRender {
+class _ChartRender {
   _ChartRender();
 
   bool isInit = false;
@@ -13,5 +13,5 @@ abstract class _ChartRender {
     isInit = true;
   }
 
-  void draw(Canvas canvas, ChartsState state);
+  void draw(Canvas canvas, ChartsState state) {}
 }

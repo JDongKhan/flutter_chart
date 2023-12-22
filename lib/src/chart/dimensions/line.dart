@@ -3,7 +3,7 @@ part of flutter_chart_plus;
 typedef LinePosition<T> = List<num> Function(T);
 
 /// @author JD
-class Line<T> extends ChartBodyRender<T> {
+class Line<T> extends ChartBodyRender<T> with NormalImp<T>, AnimalImp<T> {
   ///不要使用过于耗时的方法
   ///数据在坐标系的位置，每个坐标系下取值逻辑不一样，在line和bar下是相对于每格的值，比如xAxis的interval为1，你的数据放在1列和2列中间，那么position就是0.5，在pie下是比例
   final ChartPosition<T> position;
@@ -71,6 +71,7 @@ class Line<T> extends ChartBodyRender<T> {
 
   @override
   void init(ChartsState state) {
+    _instance = this;
     super.init(state);
     //这里可以提前计算好数据
     if (filled == true) {
@@ -78,30 +79,315 @@ class Line<T> extends ChartBodyRender<T> {
         ..strokeWidth = strokeWidth
         ..style = PaintingStyle.fill;
     }
-    if (state.animal) {
-      //处理带动画的场景
-      _initWithAnimal(state);
+  }
+
+  ///合并path
+  Path combinePath(ChartsState state, Path path, Offset first, Offset last, Path? lastPath) {
+    path
+      ..lineTo(last.dx, state.layout.bottom)
+      ..lineTo(first.dx, state.layout.bottom);
+    Path newPath = path;
+    if (operation != null) {
+      if (lastPath != null) {
+        newPath = Path.combine(operation!, newPath, lastPath);
+      }
+    }
+    return newPath;
+  }
+
+  ///画线
+  void _drawLine(Canvas canvas, Path path, int index) {
+    if (shaders != null && filled == false) {
+      canvas.drawPath(path, _linePaint..shader = shaders![index]);
     } else {
-      //处理非动画的场景
+      canvas.drawPath(path, _linePaint..color = colors[index]);
+    }
+  }
+
+  void _drawFill(Canvas canvas, Path path, int index) {
+    if (shaders != null) {
+      _fullPaint?.shader = shaders![index];
+    } else {
+      _fullPaint?.color = colors[index];
+    }
+    canvas.drawPath(path, _fullPaint!);
+  }
+
+  ///画点
+  void _drawPoint(Canvas canvas, Offset point, Color color) {
+    //再画空心
+    if (isHollow) {
+      //先用白色覆盖
+      _dotPaint.style = PaintingStyle.fill;
+      canvas.drawCircle(point, dotRadius, _dotPaint..color = Colors.white);
+      _dotPaint.style = PaintingStyle.stroke;
+    } else {
+      _dotPaint.style = PaintingStyle.fill;
+    }
+    canvas.drawCircle(point, dotRadius, _dotPaint..color = color);
+  }
+
+  ///开启后可查看热区是否正确
+  void _showHotRect(Canvas canvas) {
+    int i = 0;
+    for (var element in chartState.children) {
+      Rect? hotRect = element.getHotRect();
+      // print(hotRect);
+      if (hotRect != null) {
+        Rect newRect = Rect.fromLTRB(hotRect.left + 1, hotRect.top + 1, hotRect.right - 1, hotRect.bottom);
+        Paint newPaint = Paint()
+          ..color = colors10[i % colors10.length]
+          ..strokeWidth = strokeWidth
+          ..style = PaintingStyle.stroke;
+        canvas.drawRect(newRect, newPaint);
+      }
+      i++;
+    }
+  }
+}
+
+///正常模式下绘图操作
+mixin NormalImp<T> on ChartBodyRender<T> {
+  Map<int, LineInfo>? pathMap;
+
+  late Line<T> _instance;
+
+  @override
+  void init(ChartsState state) {
+    super.init(state);
+    if (!state.animal) {
       _initWithoutAnimal(state);
     }
   }
 
   @override
   void draw(Canvas canvas, ChartsState state) {
-    if (state.animal) {
-      //绘制带动画的场景
-      _drawWithAnimal(canvas, state);
-    } else {
-      //绘制非带动画的场景
+    super.draw(canvas, state);
+    if (!state.animal) {
       _drawWithOutAnimal(canvas, state);
     }
   }
 
-  /******************************* 动画 ******************************/
+  void _initWithoutAnimal(ChartsState state) {
+    if (_instance.async) {
+      Future.delayed(const Duration(microseconds: 0), () {
+        return asyncInitWithOutAnimal(state);
+      }).then((value) {
+        pathMap = value;
+        state.setNeedsDraw();
+      });
+    } else {
+      pathMap = asyncInitWithOutAnimal(state);
+    }
+  }
+
+  Map<int, LineInfo> asyncInitWithOutAnimal(ChartsState state) {
+    _ChartDimensionCoordinateState layout = state.layout as _ChartDimensionCoordinateState;
+    chartState.children = [];
+    int index = 0;
+    //offset.dx 滚动偏移  (src.zoom - 1) * (src.size.width / 2) 缩放
+    double left = layout.left;
+    double right = layout.right;
+    double top = layout.top;
+    double bottom = layout.bottom;
+    Map<int, LineInfo> pathMap = {};
+    ChartItemLayoutState? lastShape;
+    num? lastXValue;
+    //遍历数据 处理数据信息
+    for (T value in data) {
+      ChartLineLayoutState currentPointLayout = ChartLineLayoutState();
+      currentPointLayout.layout = layout;
+      currentPointLayout.xAxis = layout.xAxis;
+      currentPointLayout.yAxis = layout.yAxis;
+      currentPointLayout.yAxisPosition = yAxisPosition;
+      chartState.children.add(currentPointLayout);
+      //获取原数据
+      num? xValue = _instance.position.call(value);
+      if (lastXValue != null) {
+        assert(lastXValue < xValue, '$xValue 必须大于 $lastXValue,（虽然可以支持逆序，但是为了防止数据顺序混乱，还是强制要求必须是正序的数组)');
+      }
+      List<num>? yValues = currentPointLayout.yValues;
+      yValues ??= _instance.values.call(value);
+
+      //保存数据
+      currentPointLayout.index = index;
+      currentPointLayout.xValue = xValue;
+      currentPointLayout.yValues = yValues;
+
+      assert(_instance.colors.length >= yValues.length, '颜色配置跟数据源不匹配');
+      assert(_instance.shaders == null || _instance.shaders!.length >= yValues.length, '颜色配置跟数据源不匹配');
+
+      //计算x轴和y轴的物理位置
+      double xPos = xValue * layout.xAxis.density;
+      //一组数据下可能多条线
+      for (int valueIndex = 0; valueIndex < yValues.length; valueIndex++) {
+        //每条线用map存放下，以便后面统一绘制
+        LineInfo? lineInfo = pathMap[valueIndex];
+        if (lineInfo == null) {
+          lineInfo = LineInfo(_instance.isCurve);
+          pathMap[valueIndex] = lineInfo;
+        }
+        //计算点的位置
+        num yValue = yValues[valueIndex];
+        //y轴位置
+        double yPos = bottom - layout.yAxis[yAxisPosition].getItemHeight(yValue);
+        Offset currentPoint = Offset(xPos, yPos);
+        lineInfo.startPoint ??= currentPoint;
+
+        //点的信息
+        ChartLineLayoutState childLayoutState;
+        if (valueIndex < currentPointLayout.children.length) {
+          childLayoutState = currentPointLayout.children[valueIndex] as ChartLineLayoutState;
+        } else {
+          childLayoutState = ChartLineLayoutState();
+          currentPointLayout.children.add(childLayoutState);
+        }
+
+        childLayoutState.setOriginRect(Rect.fromCenter(center: currentPoint, width: _instance.dotRadius, height: _instance.dotRadius));
+        childLayoutState.index = index;
+        childLayoutState.layout = layout;
+        childLayoutState.xAxis = layout.xAxis;
+        childLayoutState.yAxis = layout.yAxis;
+        childLayoutState.yAxisPosition = yAxisPosition;
+        childLayoutState.xValue = xValue;
+        childLayoutState.yValue = yValue;
+        //存放点的位置
+        lineInfo.appendPoint(childLayoutState);
+      }
+
+      Rect currentRect = Rect.fromLTRB(xPos - _instance.dotRadius, top, xPos + _instance.dotRadius, bottom);
+      currentPointLayout.setOriginRect(currentRect);
+      currentPointLayout.left = left;
+      currentPointLayout.right = right;
+      //这里用链表解决查找附近节点的问题
+      currentPointLayout.preShapeState = lastShape;
+      lastShape?.nextShapeState = currentPointLayout;
+      lastShape = currentPointLayout;
+      //放到最后
+      index++;
+      lastXValue = xValue;
+    }
+    return pathMap;
+  }
+
+  void _drawWithOutAnimal(Canvas canvas, ChartsState state) {
+    //开始绘制了
+    if (pathMap != null) {
+      _drawLineWithOut(state, canvas, pathMap!);
+    }
+  }
+
+  void _drawLineWithOut(ChartsState state, Canvas canvas, Map<int, LineInfo> pathMap) {
+    _ChartDimensionCoordinateState layout = state.layout as _ChartDimensionCoordinateState;
+    //画线
+    if (_instance.strokeWidth > 0 || _instance.filled == true) {
+      Path? lastPath;
+      for (int index in pathMap.keys) {
+        LineInfo? lineInfo = pathMap[index];
+        if (lineInfo == null || lineInfo.pointList.isEmpty) {
+          continue;
+        }
+        Path? path = lineInfo.path;
+        if (path == null) {
+          continue;
+        }
+        //先画线
+        if (_instance.strokeWidth > 0) {
+          final scaleMatrix = Matrix4.identity();
+          scaleMatrix.translate(-(layout.offset.dx - layout.left), 0);
+          double yScale = layout.controlValue;
+          if (layout.zoom != 1 || state.animal) {
+            scaleMatrix.scale(layout.zoom, yScale);
+          }
+          Path linePath = path.transform(scaleMatrix.storage);
+          //画线
+          _instance._drawLine(canvas, linePath, index);
+        }
+
+        //然后填充颜色
+        if (_instance.filled == true) {
+          Path copyPath = path.shift(Offset.zero);
+          Offset last = lineInfo.endPoint ?? Offset.zero;
+          Offset first = lineInfo.startPoint ?? Offset.zero;
+          copyPath
+            ..lineTo(last.dx, layout.bottom)
+            ..lineTo(first.dx, layout.bottom);
+
+          Path filledPath = copyPath;
+          if (_instance.operation != null) {
+            if (lastPath != null) {
+              filledPath = Path.combine(_instance.operation!, copyPath, lastPath);
+            }
+            lastPath = copyPath;
+          }
+          final scaleMatrix = Matrix4.identity();
+          scaleMatrix.translate(-(layout.offset.dx - layout.left), 0);
+          if (layout.zoom != 1) {
+            scaleMatrix.scale(layout.zoom, 1);
+          }
+          filledPath = filledPath.transform(scaleMatrix.storage);
+          //画填充
+          _instance._drawFill(canvas, filledPath, index);
+        }
+      }
+    }
+    //最后画点  防止被挡住
+    // print(lineInfo.pointList);
+    if (_instance.dotRadius > 0) {
+      List<Color> dotColorList = _instance.dotColors ?? _instance.colors;
+      List<ChartItemLayoutState> shapeList = chartState.children;
+      for (ChartItemLayoutState shape in shapeList) {
+        List<ChartItemLayoutState> children = shape.children;
+        int childIndex = 0;
+        double xPos = layout.getPosForX(shape.xValue! * layout.xAxis.density, true);
+        Rect currentRect = Rect.fromLTRB(xPos - _instance.dotRadius, layout.top, xPos + _instance.dotRadius, layout.bottom);
+        shape.setOriginRect(currentRect);
+        if (!state.outDraw && xPos < 0) {
+          // debugPrint('1-第${shape.index ?? 0 + 1} 个点$currentRect超出去 不需要处理');
+          continue;
+        }
+        if (!state.outDraw && xPos > layout.size.width) {
+          // debugPrint('2-第${shape.index ?? 0 + 1} 个点 $currentRect超出去 停止处理');
+          break;
+        }
+        for (ChartItemLayoutState childLayoutState in children) {
+          double yPos = layout.getPosForY(layout.yAxis[yAxisPosition].getItemHeight(childLayoutState.yValue!));
+          Offset currentPoint = Offset(xPos, yPos);
+          childLayoutState.setOriginRect(Rect.fromCenter(center: currentPoint, width: _instance.dotRadius, height: _instance.dotRadius));
+          //画点
+          _instance._drawPoint(canvas, currentPoint, dotColorList[childIndex]);
+          childIndex++;
+        }
+      }
+    }
+
+    //开启后可查看热区是否正确
+    // line._showHotRect(canvas);
+  }
+}
+
+mixin AnimalImp<T> on ChartBodyRender<T> {
+  late Line<T> _instance;
+  @override
+  void init(ChartsState state) {
+    super.init(state);
+    if (state.animal) {
+      //处理带动画的场景
+      _initWithAnimal(state);
+    }
+  }
+
+  @override
+  void draw(Canvas canvas, ChartsState state) {
+    super.draw(canvas, state);
+    if (state.animal) {
+      _drawWithAnimal(canvas, state);
+    }
+  }
+
   void _initWithAnimal(ChartsState state) {
     //异步初始化
-    if (async) {
+    if (_instance.async) {
       Future.delayed(const Duration(microseconds: 0), () {
         return _asyncInitWithAnimal();
       }).then((value) {
@@ -124,20 +410,20 @@ class Line<T> extends ChartBodyRender<T> {
       chartState.children.add(currentPointLayout);
 
       //获取原始值
-      num xValue = position.call(value);
+      num xValue = _instance.position.call(value);
       if (lastXValue != null) {
         assert(lastXValue < xValue, '$xValue 必须大于 $lastXValue');
       }
       List<num>? yValues = currentPointLayout.yValues;
-      yValues ??= values.call(value);
+      yValues ??= _instance.values.call(value);
 
       //保存数据
       currentPointLayout.index = index;
       currentPointLayout.xValue = xValue;
       currentPointLayout.yValues = yValues;
       /******* 动画 *********/
-      assert(colors.length >= yValues.length, '颜色配置跟数据源不匹配');
-      assert(shaders == null || shaders!.length >= yValues.length, '颜色配置跟数据源不匹配');
+      assert(_instance.colors.length >= yValues.length, '颜色配置跟数据源不匹配');
+      assert(_instance.shaders == null || _instance.shaders!.length >= yValues.length, '颜色配置跟数据源不匹配');
       //一组数据下可能多条线
       for (int valueIndex = 0; valueIndex < yValues.length; valueIndex++) {
         //每条线用map存放下，以便后面统一绘制
@@ -197,7 +483,7 @@ class Line<T> extends ChartBodyRender<T> {
         //每条线用map存放下，以便后面统一绘制
         LineInfo? lineInfo = pathMap[valueIndex];
         if (lineInfo == null) {
-          lineInfo = LineInfo(isCurve);
+          lineInfo = LineInfo(_instance.isCurve);
           pathMap[valueIndex] = lineInfo;
         }
         //计算点的位置
@@ -217,7 +503,7 @@ class Line<T> extends ChartBodyRender<T> {
 
         //点的信息
         ChartItemLayoutState childLayoutState = currentPointLayout.children[valueIndex];
-        childLayoutState.setOriginRect(Rect.fromCenter(center: currentPoint, width: dotRadius, height: dotRadius));
+        childLayoutState.setOriginRect(Rect.fromCenter(center: currentPoint, width: _instance.dotRadius, height: _instance.dotRadius));
         childLayoutState.index = index;
         childLayoutState.xValue = xValue;
         childLayoutState.yValue = yValue;
@@ -225,7 +511,7 @@ class Line<T> extends ChartBodyRender<T> {
         lineInfo.appendPoint(childLayoutState);
       }
 
-      Rect currentRect = Rect.fromLTRB(xPos - dotRadius, layout.top, xPos + dotRadius, layout.bottom);
+      Rect currentRect = Rect.fromLTRB(xPos - _instance.dotRadius, layout.top, xPos + _instance.dotRadius, layout.bottom);
       currentPointLayout.setOriginRect(currentRect);
       currentPointLayout.left = layout.left;
       currentPointLayout.right = layout.right;
@@ -237,14 +523,14 @@ class Line<T> extends ChartBodyRender<T> {
     }
 
     //开启后可查看热区是否正确
-    // _showHotRect(canvas);
+    //  line._showHotRect(canvas);
     //开始绘制了
     _drawLineWithAnimal(state, canvas, pathMap);
   }
 
   void _drawLineWithAnimal(ChartsState state, Canvas canvas, Map<int, LineInfo> pathMap) {
     //画线
-    if (strokeWidth > 0 || filled == true) {
+    if (_instance.strokeWidth > 0 || _instance.filled == true) {
       Path? lastPath;
       for (int index in pathMap.keys) {
         LineInfo? lineInfo = pathMap[index];
@@ -256,11 +542,11 @@ class Line<T> extends ChartBodyRender<T> {
           continue;
         }
         //先画线
-        if (strokeWidth > 0) {
-          _drawLine(canvas, path, index);
+        if (_instance.strokeWidth > 0) {
+          _instance._drawLine(canvas, path, index);
         }
         //然后填充颜色
-        if (filled == true) {
+        if (_instance.filled == true) {
           Offset last = lineInfo.endPoint ?? Offset.zero;
           Offset first = lineInfo.startPoint ?? Offset.zero;
           path
@@ -268,21 +554,21 @@ class Line<T> extends ChartBodyRender<T> {
             ..lineTo(first.dx, state.layout.bottom);
 
           Path newPath = lineInfo.path!;
-          if (operation != null) {
+          if (_instance.operation != null) {
             if (lastPath != null) {
-              newPath = Path.combine(operation!, newPath, lastPath);
+              newPath = Path.combine(_instance.operation!, newPath, lastPath);
             }
             lastPath = lineInfo.path!;
           }
           //绘制填充
-          _drawFill(canvas, newPath, index);
+          _instance._drawFill(canvas, newPath, index);
         }
       }
     }
     //最后画点  防止被挡住
     // print(lineInfo.pointList);
-    if (dotRadius > 0) {
-      List<Color> dotColorList = dotColors ?? colors;
+    if (_instance.dotRadius > 0) {
+      List<Color> dotColorList = _instance.dotColors ?? _instance.colors;
       for (int index in pathMap.keys) {
         LineInfo? lineInfo = pathMap[index];
         if (lineInfo == null) {
@@ -298,274 +584,10 @@ class Line<T> extends ChartBodyRender<T> {
             break;
           }
           //画点
-          _drawPoint(canvas, point, dotColorList[index]);
+          _instance._drawPoint(canvas, point, dotColorList[index]);
         }
       }
     }
-  }
-
-  ///画线
-  void _drawLine(Canvas canvas, Path path, int index) {
-    if (shaders != null && filled == false) {
-      canvas.drawPath(path, _linePaint..shader = shaders![index]);
-    } else {
-      canvas.drawPath(path, _linePaint..color = colors[index]);
-    }
-  }
-
-  void _drawFill(Canvas canvas, Path path, int index) {
-    if (shaders != null) {
-      _fullPaint?.shader = shaders![index];
-    } else {
-      _fullPaint?.color = colors[index];
-    }
-    canvas.drawPath(path, _fullPaint!);
-  }
-
-  ///画点
-  void _drawPoint(Canvas canvas, Offset point, Color color) {
-    //再画空心
-    if (isHollow) {
-      //先用白色覆盖
-      _dotPaint.style = PaintingStyle.fill;
-      canvas.drawCircle(point, dotRadius, _dotPaint..color = Colors.white);
-      _dotPaint.style = PaintingStyle.stroke;
-    } else {
-      _dotPaint.style = PaintingStyle.fill;
-    }
-    canvas.drawCircle(point, dotRadius, _dotPaint..color = color);
-  }
-
-  /***************************************** 第一版结束 **************************/
-
-  Map<int, LineInfo>? pathMap;
-  void _initWithoutAnimal(ChartsState state) {
-    if (async) {
-      Future.delayed(const Duration(microseconds: 0), () {
-        return asyncInitWithOutAnimal(state);
-      }).then((value) {
-        pathMap = value;
-        state.setNeedsDraw();
-      });
-    } else {
-      pathMap = asyncInitWithOutAnimal(state);
-    }
-  }
-
-  Map<int, LineInfo> asyncInitWithOutAnimal(ChartsState state) {
-    _ChartDimensionCoordinateState layout = state.layout as _ChartDimensionCoordinateState;
-    chartState.children = [];
-    int index = 0;
-    //offset.dx 滚动偏移  (src.zoom - 1) * (src.size.width / 2) 缩放
-    double left = layout.left;
-    double right = layout.right;
-    double top = layout.top;
-    double bottom = layout.bottom;
-    Map<int, LineInfo> pathMap = {};
-    ChartItemLayoutState? lastShape;
-    num? lastXValue;
-    //遍历数据 处理数据信息
-    for (T value in data) {
-      ChartLineLayoutState currentPointLayout = ChartLineLayoutState();
-      currentPointLayout.layout = layout;
-      currentPointLayout.xAxis = layout.xAxis;
-      currentPointLayout.yAxis = layout.yAxis;
-      currentPointLayout.yAxisPosition = yAxisPosition;
-      chartState.children.add(currentPointLayout);
-      //获取原数据
-      num? xValue = position.call(value);
-      if (lastXValue != null) {
-        assert(lastXValue < xValue, '$xValue 必须大于 $lastXValue,（虽然可以支持逆序，但是为了防止数据顺序混乱，还是强制要求必须是正序的数组)');
-      }
-      List<num>? yValues = currentPointLayout.yValues;
-      yValues ??= values.call(value);
-
-      //保存数据
-      currentPointLayout.index = index;
-      currentPointLayout.xValue = xValue;
-      currentPointLayout.yValues = yValues;
-
-      assert(colors.length >= yValues.length, '颜色配置跟数据源不匹配');
-      assert(shaders == null || shaders!.length >= yValues.length, '颜色配置跟数据源不匹配');
-
-      //计算x轴和y轴的物理位置
-      double xPos = xValue * layout.xAxis.density;
-      //一组数据下可能多条线
-      for (int valueIndex = 0; valueIndex < yValues.length; valueIndex++) {
-        //每条线用map存放下，以便后面统一绘制
-        LineInfo? lineInfo = pathMap[valueIndex];
-        if (lineInfo == null) {
-          lineInfo = LineInfo(isCurve);
-          pathMap[valueIndex] = lineInfo;
-        }
-        //计算点的位置
-        num yValue = yValues[valueIndex];
-        //y轴位置
-        double yPos = bottom - layout.yAxis[yAxisPosition].getItemHeight(yValue);
-        Offset currentPoint = Offset(xPos, yPos);
-        lineInfo.startPoint ??= currentPoint;
-
-        //点的信息
-        ChartLineLayoutState childLayoutState;
-        if (valueIndex < currentPointLayout.children.length) {
-          childLayoutState = currentPointLayout.children[valueIndex] as ChartLineLayoutState;
-        } else {
-          childLayoutState = ChartLineLayoutState();
-          currentPointLayout.children.add(childLayoutState);
-        }
-
-        childLayoutState.setOriginRect(Rect.fromCenter(center: currentPoint, width: dotRadius, height: dotRadius));
-        childLayoutState.index = index;
-        childLayoutState.layout = layout;
-        childLayoutState.xAxis = layout.xAxis;
-        childLayoutState.yAxis = layout.yAxis;
-        childLayoutState.yAxisPosition = yAxisPosition;
-        childLayoutState.xValue = xValue;
-        childLayoutState.yValue = yValue;
-        //存放点的位置
-        lineInfo.appendPoint(childLayoutState);
-      }
-
-      Rect currentRect = Rect.fromLTRB(xPos - dotRadius, top, xPos + dotRadius, bottom);
-      currentPointLayout.setOriginRect(currentRect);
-      currentPointLayout.left = left;
-      currentPointLayout.right = right;
-      //这里用链表解决查找附近节点的问题
-      currentPointLayout.preShapeState = lastShape;
-      lastShape?.nextShapeState = currentPointLayout;
-      lastShape = currentPointLayout;
-      //放到最后
-      index++;
-      lastXValue = xValue;
-    }
-    return pathMap;
-  }
-
-  void _drawWithOutAnimal(Canvas canvas, ChartsState state) {
-    //开始绘制了
-    if (pathMap != null) {
-      _drawLineWithOut(state, canvas, pathMap!);
-    }
-  }
-
-  void _drawLineWithOut(ChartsState state, Canvas canvas, Map<int, LineInfo> pathMap) {
-    _ChartDimensionCoordinateState layout = state.layout as _ChartDimensionCoordinateState;
-    //画线
-    if (strokeWidth > 0 || filled == true) {
-      Path? lastPath;
-      for (int index in pathMap.keys) {
-        LineInfo? lineInfo = pathMap[index];
-        if (lineInfo == null || lineInfo.pointList.isEmpty) {
-          continue;
-        }
-        Path? path = lineInfo.path;
-        if (path == null) {
-          continue;
-        }
-        //先画线
-        if (strokeWidth > 0) {
-          final scaleMatrix = Matrix4.identity();
-          scaleMatrix.translate(-(layout.offset.dx - layout.left), 0);
-          double yScale = layout.controlValue;
-          if (layout.zoom != 1 || state.animal) {
-            scaleMatrix.scale(layout.zoom, yScale);
-          }
-          Path linePath = path.transform(scaleMatrix.storage);
-          //画线
-          _drawLine(canvas, linePath, index);
-        }
-
-        //然后填充颜色
-        if (filled == true) {
-          Path copyPath = path.shift(Offset.zero);
-          Offset last = lineInfo.endPoint ?? Offset.zero;
-          Offset first = lineInfo.startPoint ?? Offset.zero;
-          copyPath
-            ..lineTo(last.dx, layout.bottom)
-            ..lineTo(first.dx, layout.bottom);
-
-          Path filledPath = copyPath;
-          if (operation != null) {
-            if (lastPath != null) {
-              filledPath = Path.combine(operation!, copyPath, lastPath);
-            }
-            lastPath = copyPath;
-          }
-          final scaleMatrix = Matrix4.identity();
-          scaleMatrix.translate(-(layout.offset.dx - layout.left), 0);
-          if (layout.zoom != 1) {
-            scaleMatrix.scale(layout.zoom, 1);
-          }
-          filledPath = filledPath.transform(scaleMatrix.storage);
-          //画填充
-          _drawFill(canvas, filledPath, index);
-        }
-      }
-    }
-    //最后画点  防止被挡住
-    // print(lineInfo.pointList);
-    if (dotRadius > 0) {
-      List<Color> dotColorList = dotColors ?? colors;
-      List<ChartItemLayoutState> shapeList = chartState.children;
-      for (ChartItemLayoutState shape in shapeList) {
-        List<ChartItemLayoutState> children = shape.children;
-        int childIndex = 0;
-        double xPos = layout.getPosForX(shape.xValue! * layout.xAxis.density, true);
-        Rect currentRect = Rect.fromLTRB(xPos - dotRadius, layout.top, xPos + dotRadius, layout.bottom);
-        shape.setOriginRect(currentRect);
-        if (!state.outDraw && xPos < 0) {
-          // debugPrint('1-第${shape.index ?? 0 + 1} 个点$currentRect超出去 不需要处理');
-          continue;
-        }
-        if (!state.outDraw && xPos > layout.size.width) {
-          // debugPrint('2-第${shape.index ?? 0 + 1} 个点 $currentRect超出去 停止处理');
-          break;
-        }
-        for (ChartItemLayoutState childLayoutState in children) {
-          double yPos = layout.getPosForY(layout.yAxis[yAxisPosition].getItemHeight(childLayoutState.yValue!));
-          Offset currentPoint = Offset(xPos, yPos);
-          childLayoutState.setOriginRect(Rect.fromCenter(center: currentPoint, width: dotRadius, height: dotRadius));
-          //画点
-          _drawPoint(canvas, currentPoint, dotColorList[childIndex]);
-          childIndex++;
-        }
-      }
-    }
-
-    //开启后可查看热区是否正确
-    // _showHotRect(canvas);
-  }
-
-  ///开启后可查看热区是否正确
-  void _showHotRect(Canvas canvas) {
-    int i = 0;
-    for (var element in chartState.children) {
-      Rect? hotRect = element.getHotRect();
-      print(hotRect);
-      if (hotRect != null) {
-        Rect newRect = Rect.fromLTRB(hotRect.left + 1, hotRect.top + 1, hotRect.right - 1, hotRect.bottom);
-        Paint newPaint = Paint()
-          ..color = colors10[i % colors10.length]
-          ..strokeWidth = strokeWidth
-          ..style = PaintingStyle.stroke;
-        canvas.drawRect(newRect, newPaint);
-      }
-      i++;
-    }
-  }
-
-  ///合并path
-  Path combinePath(ChartsState state, Path path, Offset first, Offset last, Path? lastPath) {
-    path
-      ..lineTo(last.dx, state.layout.bottom)
-      ..lineTo(first.dx, state.layout.bottom);
-    Path newPath = path;
-    if (operation != null) {
-      if (lastPath != null) {
-        newPath = Path.combine(operation!, newPath, lastPath);
-      }
-    }
-    return newPath;
   }
 }
 
