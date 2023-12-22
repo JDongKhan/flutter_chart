@@ -3,7 +3,7 @@ part of flutter_chart_plus;
 typedef LinePosition<T> = List<num> Function(T);
 
 /// @author JD
-class Line<T> extends ChartBodyRender<T> with NormalImp<T>, AnimalImp<T> {
+class Line<T> extends ChartBodyRender<T> with NormalLineMixin<T>, AnimalLineMixin<T> {
   ///不要使用过于耗时的方法
   ///数据在坐标系的位置，每个坐标系下取值逻辑不一样，在line和bar下是相对于每格的值，比如xAxis的interval为1，你的数据放在1列和2列中间，那么position就是0.5，在pie下是比例
   final ChartPosition<T> position;
@@ -82,10 +82,10 @@ class Line<T> extends ChartBodyRender<T> with NormalImp<T>, AnimalImp<T> {
   }
 
   ///合并path
-  Path combinePath(ChartsState state, Path path, Offset first, Offset last, Path? lastPath) {
+  Path _combinePath(Path path, Offset first, Offset last, Path? lastPath) {
     path
-      ..lineTo(last.dx, state.layout.bottom)
-      ..lineTo(first.dx, state.layout.bottom);
+      ..lineTo(last.dx, last.dy)
+      ..lineTo(first.dx, first.dy);
     Path newPath = path;
     if (operation != null) {
       if (lastPath != null) {
@@ -146,8 +146,8 @@ class Line<T> extends ChartBodyRender<T> with NormalImp<T>, AnimalImp<T> {
   }
 }
 
-///正常模式下绘图操作
-mixin NormalImp<T> on ChartBodyRender<T> {
+///正常模式下绘图操作  基于path做transform变换，但是不好做差值动画
+mixin NormalLineMixin<T> on ChartBodyRender<T> {
   Map<int, LineInfo>? pathMap;
 
   late Line<T> _instance;
@@ -309,17 +309,12 @@ mixin NormalImp<T> on ChartBodyRender<T> {
           Path copyPath = path.shift(Offset.zero);
           Offset last = lineInfo.endPoint ?? Offset.zero;
           Offset first = lineInfo.startPoint ?? Offset.zero;
-          copyPath
-            ..lineTo(last.dx, layout.bottom)
-            ..lineTo(first.dx, layout.bottom);
 
-          Path filledPath = copyPath;
-          if (_instance.operation != null) {
-            if (lastPath != null) {
-              filledPath = Path.combine(_instance.operation!, copyPath, lastPath);
-            }
-            lastPath = copyPath;
-          }
+          //路径合并
+          Path filledPath = _instance._combinePath(copyPath, Offset(first.dx, layout.bottom), Offset(last.dx, layout.bottom), lastPath);
+          lastPath = copyPath;
+
+          //缩放，滚动
           final scaleMatrix = Matrix4.identity();
           scaleMatrix.translate(-(layout.offset.dx - layout.left), 0);
           if (layout.zoom != 1) {
@@ -366,7 +361,8 @@ mixin NormalImp<T> on ChartBodyRender<T> {
   }
 }
 
-mixin AnimalImp<T> on ChartBodyRender<T> {
+/// 基于元数据做tween动画， 如果基于path，不太好做数据差值处理
+mixin AnimalLineMixin<T> on ChartBodyRender<T> {
   late Line<T> _instance;
   @override
   void init(ChartsState state) {
@@ -549,19 +545,13 @@ mixin AnimalImp<T> on ChartBodyRender<T> {
         if (_instance.filled == true) {
           Offset last = lineInfo.endPoint ?? Offset.zero;
           Offset first = lineInfo.startPoint ?? Offset.zero;
-          path
-            ..lineTo(last.dx, state.layout.bottom)
-            ..lineTo(first.dx, state.layout.bottom);
 
-          Path newPath = lineInfo.path!;
-          if (_instance.operation != null) {
-            if (lastPath != null) {
-              newPath = Path.combine(_instance.operation!, newPath, lastPath);
-            }
-            lastPath = lineInfo.path!;
-          }
+          //路径合并
+          Path filledPath = _instance._combinePath(path, Offset(first.dx, state.layout.bottom), Offset(last.dx, state.layout.bottom), lastPath);
+          lastPath = path;
+
           //绘制填充
-          _instance._drawFill(canvas, newPath, index);
+          _instance._drawFill(canvas, filledPath, index);
         }
       }
     }
