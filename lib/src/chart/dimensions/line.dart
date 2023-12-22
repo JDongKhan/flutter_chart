@@ -182,7 +182,7 @@ mixin NormalLineMixin<T> on ChartBodyRender<T> {
   }
 
   Map<int, LineInfo> asyncInitWithOutAnimal(ChartsState state) {
-    _ChartDimensionCoordinateState layout = state.layout as _ChartDimensionCoordinateState;
+    ChartDimensionCoordinateState layout = state.layout as ChartDimensionCoordinateState;
     chartState.children = [];
     int index = 0;
     //offset.dx 滚动偏移  (src.zoom - 1) * (src.size.width / 2) 缩放
@@ -278,7 +278,7 @@ mixin NormalLineMixin<T> on ChartBodyRender<T> {
   }
 
   void _drawLineWithOut(ChartsState state, Canvas canvas, Map<int, LineInfo> pathMap) {
-    _ChartDimensionCoordinateState layout = state.layout as _ChartDimensionCoordinateState;
+    ChartDimensionCoordinateState layout = state.layout as ChartDimensionCoordinateState;
     //画线
     if (_instance.strokeWidth > 0 || _instance.filled == true) {
       Path? lastPath;
@@ -445,7 +445,7 @@ mixin AnimalLineMixin<T> on ChartBodyRender<T> {
   /// 绘制 此方法非动画也可以用，跟下面的区别是 此处draw时滚动/缩放操作后会根据原始值重新计算位置 如果存在动画体验较好，性能有待观察，所以就先在动画的场景使用。
   /// 而最下面的实现方式是预先生成path，后续的滚动缩放操作根据path再处理
   void _drawWithAnimal(Canvas canvas, ChartsState state) {
-    _ChartDimensionCoordinateState layout = state.layout as _ChartDimensionCoordinateState;
+    ChartDimensionCoordinateState layout = state.layout as ChartDimensionCoordinateState;
     List<ChartItemLayoutState> shapeList = chartState.children;
     List<ChartItemLayoutState>? lastDataList = getLastData(state.animal && layout.controlValue < 1);
     //offset.dx 滚动偏移  (src.zoom - 1) * (src.size.width / 2) 缩放

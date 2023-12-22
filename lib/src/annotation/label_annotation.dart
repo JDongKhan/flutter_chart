@@ -49,7 +49,7 @@ class LabelAnnotation extends Annotation {
       return;
     }
     ChartCoordinateState layout = state.layout;
-    if (layout is _ChartDimensionCoordinateState) {
+    if (layout is ChartDimensionCoordinateState) {
       Offset ost;
       if (positions != null) {
         assert(positions!.length == 2, 'positions must be two length');

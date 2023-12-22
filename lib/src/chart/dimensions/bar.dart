@@ -78,7 +78,7 @@ class Bar<T> extends ChartBodyRender<T> {
 
   @override
   void draw(Canvas canvas, ChartsState state) {
-    _ChartDimensionCoordinateState layout = state.layout as _ChartDimensionCoordinateState;
+    ChartDimensionCoordinateState layout = state.layout as ChartDimensionCoordinateState;
     List<ChartItemLayoutState> childrenLayoutState = [];
 
     List<ChartItemLayoutState>? lastDataList = getLastData(state.animal && layout.controlValue < 1);
@@ -125,7 +125,7 @@ class Bar<T> extends ChartBodyRender<T> {
     chartState.children = childrenLayoutState;
   }
 
-  void _drawText(Canvas canvas, _ChartDimensionCoordinateState layout, T item, ChartItemLayoutState p) {
+  void _drawText(Canvas canvas, ChartDimensionCoordinateState layout, T item, ChartItemLayoutState p) {
     String? valueString = valueFormatter?.call(item);
     if (valueString != null && valueString.isNotEmpty) {
       TextPainter legendTextPainter = TextPainter(
@@ -146,7 +146,7 @@ class Bar<T> extends ChartBodyRender<T> {
   }
 
   //可以重写 自定义特殊的图形
-  ChartItemLayoutState _measureBarLayout(_ChartDimensionCoordinateState layout, num xValue, num yValue) {
+  ChartItemLayoutState _measureBarLayout(ChartDimensionCoordinateState layout, num xValue, num yValue) {
     Rect rect = Rect.zero;
     if (layout.invert) {
       double contentWidth = layout.contentWidth;
@@ -187,7 +187,7 @@ class Bar<T> extends ChartBodyRender<T> {
 typedef StackBarPosition<T> = List<num> Function(T);
 
 ///stackBar  支持水平/垂直排列
-class StackBar<T> extends ChartBodyRender<T> {
+class StackBar<T> extends ChartBodyRender<T> with BarHorizontalMinx<T>, BarVerticalBarMinx<T> {
   ///不要使用过于耗时的方法
   ///数据在坐标系的位置，每个坐标系下取值逻辑不一样，在line和bar下是相对于每格的值，比如xAxis的interval为1，你的数据放在1列和2列中间，那么position就是0.5，在pie下是比例
   final ChartPosition<T> position;
@@ -254,7 +254,8 @@ class StackBar<T> extends ChartBodyRender<T> {
 
   @override
   void draw(Canvas canvas, ChartsState state) {
-    _ChartDimensionCoordinateState layout = state.layout as _ChartDimensionCoordinateState;
+    _instance = this;
+    ChartDimensionCoordinateState layout = state.layout as ChartDimensionCoordinateState;
     List<ChartItemLayoutState> childrenLayoutState = [];
     List<ChartItemLayoutState>? lastDataList = getLastData(state.animal && layout.controlValue < 1);
 
@@ -282,11 +283,8 @@ class StackBar<T> extends ChartBodyRender<T> {
         yValues = lerpList(lastYPov, yValues, layout.controlValue) ?? yValues;
       }
 
-      if (direction == Axis.horizontal) {
-        p = _measureHorizontalBarLayout(layout, xValue, yValues);
-      } else {
-        p = _measureVerticalBarLayout(layout, xValue, yValues);
-      }
+      p = layoutStackBar(layout, xValue, yValues);
+
       childrenLayoutState.add(p..index = index);
 
       List<String>? valueString = valuesFormatter?.call(item);
@@ -310,11 +308,7 @@ class StackBar<T> extends ChartBodyRender<T> {
           canvas.drawRect(cp.originRect!, _paint);
           //画文案
           if (layout.controlValue == 1 && valueString != null && valueString.isNotEmpty) {
-            if (direction == Axis.horizontal) {
-              _drawTopText(canvas, layout, valueString[stackIndex], cp);
-            } else {
-              _drawCenterText(canvas, layout, valueString[stackIndex], cp);
-            }
+            drawText(canvas, layout, valueString[stackIndex], cp);
           }
         }
         stackIndex++;
@@ -327,9 +321,16 @@ class StackBar<T> extends ChartBodyRender<T> {
     }
     chartState.children = childrenLayoutState;
   }
+}
+
+mixin BarHorizontalMinx<T> on ChartBodyRender<T> {
+  late StackBar<T> _instance;
 
   ///水平排列图形
-  ChartItemLayoutState _measureHorizontalBarLayout(_ChartDimensionCoordinateState layout, num xValue, List<num> yValues) {
+  ChartItemLayoutState layoutStackBar(ChartDimensionCoordinateState layout, num xValue, List<num> yValues) {
+    if (_instance.direction == Axis.vertical) {
+      return ChartItemLayoutState()..xValue = xValue;
+    }
     num total = layout.yAxis[yAxisPosition].max;
     if (total == 0) {
       return ChartItemLayoutState()..xValue = xValue;
@@ -337,21 +338,21 @@ class StackBar<T> extends ChartBodyRender<T> {
     ChartItemLayoutState shape;
     if (layout.invert) {
       double contentWidth = layout.contentWidth;
-      double center = yValues.length * itemWidth / 2;
+      double center = yValues.length * _instance.itemWidth / 2;
       double top = layout.bottom - layout.xAxis.density * xValue - center;
       top = layout.transform.withYScroll(top);
 
       double left = layout.left;
       shape = ChartItemLayoutState.rect(
-        originRect: Rect.fromLTWH(left, top, contentWidth, itemWidth * yValues.length + padding * (yValues.length - 1)),
+        originRect: Rect.fromLTWH(left, top, contentWidth, _instance.itemWidth * yValues.length + _instance.padding * (yValues.length - 1)),
       );
       List<ChartItemLayoutState> childrenLayoutState = [];
       for (num yV in yValues) {
         double present = yV / total;
         double itemHeight = contentWidth * present;
-        Rect rect = Rect.fromLTWH(left, top, itemHeight, itemWidth);
+        Rect rect = Rect.fromLTWH(left, top, itemHeight, _instance.itemWidth);
         ChartItemLayoutState stackShape = ChartItemLayoutState.rect(originRect: rect);
-        top = top + itemWidth + padding;
+        top = top + _instance.itemWidth + _instance.padding;
         stackShape.xValue = xValue;
         stackShape.yValue = yV;
         childrenLayoutState.add(stackShape);
@@ -362,22 +363,22 @@ class StackBar<T> extends ChartBodyRender<T> {
       double bottom = layout.bottom;
       double contentHeight = layout.contentHeight;
 
-      double center = yValues.length * itemWidth / 2;
+      double center = yValues.length * _instance.itemWidth / 2;
 
-      double left = layout.left + layout.xAxis.density * xValue - itemWidth / 2 - center;
+      double left = layout.left + layout.xAxis.density * xValue - _instance.itemWidth / 2 - center;
       left = layout.transform.withXScroll(left);
 
       shape = ChartItemLayoutState.rect(
-        originRect: Rect.fromLTWH(left, layout.top, itemWidth * yValues.length + padding * (yValues.length - 1), contentHeight),
+        originRect: Rect.fromLTWH(left, layout.top, _instance.itemWidth * yValues.length + _instance.padding * (yValues.length - 1), contentHeight),
       );
       List<ChartItemLayoutState> childrenLayoutState = [];
       for (num yV in yValues) {
         double present = yV / total;
         double itemHeight = contentHeight * present;
         double top = bottom - itemHeight;
-        Rect rect = Rect.fromLTWH(left, top, itemWidth, itemHeight);
+        Rect rect = Rect.fromLTWH(left, top, _instance.itemWidth, itemHeight);
         ChartItemLayoutState stackShape = ChartItemLayoutState.rect(originRect: rect);
-        left = left + itemWidth + padding;
+        left = left + _instance.itemWidth + _instance.padding;
         stackShape.xValue = xValue;
         stackShape.yValue = yV;
         childrenLayoutState.add(stackShape);
@@ -388,10 +389,38 @@ class StackBar<T> extends ChartBodyRender<T> {
     return shape;
   }
 
+  void drawText(Canvas canvas, ChartDimensionCoordinateState layout, String? text, ChartItemLayoutState p) {
+    if (_instance.direction == Axis.vertical) {
+      return;
+    }
+    if (text != null) {
+      TextPainter legendTextPainter = TextPainter(
+        textAlign: TextAlign.center,
+        text: TextSpan(text: text, style: _instance.textStyle),
+        textDirection: TextDirection.ltr,
+      )..layout(minWidth: 0, maxWidth: layout.size.width);
+      Offset offset = Offset.zero;
+      if (layout.invert) {
+        offset = p.originRect!.centerRight;
+        offset = offset.translate(_instance.valueOffset.dx, -legendTextPainter.height / 2 + _instance.valueOffset.dy);
+      } else {
+        offset = p.originRect!.topCenter;
+        offset = offset.translate(-legendTextPainter.width / 2 + _instance.valueOffset.dx, -legendTextPainter.height + _instance.valueOffset.dy);
+      }
+      legendTextPainter.paint(canvas, offset);
+    }
+  }
+}
+
+mixin BarVerticalBarMinx<T> on ChartBodyRender<T>, BarHorizontalMinx<T> {
   ///垂直排列图形
-  ChartItemLayoutState _measureVerticalBarLayout(_ChartDimensionCoordinateState layout, num xValue, List<num> yValues) {
+  @override
+  ChartItemLayoutState layoutStackBar(ChartDimensionCoordinateState layout, num xValue, List<num> yValues) {
+    if (_instance.direction == Axis.horizontal) {
+      return super.layoutStackBar(layout, xValue, yValues);
+    }
     num total = layout.yAxis[yAxisPosition].max;
-    if (full) {
+    if (_instance.full) {
       total = yValues.fold(0, (previousValue, element) => previousValue + element);
     }
     if (total == 0) {
@@ -399,18 +428,18 @@ class StackBar<T> extends ChartBodyRender<T> {
     }
     ChartItemLayoutState shape;
     if (layout.invert) {
-      double top = layout.bottom - layout.xAxis.density * xValue - itemWidth / 2;
+      double top = layout.bottom - layout.xAxis.density * xValue - _instance.itemWidth / 2;
       top = layout.transform.withYScroll(top);
       double left = layout.left;
       double contentWidth = layout.contentWidth;
       shape = ChartItemLayoutState.rect(
-        originRect: Rect.fromLTWH(left, top, contentWidth, itemWidth),
+        originRect: Rect.fromLTWH(left, top, contentWidth, _instance.itemWidth),
       );
       List<ChartItemLayoutState> childrenLayoutState = [];
       for (num yV in yValues) {
         double present = yV / total;
         double itemHeight = contentWidth * present;
-        Rect rect = Rect.fromLTWH(left, top, itemHeight, itemWidth);
+        Rect rect = Rect.fromLTWH(left, top, itemHeight, _instance.itemWidth);
         ChartItemLayoutState stackShape = ChartItemLayoutState.rect(originRect: rect);
         stackShape.xValue = xValue;
         stackShape.yValue = yV;
@@ -422,17 +451,17 @@ class StackBar<T> extends ChartBodyRender<T> {
     } else {
       double bottom = layout.bottom;
       double contentHeight = layout.contentHeight;
-      double left = layout.left + layout.xAxis.density * xValue - itemWidth / 2;
+      double left = layout.left + layout.xAxis.density * xValue - _instance.itemWidth / 2;
       left = layout.transform.withXScroll(left);
       shape = ChartItemLayoutState.rect(
-        originRect: Rect.fromLTWH(left, layout.top, itemWidth, contentHeight),
+        originRect: Rect.fromLTWH(left, layout.top, _instance.itemWidth, contentHeight),
       );
       List<ChartItemLayoutState> childrenLayoutState = [];
       for (num yV in yValues) {
         double present = yV / total;
         double itemHeight = contentHeight * present;
         double top = bottom - itemHeight;
-        Rect rect = Rect.fromLTWH(left, top, itemWidth, itemHeight);
+        Rect rect = Rect.fromLTWH(left, top, _instance.itemWidth, itemHeight);
         ChartItemLayoutState stackShape = ChartItemLayoutState.rect(originRect: rect);
         stackShape.xValue = xValue;
         stackShape.yValue = yV;
@@ -445,39 +474,24 @@ class StackBar<T> extends ChartBodyRender<T> {
     return shape;
   }
 
-  void _drawCenterText(Canvas canvas, _ChartDimensionCoordinateState layout, String? text, ChartItemLayoutState p) {
+  @override
+  void drawText(Canvas canvas, ChartDimensionCoordinateState layout, String? text, ChartItemLayoutState p) {
+    if (_instance.direction == Axis.horizontal) {
+      return super.drawText(canvas, layout, text, p);
+    }
     if (text != null && text.isNotEmpty) {
       TextPainter legendTextPainter = TextPainter(
         textAlign: TextAlign.center,
-        text: TextSpan(text: text, style: textStyle),
+        text: TextSpan(text: text, style: _instance.textStyle),
         textDirection: TextDirection.ltr,
       )..layout(minWidth: 0, maxWidth: layout.size.width);
       Offset offset = Offset.zero;
       if (layout.invert) {
         offset = p.originRect!.center;
-        offset = offset.translate(-legendTextPainter.width / 2 + valueOffset.dx, -legendTextPainter.height / 2 + valueOffset.dy);
+        offset = offset.translate(-legendTextPainter.width / 2 + _instance.valueOffset.dx, -legendTextPainter.height / 2 + _instance.valueOffset.dy);
       } else {
         offset = p.originRect!.center;
-        offset = offset.translate(itemWidth / 2 + 2 + valueOffset.dx, -legendTextPainter.height / 2 + valueOffset.dy);
-      }
-      legendTextPainter.paint(canvas, offset);
-    }
-  }
-
-  void _drawTopText(Canvas canvas, _ChartDimensionCoordinateState layout, String? text, ChartItemLayoutState p) {
-    if (text != null) {
-      TextPainter legendTextPainter = TextPainter(
-        textAlign: TextAlign.center,
-        text: TextSpan(text: text, style: textStyle),
-        textDirection: TextDirection.ltr,
-      )..layout(minWidth: 0, maxWidth: layout.size.width);
-      Offset offset = Offset.zero;
-      if (layout.invert) {
-        offset = p.originRect!.centerRight;
-        offset = offset.translate(valueOffset.dx, -legendTextPainter.height / 2 + valueOffset.dy);
-      } else {
-        offset = p.originRect!.topCenter;
-        offset = offset.translate(-legendTextPainter.width / 2 + valueOffset.dx, -legendTextPainter.height + valueOffset.dy);
+        offset = offset.translate(_instance.itemWidth / 2 + 2 + _instance.valueOffset.dx, -legendTextPainter.height / 2 + _instance.valueOffset.dy);
       }
       legendTextPainter.paint(canvas, offset);
     }

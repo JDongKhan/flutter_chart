@@ -1,6 +1,6 @@
 part of flutter_chart_plus;
 
-class _ChartDimensionCoordinateState extends ChartCoordinateState {
+class ChartDimensionCoordinateState extends ChartCoordinateState {
   ///y坐标轴
   final List<YAxis> yAxis;
 
@@ -10,7 +10,7 @@ class _ChartDimensionCoordinateState extends ChartCoordinateState {
   ///是否反转
   final bool invert;
 
-  _ChartDimensionCoordinateState({
+  ChartDimensionCoordinateState({
     required super.size,
     required super.margin,
     required super.padding,
@@ -75,7 +75,7 @@ class _ChartDimensionState extends ChartsState {
     required ChartDimensionsCoordinateRender coordinate,
     double controlValue = 1,
   }) {
-    super._layout = _ChartDimensionCoordinateState(
+    super._layout = ChartDimensionCoordinateState(
       size: size,
       margin: margin,
       padding: padding,
@@ -93,14 +93,14 @@ class _ChartDimensionState extends ChartsState {
 
   @override
   void scrollByDelta(Offset delta) {
-    _ChartDimensionCoordinateState layout = super.layout as _ChartDimensionCoordinateState;
+    ChartDimensionCoordinateState layout = super.layout as ChartDimensionCoordinateState;
     Offset newOffset = layout.offset.translate(-delta.dx, layout.invert ? delta.dy : -delta.dy);
     scroll(newOffset);
   }
 
   @override
   void scroll(Offset offset) {
-    _ChartDimensionCoordinateState layout = super.layout as _ChartDimensionCoordinateState;
+    ChartDimensionCoordinateState layout = super.layout as ChartDimensionCoordinateState;
     //校准偏移，不然缩小后可能起点都在中间了，或者无限滚动
     double x = offset.dx;
     // double y = newOffset.dy;

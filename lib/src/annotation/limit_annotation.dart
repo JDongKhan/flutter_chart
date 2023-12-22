@@ -29,7 +29,7 @@ class LimitAnnotation extends Annotation {
   void init(ChartsState state) {
     super.init(state);
     ChartCoordinateState layout = state.layout;
-    if (layout is _ChartDimensionCoordinateState) {
+    if (layout is ChartDimensionCoordinateState) {
       num yValue = limit;
       double yPos = layout.yAxis[yAxisPosition].getItemHeight(yValue, fixed);
       yPos = layout.transform.transformY(yPos, containPadding: true);

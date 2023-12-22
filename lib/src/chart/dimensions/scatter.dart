@@ -36,7 +36,7 @@ class Scatter<T> extends ChartBodyRender<T> {
 
   @override
   void draw(Canvas canvas, ChartsState state) {
-    _ChartDimensionCoordinateState layout = state.layout as _ChartDimensionCoordinateState;
+    ChartDimensionCoordinateState layout = state.layout as ChartDimensionCoordinateState;
     //offset.dx 滚动偏移  (src.zoom - 1) * (src.size.width / 2) 缩放
     double left = layout.left;
     left = layout.transform.withXScroll(left);
