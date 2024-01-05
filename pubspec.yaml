@@ -1,8 +1,8 @@
 name: flutter_chart_plus
 description: A simple and easy-to-use flutter chart package.
-version: 0.2.4
+version: 0.2.5
 homepage: https://github.com/JDongKhan/flutter_chart.git
-#publish_to: 'https://pub.dartlang.org'
+publish_to: 'https://pub.dartlang.org'
 
 environment:
   sdk: '>=2.17.0 <4.0.0'
