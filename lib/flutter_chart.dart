@@ -12,6 +12,7 @@ import 'src/utils/chart_utils.dart';
 
 export 'src/utils/chart_utils.dart';
 
+
 part 'src/base/chart_controller.dart';
 part 'src/state/chart_layout_state.dart';
 part 'src/state/chart_state.dart';
