@@ -1,0 +1,22 @@
+#!/bin/sh
+
+echo "-----"
+# Get the list of staged files to be committed
+files=$(git diff --cached --name-only --diff-filter=ACM | grep "\.dart$")
+
+# If there are no Dart files in the staged changes, exit
+if ! [[ -n "$files" ]]; then
+    exit 0
+fi
+
+#https://github.com/flutter/flutter/issues/31918
+#级别设置目前无效
+# Run Flutter lint on the staged Dart files
+flutter analyze $files
+#dart analyze $files --no-fatal-warnings
+
+# If the previous command fails, abort the commit
+if [ $? -ne 0 ]; then
+    echo "Flutter analysis failed. Please fix the issues before committing."
+    exit 1
+fi
