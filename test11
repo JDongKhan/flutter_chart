@@ -1,0 +1,15 @@
+#!/bin/sh
+
+#https://github.com/flutter/flutter/issues/31918
+#级别设置目前无效
+#dart analyze --no-fatal-warnings
+flutter analyze --no-fatal-warnings
+
+RESULT=$?
+echo "result:$RESULT"
+
+# If the previous command fails, abort the commit
+if [ $? -ne 0 ]; then
+    echo "Flutter analysis failed. Please fix the issues before committing."
+    exit 1
+fi
