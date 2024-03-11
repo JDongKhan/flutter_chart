@@ -1,4 +1,25 @@
 #!/bin/sh
 
-rm -rf ../.git/hooks/pre-commit
-ln -s /hook/pre-commit ../.git/hooks/pre-commit
+OS=$(uname -s)
+
+ScriptDir=""
+case "$OS" in
+  Linux*)
+    ScriptDir="Linux"
+    ;;
+  Darwin*)
+    ScriptDir="macOS"
+    ;;
+  CYGWIN*|MINGW32*|MSYS*|MINGW*)
+    ScriptDir="Windows"
+    ;;
+  *)
+    ScriptDir="Unknown"
+    ;;
+esac
+
+parentDir=$(dirname "$PWD")
+rm -rf $parentDir/.git/hooks/pre-commit
+cp $parentDir/githook/scripts/$ScriptDir/* $parentDir/.git/hooks/
+#ln -s $parentDir/githook/hook/pre-commit $parentDir/.git/hooks/pre-commit
+chmod +x $parentDir/.git/hooks/pre-commit
