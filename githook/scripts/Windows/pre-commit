@@ -1,7 +1,8 @@
 #!C:/Program\ Files/Git/usr/bin/sh.exe
 
 
-echo "-----"
+echo "--- pre-commit ---"
+
 # Get the list of staged files to be committed
 files=$(git diff --cached --name-only --diff-filter=ACM | grep "\.dart$")
 
