@@ -26,6 +26,8 @@ class ChartDimensionCoordinateState extends ChartCoordinateState {
     double width = size.width;
     double height = size.height;
     int count = xAxis.count;
+    assert(xAxis.count > 0, "x轴数量必须大于0");
+    assert(xAxis.interval > 0, "x轴数量必须大于0");
     //每格的宽度，用于控制一屏最多显示个数
     double density = invert ? (height - content.vertical) / count / xAxis.interval : (width - content.horizontal) / count / xAxis.interval;
     xAxis.fixedDensity = density;
