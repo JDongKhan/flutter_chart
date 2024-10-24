@@ -20,8 +20,7 @@ increment_version $version
 echo "即将发布版本: $version"
 sed -i "" "s/^version: .*/version: $version/" pubspec.yaml
 
-export http_proxy=http://127.0.0.1:53740;
-export https_proxy=http://127.0.0.1:53740;
+export http_proxy=http://127.0.0.1:61725;
+export https_proxy=http://127.0.0.1:61725;
 #flutter packages pub publish --dry-run
-flutter packages pub publish
-#--server=https://pub.dartlang.org
+flutter packages pub publish --server=https://pub.dartlang.org
