@@ -1,5 +1,6 @@
 part of flutter_chart_plus;
 
+///象限坐标系信息
 class ChartDimensionCoordinateState extends ChartCoordinateState {
   ///y坐标轴
   final List<YAxis> yAxis;

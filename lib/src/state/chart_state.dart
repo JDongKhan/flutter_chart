@@ -2,6 +2,7 @@ part of flutter_chart_plus;
 
 typedef AnnotationTooltipWidgetBuilder = PreferredSizeWidget? Function(BuildContext context);
 
+///整个chart的信息
 abstract class ChartsState extends ChangeNotifier {
   ///布局参数，方便后续计算使用
   late ChartCoordinateState _layout;

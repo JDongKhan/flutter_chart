@@ -28,7 +28,7 @@ class WaveProgress<T> extends ChartBodyRender<T> {
   @override
   void init(ChartsState state) {
     super.init(state);
-    _ChartCircularCoordinateState layout = state.layout as _ChartCircularCoordinateState;
+    ChartCircularCoordinateState layout = state.layout as ChartCircularCoordinateState;
     Offset center = layout.center;
     double radius = layout.radius;
     //处理圆形场景
@@ -50,7 +50,7 @@ class WaveProgress<T> extends ChartBodyRender<T> {
 
   @override
   void draw(Canvas canvas, ChartsState state) {
-    _ChartCircularCoordinateState layout = state.layout as _ChartCircularCoordinateState;
+    ChartCircularCoordinateState layout = state.layout as ChartCircularCoordinateState;
     Offset center = layout.center;
     double radius = layout.radius;
     canvas.clipPath(Path()..addOval(Rect.fromCircle(center: center, radius: radius)));

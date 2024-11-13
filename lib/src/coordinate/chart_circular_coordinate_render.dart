@@ -40,7 +40,7 @@ class ChartCircularCoordinateRender extends ChartCoordinateRender {
 
   @override
   void paint(Canvas canvas, ChartsState state) {
-    _ChartCircularCoordinateState layout = state.layout as _ChartCircularCoordinateState;
+    ChartCircularCoordinateState layout = state.layout as ChartCircularCoordinateState;
     _drawCircle(layout, canvas);
     _drawBackgroundAnnotations(state, canvas);
     var index = 0;
@@ -62,7 +62,7 @@ class ChartCircularCoordinateRender extends ChartCoordinateRender {
   }
 
   ///画背景圆
-  void _drawCircle(_ChartCircularCoordinateState layout, Canvas canvas) {
+  void _drawCircle(ChartCircularCoordinateState layout, Canvas canvas) {
     if (strokeCap != null) {
       _paint.strokeCap = strokeCap!;
     }

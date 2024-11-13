@@ -109,7 +109,7 @@ class Pie<T> extends ChartBodyRender<T> {
     if (_total == 0) {
       return;
     }
-    _ChartCircularCoordinateState layout = state.layout as _ChartCircularCoordinateState;
+    ChartCircularCoordinateState layout = state.layout as ChartCircularCoordinateState;
     Offset center = layout.center;
     double radius = layout.radius;
 
@@ -186,7 +186,7 @@ class Pie<T> extends ChartBodyRender<T> {
   }
 
   ///画空隙线
-  void _drawSpaceLine(_ChartCircularCoordinateState layout, Canvas canvas, double radius, double startAngle, double sweepAngle) {
+  void _drawSpaceLine(ChartCircularCoordinateState layout, Canvas canvas, double radius, double startAngle, double sweepAngle) {
     if (spaceWidth == null) {
       return;
     }
@@ -213,7 +213,7 @@ class Pie<T> extends ChartBodyRender<T> {
     canvas.drawLine(start2Offset, end2Offset, paint);
   }
 
-  void _drawLineAndText(_ChartCircularCoordinateState layout, Canvas canvas, String? valueText, String? legend, int index, double radius, double startAngle, double sweepAngle) {
+  void _drawLineAndText(ChartCircularCoordinateState layout, Canvas canvas, String? valueText, String? legend, int index, double radius, double startAngle, double sweepAngle) {
     if (valueText == null && legend == null) {
       return;
     }
@@ -336,7 +336,7 @@ class Pie<T> extends ChartBodyRender<T> {
   }
 
   ///绘制中间文案
-  void _drawCenterValue(_ChartCircularCoordinateState layout, Canvas canvas, String? valueText) {
+  void _drawCenterValue(ChartCircularCoordinateState layout, Canvas canvas, String? valueText) {
     //中心点文案
     if (centerTextStyle != null && valueText != null) {
       TextPainter valueTextPainter = TextPainter(

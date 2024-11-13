@@ -77,7 +77,7 @@ class Radar<T> extends ChartBodyRender<T> {
 
   @override
   void init(ChartsState state) {
-    _ChartCircularCoordinateState layout = state.layout as _ChartCircularCoordinateState;
+    ChartCircularCoordinateState layout = state.layout as ChartCircularCoordinateState;
 
     super.init(state);
     _linePathList.clear();
@@ -217,7 +217,7 @@ class Radar<T> extends ChartBodyRender<T> {
 
   @override
   void draw(Canvas canvas, ChartsState state) {
-    _ChartCircularCoordinateState layout = state.layout as _ChartCircularCoordinateState;
+    ChartCircularCoordinateState layout = state.layout as ChartCircularCoordinateState;
     double dividerRadius = layout.radius / count;
     if (borderStyle == RadarBorderStyle.circle) {
       for (int ii = 0; ii < count; ii++) {

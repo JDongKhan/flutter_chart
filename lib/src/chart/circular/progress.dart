@@ -55,7 +55,7 @@ class Progress<T> extends ChartBodyRender<T> {
 
   @override
   void draw(Canvas canvas, ChartsState state) {
-    _ChartCircularCoordinateState layout = state.layout as _ChartCircularCoordinateState;
+    ChartCircularCoordinateState layout = state.layout as ChartCircularCoordinateState;
     Offset center = layout.center;
     double radius = layout.radius;
     int index = 0;
