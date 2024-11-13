@@ -63,7 +63,9 @@ class XAxis {
     this.drawDivider = false,
     this.divideCount,
     num? max,
-  }) : max = max ?? count * interval;
+  })  : max = max ?? count * interval,
+        assert(count > 0, "count must be greater than 0 "),
+        assert(interval > 0, "interval must be greater than 0  ");
 
   ///根据元数据计算出对应的宽带
   double getWidth(num value, [bool fixed = false]) {
@@ -149,7 +151,8 @@ class YAxis {
     this.drawDivider = true,
     this.offset,
     this.padding = 0,
-  }) : assert(zoom == false, '暂不支持垂直方向缩放');
+  })  : assert(zoom == false, '暂不支持垂直方向缩放'),
+        assert(max > 0, "max must be greater than 0 ");
 
   ///密度
   late double density;

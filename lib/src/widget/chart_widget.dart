@@ -16,6 +16,7 @@ class ChartWidget extends StatefulWidget {
   ///处于弹框和chart之间
   final Widget? foregroundWidget;
 
+
   const ChartWidget({
     Key? key,
     required this.coordinateRender,
@@ -29,6 +30,7 @@ class ChartWidget extends StatefulWidget {
 
 class _ChartWidgetState extends State<ChartWidget> {
   late ChartController _controller;
+  bool _didUpdateWidget = false;
 
   @override
   void initState() {
@@ -70,6 +72,7 @@ class _ChartWidgetState extends State<ChartWidget> {
   @override
   void didUpdateWidget(covariant ChartWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
+    _didUpdateWidget = true;
     if (widget.controller != null) {
       _controller = widget.controller!;
     } else if (widget.coordinateRender.hasChange(oldWidget.coordinateRender)) {
@@ -97,6 +100,8 @@ class _ChartWidgetState extends State<ChartWidget> {
     return RepaintBoundary(
       child: LayoutBuilder(
         builder: (context, cs) {
+          bool animal = _didUpdateWidget;
+          _didUpdateWidget = false;
           ChartCoordinateRender baseChart = widget.coordinateRender;
           _controller._attach(baseChart);
           Size size = Size(cs.maxWidth, cs.maxHeight);
@@ -107,6 +112,7 @@ class _ChartWidgetState extends State<ChartWidget> {
             height: size.height,
             child: _ChartCoreWidget(
               size: size,
+              animalDidUpdate: animal,
               chartCoordinateRender: baseChart,
             ),
           );
@@ -205,10 +211,13 @@ class _ChartWidgetState extends State<ChartWidget> {
 class _ChartCoreWidget extends StatefulWidget {
   final ChartCoordinateRender chartCoordinateRender;
   final Size size;
+  ///是否在update时执行插件动画
+  final bool animalDidUpdate;
   const _ChartCoreWidget({
     Key? key,
     required this.size,
     required this.chartCoordinateRender,
+    this.animalDidUpdate = false,
   }) : super(key: key);
 
   @override
@@ -271,7 +280,9 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderS
   void didUpdateWidget(covariant _ChartCoreWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
     _initState();
-    _startAnimal();
+    if(widget.animalDidUpdate) {
+      _startAnimal();
+    }
   }
 
   void _startAnimal() {

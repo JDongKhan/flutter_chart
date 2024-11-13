@@ -1,11 +1,19 @@
+import 'dart:math';
+
 import 'package:example/page/extension_datetime.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chart_plus/flutter_chart.dart';
 
 /// @author JD
-class BarChartDemoPage extends StatelessWidget {
+class BarChartDemoPage extends StatefulWidget {
   BarChartDemoPage({Key? key}) : super(key: key);
 
+  @override
+  State<BarChartDemoPage> createState() => _BarChartDemoPageState();
+}
+
+class _BarChartDemoPageState extends State<BarChartDemoPage> {
   final DateTime startTime = DateTime(2023, 1, 1);
 
   @override
@@ -13,25 +21,25 @@ class BarChartDemoPage extends StatelessWidget {
     final List<Map> dataList = [
       {
         'time': startTime.add(const Duration(days: 1)),
-        'value1': 100,
+        'value1': Random().nextInt(100),
         'value2': 200,
         'value3': 300,
       },
       {
         'time': startTime.add(const Duration(days: 3)),
-        'value1': 200,
+        'value1': Random().nextInt(200),
         'value2': 400,
         'value3': 300,
       },
       {
         'time': startTime.add(const Duration(days: 5)),
-        'value1': 400,
+        'value1': Random().nextInt(400),
         'value2': 200,
         'value3': 100,
       },
       {
         'time': startTime.add(const Duration(days: 8)),
-        'value1': 100,
+        'value1': Random().nextInt(100),
         'value2': 300,
         'value3': 200,
       },
@@ -44,9 +52,14 @@ class BarChartDemoPage extends StatelessWidget {
       body: SingleChildScrollView(
         child: Center(
           child: SizedBox(
-            width: 300,
             child: Column(
               children: [
+                TextButton(
+                  onPressed: () {
+                    setState(() {});
+                  },
+                  child: const Text("Refresh Page"),
+                ),
                 const Text('普通Bar'),
                 SizedBox(
                   height: 200,
@@ -60,7 +73,8 @@ class BarChartDemoPage extends StatelessWidget {
                       xAxis: XAxis(
                         count: 7,
                         max: 10,
-                        formatter: (index) => startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd'),
+                        formatter: (index) =>
+                            startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd'),
                       ),
                       charts: [
                         Bar(
@@ -100,7 +114,8 @@ class BarChartDemoPage extends StatelessWidget {
                           position: (item) {
                             return parserDateTimeToDayValue(item['time'] as DateTime, startTime);
                           },
-                          valuesFormatter: (item) => [item['value1'].toString(), item['value2'].toString(), item['value3'].toString()],
+                          valuesFormatter: (item) =>
+                              [item['value1'].toString(), item['value2'].toString(), item['value3'].toString()],
                           values: (item) => [
                             double.parse(item['value1'].toString()),
                             double.parse(item['value2'].toString()),
@@ -135,7 +150,8 @@ class BarChartDemoPage extends StatelessWidget {
                           position: (item) {
                             return parserDateTimeToDayValue(item['time'] as DateTime, startTime);
                           },
-                          valuesFormatter: (item) => [item['value1'].toString(), item['value2'].toString(), item['value3'].toString()],
+                          valuesFormatter: (item) =>
+                              [item['value1'].toString(), item['value2'].toString(), item['value3'].toString()],
                           values: (item) => [
                             double.parse(item['value1'].toString()),
                             double.parse(item['value2'].toString()),
@@ -170,7 +186,8 @@ class BarChartDemoPage extends StatelessWidget {
                           direction: Axis.horizontal,
                           itemWidth: 10,
                           highlightColor: Colors.yellow,
-                          valuesFormatter: (item) => [item['value1'].toString(), item['value2'].toString(), item['value3'].toString()],
+                          valuesFormatter: (item) =>
+                              [item['value1'].toString(), item['value2'].toString(), item['value3'].toString()],
                           values: (item) => [
                             double.parse(item['value1'].toString()),
                             double.parse(item['value2'].toString()),
@@ -226,7 +243,8 @@ class BarChartDemoPage extends StatelessWidget {
                       xAxis: XAxis(
                         count: 7,
                         drawDivider: true,
-                        formatter: (index) => startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd'),
+                        formatter: (index) =>
+                            startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd'),
                       ),
                       charts: [
                         Bar(
@@ -263,7 +281,8 @@ class BarChartDemoPage extends StatelessWidget {
                           position: (item) {
                             return parserDateTimeToDayValue(item['time'] as DateTime, startTime);
                           },
-                          valuesFormatter: (item) => [item['value1'].toString(), item['value2'].toString(), item['value3'].toString()],
+                          valuesFormatter: (item) =>
+                              [item['value1'].toString(), item['value2'].toString(), item['value3'].toString()],
                           values: (item) => [
                             double.parse(item['value1'].toString()),
                             double.parse(item['value2'].toString()),
