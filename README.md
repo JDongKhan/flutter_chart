@@ -9,14 +9,14 @@
 
 提示：本项目应该能满足大部分需求场景，如果你觉得有用，麻烦给点个小星星(不然我就弃更了😊)，谢谢。
 
-![demo png](1.gif "demo")
-![demo png](2.gif "demo")
-![demo png](3.gif "demo")
-![demo png](4.gif "demo")
-![demo png](4.1.gif "demo")
-![demo png](4.2.gif "demo")
-![demo png](5.gif "demo")
-![demo png](6.gif "demo")
+![demo png](https://github.com/JDongKhan/flutter_chart/blob/main/1.gif?raw=true "demo")
+![demo png](https://github.com/JDongKhan/flutter_chart/blob/main/2.gif?raw=true "demo")
+![demo png](https://github.com/JDongKhan/flutter_chart/blob/main/3.gif?raw=true "demo")
+![demo png](https://github.com/JDongKhan/flutter_chart/blob/main/4.gif?raw=true "demo")
+![demo png](https://github.com/JDongKhan/flutter_chart/blob/main/4.1.gif?raw=true "demo")
+![demo png](https://github.com/JDongKhan/flutter_chart/blob/main/4.2.gif?raw=true "demo")
+![demo png](https://github.com/JDongKhan/flutter_chart/blob/main/5.gif?raw=true "demo")
+![demo png](https://github.com/JDongKhan/flutter_chart/blob/main/6.gif?raw=true "demo")
 
 ### 为何自己造轮子？
 市面上有很多种chart，经过长时间的调研，发现没有一款完成符合自己需求的组件，有的样式太过个性化比如fl_chart，有的功能太简单，找了许久感觉graphic最合适，但是在项目使用过程中发现一些bug， 
