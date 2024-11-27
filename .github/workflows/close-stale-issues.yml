@@ -12,7 +12,7 @@ jobs:
       - name: Close stale issues
         uses: actions/stale@v4
         with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token: ${{ secrets.WORK_FLOW_PAT }}
           stale-issue-message: 'This issue has been automatically marked as stale because it has not had recent activity. It will be closed if no further activity occurs. Thank you for your contributions.'
           days-before-stale: 60  # 60天无活动则标记为stale
           days-before-close: 7   # 标记为stale后7天关闭
