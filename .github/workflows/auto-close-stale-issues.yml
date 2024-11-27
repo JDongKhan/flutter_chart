@@ -1,0 +1,20 @@
+name: Auto Close Stale Issues
+on:
+  issues:
+    types: opened
+  schedule:
+    # Schedule for five minutes after the hour, every hour
+    - cron: '5 * * * *'
+jobs:
+  close-stale-issues:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Close Stale Issues
+        uses: actions/stale@v4
+        with:
+          stale-issue-message: 'This issue has been automatically marked as stale because it has not had recent activity. It will be closed if no further activity occurs. Thank you for your contributions.'
+          days-before-stale: 10  # 设置 issue 多少天没有活动后被认为是stale
+          days-before-close: 3  # 设置 issue 多少天没有活动后被自动关闭
+          stale-issue-label: "stale"  # 标签名称，用于标记stale的issue
+          close-issue-label: "closed"  # 标签名称，用于标记已关闭的issue
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
