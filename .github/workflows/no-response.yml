@@ -3,8 +3,8 @@ name: No Response
 # Both `issue_comment` and `scheduled` event types are required for this Action
 # to work properly.
 on:
-  issue_comment:
-    types: [created]
+#  issue_comment:
+#    types: [created]
   schedule:
     # Schedule for five minutes after the hour, every hour
     - cron: '5 * * * *'
