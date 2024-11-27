@@ -17,3 +17,4 @@ jobs:
           days-before-stale: 60  # 60天无活动则标记为stale
           days-before-close: 7   # 标记为stale后7天关闭
           stale-issue-label: 'stale'  # 标记stale的Label
+          close-issue-label: 'stale'
