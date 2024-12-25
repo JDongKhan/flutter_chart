@@ -5,14 +5,7 @@ part of flutter_chart_plus;
 
 ///十字准星样式
 class CrossHairStyle {
-  final Color color;
-  final bool horizontalShow;
-  final bool verticalShow;
-  final double strokeWidth;
-  //自动调整水平方向位置
-  final bool adjustHorizontal;
-  //自动调整垂直方向位置
-  final bool adjustVertical;
+
   const CrossHairStyle({
     this.color = Colors.blue,
     this.horizontalShow = true,
@@ -21,6 +14,14 @@ class CrossHairStyle {
     this.adjustHorizontal = false,
     this.adjustVertical = false,
   });
+  final Color color;
+  final bool horizontalShow;
+  final bool verticalShow;
+  final double strokeWidth;
+  //自动调整水平方向位置
+  final bool adjustHorizontal;
+  //自动调整垂直方向位置
+  final bool adjustVertical;
 }
 
 typedef ChartTooltipFormatter = InlineSpan? Function(List<ChartLayoutState>);
