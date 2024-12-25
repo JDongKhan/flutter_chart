@@ -1,3 +1,7 @@
+## 0.3.4
+
+* add click event
+
 ## 0.3.0
 
 * fix bug
