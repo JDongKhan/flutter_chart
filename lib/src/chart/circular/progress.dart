@@ -2,6 +2,16 @@ part of flutter_chart_plus;
 
 /// @author jd
 class Progress<T> extends ChartBodyRender<T> {
+
+  Progress({
+    required super.data,
+    required this.position,
+    this.endPoint = false,
+    this.colors = colors10,
+    this.startAngle = math.pi,
+    this.strokeWidth = 1,
+    this.strokeCap,
+  });
   ///不要使用过于耗时的方法
   ///数据在坐标系的位置，每个坐标系下取值逻辑不一样，在line和bar下是相对于每格的值，比如xAxis的interval为1，你的数据放在1列和2列中间，那么position就是0.5，在pie下是比例
   final ChartPosition<T> position;
@@ -20,16 +30,6 @@ class Progress<T> extends ChartBodyRender<T> {
 
   ///结尾画小原点
   final bool endPoint;
-
-  Progress({
-    required super.data,
-    required this.position,
-    this.endPoint = false,
-    this.colors = colors10,
-    this.startAngle = math.pi,
-    this.strokeWidth = 1,
-    this.strokeCap,
-  });
 
   late final Paint _paint = Paint()
     ..style = PaintingStyle.stroke
@@ -63,11 +63,11 @@ class Progress<T> extends ChartBodyRender<T> {
     double startAngle = this.startAngle;
     double fullSweepAngle = math.pi;
     //
-    if (layout.arcPosition == ArcPosition.none) {
+    if (layout.arcPosition == ArcDirection.none) {
       fullSweepAngle = math.pi * 2;
-    } else if (layout.arcPosition == ArcPosition.up) {
+    } else if (layout.arcPosition == ArcDirection.up) {
       fullSweepAngle = math.pi;
-    } else if (layout.arcPosition == ArcPosition.down) {
+    } else if (layout.arcPosition == ArcDirection.down) {
       startAngle = 0;
     }
 

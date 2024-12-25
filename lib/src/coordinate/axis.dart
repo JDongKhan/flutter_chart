@@ -8,6 +8,24 @@ typedef AxisDivideCountAtAmplify = int? Function(double);
 
 ///x轴配置
 class XAxis {
+
+  XAxis({
+    required this.count,
+    this.formatter,
+    this.interval = 1,
+    this.drawLine = true,
+    this.drawGrid = false,
+    this.drawLabel = true,
+    this.zoom = false,
+    this.lineColor = const Color(0x99cccccc),
+    this.textStyle = const TextStyle(fontSize: 12, color: Colors.grey),
+    this.drawDivider = false,
+    this.divideCount,
+    num? max,
+  })  : max = max ?? count * interval,
+        assert(count > 0, "count must be greater than 0 "),
+        assert(interval > 0, "interval must be greater than 0  ");
+
   ///方便计算，count代表一屏显示的格子数
   final int count;
 
@@ -50,22 +68,6 @@ class XAxis {
   //是否支持缩放
   final bool zoom;
 
-  XAxis({
-    required this.count,
-    this.formatter,
-    this.interval = 1,
-    this.drawLine = true,
-    this.drawGrid = false,
-    this.drawLabel = true,
-    this.zoom = false,
-    this.lineColor = const Color(0x99cccccc),
-    this.textStyle = const TextStyle(fontSize: 12, color: Colors.grey),
-    this.drawDivider = false,
-    this.divideCount,
-    num? max,
-  })  : max = max ?? count * interval,
-        assert(count > 0, "count must be greater than 0 "),
-        assert(interval > 0, "interval must be greater than 0  ");
 
   ///根据元数据计算出对应的宽带
   double getWidth(num value, [bool fixed = false]) {
@@ -98,6 +100,24 @@ class XAxis {
 
 ///y轴配置
 class YAxis {
+
+  YAxis({
+    required this.max,
+    this.min = 0,
+    this.formatter,
+    this.drawLabel = true,
+    this.count = 5,
+    this.zoom = false,
+    this.drawLine = true,
+    this.drawGrid = false,
+    this.lineColor = const Color(0x99cccccc),
+    this.textStyle = const TextStyle(fontSize: 12, color: Colors.grey),
+    this.drawDivider = true,
+    this.offset,
+    this.padding = 0,
+  })  : assert(zoom == false, '暂不支持垂直方向缩放'),
+        assert(max > 0, "max must be greater than 0 ");
+
   ///最小值
   final num min;
 
@@ -136,23 +156,6 @@ class YAxis {
 
   //是否支持缩放
   final bool zoom;
-
-  YAxis({
-    required this.max,
-    this.min = 0,
-    this.formatter,
-    this.drawLabel = true,
-    this.count = 5,
-    this.zoom = false,
-    this.drawLine = true,
-    this.drawGrid = false,
-    this.lineColor = const Color(0x99cccccc),
-    this.textStyle = const TextStyle(fontSize: 12, color: Colors.grey),
-    this.drawDivider = true,
-    this.offset,
-    this.padding = 0,
-  })  : assert(zoom == false, '暂不支持垂直方向缩放'),
-        assert(max > 0, "max must be greater than 0 ");
 
   ///密度
   late double density;

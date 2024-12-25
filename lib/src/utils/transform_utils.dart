@@ -2,6 +2,17 @@ import 'package:flutter/widgets.dart';
 
 /// @author jd
 class TransformUtils {
+
+  TransformUtils({
+    required this.anchor,
+    required this.size,
+    required this.offset,
+    required this.padding,
+    this.reverseAxis = false,
+    this.reverseX = false,
+    this.reverseY = true,
+  });
+
   ///锚点
   final Offset anchor;
   final Size size;
@@ -19,15 +30,6 @@ class TransformUtils {
   ///图形内边距，用于控制坐标轴的内边距
   final EdgeInsets padding;
 
-  TransformUtils({
-    required this.anchor,
-    required this.size,
-    required this.offset,
-    required this.padding,
-    this.reverseAxis = false,
-    this.reverseX = false,
-    this.reverseY = true,
-  });
 
   ///将原点在左下角的逻辑坐标转换成物理坐标
   double transformX(double dx, {bool containPadding = true}) {

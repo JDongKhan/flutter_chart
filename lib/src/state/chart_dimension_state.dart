@@ -2,14 +2,6 @@ part of flutter_chart_plus;
 
 ///象限坐标系信息
 class ChartDimensionCoordinateState extends ChartCoordinateState {
-  ///y坐标轴
-  final List<YAxis> yAxis;
-
-  ///x坐标轴
-  final XAxis xAxis;
-
-  ///是否反转
-  final bool invert;
 
   ChartDimensionCoordinateState({
     required super.size,
@@ -20,6 +12,16 @@ class ChartDimensionCoordinateState extends ChartCoordinateState {
     required this.xAxis,
     required this.invert,
   });
+
+  ///y坐标轴
+  final List<YAxis> yAxis;
+
+  ///x坐标轴
+  final XAxis xAxis;
+
+  ///是否反转
+  final bool invert;
+
 
   @override
   void init() {

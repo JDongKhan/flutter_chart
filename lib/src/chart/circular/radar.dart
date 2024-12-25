@@ -12,6 +12,23 @@ enum RadarBorderStyle {
 ///雷达图
 /// @author JD
 class Radar<T> extends ChartBodyRender<T> {
+
+  Radar({
+    required super.data,
+    required this.values,
+    required this.max,
+    this.lineColor = Colors.black12,
+    this.direction = RotateDirection.forward,
+    this.valueFormatter,
+    this.legendFormatter,
+    this.colors = colors10,
+    this.startAngle = -math.pi / 2,
+    this.fillColors,
+    this.count = 5,
+    this.borderStyle = RadarBorderStyle.polygon,
+    this.legendTextStyle = const TextStyle(fontSize: 10, color: Colors.black, fontWeight: FontWeight.bold),
+  });
+
   ///开始的方向
   final RotateDirection direction;
 
@@ -47,21 +64,6 @@ class Radar<T> extends ChartBodyRender<T> {
 
   final RadarBorderStyle borderStyle;
 
-  Radar({
-    required super.data,
-    required this.values,
-    required this.max,
-    this.lineColor = Colors.black12,
-    this.direction = RotateDirection.forward,
-    this.valueFormatter,
-    this.legendFormatter,
-    this.colors = colors10,
-    this.startAngle = -math.pi / 2,
-    this.fillColors,
-    this.count = 5,
-    this.borderStyle = RadarBorderStyle.polygon,
-    this.legendTextStyle = const TextStyle(fontSize: 10, color: Colors.black, fontWeight: FontWeight.bold),
-  });
 
   late double _sweepAngle;
   late final Paint _linePaint = Paint()

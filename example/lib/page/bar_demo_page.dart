@@ -70,6 +70,9 @@ class _BarChartDemoPageState extends State<BarChartDemoPage> {
                       yAxis: [
                         YAxis(min: 0, max: 600),
                       ],
+                      onClickChart: (BuildContext context, List<ChartLayoutState> list) {
+                        debugPrint("点击事件:$list");
+                      },
                       xAxis: XAxis(
                         count: 7,
                         max: 10,

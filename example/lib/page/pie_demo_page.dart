@@ -77,6 +77,9 @@ class _PieChartDemoPageState extends State<PieChartDemoPage> with SingleTickerPr
               child: ChartWidget(
                 coordinateRender: ChartCircularCoordinateRender(
                   margin: const EdgeInsets.all(30),
+                  onClickChart: (BuildContext context, List<ChartLayoutState> list) {
+                    debugPrint("点击事件:$list");
+                  },
                   charts: [
                     Pie(
                       data: dataList,
@@ -136,7 +139,7 @@ class _PieChartDemoPageState extends State<PieChartDemoPage> with SingleTickerPr
                       strokeCap: StrokeCap.round,
                       borderColor: Colors.grey,
                       borderWidth: 13,
-                      arcPosition: ArcPosition.up,
+                      arcDirection: ArcDirection.up,
                       charts: [
                         Progress(
                           strokeWidth: 9,
@@ -175,7 +178,7 @@ class _PieChartDemoPageState extends State<PieChartDemoPage> with SingleTickerPr
                       strokeCap: StrokeCap.round,
                       borderColor: Colors.grey,
                       borderWidth: 13,
-                      arcPosition: ArcPosition.down,
+                      arcDirection: ArcDirection.down,
                       charts: [
                         Progress(
                           strokeWidth: 9,

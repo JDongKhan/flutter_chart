@@ -7,6 +7,22 @@ typedef BarValuesFormatter<T> = List<String> Function(T);
 /// @author JD
 ///普通bar
 class Bar<T> extends ChartBodyRender<T> {
+
+  Bar({
+    required super.data,
+    required this.value,
+    required this.position,
+    this.valueFormatter,
+    this.valueOffset = Offset.zero,
+    this.textStyle = const TextStyle(fontSize: 10, color: Colors.black),
+    super.yAxisPosition,
+    this.itemWidth = 20,
+    this.color = Colors.blue,
+    this.colors,
+    this.shader,
+    this.highlightColor = Colors.yellow,
+  });
+
   ///不要使用过于耗时的方法
   ///数据在坐标系的位置，每个坐标系下取值逻辑不一样，在line和bar下是相对于每格的值，比如xAxis的interval为1，你的数据放在1列和2列中间，那么position就是0.5，在pie下是比例
   final ChartPosition<T> position;
@@ -38,20 +54,6 @@ class Bar<T> extends ChartBodyRender<T> {
   ///文案偏移
   final Offset valueOffset;
 
-  Bar({
-    required super.data,
-    required this.value,
-    required this.position,
-    this.valueFormatter,
-    this.valueOffset = Offset.zero,
-    this.textStyle = const TextStyle(fontSize: 10, color: Colors.black),
-    super.yAxisPosition,
-    this.itemWidth = 20,
-    this.color = Colors.blue,
-    this.colors,
-    this.shader,
-    this.highlightColor = Colors.yellow,
-  });
 
   final Paint _paint = Paint()
     ..strokeWidth = 1
@@ -188,6 +190,24 @@ typedef StackBarPosition<T> = List<num> Function(T);
 
 ///stackBar  支持水平/垂直排列
 class StackBar<T> extends ChartBodyRender<T> with BarHorizontalMinx<T>, BarVerticalBarMinx<T> {
+
+  StackBar({
+    required super.data,
+    required this.position,
+    required this.values,
+    super.yAxisPosition = 0,
+    this.highlightColor = Colors.yellow,
+    this.colors = colors10,
+    this.shaders,
+    this.itemWidth = 20,
+    this.direction = Axis.horizontal,
+    this.full = false,
+    this.padding = 5,
+    this.hotColor,
+    this.valuesFormatter,
+    this.textStyle = const TextStyle(fontSize: 10, color: Colors.black),
+    this.valueOffset = Offset.zero,
+  });
   ///不要使用过于耗时的方法
   ///数据在坐标系的位置，每个坐标系下取值逻辑不一样，在line和bar下是相对于每格的值，比如xAxis的interval为1，你的数据放在1列和2列中间，那么position就是0.5，在pie下是比例
   final ChartPosition<T> position;
@@ -227,24 +247,6 @@ class StackBar<T> extends ChartBodyRender<T> with BarHorizontalMinx<T>, BarVerti
 
   ///文案偏移
   final Offset valueOffset;
-
-  StackBar({
-    required super.data,
-    required this.position,
-    required this.values,
-    super.yAxisPosition = 0,
-    this.highlightColor = Colors.yellow,
-    this.colors = colors10,
-    this.shaders,
-    this.itemWidth = 20,
-    this.direction = Axis.horizontal,
-    this.full = false,
-    this.padding = 5,
-    this.hotColor,
-    this.valuesFormatter,
-    this.textStyle = const TextStyle(fontSize: 10, color: Colors.black),
-    this.valueOffset = Offset.zero,
-  });
 
   final Paint _paint = Paint()
     ..strokeWidth = 1

@@ -10,6 +10,14 @@ ScatterStyleFunction _defaultScatterStyleFunction = (item) => const ScatterStyle
 
 /// @author JD
 class Scatter<T> extends ChartBodyRender<T> {
+
+  Scatter({
+    required super.data,
+    required this.position,
+    required this.value,
+    ScatterStyleFunction? style,
+  }) : style = style ?? _defaultScatterStyleFunction;
+
   ///不要使用过于耗时的方法
   ///数据在坐标系的位置，每个坐标系下取值逻辑不一样，在line和bar下是相对于每格的值，比如xAxis的interval为1，你的数据放在1列和2列中间，那么position就是0.5，在pie下是比例
   final ChartPosition<T> position;
@@ -19,13 +27,6 @@ class Scatter<T> extends ChartBodyRender<T> {
 
   ///点的风格
   final ScatterStyleFunction style;
-
-  Scatter({
-    required super.data,
-    required this.position,
-    required this.value,
-    ScatterStyleFunction? style,
-  }) : style = style ?? _defaultScatterStyleFunction;
 
   late Paint _dotPaint;
   @override
@@ -61,10 +62,12 @@ class Scatter<T> extends ChartBodyRender<T> {
 }
 
 class ScatterStyle {
-  final Color color;
-  final double radius;
+
   const ScatterStyle({
     required this.color,
     required this.radius,
   });
+
+  final Color color;
+  final double radius;
 }

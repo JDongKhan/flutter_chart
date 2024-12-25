@@ -1,6 +1,6 @@
 part of flutter_chart_plus;
 
-enum ArcPosition {
+enum ArcDirection {
   none,
   up,
   down,
@@ -12,10 +12,7 @@ typedef CircularChartCoordinateRender = ChartCircularCoordinateRender;
 /// @author JD
 /// 圆形坐标系
 class ChartCircularCoordinateRender extends ChartCoordinateRender {
-  final double borderWidth;
-  final Color borderColor;
-  final StrokeCap? strokeCap;
-  final ArcPosition arcPosition;
+
   ChartCircularCoordinateRender({
     super.margin = EdgeInsets.zero,
     super.padding = EdgeInsets.zero,
@@ -25,11 +22,20 @@ class ChartCircularCoordinateRender extends ChartCoordinateRender {
     super.animationDuration,
     super.backgroundAnnotations,
     super.foregroundAnnotations,
-    this.arcPosition = ArcPosition.none,
+    super.onClickChart,
+    this.arcDirection = ArcDirection.none,
     this.borderWidth = 1,
     this.strokeCap,
     this.borderColor = Colors.white,
   });
+  ///边框宽度
+  final double borderWidth;
+  ///边框颜色
+  final Color borderColor;
+  ///画笔样式
+  final StrokeCap? strokeCap;
+  /// 弧度方向
+  final ArcDirection arcDirection;
 
   // 定义圆形的绘制属性
   late final Paint _paint = Paint()
@@ -67,13 +73,13 @@ class ChartCircularCoordinateRender extends ChartCoordinateRender {
       _paint.strokeCap = strokeCap!;
     }
     //满圆
-    if (arcPosition == ArcPosition.none) {
+    if (arcDirection == ArcDirection.none) {
       // 使用 Canvas 的 drawCircle 绘制
       canvas.drawCircle(layout.center, layout.radius, _paint);
     } else {
       double startAngle = 0;
       double sweepAngle = math.pi;
-      if (arcPosition == ArcPosition.up) {
+      if (arcDirection == ArcDirection.up) {
         startAngle = math.pi;
       }
       Path path = Path()

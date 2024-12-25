@@ -2,6 +2,17 @@ part of flutter_chart_plus;
 
 ///坐标系布局信息
 abstract class ChartCoordinateState {
+
+
+  ChartCoordinateState({
+    required this.size,
+    required this.margin,
+    required this.padding,
+    required this.controlValue,
+  }) {
+    content = margin + padding;
+  }
+
   ///尺寸
   final Size size;
 
@@ -13,15 +24,6 @@ abstract class ChartCoordinateState {
 
   ///控制点
   final double controlValue;
-
-  ChartCoordinateState({
-    required this.size,
-    required this.margin,
-    required this.padding,
-    required this.controlValue,
-  }) {
-    content = margin + padding;
-  }
 
   ///点击的位置
   Offset? localPosition;

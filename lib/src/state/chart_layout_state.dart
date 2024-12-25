@@ -24,34 +24,15 @@ class ChartLayoutState {
 
   ///某条数据下 可能会有多条数据
   List<ChartItemLayoutState> children = [];
+
+  @override
+  String toString() {
+    return "index:$index,selectedIndex:$selectedIndex,children:$children";
+  }
 }
 
 /// 每x坐标对应的布局信息
 class ChartItemLayoutState extends ChartLayoutState {
-  ///图形的区域  和  path 代表同一个图形，只不过用Rect方便计算。
-  Rect? originRect;
-
-  ///形成图形的path  比如单个柱状图 单个扇形
-  Path? path;
-
-  ///此处用链表来解决查找附近其他图形的逻辑
-  ///前面一个图形的信息 目的为了解决图形之间的关联信息
-  ChartItemLayoutState? preShapeState;
-
-  ///下一个图形的信息
-  ChartItemLayoutState? nextShapeState;
-
-  ///对应数据x轴的原始值
-  num? xValue;
-
-  ///对应数据y轴的原始值  可能对应多个
-  List<num>? yValues;
-
-  ///对应数据y轴的原始值  yValues里面的其中一个 ，因是树结构，所以位于含有yValues节点的下面
-  num? yValue;
-
-  ///布局信息 方便热区计算
-  ChartCoordinateState? layout;
 
   ChartItemLayoutState();
 
@@ -91,6 +72,31 @@ class ChartItemLayoutState extends ChartLayoutState {
       ..arcToPoint(p0, radius: Radius.circular(r0), clockwise: !clockwise, largeArc: large);
     path = localPath.shift(center);
   }
+
+  ///图形的区域  和  path 代表同一个图形，只不过用Rect方便计算。
+  Rect? originRect;
+
+  ///形成图形的path  比如单个柱状图 单个扇形
+  Path? path;
+
+  ///此处用链表来解决查找附近其他图形的逻辑
+  ///前面一个图形的信息 目的为了解决图形之间的关联信息
+  ChartItemLayoutState? preShapeState;
+
+  ///下一个图形的信息
+  ChartItemLayoutState? nextShapeState;
+
+  ///对应数据x轴的原始值
+  num? xValue;
+
+  ///对应数据y轴的原始值  可能对应多个
+  List<num>? yValues;
+
+  ///对应数据y轴的原始值  yValues里面的其中一个 ，因是树结构，所以位于含有yValues节点的下面
+  num? yValue;
+
+  ///布局信息 方便热区计算
+  ChartCoordinateState? layout;
 
   ///修改区域信息
   void setOriginRect(Rect rect) {

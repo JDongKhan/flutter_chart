@@ -2,11 +2,6 @@ part of flutter_chart_plus;
 
 ///圆形坐标系信息
 class ChartCircularCoordinateState extends ChartCoordinateState {
-  //边框宽度
-  final double borderWidth;
-
-  ///弧口方向
-  final ArcPosition arcPosition;
 
   ChartCircularCoordinateState({
     required super.size,
@@ -16,6 +11,12 @@ class ChartCircularCoordinateState extends ChartCoordinateState {
     required this.borderWidth,
     required this.arcPosition,
   });
+
+  //边框宽度
+  final double borderWidth;
+
+  ///弧口方向
+  final ArcDirection arcPosition;
 
   ///半径
   late double radius;
@@ -28,7 +29,7 @@ class ChartCircularCoordinateState extends ChartCoordinateState {
     final sw = size.width - content.horizontal;
     final sh = size.height - content.vertical;
     //满圆
-    if (arcPosition == ArcPosition.none) {
+    if (arcPosition == ArcDirection.none) {
       // 确定圆的半径
       radius = math.min(sw, sh) / 2 - borderWidth / 2;
       // 定义中心点
@@ -47,7 +48,7 @@ class ChartCircularCoordinateState extends ChartCoordinateState {
       double minSize = math.min(sw, sh);
       radius = math.min(maxSize / 2, minSize) - borderWidth / 2;
       center = size.center(Offset.zero);
-      if (arcPosition == ArcPosition.up) {
+      if (arcPosition == ArcDirection.up) {
         center = Offset(center.dx, bottom);
         transform = TransformUtils(
           anchor: center,
@@ -57,7 +58,7 @@ class ChartCircularCoordinateState extends ChartCoordinateState {
           reverseX: false,
           reverseY: true,
         );
-      } else if (arcPosition == ArcPosition.down) {
+      } else if (arcPosition == ArcDirection.down) {
         center = Offset(center.dx, top);
         transform = TransformUtils(
           anchor: center,
@@ -87,7 +88,7 @@ class _ChartCircularState extends ChartsState {
       margin: margin,
       padding: padding,
       controlValue: controlValue,
-      arcPosition: coordinate.arcPosition,
+      arcPosition: coordinate.arcDirection,
       borderWidth: coordinate.borderWidth,
     );
   }

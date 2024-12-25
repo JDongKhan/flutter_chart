@@ -2,6 +2,16 @@ part of flutter_chart_plus;
 
 /// @author jd
 abstract class Annotation extends _ChartRender {
+
+  Annotation({
+    this.fixed = false,
+    this.yAxisPosition = 0,
+    this.userInfo,
+    this.onTap,
+    this.minZoomVisible,
+    this.maxZoomVisible,
+  });
+
   ///是否滚动
   final bool fixed;
 
@@ -23,14 +33,6 @@ abstract class Annotation extends _ChartRender {
   ///所在的区域
   Rect? rect;
 
-  Annotation({
-    this.fixed = false,
-    this.yAxisPosition = 0,
-    this.userInfo,
-    this.onTap,
-    this.minZoomVisible,
-    this.maxZoomVisible,
-  });
 
   ///判断point是否在此Annotation范围内
   bool isRange(Offset point) {

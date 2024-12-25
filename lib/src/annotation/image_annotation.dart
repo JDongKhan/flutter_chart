@@ -2,17 +2,6 @@ part of flutter_chart_plus;
 
 /// @author jd
 class ImageAnnotation extends Annotation {
-  ///图片
-  final ui.Image image;
-
-  ///两个长度的数组，优先级最高，ImageAnnotation的位置，对应xy轴的value
-  final List<num>? positions;
-
-  ///设置ImageAnnotation的偏移，忽略positions的设置
-  final Offset Function(Size)? anchor;
-
-  ///偏移，可以做细微调整
-  final Offset offset;
 
   ImageAnnotation({
     super.userInfo,
@@ -26,6 +15,19 @@ class ImageAnnotation extends Annotation {
     this.positions,
     this.offset = Offset.zero,
   }) : assert(positions != null || anchor != null, 'positions or anchor must be not null');
+
+  ///图片
+  final ui.Image image;
+
+  ///两个长度的数组，优先级最高，ImageAnnotation的位置，对应xy轴的value
+  final List<num>? positions;
+
+  ///设置ImageAnnotation的偏移，忽略positions的设置
+  final Offset Function(Size)? anchor;
+
+  ///偏移，可以做细微调整
+  final Offset offset;
+
 
   ///获取网络图片 返回ui.Image
   static Future<ui.Image> getNetImage(String url, {width, height}) async {

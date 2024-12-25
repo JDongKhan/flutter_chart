@@ -4,14 +4,6 @@ typedef AnnotationPosition<T> = num Function(T);
 
 /// @author jd
 class LimitAnnotation extends Annotation {
-  ///限制线对应y轴的value
-  final num limit;
-
-  ///线的颜色
-  final Color color;
-
-  ///线宽
-  final double strokeWidth;
 
   LimitAnnotation({
     super.fixed = true,
@@ -22,6 +14,16 @@ class LimitAnnotation extends Annotation {
     this.color = Colors.red,
     this.strokeWidth = 1,
   });
+
+  ///限制线对应y轴的value
+  final num limit;
+
+  ///线的颜色
+  final Color color;
+
+  ///线宽
+  final double strokeWidth;
+
   Paint? _paint;
   Path? _path;
 

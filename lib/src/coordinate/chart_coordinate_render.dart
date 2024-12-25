@@ -27,6 +27,23 @@ typedef ChartTooltipFormatter = InlineSpan? Function(List<ChartLayoutState>);
 
 ///坐标渲染器， 每次刷新会重新构造，切忌不要存放状态数据，数据都在state里面
 abstract class ChartCoordinateRender {
+
+  ChartCoordinateRender({
+    required this.margin,
+    required this.padding,
+    required this.charts,
+    this.tooltipBuilder,
+    this.minZoom,
+    this.maxZoom,
+    this.outDraw = false,
+    this.animationDuration,
+    this.backgroundAnnotations,
+    this.foregroundAnnotations,
+    this.safeArea,
+    this.onClickChart,
+  });
+
+
   ///图形外边距，用于控制坐标轴的外边距
   final EdgeInsets margin;
 
@@ -49,6 +66,9 @@ abstract class ChartCoordinateRender {
   ///用widget弹框来处理点击
   final TooltipWidgetBuilder? tooltipBuilder;
 
+  ///点击事件
+  final OnClickChart? onClickChart;
+
   ///背景标注
   final List<Annotation>? backgroundAnnotations;
 
@@ -60,20 +80,6 @@ abstract class ChartCoordinateRender {
 
   ///动画时间
   final Duration? animationDuration;
-
-  ChartCoordinateRender({
-    required this.margin,
-    required this.padding,
-    required this.charts,
-    this.tooltipBuilder,
-    this.minZoom,
-    this.maxZoom,
-    this.outDraw = false,
-    this.animationDuration,
-    this.backgroundAnnotations,
-    this.foregroundAnnotations,
-    this.safeArea,
-  });
 
   late ChartController controller;
 

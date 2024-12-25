@@ -6,6 +6,12 @@ typedef ChartPosition<T> = num Function(T);
 
 ///图表主体
 class ChartBodyRender<T> extends _ChartRender {
+
+  ChartBodyRender({
+    required this.data,
+    this.yAxisPosition = 0,
+  });
+
   ///数据源
   final List<T> data;
 
@@ -18,10 +24,6 @@ class ChartBodyRender<T> extends _ChartRender {
   ///跟哪个y轴关联
   final int yAxisPosition;
 
-  ChartBodyRender({
-    required this.data,
-    this.yAxisPosition = 0,
-  });
 
   late ChartController controller;
 

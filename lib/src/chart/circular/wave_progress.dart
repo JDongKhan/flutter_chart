@@ -2,6 +2,14 @@ part of flutter_chart_plus;
 
 /// @author jd
 class WaveProgress<T> extends ChartBodyRender<T> {
+
+  WaveProgress({
+    required super.data,
+    required this.position,
+    this.controlOffset = 0.5,
+    this.controlPoint = 10,
+    this.colors = colors10,
+  });
   ///不要使用过于耗时的方法
   ///数据在坐标系的位置，每个坐标系下取值逻辑不一样，在line和bar下是相对于每格的值，比如xAxis的interval为1，你的数据放在1列和2列中间，那么position就是0.5，在pie下是比例
   final ChartPosition<T> position;
@@ -15,14 +23,6 @@ class WaveProgress<T> extends ChartBodyRender<T> {
   ///颜色
   final List<Color> colors;
 
-  WaveProgress({
-    required super.data,
-    required this.position,
-    this.controlOffset = 0.5,
-    this.controlPoint = 10,
-    this.colors = colors10,
-  });
-
   late TransformUtils _transform;
 
   @override
@@ -32,7 +32,7 @@ class WaveProgress<T> extends ChartBodyRender<T> {
     Offset center = layout.center;
     double radius = layout.radius;
     //处理圆形场景
-    if (layout.arcPosition == ArcPosition.none) {
+    if (layout.arcPosition == ArcDirection.none) {
       Offset progressCenter = Offset(center.dx, center.dy + radius);
       _transform = TransformUtils(
         anchor: progressCenter,
@@ -59,7 +59,7 @@ class WaveProgress<T> extends ChartBodyRender<T> {
     for (T item in data) {
       num po = position.call(item);
       double height = radius * 2;
-      if (layout.arcPosition == ArcPosition.none) {
+      if (layout.arcPosition == ArcDirection.none) {
         height = radius * 2;
       } else {
         height = radius;

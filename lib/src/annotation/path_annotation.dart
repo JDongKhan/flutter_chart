@@ -3,14 +3,6 @@ part of flutter_chart_plus;
 /// @author jd
 //路径
 class PathAnnotation extends Annotation {
-  ///路径
-  final Path path;
-
-  ///颜色
-  final Color color;
-
-  ///所在位置
-  final Offset Function(Size)? anchor;
 
   PathAnnotation({
     super.fixed = false,
@@ -20,6 +12,16 @@ class PathAnnotation extends Annotation {
     this.color = const Color(0xFFF5F5F5),
     this.anchor,
   });
+
+  ///路径
+  final Path path;
+
+  ///颜色
+  final Color color;
+
+  ///所在位置
+  final Offset Function(Size)? anchor;
+
 
   Paint? _paint;
   Path? _path;

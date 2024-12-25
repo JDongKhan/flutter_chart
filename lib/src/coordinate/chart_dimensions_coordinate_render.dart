@@ -7,14 +7,7 @@ typedef DimensionsChartCoordinateRender = ChartDimensionsCoordinateRender;
 
 /// 象限坐标系
 class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
-  ///y坐标轴
-  final List<YAxis> yAxis;
 
-  ///x坐标轴
-  final XAxis xAxis;
-
-  ///十字准星样式
-  final CrossHairStyle crossHair;
 
   ChartDimensionsCoordinateRender({
     super.margin = const EdgeInsets.only(left: 30, top: 0, right: 0, bottom: 25),
@@ -30,8 +23,18 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
     super.outDraw,
     super.animationDuration,
     super.tooltipBuilder,
+    super.onClickChart,
     this.crossHair = const CrossHairStyle(),
   }) : assert(yAxis.isNotEmpty);
+
+  ///y坐标轴
+  final List<YAxis> yAxis;
+
+  ///x坐标轴
+  final XAxis xAxis;
+
+  ///十字准星样式
+  final CrossHairStyle crossHair;
 
   @override
   bool canZoom() {

@@ -2,6 +2,22 @@ part of flutter_chart_plus;
 
 /// @author jd
 class LabelAnnotation extends Annotation {
+
+  LabelAnnotation({
+    super.userInfo,
+    super.onTap,
+    super.fixed = false,
+    super.yAxisPosition = 0,
+    super.minZoomVisible,
+    super.maxZoomVisible,
+    required this.text,
+    this.positions,
+    this.anchor,
+    this.offset = Offset.zero,
+    this.textAlign = TextAlign.start,
+    this.textStyle = const TextStyle(color: Colors.red),
+  }) : assert(positions != null || anchor != null, 'positions or anchor must be not null');
+
   ///两个长度的数组，优先级最高，ImageAnnotation的位置，对应xy轴的value
   final List<num>? positions;
 
@@ -20,20 +36,6 @@ class LabelAnnotation extends Annotation {
   ///设置Annotation的偏移，忽略positions的设置
   final Offset Function(Size)? anchor;
 
-  LabelAnnotation({
-    super.userInfo,
-    super.onTap,
-    super.fixed = false,
-    super.yAxisPosition = 0,
-    super.minZoomVisible,
-    super.maxZoomVisible,
-    required this.text,
-    this.positions,
-    this.anchor,
-    this.offset = Offset.zero,
-    this.textAlign = TextAlign.start,
-    this.textStyle = const TextStyle(color: Colors.red),
-  }) : assert(positions != null || anchor != null, 'positions or anchor must be not null');
 
   TextPainter? _textPainter;
 

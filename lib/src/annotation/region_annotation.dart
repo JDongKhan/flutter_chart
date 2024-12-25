@@ -3,11 +3,6 @@ part of flutter_chart_plus;
 /// @author jd
 //区间标注
 class RegionAnnotation extends Annotation {
-  ///区间在x轴上的位置，两个长度
-  final List<num> positions;
-
-  ///区间颜色
-  final Color color;
 
   RegionAnnotation({
     super.fixed = false,
@@ -16,6 +11,13 @@ class RegionAnnotation extends Annotation {
     required this.positions,
     this.color = const Color(0xFFF5F5F5),
   });
+
+  ///区间在x轴上的位置，两个长度
+  final List<num> positions;
+
+  ///区间颜色
+  final Color color;
+
 
   Paint? _paint;
   @override

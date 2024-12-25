@@ -4,6 +4,24 @@ typedef LinePosition<T> = List<num> Function(T);
 
 /// @author JD
 class Line<T> extends ChartBodyRender<T> with NormalLineMixin<T>, AnimalLineMixin<T> {
+
+  Line({
+    required super.data,
+    required this.position,
+    required this.values,
+    super.yAxisPosition = 0,
+    this.colors = colors10,
+    this.shaders,
+    this.dotColors,
+    this.dotRadius = 2,
+    this.strokeWidth = 1,
+    this.isHollow = false,
+    this.filled = false,
+    this.isCurve = false,
+    this.operation,
+    this.async = false,
+  });
+
   ///不要使用过于耗时的方法
   ///数据在坐标系的位置，每个坐标系下取值逻辑不一样，在line和bar下是相对于每格的值，比如xAxis的interval为1，你的数据放在1列和2列中间，那么position就是0.5，在pie下是比例
   final ChartPosition<T> position;
@@ -40,23 +58,6 @@ class Line<T> extends ChartBodyRender<T> with NormalLineMixin<T>, AnimalLineMixi
 
   ///是否异步初始化布局
   final bool async;
-
-  Line({
-    required super.data,
-    required this.position,
-    required this.values,
-    super.yAxisPosition = 0,
-    this.colors = colors10,
-    this.shaders,
-    this.dotColors,
-    this.dotRadius = 2,
-    this.strokeWidth = 1,
-    this.isHollow = false,
-    this.filled = false,
-    this.isCurve = false,
-    this.operation,
-    this.async = false,
-  });
 
   ///线 画笔
   late final Paint _linePaint = Paint()

@@ -3,10 +3,20 @@ part of flutter_chart_plus;
 /// @author JD
 ///
 typedef TooltipWidgetBuilder = PreferredSizeWidget? Function(BuildContext context, List<ChartLayoutState> list);
+typedef OnClickChart = void Function(BuildContext context, List<ChartLayoutState> list);
 // typedef ChartCoordinateRenderBuilder = ChartCoordinateRender Function();
 
 ///本widget只是起到提供Canvas的功能，不支持任何传参，避免参数来回传递导致难以维护以及混乱，需要自定义可自行去对应渲染器
 class ChartWidget extends StatefulWidget {
+
+  const ChartWidget({
+    Key? key,
+    required this.coordinateRender,
+    this.controller,
+    this.foregroundWidget,
+  }) : super(key: key);
+
+
   ///坐标系
   final ChartCoordinateRender coordinateRender;
 
@@ -16,13 +26,6 @@ class ChartWidget extends StatefulWidget {
   ///处于弹框和chart之间
   final Widget? foregroundWidget;
 
-
-  const ChartWidget({
-    Key? key,
-    required this.coordinateRender,
-    this.controller,
-    this.foregroundWidget,
-  }) : super(key: key);
 
   @override
   State<ChartWidget> createState() => _ChartWidgetState();
@@ -147,7 +150,7 @@ class _ChartWidgetState extends State<ChartWidget> {
           return const SizedBox.shrink();
         }
         Offset offset = Offset(point.dx, point.dy);
-
+        //提示框
         PreferredSizeWidget? widget = _controller.tooltipWidgetBuilder?.call(context);
         TooltipWidgetBuilder? tooltipBuilder = baseChart.tooltipBuilder;
         widget ??= tooltipBuilder?.call(context, _controller.chartsStateList);
@@ -209,16 +212,18 @@ class _ChartWidgetState extends State<ChartWidget> {
 }
 
 class _ChartCoreWidget extends StatefulWidget {
-  final ChartCoordinateRender chartCoordinateRender;
-  final Size size;
-  ///是否在update时执行插件动画
-  final bool animalDidUpdate;
+
   const _ChartCoreWidget({
     Key? key,
     required this.size,
     required this.chartCoordinateRender,
     this.animalDidUpdate = false,
   }) : super(key: key);
+
+  final ChartCoordinateRender chartCoordinateRender;
+  final Size size;
+  ///是否在update时执行插件动画
+  final bool animalDidUpdate;
 
   @override
   State<_ChartCoreWidget> createState() => _ChartCoreWidgetState();
@@ -417,17 +422,22 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderS
         }
       }
     }
+
+    //点击事件
+    widget.chartCoordinateRender.onClickChart?.call(context,_controller.chartsStateList);
   }
 }
 
 ///画图
 class _ChartPainter extends CustomPainter {
-  final ChartCoordinateRender chart;
-  final ChartsState state;
+
   _ChartPainter({
     required this.chart,
     required this.state,
   }) : super(repaint: state);
+
+  final ChartCoordinateRender chart;
+  final ChartsState state;
 
   @override
   void paint(Canvas canvas, Size size) {
