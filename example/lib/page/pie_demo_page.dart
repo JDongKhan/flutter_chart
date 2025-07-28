@@ -193,6 +193,44 @@ class _PieChartDemoPageState extends State<PieChartDemoPage> with SingleTickerPr
                 ],
               ),
             ),
+            const Text('CircularProgress'),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 40),
+              height: 200,
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    bottom: 50,
+                    child: Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: const [
+                          Text('50%', style: TextStyle(fontSize: 24, color: Colors.black)),
+                          Text('完成度', style: TextStyle(fontSize: 30, color: Colors.black)),
+                        ],
+                      ),
+                    ),
+                  ),
+                  ChartWidget(
+                    coordinateRender: ChartCircularCoordinateRender(
+                      margin: const EdgeInsets.only(bottom: 10),
+                      strokeCap: StrokeCap.round,
+                      borderColor: Colors.grey,
+                      borderWidth: 13,
+                      arcDirection: ArcDirection.none,
+                      charts: [
+                        CircularProgress(
+                          strokeWidth: 9,
+                          strokeCap: StrokeCap.round,
+                          data: [0.5, 0.2],
+                          position: (item) => item,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
             const Text('Wave Progress'),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 40),

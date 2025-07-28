@@ -290,7 +290,14 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderS
     }
   }
 
+  DateTime? _lastAnimalTime;
   void _startAnimal() {
+    DateTime now = DateTime.now();
+    int diff = widget.chartCoordinateRender.animationDuration?.inMilliseconds ?? 0;
+    if (_lastAnimalTime != null && now.difference(_lastAnimalTime!).inMilliseconds < diff ) {
+      return;
+    }
+    _lastAnimalTime = now;
     _animationController?.reset();
     _animationController?.forward();
   }
