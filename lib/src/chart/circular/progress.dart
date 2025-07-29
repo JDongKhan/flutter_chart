@@ -96,19 +96,18 @@ class Progress<T> extends ChartBodyRender<T> {
   }
 }
 
-
 class CircularProgress<T> extends ChartBodyRender<T> {
-
   CircularProgress({
     required super.data,
     required this.position,
     this.endPoint = false,
     this.colors = colors10,
     this.backgroundColor = const Color(0xFFCECECE),
-    this.startAngle = -math.pi/2,
+    this.startAngle = -math.pi / 2,
     this.strokeWidth = 1,
     this.strokeCap,
   });
+
   ///不要使用过于耗时的方法
   ///数据在坐标系的位置，每个坐标系下取值逻辑不一样，在line和bar下是相对于每格的值，比如xAxis的interval为1，你的数据放在1列和2列中间，那么position就是0.5，在pie下是比例
   final ChartPosition<T> position;
@@ -150,7 +149,6 @@ class CircularProgress<T> extends ChartBodyRender<T> {
         ..isAntiAlias = true
         ..strokeWidth = 1;
     }
-
   }
 
   @override
@@ -161,15 +159,16 @@ class CircularProgress<T> extends ChartBodyRender<T> {
     int index = 0;
     num? lastXvs;
     double startAngle = this.startAngle;
-
     //绘制前面进度
-    for (T item in data) {
+    for (int i = 0; i < data.length; i++) {
+      T item = data[i];
       num po = position.call(item);
       if (lastXvs != null) {
         assert(lastXvs > po, '数据必须降序，否则会被挡住');
       }
       // 计算进度角度
-      final double sweepAngle = po * 360 * (math.pi / 180)  * layout.controlValue; // 转换为弧度
+      final double sweepAngle = po * 360 * (math.pi / 180) * layout.controlValue; // 转换为弧度
+
       // 使用 Arc 绘制进度
       canvas.drawArc(
         Rect.fromCircle(center: center, radius: radius),
@@ -178,7 +177,6 @@ class CircularProgress<T> extends ChartBodyRender<T> {
         false, // 不绘制圆形的内部
         _paint..color = colors[index],
       );
-
       if (_endPaint != null && sweepAngle > 0) {
         double endAngle = startAngle + sweepAngle;
         var startX = math.cos(endAngle) * radius + center.dx;
@@ -189,4 +187,6 @@ class CircularProgress<T> extends ChartBodyRender<T> {
       lastXvs = po;
     }
   }
+
 }
+
