@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:example/page/extension_datetime.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chart_plus/flutter_chart.dart';
@@ -35,6 +37,8 @@ class _PieChartDemoPageState extends State<PieChartDemoPage> with SingleTickerPr
     super.dispose();
   }
 
+  List list = [0.5,0.2];
+
   @override
   Widget build(BuildContext context) {
     final List<Map> dataList = [
@@ -63,6 +67,8 @@ class _PieChartDemoPageState extends State<PieChartDemoPage> with SingleTickerPr
         'value3': 200,
       },
     ];
+
+
 
     return Scaffold(
       appBar: AppBar(
@@ -145,7 +151,7 @@ class _PieChartDemoPageState extends State<PieChartDemoPage> with SingleTickerPr
                           strokeWidth: 9,
                           endPoint: true,
                           strokeCap: StrokeCap.round,
-                          data: [0.5, 0.2],
+                          data: list,
                           position: (item) => item,
                         ),
                       ],
@@ -154,7 +160,12 @@ class _PieChartDemoPageState extends State<PieChartDemoPage> with SingleTickerPr
                 ],
               ),
             ),
-            const Text('Progress Pie 2'),
+            GestureDetector(onTap: () {
+              setState(() {
+                var d = Random().nextDouble();
+                list = [d + 0.2,d];
+              });
+            }, child: const Text('Progress Pie 2')),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 40),
               height: 200,
@@ -184,7 +195,7 @@ class _PieChartDemoPageState extends State<PieChartDemoPage> with SingleTickerPr
                           strokeWidth: 9,
                           endPoint: true,
                           strokeCap: StrokeCap.round,
-                          data: [0.5, 0.2],
+                          data: list,
                           position: (item) => item,
                         ),
                       ],
@@ -213,6 +224,7 @@ class _PieChartDemoPageState extends State<PieChartDemoPage> with SingleTickerPr
                   ),
                   ChartWidget(
                     coordinateRender: ChartCircularCoordinateRender(
+                      animationDuration: const Duration(seconds: 1),
                       margin: const EdgeInsets.only(bottom: 10),
                       strokeCap: StrokeCap.round,
                       borderColor: Colors.grey,
@@ -222,7 +234,7 @@ class _PieChartDemoPageState extends State<PieChartDemoPage> with SingleTickerPr
                         CircularProgress(
                           strokeWidth: 9,
                           strokeCap: StrokeCap.round,
-                          data: [0.5, 0.2],
+                          data: list,
                           position: (item) => item,
                         ),
                       ],
