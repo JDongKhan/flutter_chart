@@ -125,7 +125,6 @@ class CircularProgress<T> extends ChartBodyRender<T> {
     required this.position,
     this.endPoint = false,
     this.colors = colors10,
-    this.backgroundColor = const Color(0xFFCECECE),
     this.startAngle = -math.pi / 2,
     this.strokeWidth = 1,
     this.strokeCap,
@@ -149,8 +148,6 @@ class CircularProgress<T> extends ChartBodyRender<T> {
 
   ///结尾画小原点
   final bool endPoint;
-
-  final Color backgroundColor;
 
   late final Paint _paint = Paint()
     ..style = PaintingStyle.stroke
