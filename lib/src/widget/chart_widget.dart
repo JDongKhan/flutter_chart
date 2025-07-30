@@ -8,14 +8,13 @@ typedef OnClickChart = void Function(BuildContext context, List<ChartLayoutState
 
 ///本widget只是起到提供Canvas的功能，不支持任何传参，避免参数来回传递导致难以维护以及混乱，需要自定义可自行去对应渲染器
 class ChartWidget extends StatefulWidget {
-
   const ChartWidget({
     Key? key,
     required this.coordinateRender,
     this.controller,
     this.foregroundWidget,
+    this.resetAnimalDidUpdate = false,
   }) : super(key: key);
-
 
   ///坐标系
   final ChartCoordinateRender coordinateRender;
@@ -26,6 +25,7 @@ class ChartWidget extends StatefulWidget {
   ///处于弹框和chart之间
   final Widget? foregroundWidget;
 
+  final bool resetAnimalDidUpdate;
 
   @override
   State<ChartWidget> createState() => _ChartWidgetState();
@@ -116,6 +116,7 @@ class _ChartWidgetState extends State<ChartWidget> {
             child: _ChartCoreWidget(
               size: size,
               animalDidUpdate: animal,
+              resetAnimalDidUpdate: widget.resetAnimalDidUpdate,
               chartCoordinateRender: baseChart,
             ),
           );
@@ -195,14 +196,17 @@ class _ChartWidgetState extends State<ChartWidget> {
   ) {
     Rect kSafeArea;
     if (baseChart.safeArea != null) {
-      kSafeArea = Rect.fromLTRB(baseChart.safeArea!.left, baseChart.safeArea!.top, size.width - baseChart.safeArea!.right, size.height - baseChart.safeArea!.bottom);
+      kSafeArea = Rect.fromLTRB(baseChart.safeArea!.left, baseChart.safeArea!.top,
+          size.width - baseChart.safeArea!.right, size.height - baseChart.safeArea!.bottom);
     } else {
       kSafeArea = Rect.fromLTRB(0, 0, size.width, size.height);
     }
-    final horizontalAdjust =
-        windowRect.left < kSafeArea.left ? (kSafeArea.left - windowRect.left) : (windowRect.right > kSafeArea.right ? (kSafeArea.right - windowRect.right) : 0.0);
-    final verticalAdjust =
-        windowRect.top < kSafeArea.top ? (kSafeArea.top - windowRect.top) : (windowRect.bottom > kSafeArea.bottom ? (kSafeArea.bottom - windowRect.bottom) : 0.0);
+    final horizontalAdjust = windowRect.left < kSafeArea.left
+        ? (kSafeArea.left - windowRect.left)
+        : (windowRect.right > kSafeArea.right ? (kSafeArea.right - windowRect.right) : 0.0);
+    final verticalAdjust = windowRect.top < kSafeArea.top
+        ? (kSafeArea.top - windowRect.top)
+        : (windowRect.bottom > kSafeArea.bottom ? (kSafeArea.bottom - windowRect.bottom) : 0.0);
     if (horizontalAdjust != 0 || verticalAdjust != 0) {
       windowRect = windowRect.translate(horizontalAdjust, verticalAdjust);
     }
@@ -212,18 +216,20 @@ class _ChartWidgetState extends State<ChartWidget> {
 }
 
 class _ChartCoreWidget extends StatefulWidget {
-
   const _ChartCoreWidget({
     Key? key,
     required this.size,
     required this.chartCoordinateRender,
     this.animalDidUpdate = false,
+    this.resetAnimalDidUpdate = false,
   }) : super(key: key);
 
   final ChartCoordinateRender chartCoordinateRender;
   final Size size;
+
   ///是否在update时执行插件动画
   final bool animalDidUpdate;
+  final bool resetAnimalDidUpdate;
 
   @override
   State<_ChartCoreWidget> createState() => _ChartCoreWidgetState();
@@ -285,19 +291,21 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderS
   void didUpdateWidget(covariant _ChartCoreWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
     _initState();
-    if(widget.animalDidUpdate) {
+    if (widget.animalDidUpdate) {
       _startAnimal();
     }
   }
 
   DateTime? _lastAnimalTime;
   void _startAnimal() {
-    DateTime now = DateTime.now();
-    int diff = widget.chartCoordinateRender.animationDuration?.inMilliseconds ?? 0;
-    if (_lastAnimalTime != null && now.difference(_lastAnimalTime!).inMilliseconds < diff ) {
-      return;
+    if (widget.resetAnimalDidUpdate) {
+      DateTime now = DateTime.now();
+      int diff = widget.chartCoordinateRender.animationDuration?.inMilliseconds ?? 0;
+      if (_lastAnimalTime != null && now.difference(_lastAnimalTime!).inMilliseconds < diff) {
+        return;
+      }
+      _lastAnimalTime = now;
     }
-    _lastAnimalTime = now;
     _animationController?.reset();
     _animationController?.forward();
   }
@@ -345,7 +353,8 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderS
 
             // double startOffset = centerV * render.xAxis.density - widget.chartCoordinateRender.size.width / 2;
             //计算缩放和校准偏移  暂不支持垂直方向缩放，因为应该很少有这个需求
-            double startOffset = (_lastOffset.dx + _chartState.layout.size.width / 2) * zoom / _beforeZoom - _chartState.layout.size.width / 2;
+            double startOffset = (_lastOffset.dx + _chartState.layout.size.width / 2) * zoom / _beforeZoom -
+                _chartState.layout.size.width / 2;
             _chartState.zoom = zoom;
             _chartState.scroll(Offset(startOffset, 0));
           }
@@ -431,13 +440,12 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderS
     }
 
     //点击事件
-    widget.chartCoordinateRender.onClickChart?.call(context,_controller.chartsStateList);
+    widget.chartCoordinateRender.onClickChart?.call(context, _controller.chartsStateList);
   }
 }
 
 ///画图
 class _ChartPainter extends CustomPainter {
-
   _ChartPainter({
     required this.chart,
     required this.state,
