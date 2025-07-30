@@ -25,6 +25,7 @@ class Pie<T> extends ChartBodyRender<T> {
     this.centerTextStyle,
     this.direction = RotateDirection.forward,
     this.guideLine = false,
+    this.guideLineWidth = 40,
     this.showValue = false,
     this.enableTap = true,
     this.startAngle = 0,
@@ -75,6 +76,9 @@ class Pie<T> extends ChartBodyRender<T> {
 
   ///是否显示引导线
   final bool guideLine;
+
+  ///引导线宽度
+  final double guideLineWidth;
 
   ///是否在图中显示value
   final bool showValue;
@@ -225,7 +229,7 @@ class Pie<T> extends ChartBodyRender<T> {
     //中心弧度
     final double radians = startAngle + sweepAngle / 2;
     double line1 = 10;
-    double line2 = 40;
+    double line2 = guideLineWidth;
     Offset point1 = Offset(math.cos(radians) * (radius), math.sin(radians) * (radius)).translate(center.dx, center.dy);
     Offset point2 = Offset(math.cos(radians) * (radius + line1), math.sin(radians) * (radius + line1))
         .translate(center.dx, center.dy);
