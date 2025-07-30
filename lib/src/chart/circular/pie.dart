@@ -25,7 +25,7 @@ class Pie<T> extends ChartBodyRender<T> {
     this.centerTextStyle,
     this.direction = RotateDirection.forward,
     this.guideLine = false,
-    this.guideLineWidth = 40,
+    this.guideLineWidth,
     this.showValue = false,
     this.enableTap = true,
     this.startAngle = 0,
@@ -78,7 +78,7 @@ class Pie<T> extends ChartBodyRender<T> {
   final bool guideLine;
 
   ///引导线宽度
-  final double guideLineWidth;
+  final double? guideLineWidth;
 
   ///是否在图中显示value
   final bool showValue;
@@ -225,11 +225,46 @@ class Pie<T> extends ChartBodyRender<T> {
     if (valueText == null && legend == null) {
       return;
     }
+    TextPainter? legendTextPainter;
+    if (legend != null) {
+      legendTextPainter = TextPainter(
+        textAlign: TextAlign.center,
+        text: TextSpan(
+          text: legend,
+          style: legendTextStyle,
+        ),
+        textDirection: TextDirection.ltr,
+      )..layout(
+          minWidth: 0,
+          maxWidth: layout.size.width,
+        );
+    }
+
+    TextPainter? valueTextPainter;
+    if (valueText != null) {
+      valueTextPainter = TextPainter(
+        textAlign: TextAlign.start,
+        text: TextSpan(
+          text: valueText,
+          style: textStyle,
+        ),
+        textDirection: TextDirection.ltr,
+      )..layout(
+          minWidth: 0,
+          maxWidth: layout.size.width,
+        );
+    }
     Offset center = layout.center;
     //中心弧度
     final double radians = startAngle + sweepAngle / 2;
-    double line1 = 10;
-    double line2 = guideLineWidth;
+    double line1 = 15;
+    double line2 = 40;
+    if (guideLineWidth == null) {
+      //未设置则根据值来设置
+      line2 = math.max((legendTextPainter?.width ?? 0) + 10, (valueTextPainter?.width ?? 0) + 10);
+    } else {
+      line2 = guideLineWidth!;
+    }
     Offset point1 = Offset(math.cos(radians) * (radius), math.sin(radians) * (radius)).translate(center.dx, center.dy);
     Offset point2 = Offset(math.cos(radians) * (radius + line1), math.sin(radians) * (radius + line1))
         .translate(center.dx, center.dy);
@@ -252,18 +287,7 @@ class Pie<T> extends ChartBodyRender<T> {
       canvas.drawLine(point2, point3, paint);
     }
 
-    if (legend != null) {
-      TextPainter legendTextPainter = TextPainter(
-        textAlign: TextAlign.center,
-        text: TextSpan(
-          text: legend,
-          style: legendTextStyle,
-        ),
-        textDirection: TextDirection.ltr,
-      )..layout(
-          minWidth: 0,
-          maxWidth: layout.size.width,
-        );
+    if (legendTextPainter != null) {
       // 使用三角函数计算文字位置 并根据文字大小适配
       Offset textOffset =
           Offset(isLeft ? point3.dx : point3.dx - legendTextPainter.width, point3.dy - legendTextPainter.height);
@@ -275,19 +299,7 @@ class Pie<T> extends ChartBodyRender<T> {
       legendTextPainter.paint(canvas, textOffset);
     }
 
-    if (valueText != null) {
-      // 使用 TextPainter 绘制文字标识
-      TextPainter valueTextPainter = TextPainter(
-        textAlign: TextAlign.start,
-        text: TextSpan(
-          text: valueText,
-          style: textStyle,
-        ),
-        textDirection: TextDirection.ltr,
-      )..layout(
-          minWidth: 0,
-          maxWidth: layout.size.width,
-        );
+    if (valueTextPainter != null) {
       // 使用三角函数计算文字位置 并根据文字大小适配
       Offset textOffset = Offset(isLeft ? point3.dx : point3.dx - valueTextPainter.width, point3.dy);
       valueTextPainter.paint(canvas, textOffset);
