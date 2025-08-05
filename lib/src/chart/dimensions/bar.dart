@@ -31,7 +31,7 @@ class Bar<T> extends ChartBodyRender<T> {
   final double itemWidth;
 
   ///值格式化 不要使用过于耗时的方法
-  final BarPosition value;
+  final BarPosition<T> value;
 
   ///颜色 如果设置了colors 则color不会生效
   final Color color;
@@ -46,7 +46,7 @@ class Bar<T> extends ChartBodyRender<T> {
   final Color? highlightColor;
 
   ///值文案格式化 不要使用过于耗时的方法
-  final BarValueFormatter? valueFormatter;
+  final BarValueFormatter<T>? valueFormatter;
 
   ///值文字样式
   final TextStyle textStyle;
