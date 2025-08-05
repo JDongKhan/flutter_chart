@@ -2,7 +2,7 @@ part of flutter_chart_plus;
 
 /// @author jd
 
-typedef ChartPosition<T> = num Function(T);
+typedef ChartPosition<T> = num Function(T,int index);
 
 ///图表主体
 class ChartBodyRender<T> extends _ChartRender {

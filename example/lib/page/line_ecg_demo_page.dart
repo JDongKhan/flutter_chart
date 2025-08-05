@@ -97,7 +97,7 @@ class _LineChartEcgDemoPageState extends State<LineChartEcgDemoPage> {
                   Line(
                     dotRadius: 0,
                     data: dataList,
-                    position: (item) => maxCount - (dataList.length - dataList.indexOf(item)),
+                    position: (item,_) => maxCount - (dataList.length - dataList.indexOf(item)),
                     // position: (item) => dataList.indexOf(item),
                     values: (item) => [
                       item['value1'] as num,

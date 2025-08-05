@@ -105,7 +105,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                       charts: [
                         Line(
                           data: dataList,
-                          position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
+                          position: (item,_) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
                           values: (item) => [
                             item['value1'] as num,
                           ],
@@ -176,7 +176,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                       charts: [
                         Line(
                           data: dataList,
-                          position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
+                          position: (item,_) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
                           values: (item) => [
                             item['value1'] as num,
                             item['value2'] as num,
@@ -217,7 +217,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                           data: dataList,
                           //填充需要开启这个属性
                           filled: true,
-                          position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
+                          position: (item,_) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
                           colors: [Colors.blue, Colors.red],
                           dotColors: [Colors.blue, Colors.black],
                           shaders: [
@@ -274,7 +274,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                           //填充需要开启这个属性
                           filled: true,
                           operation: PathOperation.xor,
-                          position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
+                          position: (item,_) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
                           colors: [Colors.transparent, Colors.blue],
                           dotColors: [Colors.black, Colors.black],
                           // shaders: [
@@ -328,7 +328,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                         charts: [
                           Line(
                             data: dataList,
-                            position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
+                            position: (item,_) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
                             dotColors: [
                               Colors.black,
                               Colors.black,
@@ -399,12 +399,12 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                           color: Colors.green,
                           data: dataList,
                           yAxisPosition: 1,
-                          position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
+                          position: (item,_) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
                           value: (item) => item['value1'],
                         ),
                         Line(
                           data: dataList,
-                          position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
+                          position: (item,_) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
                           values: (item) => [
                             item['value1'] as num,
                           ],
@@ -412,7 +412,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                         Line(
                           colors: [Colors.green],
                           data: dataList,
-                          position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
+                          position: (item,_) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
                           values: (item) => [
                             item['value2'] as num,
                           ],

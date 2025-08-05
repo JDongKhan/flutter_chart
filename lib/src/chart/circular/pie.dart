@@ -102,7 +102,7 @@ class Pie<T> extends ChartBodyRender<T> {
     for (int i = 0; i < data.length; i++) {
       T item = data[i];
       //计算值
-      num po = position.call(item);
+      num po = position.call(item,i);
       _total += po;
       _values.add(po);
     }

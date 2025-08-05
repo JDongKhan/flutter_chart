@@ -85,7 +85,7 @@ class _BigDataChartDemoPageState extends State<BigDataChartDemoPage> {
                           strokeWidth: 1,
                           dotRadius: 0,
                           data: dataList,
-                          position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
+                          position: (item,_) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
                           values: (item) => [
                             item['value1'] as num,
                           ],

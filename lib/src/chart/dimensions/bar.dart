@@ -87,7 +87,7 @@ class Bar<T> extends ChartBodyRender<T> {
 
     for (int index = 0; index < data.length; index++) {
       T item = data[index];
-      num xValue = position.call(item);
+      num xValue = position.call(item,index);
       num yValue = value.call(item);
       //是否有补间动画
       if (state.animal && layout.controlValue < 1) {
@@ -263,7 +263,7 @@ class StackBar<T> extends ChartBodyRender<T> with BarHorizontalMinx<T>, BarVerti
 
     for (int index = 0; index < data.length; index++) {
       T item = data[index];
-      num xValue = position.call(item);
+      num xValue = position.call(item,index);
       List<num> yValues = values.call(item);
       assert(colors.length >= yValues.length);
       assert(shaders == null || shaders!.length >= yValues.length);

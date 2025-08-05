@@ -74,7 +74,7 @@ class Progress<T> extends ChartBodyRender<T> {
     List<ChartItemLayoutState> childrenLayoutState = [];
     for (int i = 0; i < data.length; i++) {
       T item = data[i];
-      num po = position.call(item);
+      num po = position.call(item,i);
       if (lastXvs != null) {
         assert(lastXvs > po, '数据必须降序，否则会被挡住');
       }
@@ -184,7 +184,7 @@ class CircularProgress<T> extends ChartBodyRender<T> {
     //绘制前面进度
     for (int i = 0; i < data.length; i++) {
       T item = data[i];
-      num po = position.call(item);
+      num po = position.call(item,i);
       if (lastXvs != null) {
         assert(lastXvs > po, '数据必须降序，否则会被挡住');
       }

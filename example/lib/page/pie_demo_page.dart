@@ -68,7 +68,7 @@ class _PieChartDemoPageState extends State<PieChartDemoPage> with SingleTickerPr
                     Pie(
                       data: dataList,
                       showValue: true,
-                      position: (item) => (double.parse(item['value1'].toString())),
+                      position: (item,_) => (double.parse(item['value1'].toString())),
                       valueFormatter: (item) => item['value1'].toString(),
                     ),
                   ],
@@ -85,7 +85,7 @@ class _PieChartDemoPageState extends State<PieChartDemoPage> with SingleTickerPr
                     Pie(
                       guideLine: true,
                       data: dataList,
-                      position: (item) => (double.parse(item['value1'].toString())),
+                      position: (item,_) => (double.parse(item['value1'].toString())),
                       holeRadius: 40,
                       showValue: true,
                       valueTextOffset: 20,

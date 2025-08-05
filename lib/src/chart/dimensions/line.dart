@@ -203,7 +203,7 @@ mixin NormalLineMixin<T> on ChartBodyRender<T> {
       currentPointLayout.yAxisPosition = yAxisPosition;
       chartState.children.add(currentPointLayout);
       //获取原数据
-      num? xValue = _instance.position.call(value);
+      num? xValue = _instance.position.call(value,index);
       if (lastXValue != null) {
         assert(lastXValue < xValue, '$xValue 必须大于 $lastXValue,（虽然可以支持逆序，但是为了防止数据顺序混乱，还是强制要求必须是正序的数组)');
       }
@@ -407,7 +407,7 @@ mixin AnimalLineMixin<T> on ChartBodyRender<T> {
       chartState.children.add(currentPointLayout);
 
       //获取原始值
-      num xValue = _instance.position.call(value);
+      num xValue = _instance.position.call(value,index);
       if (lastXValue != null) {
         assert(lastXValue < xValue, '$xValue 必须大于 $lastXValue');
       }

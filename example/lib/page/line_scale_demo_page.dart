@@ -169,7 +169,7 @@ class _LineChartScaleDemoPageState extends State<LineChartScaleDemoPage> {
                     dotRadius: 2,
                     isHollow: true,
                     data: dataList,
-                    position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
+                    position: (item,_) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
                     values: (item) => [
                       item['value1'] as num,
                     ],

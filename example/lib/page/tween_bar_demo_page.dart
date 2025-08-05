@@ -111,12 +111,13 @@ class _TweenBarChartDemoPageState extends State<TweenBarChartDemoPage> {
                       xAxis: XAxis(
                         count: 9,
                         zoom: true,
-                        formatter: (index) => startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd'),
+                        formatter: (index) =>
+                            startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd'),
                       ),
                       charts: [
                         Line(
                           data: dataList,
-                          position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
+                          position: (item, _) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
                           values: (item) => [
                             item['value1'] as num,
                           ],
@@ -139,12 +140,13 @@ class _TweenBarChartDemoPageState extends State<TweenBarChartDemoPage> {
                       xAxis: XAxis(
                         count: 7,
                         max: 10,
-                        formatter: (index) => startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd'),
+                        formatter: (index) =>
+                            startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd'),
                       ),
                       charts: [
                         Bar(
                           data: dataList,
-                          position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
+                          position: (item, _) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
                           value: (item) => item['value1'],
                         ),
                       ],
@@ -169,7 +171,7 @@ class _TweenBarChartDemoPageState extends State<TweenBarChartDemoPage> {
                         StackBar(
                           hotColor: Colors.yellow.withOpacity(0.1),
                           data: dataList,
-                          position: (item) {
+                          position: (item, _) {
                             return parserDateTimeToDayValue(item['time'] as DateTime, startTime);
                           },
                           direction: Axis.horizontal,
@@ -195,7 +197,7 @@ class _TweenBarChartDemoPageState extends State<TweenBarChartDemoPage> {
                         Pie(
                           data: dataList,
                           showValue: true,
-                          position: (item) => (double.parse(item['value1'].toString())),
+                          position: (item, _) => (double.parse(item['value1'].toString())),
                           valueFormatter: (item) => item['value1'].toString(),
                         ),
                       ],

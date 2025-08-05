@@ -57,7 +57,7 @@ class WaveProgress<T> extends ChartBodyRender<T> {
 
     var index = 0;
     for (T item in data) {
-      num po = position.call(item);
+      num po = position.call(item,index);
       double height = radius * 2;
       if (layout.arcPosition == ArcDirection.none) {
         height = radius * 2;

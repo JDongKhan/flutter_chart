@@ -83,7 +83,7 @@ class _ScatterDemoPageState extends State<ScatterDemoPage> {
                   Scatter(
                     style: (item) => item['value1'] > 400 ? const ScatterStyle(color: Colors.red, radius: 2) : const ScatterStyle(color: Colors.blue, radius: 2),
                     data: dataList,
-                    position: (item) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
+                    position: (item,_) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
                     value: (item) => item['value1'] as num,
                   ),
                 ],

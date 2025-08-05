@@ -10,7 +10,6 @@ ScatterStyleFunction _defaultScatterStyleFunction = (item) => const ScatterStyle
 
 /// @author JD
 class Scatter<T> extends ChartBodyRender<T> {
-
   Scatter({
     required super.data,
     required this.position,
@@ -44,8 +43,9 @@ class Scatter<T> extends ChartBodyRender<T> {
     double bottom = layout.size.height - layout.bottom;
 
     //遍历数据 处理数据信息
-    for (T itemData in data) {
-      num xvs = position.call(itemData);
+    for (int index = 0; index < data.length; index++) {
+      T itemData = data[index];
+      num xvs = position.call(itemData, index);
       num yvs = value.call(itemData);
       double xPo = xvs * layout.xAxis.density + left;
       double yPo = bottom - layout.yAxis[yAxisPosition].getHeight(yvs);
@@ -62,7 +62,6 @@ class Scatter<T> extends ChartBodyRender<T> {
 }
 
 class ScatterStyle {
-
   const ScatterStyle({
     required this.color,
     required this.radius,

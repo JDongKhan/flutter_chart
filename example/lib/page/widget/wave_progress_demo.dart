@@ -52,7 +52,7 @@ class _WaveProgressDemoState extends State<WaveProgressDemo> with TickerProvider
                     data: [0.5, 0.48, 0.47, 0.46],
                     controlPoint: _animationController.value * 20 + 5,
                     controlOffset: _animationController.value,
-                    position: (item) => item,
+                    position: (item,_) => item,
                   ),
                 ],
               ),
