@@ -240,7 +240,7 @@ class StackBar<T> extends ChartBodyRender<T> with BarHorizontalMinx<T>, BarVerti
   final double padding;
 
   ///值文案格式化 不要使用过于耗时的方法
-  final BarValuesFormatter? valuesFormatter;
+  final BarValuesFormatter<T>? valuesFormatter;
 
   ///值文字样式
   final TextStyle textStyle;

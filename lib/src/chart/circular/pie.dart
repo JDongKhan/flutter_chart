@@ -51,10 +51,10 @@ class Pie<T> extends ChartBodyRender<T> {
   final double valueTextOffset;
 
   ///值文案格式化 不要使用过于耗时的方法
-  final PieValueFormatter? valueFormatter;
+  final PieValueFormatter<T>? valueFormatter;
 
   ///图例文案格式化 不要使用过于耗时的方法
-  final PieValueFormatter? legendFormatter;
+  final PieValueFormatter<T>? legendFormatter;
 
   ///值文字样式
   final TextStyle textStyle;

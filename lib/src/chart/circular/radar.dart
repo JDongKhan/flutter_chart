@@ -39,7 +39,7 @@ class Radar<T> extends ChartBodyRender<T> {
   final RadarChartValue<T> values;
 
   ///值文案格式化 不要使用过于耗时的方法
-  final RadarValueFormatter? valueFormatter;
+  final RadarValueFormatter<T>? valueFormatter;
 
   ///图例文案格式化 不要使用过于耗时的方法
   final RadarLegendFormatter? legendFormatter;

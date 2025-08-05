@@ -27,7 +27,7 @@ class Line<T> extends ChartBodyRender<T> with NormalLineMixin<T>, AnimalLineMixi
   final ChartPosition<T> position;
 
   ///每个点对应的值 不要使用过于耗时的方法
-  final LinePosition values;
+  final LinePosition<T> values;
 
   ///线颜色
   final List<Color> colors;

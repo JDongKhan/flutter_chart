@@ -23,10 +23,10 @@ class Scatter<T> extends ChartBodyRender<T> {
   final ChartPosition<T> position;
 
   ///每个点对应的值 不要使用过于耗时的方法
-  final ScatterValue value;
+  final ScatterValue<T> value;
 
   ///点的风格
-  final ScatterStyleFunction style;
+  final ScatterStyleFunction<T> style;
 
   late Paint _dotPaint;
   @override
