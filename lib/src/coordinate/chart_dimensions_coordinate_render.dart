@@ -306,7 +306,7 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
     double x = left - textWidth / 2;
     if (adjustFirst && x < state.layout.margin.left) {
       x = left;
-    } else if (adjustLast && (left + textWidth / 2) > state.layout.size.width) {
+    } else if (adjustLast && (left + textWidth / 2) > (state.layout.size.width-state.layout.margin.right)) {
       x = left - textWidth;
     }
     Offset offset = Offset(x, top);
