@@ -7,6 +7,7 @@ import 'page/big_data_2_demo.dart';
 import 'page/big_data_demo_page.dart';
 import 'page/line_ecg_demo_page.dart';
 import 'page/line_scale_demo_page.dart';
+import 'page/progress_demo_page.dart';
 import 'page/radar_demo_page.dart';
 import 'page/scatter_demo_page.dart';
 import 'page/tween_bar_demo_page.dart';
@@ -62,6 +63,16 @@ class ChartDemoPage extends StatelessWidget {
               );
             },
             child: const Text('Pie'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => const ProgressDemoPage(),
+                ),
+              );
+            },
+            child: const Text('Progress'),
           ),
           TextButton(
             onPressed: () {
