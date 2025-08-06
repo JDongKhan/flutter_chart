@@ -42,7 +42,7 @@ abstract class ChartCoordinateRender {
     this.foregroundAnnotations,
     this.safeArea,
     this.onClickChart,
-  }): assert(padding.bottom == 0 && padding.top == 0,"暂不支持垂直方向的内间距");
+  });
 
 
   ///图形外边距，用于控制坐标轴的外边距
