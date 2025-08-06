@@ -150,6 +150,7 @@ class _BarChartDemoPageState extends State<BarChartDemoPage> {
                           itemWidth: 10,
                           full: true,
                           highlightColor: Colors.yellow,
+                          drawValueTextAfterAnimation: false,
                           position: (item,_) {
                             return parserDateTimeToDayValue(item['time'] as DateTime, startTime);
                           },

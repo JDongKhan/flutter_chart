@@ -15,34 +15,32 @@ class PieChartDemoPage extends StatefulWidget {
 
 class _PieChartDemoPageState extends State<PieChartDemoPage> with SingleTickerProviderStateMixin {
   final DateTime startTime = DateTime(2023, 1, 1);
-
-  List list = [0.5,0.2];
   @override
   Widget build(BuildContext context) {
     final List<Map> dataList = [
       {
         'time': startTime.add(const Duration(days: 1)),
-        'value1': 100,
-        'value2': 200,
-        'value3': 300,
+        'value1': Random().nextInt(500),
+        'value2': Random().nextInt(500),
+        'value3': Random().nextInt(500),
       },
       {
         'time': startTime.add(const Duration(days: 3)),
-        'value1': 200,
-        'value2': 400,
-        'value3': 300,
+        'value1': Random().nextInt(500),
+        'value2': Random().nextInt(500),
+        'value3': Random().nextInt(500),
       },
       {
         'time': startTime.add(const Duration(days: 5)),
-        'value1': 400,
-        'value2': 200,
-        'value3': 100,
+        'value1': Random().nextInt(500),
+        'value2': Random().nextInt(500),
+        'value3': Random().nextInt(500),
       },
       {
         'time': startTime.add(const Duration(days: 8)),
-        'value1': 100,
-        'value2': 300,
-        'value3': 200,
+        'value1': Random().nextInt(500),
+        'value2': Random().nextInt(500),
+        'value3': Random().nextInt(500),
       },
     ];
 
@@ -51,6 +49,14 @@ class _PieChartDemoPageState extends State<PieChartDemoPage> with SingleTickerPr
     return Scaffold(
       appBar: AppBar(
         title: const Text('ChartDemo'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              setState(() {});
+            },
+            child: const Text("刷新"),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -61,6 +67,7 @@ class _PieChartDemoPageState extends State<PieChartDemoPage> with SingleTickerPr
               child: ChartWidget(
                 coordinateRender: ChartCircularCoordinateRender(
                   margin: const EdgeInsets.all(30),
+                  animationDuration: const Duration(seconds: 1),
                   onClickChart: (BuildContext context, List<ChartLayoutState> list) {
                     debugPrint("点击事件:$list");
                   },
@@ -80,10 +87,12 @@ class _PieChartDemoPageState extends State<PieChartDemoPage> with SingleTickerPr
               height: 200,
               child: ChartWidget(
                 coordinateRender: ChartCircularCoordinateRender(
+                  animationDuration: const Duration(seconds: 1),
                   margin: const EdgeInsets.all(30),
                   charts: [
                     Pie(
                       guideLine: true,
+                      drawValueTextAfterAnimation: false,
                       data: dataList,
                       position: (item,_) => (double.parse(item['value1'].toString())),
                       holeRadius: 40,

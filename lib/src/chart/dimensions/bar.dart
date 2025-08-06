@@ -21,6 +21,7 @@ class Bar<T> extends ChartBodyRender<T> {
     this.colors,
     this.shader,
     this.highlightColor = Colors.yellow,
+    this.drawValueTextAfterAnimation = true,
   });
 
   ///不要使用过于耗时的方法
@@ -53,6 +54,9 @@ class Bar<T> extends ChartBodyRender<T> {
 
   ///文案偏移
   final Offset valueOffset;
+
+  ///动画结束后绘制文本
+  final bool drawValueTextAfterAnimation;
 
 
   final Paint _paint = Paint()
@@ -118,8 +122,8 @@ class Bar<T> extends ChartBodyRender<T> {
         //开始绘制，bar不同于line，在循环中就可以绘制
         canvas.drawRect(p.originRect!, _paint);
         //绘制文本
-        if (layout.controlValue == 1) {
-          _drawText(canvas, layout, item, p);
+        if (layout.controlValue == 1 || !drawValueTextAfterAnimation) {
+          _drawValueText(canvas, layout, item, p);
         }
       }
       childrenLayoutState.add(p);
@@ -127,7 +131,7 @@ class Bar<T> extends ChartBodyRender<T> {
     chartState.children = childrenLayoutState;
   }
 
-  void _drawText(Canvas canvas, ChartDimensionCoordinateState layout, T item, ChartItemLayoutState p) {
+  void _drawValueText(Canvas canvas, ChartDimensionCoordinateState layout, T item, ChartItemLayoutState p) {
     String? valueString = valueFormatter?.call(item);
     if (valueString != null && valueString.isNotEmpty) {
       TextPainter legendTextPainter = TextPainter(
@@ -207,6 +211,7 @@ class StackBar<T> extends ChartBodyRender<T> with BarHorizontalMinx<T>, BarVerti
     this.valuesFormatter,
     this.textStyle = const TextStyle(fontSize: 10, color: Colors.black),
     this.valueOffset = Offset.zero,
+    this.drawValueTextAfterAnimation = true,
   });
   ///不要使用过于耗时的方法
   ///数据在坐标系的位置，每个坐标系下取值逻辑不一样，在line和bar下是相对于每格的值，比如xAxis的interval为1，你的数据放在1列和2列中间，那么position就是0.5，在pie下是比例
@@ -247,6 +252,10 @@ class StackBar<T> extends ChartBodyRender<T> with BarHorizontalMinx<T>, BarVerti
 
   ///文案偏移
   final Offset valueOffset;
+
+  ///动画结束后绘制文本
+  final bool drawValueTextAfterAnimation;
+
 
   final Paint _paint = Paint()
     ..strokeWidth = 1
@@ -309,8 +318,10 @@ class StackBar<T> extends ChartBodyRender<T> with BarHorizontalMinx<T>, BarVerti
           //画图
           canvas.drawRect(cp.originRect!, _paint);
           //画文案
-          if (layout.controlValue == 1 && valueString != null && valueString.isNotEmpty) {
-            _drawText(canvas, layout, valueString[stackIndex], cp);
+          if (layout.controlValue == 1 || !drawValueTextAfterAnimation) {
+            if (valueString != null && valueString.isNotEmpty) {
+              _drawValueText(canvas, layout, valueString[stackIndex], cp);
+            }
           }
         }
         stackIndex++;
@@ -391,7 +402,7 @@ mixin BarHorizontalMinx<T> on ChartBodyRender<T> {
     return shape;
   }
 
-  void _drawText(Canvas canvas, ChartDimensionCoordinateState layout, String? text, ChartItemLayoutState p) {
+  void _drawValueText(Canvas canvas, ChartDimensionCoordinateState layout, String? text, ChartItemLayoutState p) {
     if (_instance.direction == Axis.vertical) {
       return;
     }
@@ -477,9 +488,9 @@ mixin BarVerticalBarMinx<T> on ChartBodyRender<T>, BarHorizontalMinx<T> {
   }
 
   @override
-  void _drawText(Canvas canvas, ChartDimensionCoordinateState layout, String? text, ChartItemLayoutState p) {
+  void _drawValueText(Canvas canvas, ChartDimensionCoordinateState layout, String? text, ChartItemLayoutState p) {
     if (_instance.direction == Axis.horizontal) {
-      return super._drawText(canvas, layout, text, p);
+      return super._drawValueText(canvas, layout, text, p);
     }
     if (text != null && text.isNotEmpty) {
       TextPainter legendTextPainter = TextPainter(

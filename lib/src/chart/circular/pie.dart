@@ -29,6 +29,7 @@ class Pie<T> extends ChartBodyRender<T> {
     this.showValue = false,
     this.enableTap = true,
     this.startAngle = 0,
+    this.drawValueTextAfterAnimation = true,
   });
 
   ///不要使用过于耗时的方法
@@ -86,6 +87,9 @@ class Pie<T> extends ChartBodyRender<T> {
   ///开始弧度，可以调整起始位置
   final double startAngle;
 
+  ///动画结束后绘制文本
+  final bool drawValueTextAfterAnimation;
+
   List<num> _values = [];
   num _total = 0;
   late final Paint _paint = Paint()
@@ -102,7 +106,7 @@ class Pie<T> extends ChartBodyRender<T> {
     for (int i = 0; i < data.length; i++) {
       T item = data[i];
       //计算值
-      num po = position.call(item,i);
+      num po = position.call(item, i);
       _total += po;
       _values.add(po);
     }
@@ -169,8 +173,8 @@ class Pie<T> extends ChartBodyRender<T> {
       String? valueText = valueFormatter?.call(item);
       String? legend = legendFormatter?.call(item);
 
-      //绘制引导线
-      if (guideLine && layout.controlValue == 1) {
+      //绘制引导线和文本
+      if (guideLine && (layout.controlValue == 1 || !drawValueTextAfterAnimation)) {
         _drawLineAndText(layout, canvas, valueText, legend, index, rd, startAngle, sweepAngle);
       }
       //选中就绘制
@@ -181,7 +185,7 @@ class Pie<T> extends ChartBodyRender<T> {
       // baseChart.canvas.drawArc(
       //     newRect, startAngle, sweepAngle, true, paint..color = colors[i]);
       // _drawLegend(item, radius, startAngle, sweepAngle);
-      if (showValue && layout.controlValue == 1) {
+      if (showValue && (layout.controlValue == 1 || !drawValueTextAfterAnimation)) {
         _drawValue(state, canvas, valueText, radius, startAngle, sweepAngle);
       }
       //继续下一个

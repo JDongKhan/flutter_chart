@@ -64,7 +64,7 @@ abstract class ChartCoordinateRender {
   ///安全区域
   final EdgeInsets? safeArea;
 
-  ///用widget弹框来处理点击
+  ///用widget弹框来处理点击,返回PreferredSizeWidget便于边界碰撞计算，如果不在乎边界问题，可以随便设置，值越靠近真实宽高边界检测越准
   final TooltipWidgetBuilder? tooltipBuilder;
 
   ///点击事件
