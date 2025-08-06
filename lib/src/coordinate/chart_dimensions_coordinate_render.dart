@@ -7,8 +7,6 @@ typedef DimensionsChartCoordinateRender = ChartDimensionsCoordinateRender;
 
 /// 象限坐标系
 class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
-
-
   ChartDimensionsCoordinateRender({
     super.margin = const EdgeInsets.only(left: 30, top: 0, right: 0, bottom: 25),
     super.padding = const EdgeInsets.only(left: 30, top: 0, right: 0, bottom: 0),
@@ -93,7 +91,10 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
           vv = vv.toInt();
         }
         num yValue = vv;
-        Offset point = state.layout.transform.transformPoint(Offset(xStartValue * xAxis.density + offset.dx, yValue * yA.density), containPadding: false, adjustDirection: true);
+        Offset point = state.layout.transform.transformPoint(
+            Offset(xStartValue * xAxis.density + offset.dx, yValue * yA.density),
+            containPadding: false,
+            adjustDirection: true);
         //绘制文本
         if (yA.drawLabel) {
           String text = yA.formatter?.call(i) ?? '${min + vv}';
@@ -123,7 +124,11 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
   ///绘制虚线
   void _drawYGridLine(ChartsState state, YAxis yA, Canvas canvas, Offset point, int index) {
     final Matrix4 matrix = Matrix4.identity()..translate(point.dx, point.dy);
-    canvas.drawPath(yA.getDashPath(index, Offset(state.layout.size.width - state.layout.margin.horizontal, 0)).transform(matrix.storage), yA.linePaint);
+    canvas.drawPath(
+        yA
+            .getDashPath(index, Offset(state.layout.size.width - state.layout.margin.horizontal, 0))
+            .transform(matrix.storage),
+        yA.linePaint);
   }
 
   ///绘制Y轴文本
@@ -152,14 +157,17 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
 
   ///绘制y轴指示器
   void _drawYDivider(ChartsState state, YAxis yA, Canvas canvas, Offset point, num yValue) {
-    Offset endPoint = state.layout.transform.transformPoint(Offset(5, yValue * yA.density), containPadding: false, adjustDirection: true, yOffset: true);
+    Offset endPoint = state.layout.transform
+        .transformPoint(Offset(5, yValue * yA.density), containPadding: false, adjustDirection: true, yOffset: true);
     canvas.drawLine(point, endPoint, yA.linePaint);
   }
 
   ///绘制y轴line
   void _drawYLine(ChartsState state, YAxis yA, Canvas canvas) {
-    Offset startPoint = state.layout.transform.transformPoint(const Offset(0, 0), containPadding: false, adjustDirection: true);
-    Offset endPoint = state.layout.transform.transformPoint(Offset(0, (yA.max - yA.min) * yA.density), containPadding: false, adjustDirection: true);
+    Offset startPoint =
+        state.layout.transform.transformPoint(const Offset(0, 0), containPadding: false, adjustDirection: true);
+    Offset endPoint = state.layout.transform
+        .transformPoint(Offset(0, (yA.max - yA.min) * yA.density), containPadding: false, adjustDirection: true);
     canvas.drawLine(startPoint, endPoint, yA.linePaint);
   }
 
@@ -190,8 +198,10 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
       }
       num xValue = interval * i;
 
-      Offset point = state.layout.transform.transformPoint(Offset(xValue * xAxis.density, 0), containPadding: true, adjustDirection: true, xOffset: true);
-      Offset nextPoint = state.layout.transform.transformPoint(Offset(interval * (i + 1) * xAxis.density, 0), containPadding: true, adjustDirection: true, xOffset: true);
+      Offset point = state.layout.transform.transformPoint(Offset(xValue * xAxis.density, 0),
+          containPadding: true, adjustDirection: true, xOffset: true);
+      Offset nextPoint = state.layout.transform.transformPoint(Offset(interval * (i + 1) * xAxis.density, 0),
+          containPadding: true, adjustDirection: true, xOffset: true);
       // // 判断下一个点是否超出，因为这个和下个点之间可能有文案要显示
       // // 避免多余绘制，只绘制屏幕内容
       if (nextPoint.dx < 0) {
@@ -201,8 +211,10 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
       if (xAxis.drawLabel) {
         String? text = xAxis.formatter?.call(i);
         if (text != null) {
-          oft = _drawXTextPaint(xAxis, canvas, text, size, point.dx, point.dy,
-              first: (i == 0) && state.layout.transform.needAdjustFirst(), end: (i == count) && state.layout.transform.needAdjustLast());
+          bool adjustEnd = (i == count) && state.layout.transform.needAdjustLast();
+          bool adjustFirst = (i == 0) && state.layout.transform.needAdjustFirst();
+          oft = _drawXTextPaint(xAxis, canvas, text, state, point.dx, point.dy,
+              adjustFirst: adjustFirst, adjustEnd: adjustEnd);
         }
       }
       //根据调整过的位置再比较
@@ -217,7 +229,7 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
           double left = state.layout.left + density * interval * newValue;
           left = state.layout.transform.withXScroll(left);
           if (newText != null) {
-            _drawXTextPaint(xAxis, canvas, newText, size, left, point.dy);
+            _drawXTextPaint(xAxis, canvas, newText, state, left, point.dy);
           }
         }
       }
@@ -251,17 +263,31 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
   ///绘制虚线
   void _drawXGridLine(ChartsState state, Canvas canvas, Offset point, int index) {
     final Matrix4 matrix = Matrix4.identity()..translate(point.dx, state.layout.margin.top);
-    canvas.drawPath(xAxis.getDashPath(index, Offset(0, state.layout.size.height - state.layout.margin.vertical)).transform(matrix.storage), xAxis.linePaint);
+    canvas.drawPath(
+        xAxis
+            .getDashPath(index, Offset(0, state.layout.size.height - state.layout.margin.vertical))
+            .transform(matrix.storage),
+        xAxis.linePaint);
   }
 
   ///绘制指示器
   void _drawXDivider(ChartsState state, Canvas canvas, Offset point, num xValue) {
-    Offset endPoint = state.layout.transform.transformPoint(Offset(xValue * xAxis.density, 5), containPadding: true, adjustDirection: true, xOffset: true);
+    Offset endPoint = state.layout.transform
+        .transformPoint(Offset(xValue * xAxis.density, 5), containPadding: true, adjustDirection: true, xOffset: true);
     canvas.drawLine(point, endPoint, xAxis.linePaint);
   }
 
   ///绘制x轴文本
-  Offset _drawXTextPaint(XAxis axis, Canvas canvas, String text, Size size, double left, double top, {bool first = false, bool end = false}) {
+  Offset _drawXTextPaint(
+    XAxis axis,
+    Canvas canvas,
+    String text,
+    ChartsState state,
+    double left,
+    double top, {
+    bool adjustFirst = false,
+    bool adjustEnd = false,
+  }) {
     var textPainter = xAxis._textPainter[text];
     if (textPainter == null) {
       //layout耗性能，只做一次即可
@@ -276,10 +302,14 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
       textPainter.layout(); // 进行布局
       xAxis._textPainter[text] = textPainter;
     }
-    Offset offset = Offset(
-      end ? left - textPainter.width : (first ? left : left - textPainter.width / 2),
-      top,
-    );
+    double textWidth = textPainter.width;
+    double x = left - textWidth / 2;
+    if (adjustFirst) {
+      x = left;
+    } else if (adjustEnd && (left + textWidth / 2) >= state.layout.size.width) {
+      x = left - textWidth;
+    }
+    Offset offset = Offset(x, top);
     textPainter.paint(
       canvas,
       offset,
@@ -289,8 +319,12 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
 
   ///绘制x轴line
   void _drawXLine(ChartsState state, Canvas canvas) {
-    Offset startPoint = state.layout.transform.transformPoint(const Offset(0, 0), containPadding: false, adjustDirection: true);
-    Offset endPoint = state.layout.transform.transformPoint(Offset((xAxis.count * xAxis.interval + 1) * xAxis.density, 0), containPadding: false, adjustDirection: true);
+    Offset startPoint =
+        state.layout.transform.transformPoint(const Offset(0, 0), containPadding: false, adjustDirection: true);
+    Offset endPoint = state.layout.transform.transformPoint(
+        Offset((xAxis.count * xAxis.interval + 1) * xAxis.density, 0),
+        containPadding: false,
+        adjustDirection: true);
     canvas.drawLine(startPoint, endPoint, xAxis.linePaint);
   }
 
@@ -443,7 +477,11 @@ class ChartInvertDimensionsCoordinateRender extends ChartDimensionsCoordinateRen
   @override
   void _drawYGridLine(ChartsState state, YAxis yA, Canvas canvas, Offset point, int index) {
     final Matrix4 matrix = Matrix4.identity()..translate(point.dx, state.layout.margin.top);
-    canvas.drawPath(yA.getDashPath(index, Offset(0, state.layout.size.height - state.layout.margin.vertical)).transform(matrix.storage), yA.linePaint);
+    canvas.drawPath(
+        yA
+            .getDashPath(index, Offset(0, state.layout.size.height - state.layout.margin.vertical))
+            .transform(matrix.storage),
+        yA.linePaint);
   }
 
   ///绘制Y轴文本
@@ -464,7 +502,8 @@ class ChartInvertDimensionsCoordinateRender extends ChartDimensionsCoordinateRen
     }
     textPainter.paint(
       canvas,
-      Offset(middle ? left - textPainter.width / 2 : left - textPainter.width, isTop ? top - textPainter.height : top + 5),
+      Offset(
+          middle ? left - textPainter.width / 2 : left - textPainter.width, isTop ? top - textPainter.height : top + 5),
     ); // 进行绘制
   }
 
@@ -472,12 +511,14 @@ class ChartInvertDimensionsCoordinateRender extends ChartDimensionsCoordinateRen
   @override
   void _drawXGridLine(ChartsState state, Canvas canvas, Offset point, int index) {
     final Matrix4 matrix = Matrix4.identity()..translate(point.dx, point.dy);
-    canvas.drawPath(xAxis.getDashPath(index, Offset(state.layout.size.width, 0)).transform(matrix.storage), xAxis.linePaint);
+    canvas.drawPath(
+        xAxis.getDashPath(index, Offset(state.layout.size.width, 0)).transform(matrix.storage), xAxis.linePaint);
   }
 
   ///绘制x轴文本
   @override
-  Offset _drawXTextPaint(XAxis axis, Canvas canvas, String text, Size size, double left, double top, {bool first = false, bool end = false}) {
+  Offset _drawXTextPaint(XAxis axis, Canvas canvas, String text, ChartsState state, double left, double top,
+      {bool adjustFirst = false, bool adjustEnd = false}) {
     var textPainter = xAxis._textPainter[text];
     if (textPainter == null) {
       //layout耗性能，只做一次即可
@@ -492,7 +533,8 @@ class ChartInvertDimensionsCoordinateRender extends ChartDimensionsCoordinateRen
       textPainter.layout(); // 进行布局
       xAxis._textPainter[text] = textPainter;
     }
-    Offset offset = Offset(margin.left - textPainter.width - 5, end ? top : (first ? top - textPainter.height : top - textPainter.height / 2));
+    Offset offset = Offset(margin.left - textPainter.width - 5,
+        adjustEnd ? top : (adjustFirst ? top - textPainter.height : top - textPainter.height / 2));
     textPainter.paint(canvas, offset); // 进行绘制
     return offset;
   }

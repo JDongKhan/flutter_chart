@@ -13,7 +13,7 @@ class LineChartDemoPage extends StatefulWidget {
 }
 
 class _LineChartDemoPageState extends State<LineChartDemoPage> {
-  final DateTime startTime = DateTime(2023, 1, 1);
+  final DateTime startTime = DateTime.now();
   ui.Image? logoImage;
 
   @override
@@ -29,6 +29,12 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
   @override
   Widget build(BuildContext context) {
     final List<Map> dataList = [
+      {
+        'time': startTime.add(const Duration(days: 0)),
+        'value1': 100,
+        'value2': 200,
+        'value3': 300,
+      },
       {
         'time': startTime.add(const Duration(days: 1)),
         'value1': 100,
