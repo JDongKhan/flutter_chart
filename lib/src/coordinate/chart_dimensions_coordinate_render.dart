@@ -304,7 +304,7 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
     double textWidth = textPainter.width;
     double x = left - textWidth / 2;
     if (adjustFirst && x < state.layout.margin.left) {
-      x = left;
+      x = state.layout.margin.left;
     } else if (adjustLast && (left + textWidth / 2) > (state.layout.size.width - state.layout.margin.right)) {
       x = left - textWidth;
     }
