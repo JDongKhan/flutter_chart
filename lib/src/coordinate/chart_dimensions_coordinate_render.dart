@@ -115,7 +115,7 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
       }
       //画实线
       if (yA.drawLine) {
-        _drawYLine(state, yA, canvas);
+        _drawYLine(state, yA, canvas, offset);
       }
       yAxisIndex++;
     }
@@ -163,11 +163,10 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
   }
 
   ///绘制y轴line
-  void _drawYLine(ChartsState state, YAxis yA, Canvas canvas) {
+  void _drawYLine(ChartsState state, YAxis yA, Canvas canvas, Offset offset) {
     Offset startPoint =
-        state.layout.transform.transformPoint(const Offset(0, 0), containPadding: false, adjustDirection: true);
-    Offset endPoint = state.layout.transform
-        .transformPoint(Offset(0, (yA.max - yA.min) * yA.density), containPadding: false, adjustDirection: true);
+        Offset(state.layout.margin.left + offset.dx, state.layout.size.height - state.layout.margin.bottom);
+    Offset endPoint = Offset(state.layout.margin.left + offset.dx, state.layout.margin.top);
     canvas.drawLine(startPoint, endPoint, yA.linePaint);
   }
 
@@ -306,7 +305,7 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
     double x = left - textWidth / 2;
     if (adjustFirst && x < state.layout.margin.left) {
       x = left;
-    } else if (adjustLast && (left + textWidth / 2) > (state.layout.size.width-state.layout.margin.right)) {
+    } else if (adjustLast && (left + textWidth / 2) > (state.layout.size.width - state.layout.margin.right)) {
       x = left - textWidth;
     }
     Offset offset = Offset(x, top);
@@ -319,12 +318,9 @@ class ChartDimensionsCoordinateRender extends ChartCoordinateRender {
 
   ///绘制x轴line
   void _drawXLine(ChartsState state, Canvas canvas) {
-    Offset startPoint =
-        state.layout.transform.transformPoint(const Offset(0, 0), containPadding: false, adjustDirection: true);
-    Offset endPoint = state.layout.transform.transformPoint(
-        Offset((xAxis.count * xAxis.interval + 1) * xAxis.density, 0),
-        containPadding: false,
-        adjustDirection: true);
+    Offset startPoint = Offset(state.layout.margin.left, state.layout.size.height - state.layout.margin.bottom);
+    Offset endPoint = Offset(
+        state.layout.size.width - state.layout.margin.right, state.layout.size.height - state.layout.margin.bottom);
     canvas.drawLine(startPoint, endPoint, xAxis.linePaint);
   }
 
@@ -507,6 +503,16 @@ class ChartInvertDimensionsCoordinateRender extends ChartDimensionsCoordinateRen
     ); // 进行绘制
   }
 
+  ///绘制y轴line
+  @override
+  void _drawYLine(ChartsState state, YAxis yA, Canvas canvas, Offset offset) {
+    Offset startPoint =
+        Offset(state.layout.margin.left, state.layout.size.height - state.layout.margin.bottom - offset.dy);
+    Offset endPoint = Offset(state.layout.size.width - state.layout.margin.right,
+        state.layout.size.height - state.layout.margin.bottom - -offset.dy);
+    canvas.drawLine(startPoint, endPoint, yA.linePaint);
+  }
+
   ///绘制X轴虚线
   @override
   void _drawXGridLine(ChartsState state, Canvas canvas, Offset point, int index) {
@@ -534,7 +540,7 @@ class ChartInvertDimensionsCoordinateRender extends ChartDimensionsCoordinateRen
       xAxis._textPainter[text] = textPainter;
     }
     double y = top - textPainter.height / 2;
-    double textBottom = top + textPainter.height/2;
+    double textBottom = top + textPainter.height / 2;
     double contentBottom = (state.layout.size.height - state.layout.margin.bottom);
     if (adjustFirst && textBottom > contentBottom) {
       y = top - textPainter.height;
@@ -544,5 +550,13 @@ class ChartInvertDimensionsCoordinateRender extends ChartDimensionsCoordinateRen
     Offset offset = Offset(margin.left - textPainter.width - 5, y);
     textPainter.paint(canvas, offset); // 进行绘制
     return offset;
+  }
+
+  ///绘制x轴line
+  @override
+  void _drawXLine(ChartsState state, Canvas canvas) {
+    Offset startPoint = Offset(state.layout.margin.left, state.layout.size.height - state.layout.margin.bottom);
+    Offset endPoint = Offset(state.layout.margin.left, state.layout.margin.top);
+    canvas.drawLine(startPoint, endPoint, xAxis.linePaint);
   }
 }
