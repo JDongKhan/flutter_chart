@@ -66,7 +66,8 @@ class _BarChartDemoPageState extends State<BarChartDemoPage> {
                   child: ChartWidget(
                     coordinateRender: ChartDimensionsCoordinateRender(
                       animationDuration: const Duration(seconds: 1),
-                      margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
+                      margin: const EdgeInsets.only(left: 40, top: 0, right: 10, bottom: 30),
+                      padding: const EdgeInsets.only(left: 0, top: 0, right: 0, bottom: 0),
                       yAxis: [
                         YAxis(min: 0, max: 600),
                       ],
@@ -75,7 +76,8 @@ class _BarChartDemoPageState extends State<BarChartDemoPage> {
                       },
                       xAxis: XAxis(
                         count: 7,
-                        max: 10,
+                        max: 7,
+                        drawDivider: true,
                         formatter: (index) =>
                             startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd'),
                       ),
