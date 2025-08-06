@@ -272,6 +272,7 @@ class _BarChartDemoPageState extends State<BarChartDemoPage> {
                         count: 7,
                         zoom: true,
                         drawDivider: true,
+                        drawGrid: true,
                         formatter: (index) {
                           return startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd');
                         },
@@ -304,6 +305,7 @@ class _BarChartDemoPageState extends State<BarChartDemoPage> {
                       animationDuration: const Duration(seconds: 1),
                       yAxis: [YAxis(min: 0, max: 500, drawDivider: true, drawGrid: true)],
                       margin: const EdgeInsets.only(left: 20, top: 0, right: 0, bottom: 40),
+                      padding: const EdgeInsets.only(left: 0, top: 0, right: 0, bottom: 0),
                       xAxis: XAxis(
                         count: 7,
                         drawDivider: true,
