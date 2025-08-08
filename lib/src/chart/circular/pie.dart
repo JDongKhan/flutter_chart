@@ -22,11 +22,11 @@ class Pie<T> extends ChartBodyRender<T> {
     this.valueTextOffset = 0,
     this.valueFormatter,
     this.legendFormatter,
+    this.legendValueFormatter,
     this.centerTextStyle,
     this.direction = RotateDirection.forward,
     this.guideLine = false,
     this.guideLineWidth,
-    this.showValue = false,
     this.enableTap = true,
     this.startAngle = 0,
     this.drawValueTextAfterAnimation = true,
@@ -51,11 +51,14 @@ class Pie<T> extends ChartBodyRender<T> {
   ///值的位置偏移
   final double valueTextOffset;
 
-  ///值文案格式化 不要使用过于耗时的方法
+  ///值文案格式化 不要使用过于耗时的方法，显示在图形中
   final PieValueFormatter<T>? valueFormatter;
 
-  ///图例文案格式化 不要使用过于耗时的方法
+  ///图例文案格式化 不要使用过于耗时的方法,显示在引导线上面
   final PieValueFormatter<T>? legendFormatter;
+
+  ///图例下面值文案格式化 不要使用过于耗时的方法，显示在引导线下面
+  final PieValueFormatter<T>? legendValueFormatter;
 
   ///值文字样式
   final TextStyle textStyle;
@@ -80,9 +83,6 @@ class Pie<T> extends ChartBodyRender<T> {
 
   ///引导线宽度
   final double? guideLineWidth;
-
-  ///是否在图中显示value
-  final bool showValue;
 
   ///开始弧度，可以调整起始位置
   final double startAngle;
@@ -171,11 +171,12 @@ class Pie<T> extends ChartBodyRender<T> {
       _drawSpaceLine(layout, canvas, rd, startAngle, sweepAngle);
 
       String? valueText = valueFormatter?.call(item);
+      String? legendValueText = legendValueFormatter?.call(item);
       String? legend = legendFormatter?.call(item);
 
       //绘制引导线和文本
       if (guideLine && (layout.controlValue == 1 || !drawValueTextAfterAnimation)) {
-        _drawLineAndText(layout, canvas, valueText, legend, index, rd, startAngle, sweepAngle);
+        _drawLineAndText(layout, canvas, legendValueText, legend, index, rd, startAngle, sweepAngle);
       }
       //选中就绘制
       if (selected) {
@@ -185,7 +186,7 @@ class Pie<T> extends ChartBodyRender<T> {
       // baseChart.canvas.drawArc(
       //     newRect, startAngle, sweepAngle, true, paint..color = colors[i]);
       // _drawLegend(item, radius, startAngle, sweepAngle);
-      if (showValue && (layout.controlValue == 1 || !drawValueTextAfterAnimation)) {
+      if (valueText != null && (layout.controlValue == 1 || !drawValueTextAfterAnimation)) {
         _drawValue(state, canvas, valueText, radius, startAngle, sweepAngle);
       }
       //继续下一个

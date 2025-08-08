@@ -196,7 +196,6 @@ class _TweenBarChartDemoPageState extends State<TweenBarChartDemoPage> {
                       charts: [
                         Pie(
                           data: dataList,
-                          showValue: true,
                           position: (item, _) => (double.parse(item['value1'].toString())),
                           valueFormatter: (item) => item['value1'].toString(),
                         ),

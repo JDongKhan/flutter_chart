@@ -74,7 +74,6 @@ class _PieChartDemoPageState extends State<PieChartDemoPage> with SingleTickerPr
                   charts: [
                     Pie(
                       data: dataList,
-                      showValue: true,
                       position: (item,_) => (double.parse(item['value1'].toString())),
                       valueFormatter: (item) => item['value1'].toString(),
                     ),
@@ -96,7 +95,6 @@ class _PieChartDemoPageState extends State<PieChartDemoPage> with SingleTickerPr
                       data: dataList,
                       position: (item,_) => (double.parse(item['value1'].toString())),
                       holeRadius: 40,
-                      showValue: true,
                       valueTextOffset: 20,
                       legendFormatter: (item) {
                         return (item['time'] as DateTime).toStringWithFormat(format: 'MM-dd');
