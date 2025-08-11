@@ -244,8 +244,10 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderS
   ///缓存所有chart的状态
   late List<ChartLayoutState> _allChartState;
   AnimationController? _animationController;
+  bool _isFirst = true;
   @override
   void initState() {
+    _isFirst = true;
     _initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _startAnimal();
@@ -291,6 +293,7 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderS
   @override
   void didUpdateWidget(covariant _ChartCoreWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
+    _isFirst = false;
     _initState();
     if (widget.animalDidUpdate) {
       _startAnimal();
@@ -329,6 +332,7 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderS
       coordinate: widget.chartCoordinateRender,
       controlValue: _animationController?.value ?? 1,
     );
+    _chartState.isFirst = _isFirst;
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTapUp: (TapUpDetails details) {

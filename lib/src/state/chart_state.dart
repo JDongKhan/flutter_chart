@@ -35,6 +35,9 @@ abstract class ChartsState extends ChangeNotifier {
   ///是否动画
   late bool animal;
 
+  ///是否是首次
+  late bool isFirst;
+
   ///根据位置缓存配置信息
   List<ChartLayoutState> chartsState = [];
 
