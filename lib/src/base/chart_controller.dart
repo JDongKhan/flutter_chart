@@ -38,11 +38,24 @@ class ChartController {
       needNotify = true;
     }
     if (_state?.layout.localPosition != null) {
+      resetSelected();
+      //可以通知chart刷新
       _state?.localPosition = null;
       needNotify = true;
     }
     if (needNotify) {
       _notifyTooltip();
+    }
+  }
+
+  void resetSelected() {
+    List<ChartLayoutState> stateList = chartsStateList;
+    if (stateList.isEmpty) {
+      return;
+    }
+    for (int i = 0; i < stateList.length; i++) {
+      ChartLayoutState layoutState = stateList[i];
+      layoutState.selectedIndex = null;
     }
   }
 
