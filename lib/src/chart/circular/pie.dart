@@ -212,7 +212,7 @@ class Pie<T> extends ChartBodyRender<T> {
         final sweepAngle = currentPercent * math.pi * 2 * (direction == RotateDirection.forward ? 1 : -1);
         String? valueText = valueFormatter?.call(item);
         //画圆弧
-        if (valueText != null && (layout.controlValue == 1)) {
+        if (valueText != null && (layout.controlValue == 1 || !drawValueTextAfterAnimation)) {
           _drawValue(state, canvas, valueText, radius, startAngle, sweepAngle);
         }
         //继续下一个
