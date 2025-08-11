@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:example/page/extension_datetime.dart';
-import 'package:example/page/widget/wave_progress_demo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chart_plus/flutter_chart.dart';
 
@@ -38,6 +37,18 @@ class _PieChartDemoPageState extends State<PieChartDemoPage> with SingleTickerPr
       },
       {
         'time': startTime.add(const Duration(days: 8)),
+        'value1': Random().nextInt(500),
+        'value2': Random().nextInt(500),
+        'value3': Random().nextInt(500),
+      },
+      {
+        'time': startTime.add(const Duration(days: 12)),
+        'value1': Random().nextInt(500),
+        'value2': Random().nextInt(500),
+        'value3': Random().nextInt(500),
+      },
+      {
+        'time': startTime.add(const Duration(days: 12)),
         'value1': Random().nextInt(500),
         'value2': Random().nextInt(500),
         'value3': Random().nextInt(500),

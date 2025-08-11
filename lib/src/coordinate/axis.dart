@@ -26,7 +26,7 @@ class XAxis {
         assert(count > 0, "count must be greater than 0 "),
         assert(interval > 0, "interval must be greater than 0  ");
 
-  ///方便计算，count代表一屏显示的格子数
+  ///方便计算，count代表一屏显示的格子数,不是点数，理论是点数-1
   final int count;
 
   ///每个格子代表的值

@@ -15,7 +15,7 @@ class Pie<T> extends ChartBodyRender<T> {
     this.colors = colors10,
     this.shaders,
     this.holeRadius = 0,
-    this.textStyle = const TextStyle(fontSize: 12, color: Colors.grey),
+    this.textStyle = const TextStyle(fontSize: 12, color: Colors.black),
     this.legendTextStyle = const TextStyle(fontSize: 12, color: Colors.black, fontWeight: FontWeight.bold),
     this.lineColor = Colors.grey,
     this.spaceWidth,
@@ -127,7 +127,7 @@ class Pie<T> extends ChartBodyRender<T> {
     List<ChartItemLayoutState> childrenLayoutState = [];
     assert(colors.length >= data.length);
     assert(shaders == null || shaders!.length >= data.length);
-    int index = 0;
+    //画图
     for (int i = 0; i < data.length; i++) {
       T item = data[i];
       //直接读取
@@ -136,7 +136,7 @@ class Pie<T> extends ChartBodyRender<T> {
       //tween动画
       if (state.animal && layout.controlValue < 1) {
         num? lastPercent;
-        if (lastLayoutState != null && index < lastLayoutState.length) {
+        if (lastLayoutState != null && i < lastLayoutState.length) {
           lastPercent = lastLayoutState[i].yValue;
         }
         //初始动画x轴不动
@@ -176,7 +176,7 @@ class Pie<T> extends ChartBodyRender<T> {
 
       //绘制引导线和文本
       if (guideLine && (layout.controlValue == 1 || !drawValueTextAfterAnimation)) {
-        _drawLineAndText(layout, canvas, legendValueText, legend, index, rd, startAngle, sweepAngle);
+        _drawLineAndText(layout, canvas, legendValueText, legend, i, rd, startAngle, sweepAngle);
       }
       //选中就绘制
       if (selected) {
@@ -186,12 +186,38 @@ class Pie<T> extends ChartBodyRender<T> {
       // baseChart.canvas.drawArc(
       //     newRect, startAngle, sweepAngle, true, paint..color = colors[i]);
       // _drawLegend(item, radius, startAngle, sweepAngle);
-      if (valueText != null && (layout.controlValue == 1 || !drawValueTextAfterAnimation)) {
-        _drawValue(state, canvas, valueText, radius, startAngle, sweepAngle);
-      }
+      // if (valueText != null && (layout.controlValue == 1 || !drawValueTextAfterAnimation)) {
+        // _drawValue(state, canvas, valueText, radius, startAngle, sweepAngle);
+      // }
       //继续下一个
       startAngle = startAngle + sweepAngle;
-      index++;
+    }
+    //画value 防止被盖住
+    if (valueFormatter != null) {
+      for (int i = 0; i < data.length; i++) {
+        T item = data[i];
+        //直接读取
+        num percent = _values[i] / _total;
+        num currentPercent = percent;
+        //tween动画
+        if (state.animal && layout.controlValue < 1) {
+          num? lastPercent;
+          if (lastLayoutState != null && i < lastLayoutState.length) {
+            lastPercent = lastLayoutState[i].yValue;
+          }
+          //初始动画x轴不动
+          currentPercent = ui.lerpDouble(lastPercent, percent, layout.controlValue) ?? 0;
+        }
+        // 计算出每个数据所占的弧度值
+        final sweepAngle = currentPercent * math.pi * 2 * (direction == RotateDirection.forward ? 1 : -1);
+        String? valueText = valueFormatter?.call(item);
+        //画圆弧
+        if (valueText != null && (layout.controlValue == 1)) {
+          _drawValue(state, canvas, valueText, radius, startAngle, sweepAngle);
+        }
+        //继续下一个
+        startAngle = startAngle + sweepAngle;
+      }
     }
     chartState.children = childrenLayoutState;
   }

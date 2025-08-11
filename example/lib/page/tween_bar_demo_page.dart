@@ -13,30 +13,30 @@ class TweenBarChartDemoPage extends StatefulWidget {
 }
 
 class _TweenBarChartDemoPageState extends State<TweenBarChartDemoPage> {
-  final DateTime startTime = DateTime(2023, 1, 1);
-  final ChartController _controller = ChartController();
-
+  final DateTime _startTime = DateTime(2023, 1, 1);
+  ///动画时间
+   Duration? _animationDuration;
   late List<Map> dataList = [
     {
-      'time': startTime.add(const Duration(days: 1)),
+      'time': _startTime.add(const Duration(days: 1)),
       'value1': 100,
       'value2': 200,
       'value3': 300,
     },
     {
-      'time': startTime.add(const Duration(days: 3)),
+      'time': _startTime.add(const Duration(days: 3)),
       'value1': 200,
       'value2': 400,
       'value3': 300,
     },
     {
-      'time': startTime.add(const Duration(days: 5)),
+      'time': _startTime.add(const Duration(days: 5)),
       'value1': 400,
       'value2': 200,
       'value3': 100,
     },
     {
-      'time': startTime.add(const Duration(days: 8)),
+      'time': _startTime.add(const Duration(days: 8)),
       'value1': 100,
       'value2': 300,
       'value3': 200,
@@ -48,25 +48,25 @@ class _TweenBarChartDemoPageState extends State<TweenBarChartDemoPage> {
     int diffDay = Random().nextInt(2);
     dataList = [
       {
-        'time': startTime.add(Duration(days: 1 + diffDay)),
+        'time': _startTime.add(Duration(days: 1 + diffDay)),
         'value1': Random().nextInt(10) + 100 * v,
         'value2': 200 * v,
         'value3': 300 * v,
       },
       {
-        'time': startTime.add(Duration(days: 3 + diffDay)),
+        'time': _startTime.add(Duration(days: 3 + diffDay)),
         'value1': 200 * v,
         'value2': 400 * v,
         'value3': 300 * v,
       },
       {
-        'time': startTime.add(Duration(days: 5 + diffDay)),
+        'time': _startTime.add(Duration(days: 5 + diffDay)),
         'value1': 400 * v,
         'value2': 200 * v,
         'value3': 100 * v,
       },
       {
-        'time': startTime.add(Duration(days: 8 + diffDay)),
+        'time': _startTime.add(Duration(days: 8 + diffDay)),
         'value1': 100 * v,
         'value2': 300 * v,
         'value3': 200 * v,
@@ -81,6 +81,17 @@ class _TweenBarChartDemoPageState extends State<TweenBarChartDemoPage> {
       appBar: AppBar(
         title: const Text('ChartDemo'),
         actions: [
+          TextButton(
+            onPressed: () {
+              _animationDuration = _animationDuration == null ? const Duration(milliseconds: 500) : null;
+              setState(() {
+              });
+            },
+            child: Text(
+              _animationDuration != null ? '关闭动画' : "打开动画",
+              style: const TextStyle(color: Colors.white),
+            ),
+          ),
           TextButton(
             onPressed: () {
               _changeData();
@@ -106,18 +117,18 @@ class _TweenBarChartDemoPageState extends State<TweenBarChartDemoPage> {
                       crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
                       margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
                       padding: const EdgeInsets.only(left: 0, right: 0),
-                      animationDuration: const Duration(milliseconds: 500),
+                      animationDuration: _animationDuration,
                       yAxis: [YAxis(min: 0, max: 500)],
                       xAxis: XAxis(
                         count: 9,
                         zoom: true,
                         formatter: (index) =>
-                            startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd'),
+                            _startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd'),
                       ),
                       charts: [
                         Line(
                           data: dataList,
-                          position: (item, _) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
+                          position: (item, _) => parserDateTimeToDayValue(item['time'] as DateTime, _startTime),
                           values: (item) => [
                             item['value1'] as num,
                           ],
@@ -132,7 +143,7 @@ class _TweenBarChartDemoPageState extends State<TweenBarChartDemoPage> {
                   child: ChartWidget(
                     // controller: _controller,
                     coordinateRender: ChartDimensionsCoordinateRender(
-                      animationDuration: const Duration(milliseconds: 500),
+                      animationDuration: _animationDuration,
                       margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
                       yAxis: [
                         YAxis(min: 0, max: 300),
@@ -141,12 +152,12 @@ class _TweenBarChartDemoPageState extends State<TweenBarChartDemoPage> {
                         count: 7,
                         max: 10,
                         formatter: (index) =>
-                            startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd'),
+                            _startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd'),
                       ),
                       charts: [
                         Bar(
                           data: dataList,
-                          position: (item, _) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
+                          position: (item, _) => parserDateTimeToDayValue(item['time'] as DateTime, _startTime),
                           value: (item) => item['value1'],
                         ),
                       ],
@@ -157,14 +168,14 @@ class _TweenBarChartDemoPageState extends State<TweenBarChartDemoPage> {
                   height: 200,
                   child: ChartWidget(
                     coordinateRender: ChartDimensionsCoordinateRender(
-                      animationDuration: const Duration(milliseconds: 500),
+                      animationDuration: _animationDuration,
                       yAxis: [YAxis(min: 0, max: 500)],
                       margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
                       xAxis: XAxis(
                         count: 7,
                         max: 30,
                         formatter: (index) {
-                          return startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd');
+                          return _startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd');
                         },
                       ),
                       charts: [
@@ -172,7 +183,7 @@ class _TweenBarChartDemoPageState extends State<TweenBarChartDemoPage> {
                           hotColor: Colors.yellow.withOpacity(0.1),
                           data: dataList,
                           position: (item, _) {
-                            return parserDateTimeToDayValue(item['time'] as DateTime, startTime);
+                            return parserDateTimeToDayValue(item['time'] as DateTime, _startTime);
                           },
                           direction: Axis.horizontal,
                           itemWidth: 10,
@@ -192,7 +203,7 @@ class _TweenBarChartDemoPageState extends State<TweenBarChartDemoPage> {
                   child: ChartWidget(
                     coordinateRender: ChartCircularCoordinateRender(
                       margin: const EdgeInsets.all(30),
-                      animationDuration: const Duration(seconds: 1),
+                      animationDuration: _animationDuration,
                       charts: [
                         Pie(
                           data: dataList,
