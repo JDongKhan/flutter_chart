@@ -246,12 +246,6 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderS
   AnimationController? _animationController;
   @override
   void initState() {
-    if (widget.chartCoordinateRender.animationDuration != null) {
-      _animationController = AnimationController(vsync: this, duration: widget.chartCoordinateRender.animationDuration);
-      _animationController?.addListener(() {
-        setState(() {});
-      });
-    }
     _initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _startAnimal();
@@ -260,6 +254,13 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderS
   }
 
   void _initState() {
+    if (widget.chartCoordinateRender.animationDuration != null) {
+      _animationController = AnimationController(vsync: this, duration: widget.chartCoordinateRender.animationDuration);
+      _animationController?.addListener(_update);
+    } else {
+      _animationController?.removeListener(_update);
+      _animationController = null;
+    }
     _allChartState = [];
     List<ChartBodyRender> charts = widget.chartCoordinateRender.charts;
     //关联子状态
@@ -293,6 +294,13 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderS
     _initState();
     if (widget.animalDidUpdate) {
       _startAnimal();
+    }
+  }
+
+  void _update(){
+    if (mounted) {
+      setState(() {
+      });
     }
   }
 
