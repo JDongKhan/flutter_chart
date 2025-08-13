@@ -257,8 +257,12 @@ class _ChartCoreWidgetState extends State<_ChartCoreWidget> with TickerProviderS
 
   void _initState() {
     if (widget.chartCoordinateRender.animationDuration != null) {
-      _animationController = AnimationController(vsync: this, duration: widget.chartCoordinateRender.animationDuration);
-      _animationController?.addListener(_update);
+      //处理动画模式的切换情况
+      if (_animationController == null) {
+        _animationController =
+            AnimationController(vsync: this, duration: widget.chartCoordinateRender.animationDuration);
+        _animationController?.addListener(_update);
+      }
     } else {
       _animationController?.removeListener(_update);
       _animationController = null;
