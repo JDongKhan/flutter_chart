@@ -1,7 +1,7 @@
 part of flutter_chart_plus;
 
 /// @author JD
-typedef PieValueFormatter<T> = String Function(T);
+typedef PieValueFormatter<T> = String Function(T,num percent);
 
 enum RotateDirection {
   forward,
@@ -170,17 +170,13 @@ class Pie<T> extends ChartBodyRender<T> {
       //绘制间隙
       _drawSpaceLine(layout, canvas, rd, startAngle, sweepAngle);
 
-      String? valueText = valueFormatter?.call(item);
-      String? legendValueText = legendValueFormatter?.call(item);
-      String? legend = legendFormatter?.call(item);
+
+      String? legendValueText = legendValueFormatter?.call(item,percent);
+      String? legend = legendFormatter?.call(item,percent);
 
       //绘制引导线和文本
       if (guideLine && (layout.controlValue == 1 || !drawValueTextAfterAnimation)) {
         _drawLineAndText(layout, canvas, legendValueText, legend, i, rd, startAngle, sweepAngle);
-      }
-      //选中就绘制
-      if (selected) {
-        _drawCenterValue(layout, canvas, valueText);
       }
       //画圆弧
       // baseChart.canvas.drawArc(
@@ -208,9 +204,15 @@ class Pie<T> extends ChartBodyRender<T> {
           //初始动画x轴不动
           currentPercent = ui.lerpDouble(lastPercent, percent, layout.controlValue) ?? 0;
         }
+        //判断是否选中
+        bool selected = enableTap && chartState.selectedIndex == i;
         // 计算出每个数据所占的弧度值
         final sweepAngle = currentPercent * math.pi * 2 * (direction == RotateDirection.forward ? 1 : -1);
-        String? valueText = valueFormatter?.call(item);
+        String? valueText = valueFormatter?.call(item,percent);
+        //选中就绘制
+        if (selected && centerTextStyle != null) {
+          _drawCenterValue(layout, canvas, valueText);
+        }
         //画圆弧
         if (valueText != null && (layout.controlValue == 1 || !state.isFirst)) {
           _drawValue(state, canvas, valueText, radius, startAngle, sweepAngle);

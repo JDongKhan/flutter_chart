@@ -86,7 +86,7 @@ class _PieChartDemoPageState extends State<PieChartDemoPage> with SingleTickerPr
                     Pie(
                       data: dataList,
                       position: (item,_) => (double.parse(item['value1'].toString())),
-                      valueFormatter: (item) => item['value1'].toString(),
+                      valueFormatter: (item,percent) => item['value1'].toString(),
                     ),
                   ],
                 ),
@@ -107,11 +107,11 @@ class _PieChartDemoPageState extends State<PieChartDemoPage> with SingleTickerPr
                       position: (item,_) => (double.parse(item['value1'].toString())),
                       holeRadius: 40,
                       valueTextOffset: 20,
-                      legendFormatter: (item) {
+                      legendFormatter: (item,percent) {
                         return (item['time'] as DateTime).toStringWithFormat(format: 'MM-dd');
                       },
                       centerTextStyle: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
-                      valueFormatter: (item) => item['value1'].toString(),
+                      valueFormatter: (item,percent) => item['value1'].toString(),
                     ),
                   ],
                 ),
