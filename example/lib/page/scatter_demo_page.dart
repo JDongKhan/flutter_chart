@@ -37,9 +37,9 @@ class _ScatterDemoPageState extends State<ScatterDemoPage> {
   @override
   void initState() {
     super.initState();
-    _timer = Timer.periodic(const Duration(milliseconds: 20), (timer) {
-      _insertNewData();
-    });
+    // _timer = Timer.periodic(const Duration(milliseconds: 20), (timer) {
+    //   _insertNewData();
+    // });
   }
 
   void _insertNewData() {
@@ -78,7 +78,7 @@ class _ScatterDemoPageState extends State<ScatterDemoPage> {
                 yAxis: [
                   YAxis(min: 0, max: 500, drawGrid: true),
                 ],
-                xAxis: XAxis(count: 7, max: 7),
+                xAxis: XAxis(count: 7,formatter: (value) => '${value.toInt()}'),
                 charts: [
                   Scatter(
                     style: (item) => item['value1'] > 400 ? const ScatterStyle(color: Colors.red, radius: 2) : const ScatterStyle(color: Colors.blue, radius: 2),
