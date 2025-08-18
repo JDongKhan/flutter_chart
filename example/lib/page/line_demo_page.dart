@@ -78,7 +78,8 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                 SizedBox(
                   height: 200,
                   child: ChartWidget(
-                    foregroundWidget: const Positioned(right: 0, bottom: 40, child: Icon(Icons.ad_units, color: Colors.blue)),
+                    foregroundWidget:
+                        const Positioned(right: 0, bottom: 40, child: Icon(Icons.ad_units, color: Colors.blue)),
                     coordinateRender: ChartDimensionsCoordinateRender(
                       crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
                       margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
@@ -86,7 +87,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                       animationDuration: const Duration(seconds: 1),
                       //提示的文案信息
                       tooltipBuilder: (BuildContext context, List<ChartLayoutState> body) {
-                        String text = '我可以滚动我可以滚动\n我可以滚动我可以滚动\n我可以滚动我可以滚动\n我可以滚动我可以滚动';
+                        String text = 'asafasfadfadfadfadfadffsggfgDFSGDGSGDSGDSGDSGDSGDSGsd';
                         return PreferredSize(
                           preferredSize: const Size(60, 100),
                           child: SizedBox(
@@ -95,6 +96,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                             child: SingleChildScrollView(
                               scrollDirection: Axis.vertical,
                               child: Container(
+                                width: 60,
                                 padding: const EdgeInsets.all(8),
                                 child: Text(text),
                               ),
@@ -106,12 +108,13 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                       xAxis: XAxis(
                         count: 9,
                         zoom: true,
-                        formatter: (index) => startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd'),
+                        formatter: (index) =>
+                            startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd'),
                       ),
                       charts: [
                         Line(
                           data: dataList,
-                          position: (item,_) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
+                          position: (item, _) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
                           values: (item) => [
                             item['value1'] as num,
                           ],
@@ -177,12 +180,13 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                         zoom: true,
                         drawGrid: true,
                         drawLine: true,
-                        formatter: (index) => startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd'),
+                        formatter: (index) =>
+                            startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd'),
                       ),
                       charts: [
                         Line(
                           data: dataList,
-                          position: (item,_) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
+                          position: (item, _) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
                           values: (item) => [
                             item['value1'] as num,
                             item['value2'] as num,
@@ -216,14 +220,15 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                         count: 9,
                         drawGrid: true,
                         zoom: true,
-                        formatter: (index) => startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd'),
+                        formatter: (index) =>
+                            startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd'),
                       ),
                       charts: [
                         Line(
                           data: dataList,
                           //填充需要开启这个属性
                           filled: true,
-                          position: (item,_) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
+                          position: (item, _) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
                           colors: [Colors.blue, Colors.red],
                           dotColors: [Colors.blue, Colors.black],
                           shaders: [
@@ -272,7 +277,8 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                         zoom: true,
                         drawGrid: true,
                         drawLine: true,
-                        formatter: (index) => startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd'),
+                        formatter: (index) =>
+                            startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd'),
                       ),
                       charts: [
                         Line(
@@ -280,7 +286,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                           //填充需要开启这个属性
                           filled: true,
                           operation: PathOperation.xor,
-                          position: (item,_) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
+                          position: (item, _) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
                           colors: [Colors.transparent, Colors.blue],
                           dotColors: [Colors.black, Colors.black],
                           // shaders: [
@@ -329,12 +335,13 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                           zoom: true,
                           drawGrid: true,
                           drawLine: true,
-                          formatter: (index) => startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd'),
+                          formatter: (index) =>
+                              startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd'),
                         ),
                         charts: [
                           Line(
                             data: dataList,
-                            position: (item,_) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
+                            position: (item, _) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
                             dotColors: [
                               Colors.black,
                               Colors.black,
@@ -398,19 +405,20 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                         count: 7,
                         max: 20,
                         drawLine: false,
-                        formatter: (index) => startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd'),
+                        formatter: (index) =>
+                            startTime.add(Duration(days: index.toInt())).toStringWithFormat(format: 'dd'),
                       ),
                       charts: [
                         Bar(
                           color: Colors.green,
                           data: dataList,
                           yAxisPosition: 1,
-                          position: (item,_) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
+                          position: (item, _) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
                           value: (item) => item['value1'],
                         ),
                         Line(
                           data: dataList,
-                          position: (item,_) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
+                          position: (item, _) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
                           values: (item) => [
                             item['value1'] as num,
                           ],
@@ -418,7 +426,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                         Line(
                           colors: [Colors.green],
                           data: dataList,
-                          position: (item,_) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
+                          position: (item, _) => parserDateTimeToDayValue(item['time'] as DateTime, startTime),
                           values: (item) => [
                             item['value2'] as num,
                           ],
