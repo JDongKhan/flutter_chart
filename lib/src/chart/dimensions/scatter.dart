@@ -40,15 +40,13 @@ class Scatter<T> extends ChartBodyRender<T> {
     //offset.dx 滚动偏移  (src.zoom - 1) * (src.size.width / 2) 缩放
     double left = layout.left;
     left = layout.transform.withXScroll(left);
-    double bottom = layout.size.height - layout.bottom;
-
     //遍历数据 处理数据信息
     for (int index = 0; index < data.length; index++) {
       T itemData = data[index];
       num xvs = position.call(itemData, index);
       num yvs = value.call(itemData);
       double xPo = xvs * layout.xAxis.density + left;
-      double yPo = bottom - layout.yAxis[yAxisPosition].getHeight(yvs);
+      double yPo = layout.bottom - layout.yAxis[yAxisPosition].getHeight(yvs);
       yPo = layout.transform.withYScroll(yPo);
       ScatterStyle sy = style.call(itemData);
       //最后画点
