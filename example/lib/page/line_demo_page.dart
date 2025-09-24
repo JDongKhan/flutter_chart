@@ -55,7 +55,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
       },
       {
         'time': startTime.add(const Duration(days: 8)),
-        'value1': 300,
+        'value1': 500,
         'value2': 450,
         'value3': 300,
       },
@@ -82,7 +82,7 @@ class _LineChartDemoPageState extends State<LineChartDemoPage> {
                         const Positioned(right: 0, bottom: 40, child: Icon(Icons.ad_units, color: Colors.blue)),
                     coordinateRender: ChartDimensionsCoordinateRender(
                       crossHair: const CrossHairStyle(adjustHorizontal: true, adjustVertical: true),
-                      margin: const EdgeInsets.only(left: 40, top: 0, right: 0, bottom: 30),
+                      margin: const EdgeInsets.only(left: 40, top: 10, right: 0, bottom: 30),
                       padding: const EdgeInsets.only(left: 0, right: 0),
                       animationDuration: const Duration(seconds: 1),
                       //提示的文案信息

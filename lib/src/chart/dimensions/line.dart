@@ -4,7 +4,6 @@ typedef LinePosition<T> = List<num> Function(T);
 
 /// @author JD
 class Line<T> extends ChartBodyRender<T> with NormalLineMixin<T>, AnimalLineMixin<T> {
-
   Line({
     required super.data,
     required this.position,
@@ -20,7 +19,7 @@ class Line<T> extends ChartBodyRender<T> with NormalLineMixin<T>, AnimalLineMixi
     this.isCurve = false,
     this.operation,
     this.async = false,
-  });
+  }) : assert(data.length <= colors.length, '颜色数量不能小于数据数量');
 
   ///不要使用过于耗时的方法
   ///数据在坐标系的位置，每个坐标系下取值逻辑不一样，在line和bar下是相对于每格的值，比如xAxis的interval为1，你的数据放在1列和2列中间，那么position就是0.5，在pie下是比例
@@ -203,7 +202,7 @@ mixin NormalLineMixin<T> on ChartBodyRender<T> {
       currentPointLayout.yAxisPosition = yAxisPosition;
       chartState.children.add(currentPointLayout);
       //获取原数据
-      num? xValue = _instance.position.call(value,index);
+      num? xValue = _instance.position.call(value, index);
       if (lastXValue != null) {
         assert(lastXValue < xValue, '$xValue 必须大于 $lastXValue,（虽然可以支持逆序，但是为了防止数据顺序混乱，还是强制要求必须是正序的数组)');
       }
@@ -244,7 +243,8 @@ mixin NormalLineMixin<T> on ChartBodyRender<T> {
           currentPointLayout.children.add(childLayoutState);
         }
 
-        childLayoutState.setOriginRect(Rect.fromCenter(center: currentPoint, width: _instance.dotRadius, height: _instance.dotRadius));
+        childLayoutState.setOriginRect(
+            Rect.fromCenter(center: currentPoint, width: _instance.dotRadius, height: _instance.dotRadius));
         childLayoutState.index = index;
         childLayoutState.layout = layout;
         childLayoutState.xAxis = layout.xAxis;
@@ -312,7 +312,8 @@ mixin NormalLineMixin<T> on ChartBodyRender<T> {
           Offset first = lineInfo.startPoint ?? Offset.zero;
 
           //路径合并
-          Path filledPath = _instance._combinePath(copyPath, Offset(first.dx, layout.bottom), Offset(last.dx, layout.bottom), lastPath);
+          Path filledPath = _instance._combinePath(
+              copyPath, Offset(first.dx, layout.bottom), Offset(last.dx, layout.bottom), lastPath);
           lastPath = copyPath;
 
           //缩放，滚动
@@ -336,7 +337,8 @@ mixin NormalLineMixin<T> on ChartBodyRender<T> {
         List<ChartItemLayoutState> children = shape.children;
         int childIndex = 0;
         double xPos = layout.getPosForX(shape.xValue! * layout.xAxis.density, true);
-        Rect currentRect = Rect.fromLTRB(xPos - _instance.dotRadius, layout.top, xPos + _instance.dotRadius, layout.bottom);
+        Rect currentRect =
+            Rect.fromLTRB(xPos - _instance.dotRadius, layout.top, xPos + _instance.dotRadius, layout.bottom);
         shape.setOriginRect(currentRect);
         if (!state.outDraw && xPos < 0) {
           // debugPrint('1-第${shape.index ?? 0 + 1} 个点$currentRect超出去 不需要处理');
@@ -349,7 +351,8 @@ mixin NormalLineMixin<T> on ChartBodyRender<T> {
         for (ChartItemLayoutState childLayoutState in children) {
           double yPos = layout.getPosForY(layout.yAxis[yAxisPosition].getHeight(childLayoutState.yValue!));
           Offset currentPoint = Offset(xPos, yPos);
-          childLayoutState.setOriginRect(Rect.fromCenter(center: currentPoint, width: _instance.dotRadius, height: _instance.dotRadius));
+          childLayoutState.setOriginRect(
+              Rect.fromCenter(center: currentPoint, width: _instance.dotRadius, height: _instance.dotRadius));
           //画点
           _instance._drawPoint(canvas, currentPoint, dotColorList[childIndex]);
           childIndex++;
@@ -407,7 +410,7 @@ mixin AnimalLineMixin<T> on ChartBodyRender<T> {
       chartState.children.add(currentPointLayout);
 
       //获取原始值
-      num xValue = _instance.position.call(value,index);
+      num xValue = _instance.position.call(value, index);
       if (lastXValue != null) {
         assert(lastXValue < xValue, '$xValue 必须大于 $lastXValue');
       }
@@ -500,7 +503,8 @@ mixin AnimalLineMixin<T> on ChartBodyRender<T> {
 
         //点的信息
         ChartItemLayoutState childLayoutState = currentPointLayout.children[valueIndex];
-        childLayoutState.setOriginRect(Rect.fromCenter(center: currentPoint, width: _instance.dotRadius, height: _instance.dotRadius));
+        childLayoutState.setOriginRect(
+            Rect.fromCenter(center: currentPoint, width: _instance.dotRadius, height: _instance.dotRadius));
         childLayoutState.index = index;
         childLayoutState.xValue = xValue;
         childLayoutState.yValue = yValue;
@@ -508,7 +512,8 @@ mixin AnimalLineMixin<T> on ChartBodyRender<T> {
         lineInfo.appendPoint(childLayoutState);
       }
 
-      Rect currentRect = Rect.fromLTRB(xPos - _instance.dotRadius, layout.top, xPos + _instance.dotRadius, layout.bottom);
+      Rect currentRect =
+          Rect.fromLTRB(xPos - _instance.dotRadius, layout.top, xPos + _instance.dotRadius, layout.bottom);
       currentPointLayout.setOriginRect(currentRect);
       currentPointLayout.left = layout.left;
       currentPointLayout.right = layout.right;
@@ -548,7 +553,8 @@ mixin AnimalLineMixin<T> on ChartBodyRender<T> {
           Offset first = lineInfo.startPoint ?? Offset.zero;
 
           //路径合并
-          Path filledPath = _instance._combinePath(path, Offset(first.dx, state.layout.bottom), Offset(last.dx, state.layout.bottom), lastPath);
+          Path filledPath = _instance._combinePath(
+              path, Offset(first.dx, state.layout.bottom), Offset(last.dx, state.layout.bottom), lastPath);
           lastPath = path;
 
           //绘制填充
