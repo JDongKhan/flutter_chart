@@ -1,7 +1,7 @@
 part of flutter_chart_plus;
 
 /// @author JD
-typedef PieValueFormatter<T> = String Function(T,num percent);
+typedef PieValueFormatter<T> = String Function(T, num percent);
 
 enum RotateDirection {
   forward,
@@ -170,9 +170,8 @@ class Pie<T> extends ChartBodyRender<T> {
       //绘制间隙
       _drawSpaceLine(layout, canvas, rd, startAngle, sweepAngle);
 
-
-      String? legendValueText = legendValueFormatter?.call(item,percent);
-      String? legend = legendFormatter?.call(item,percent);
+      String? legendValueText = legendValueFormatter?.call(item, percent);
+      String? legend = legendFormatter?.call(item, percent);
 
       //绘制引导线和文本
       if (guideLine && (layout.controlValue == 1 || !drawValueTextAfterAnimation)) {
@@ -183,7 +182,7 @@ class Pie<T> extends ChartBodyRender<T> {
       //     newRect, startAngle, sweepAngle, true, paint..color = colors[i]);
       // _drawLegend(item, radius, startAngle, sweepAngle);
       // if (valueText != null && (layout.controlValue == 1 || !drawValueTextAfterAnimation)) {
-        // _drawValue(state, canvas, valueText, radius, startAngle, sweepAngle);
+      // _drawValue(state, canvas, valueText, radius, startAngle, sweepAngle);
       // }
       //继续下一个
       startAngle = startAngle + sweepAngle;
@@ -194,6 +193,9 @@ class Pie<T> extends ChartBodyRender<T> {
         T item = data[i];
         //直接读取
         num percent = _values[i] / _total;
+        if (percent == 0) {
+          continue;
+        }
         num currentPercent = percent;
         //tween动画
         if (state.animal && layout.controlValue < 1) {
@@ -208,7 +210,7 @@ class Pie<T> extends ChartBodyRender<T> {
         bool selected = enableTap && chartState.selectedIndex == i;
         // 计算出每个数据所占的弧度值
         final sweepAngle = currentPercent * math.pi * 2 * (direction == RotateDirection.forward ? 1 : -1);
-        String? valueText = valueFormatter?.call(item,percent);
+        String? valueText = valueFormatter?.call(item, percent);
         //选中就绘制
         if (selected && centerTextStyle != null) {
           _drawCenterValue(layout, canvas, valueText);
