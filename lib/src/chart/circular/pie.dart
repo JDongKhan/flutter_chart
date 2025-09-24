@@ -132,6 +132,9 @@ class Pie<T> extends ChartBodyRender<T> {
       T item = data[i];
       //直接读取
       num percent = _values[i] / _total;
+      if (percent == 0) {
+        continue;
+      }
       num currentPercent = percent;
       //tween动画
       if (state.animal && layout.controlValue < 1) {
