@@ -97,6 +97,7 @@ class Line<T> extends ChartBodyRender<T> with NormalLineMixin<T>, AnimalLineMixi
 
   ///画线
   void _drawLine(Canvas canvas, Path path, int index) {
+    assert(index < colors.length, 'colors.length 必须大于 index');
     if (shaders != null && filled == false) {
       canvas.drawPath(path, _linePaint..shader = shaders![index]);
     } else {
@@ -105,6 +106,7 @@ class Line<T> extends ChartBodyRender<T> with NormalLineMixin<T>, AnimalLineMixi
   }
 
   void _drawFill(Canvas canvas, Path path, int index) {
+    assert(index < colors.length, 'colors.length 必须大于 index');
     if (shaders != null) {
       _fullPaint?.shader = shaders![index];
     } else {
