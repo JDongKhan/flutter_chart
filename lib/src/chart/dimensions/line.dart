@@ -19,7 +19,7 @@ class Line<T> extends ChartBodyRender<T> with NormalLineMixin<T>, AnimalLineMixi
     this.isCurve = false,
     this.operation,
     this.async = false,
-  }) : assert(data.length <= colors.length, '颜色数量不能小于数据数量');
+  });
 
   ///不要使用过于耗时的方法
   ///数据在坐标系的位置，每个坐标系下取值逻辑不一样，在line和bar下是相对于每格的值，比如xAxis的interval为1，你的数据放在1列和2列中间，那么position就是0.5，在pie下是比例
