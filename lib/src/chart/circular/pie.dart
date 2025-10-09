@@ -132,9 +132,6 @@ class Pie<T> extends ChartBodyRender<T> {
       T item = data[i];
       //直接读取
       num percent = _values[i] / _total;
-      if (percent == 0) {
-        continue;
-      }
       num currentPercent = percent;
       //tween动画
       if (state.animal && layout.controlValue < 1) {
@@ -170,15 +167,18 @@ class Pie<T> extends ChartBodyRender<T> {
         _paint.color = colors[i];
       }
       drawPie(canvas, tapShape.path!, _paint);
-      //绘制间隙
-      _drawSpaceLine(layout, canvas, rd, startAngle, sweepAngle);
 
-      String? legendValueText = legendValueFormatter?.call(item, percent);
-      String? legend = legendFormatter?.call(item, percent);
+      if (percent > 0) {
+        //绘制间隙
+        _drawSpaceLine(layout, canvas, rd, startAngle, sweepAngle);
 
-      //绘制引导线和文本
-      if (guideLine && (layout.controlValue == 1 || !drawValueTextAfterAnimation)) {
-        _drawLineAndText(layout, canvas, legendValueText, legend, i, rd, startAngle, sweepAngle);
+        String? legendValueText = legendValueFormatter?.call(item, percent);
+        String? legend = legendFormatter?.call(item, percent);
+
+        //绘制引导线和文本
+        if (guideLine && (layout.controlValue == 1 || !drawValueTextAfterAnimation)) {
+          _drawLineAndText(layout, canvas, legendValueText, legend, i, rd, startAngle, sweepAngle);
+        }
       }
       //画圆弧
       // baseChart.canvas.drawArc(

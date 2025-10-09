@@ -14,55 +14,104 @@ class PieChartDemoPage extends StatefulWidget {
 
 class _PieChartDemoPageState extends State<PieChartDemoPage> with SingleTickerProviderStateMixin {
   final DateTime startTime = DateTime(2023, 1, 1);
+
+  late List<Map> dataList = [
+    {
+      'time': startTime.add(const Duration(days: 1)),
+      'value1': Random().nextInt(500),
+      'value2': Random().nextInt(500),
+      'value3': Random().nextInt(500),
+    },
+    {
+      'time': startTime.add(const Duration(days: 3)),
+      'value1': Random().nextInt(500),
+      'value2': Random().nextInt(500),
+      'value3': Random().nextInt(500),
+    },
+    {
+      'time': startTime.add(const Duration(days: 5)),
+      'value1': Random().nextInt(500),
+      'value2': Random().nextInt(500),
+      'value3': Random().nextInt(500),
+    },
+    {
+      'time': startTime.add(const Duration(days: 8)),
+      'value1': Random().nextInt(500),
+      'value2': Random().nextInt(500),
+      'value3': Random().nextInt(500),
+    },
+    {
+      'time': startTime.add(const Duration(days: 12)),
+      'value1': Random().nextInt(500),
+      'value2': Random().nextInt(500),
+      'value3': Random().nextInt(500),
+    },
+    {
+      'time': startTime.add(const Duration(days: 12)),
+      'value1': Random().nextInt(500),
+      'value2': Random().nextInt(500),
+      'value3': Random().nextInt(500),
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
-    final List<Map> dataList = [
-      {
-        'time': startTime.add(const Duration(days: 1)),
-        'value1': Random().nextInt(500),
-        'value2': Random().nextInt(500),
-        'value3': Random().nextInt(500),
-      },
-      {
-        'time': startTime.add(const Duration(days: 3)),
-        'value1': Random().nextInt(500),
-        'value2': Random().nextInt(500),
-        'value3': Random().nextInt(500),
-      },
-      {
-        'time': startTime.add(const Duration(days: 5)),
-        'value1': Random().nextInt(500),
-        'value2': Random().nextInt(500),
-        'value3': Random().nextInt(500),
-      },
-      {
-        'time': startTime.add(const Duration(days: 8)),
-        'value1': Random().nextInt(500),
-        'value2': Random().nextInt(500),
-        'value3': Random().nextInt(500),
-      },
-      {
-        'time': startTime.add(const Duration(days: 12)),
-        'value1': Random().nextInt(500),
-        'value2': Random().nextInt(500),
-        'value3': Random().nextInt(500),
-      },
-      {
-        'time': startTime.add(const Duration(days: 12)),
-        'value1': Random().nextInt(500),
-        'value2': Random().nextInt(500),
-        'value3': Random().nextInt(500),
-      },
-    ];
-
-
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('ChartDemo'),
         actions: [
           TextButton(
             onPressed: () {
+              double v = dataList[0]["value1"] ?? 0;
+              if (v != 0) {
+                dataList[0]["value1"] = 0;
+              } else {
+                dataList[0]["value1"] = 100;
+              }
+              setState(() {});
+            },
+            child: const Text("关闭"),
+          ),
+          TextButton(
+            onPressed: () {
+              dataList = [
+                {
+                  'time': startTime.add(const Duration(days: 1)),
+                  'value1': Random().nextInt(500),
+                  'value2': Random().nextInt(500),
+                  'value3': Random().nextInt(500),
+                },
+                {
+                  'time': startTime.add(const Duration(days: 3)),
+                  'value1': Random().nextInt(500),
+                  'value2': Random().nextInt(500),
+                  'value3': Random().nextInt(500),
+                },
+                {
+                  'time': startTime.add(const Duration(days: 5)),
+                  'value1': Random().nextInt(500),
+                  'value2': Random().nextInt(500),
+                  'value3': Random().nextInt(500),
+                },
+                {
+                  'time': startTime.add(const Duration(days: 8)),
+                  'value1': Random().nextInt(500),
+                  'value2': Random().nextInt(500),
+                  'value3': Random().nextInt(500),
+                },
+                {
+                  'time': startTime.add(const Duration(days: 12)),
+                  'value1': Random().nextInt(500),
+                  'value2': Random().nextInt(500),
+                  'value3': Random().nextInt(500),
+                },
+                {
+                  'time': startTime.add(const Duration(days: 12)),
+                  'value1': Random().nextInt(500),
+                  'value2': Random().nextInt(500),
+                  'value3': Random().nextInt(500),
+                },
+              ];
               setState(() {});
             },
             child: const Text("刷新"),
@@ -85,8 +134,8 @@ class _PieChartDemoPageState extends State<PieChartDemoPage> with SingleTickerPr
                   charts: [
                     Pie(
                       data: dataList,
-                      position: (item,_) => (double.parse(item['value1'].toString())),
-                      valueFormatter: (item,percent) => item['value1'].toString(),
+                      position: (item, _) => (double.parse(item['value1'].toString())),
+                      valueFormatter: (item, percent) => item['value1'].toString(),
                     ),
                   ],
                 ),
@@ -104,14 +153,14 @@ class _PieChartDemoPageState extends State<PieChartDemoPage> with SingleTickerPr
                       guideLine: true,
                       drawValueTextAfterAnimation: false,
                       data: dataList,
-                      position: (item,_) => (double.parse(item['value1'].toString())),
+                      position: (item, _) => (double.parse(item['value1'].toString())),
                       holeRadius: 40,
                       valueTextOffset: 20,
-                      legendFormatter: (item,percent) {
+                      legendFormatter: (item, percent) {
                         return (item['time'] as DateTime).toStringWithFormat(format: 'MM-dd');
                       },
                       centerTextStyle: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
-                      valueFormatter: (item,percent) => item['value1'].toString(),
+                      valueFormatter: (item, percent) => item['value1'].toString(),
                     ),
                   ],
                 ),
