@@ -62,18 +62,6 @@ class _PieChartDemoPageState extends State<PieChartDemoPage> with SingleTickerPr
         actions: [
           TextButton(
             onPressed: () {
-              double v = dataList[0]["value1"] ?? 0;
-              if (v != 0) {
-                dataList[0]["value1"] = 0;
-              } else {
-                dataList[0]["value1"] = 100;
-              }
-              setState(() {});
-            },
-            child: const Text("关闭"),
-          ),
-          TextButton(
-            onPressed: () {
               dataList = [
                 {
                   'time': startTime.add(const Duration(days: 1)),
@@ -166,6 +154,47 @@ class _PieChartDemoPageState extends State<PieChartDemoPage> with SingleTickerPr
                 ),
               ),
             ),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: 200,
+                  width: 300,
+                  child: ChartWidget(
+                    coordinateRender: ChartCircularCoordinateRender(
+                      animationDuration: const Duration(seconds: 1),
+                      margin: const EdgeInsets.all(30),
+                      charts: [
+                        Pie(
+                          data: dataList,
+                          position: (item, _) => (double.parse(item['value1'].toString())),
+                          valueFormatter: (item, percent) => item['value1'].toString(),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Column(
+                  children: [
+                    TextButton(
+                        onPressed: () {
+                          double v = dataList[0]["value1"];
+                          dataList[0]["value1"] = 0;
+                          setState(() {});
+                        },
+                        child: Text("禁用")),
+                    TextButton(
+                        onPressed: () {
+                          double v = dataList[0]["value1"];
+                          dataList[0]["value1"] = 100;
+                          setState(() {});
+                        },
+                        child: Text("启用")),
+                  ],
+                ),
+              ],
+            )
           ],
         ),
       ),
