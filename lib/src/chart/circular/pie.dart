@@ -168,7 +168,7 @@ class Pie<T> extends ChartBodyRender<T> {
       }
       drawPie(canvas, tapShape.path!, _paint);
 
-      if (percent > 0) {
+      if (currentPercent > 0) {
         //绘制间隙
         _drawSpaceLine(layout, canvas, rd, startAngle, sweepAngle);
 
@@ -216,7 +216,7 @@ class Pie<T> extends ChartBodyRender<T> {
           _drawCenterValue(layout, canvas, valueText);
         }
         //画圆弧
-        if (valueText != null && (layout.controlValue == 1 || !state.isFirst) && percent > 0) {
+        if (valueText != null && (layout.controlValue == 1 || !state.isFirst) && currentPercent > 0) {
           _drawValue(state, canvas, valueText, radius, startAngle, sweepAngle);
         }
         //继续下一个
